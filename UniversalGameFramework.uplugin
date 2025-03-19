@@ -29,6 +29,11 @@
 			"Name": "UGFInventorySystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UGFItemSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }
