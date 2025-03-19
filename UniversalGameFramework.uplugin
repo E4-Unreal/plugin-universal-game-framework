@@ -24,6 +24,11 @@
 			"Name": "UniversalGameFramework",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UGFInventorySystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }
