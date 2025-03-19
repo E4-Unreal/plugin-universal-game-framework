@@ -10,6 +10,8 @@ public class UGFItemSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities",
+                "UGFCore"
             }
         );
 
