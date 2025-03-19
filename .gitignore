@@ -1,0 +1,11 @@
+# Visual Studio cache directory
+.vs/
+.vscode/
+.vsconfig
+
+# Rider cache directory
+.idea/
+
+# Unreal Plugin
+Binaries/
+Intermediate/
