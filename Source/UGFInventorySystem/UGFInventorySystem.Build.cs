@@ -11,7 +11,8 @@ public class UGFInventorySystem : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "UGFCore"
+                "UGFCore",
+                "UGFItemSystem"
             }
         );
 
