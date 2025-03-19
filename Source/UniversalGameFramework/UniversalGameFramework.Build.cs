@@ -10,7 +10,8 @@ public class UniversalGameFramework : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "UGFCore"
             }
         );
 
