@@ -13,5 +13,12 @@
 	"CanContainContent": true,
 	"IsBetaVersion": false,
 	"IsExperimentalVersion": true,
-	"Installed": false
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "UGFCore",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
 }
