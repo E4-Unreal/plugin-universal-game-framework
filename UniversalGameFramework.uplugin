@@ -19,6 +19,11 @@
 			"Name": "UGFCore",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UniversalGameFramework",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	]
 }
