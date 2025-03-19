@@ -10,6 +10,7 @@ public class UGFCore : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities"
             }
         );
 
