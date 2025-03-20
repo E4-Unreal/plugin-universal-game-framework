@@ -13,7 +13,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     Overflow = Item.Amount;
 
     // Item 유효성 검사
-    if (!UUGFItemSystemFunctionLibrary::IsValidItem(Item)) return;
+    if (!IsValidItem(Item)) return;
 
     // 변수 선언 및 초기화
     int32 MaxStack = Item.ItemDefinition->GetMaxStack();
@@ -99,7 +99,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     // ItemInventoryIndicesMap 업데이트
     ItemInventoryIndicesMap[Item.ItemDefinition].AddIndices(InventoryIndicesToAdd);
 
-    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), %Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity + AddedItemQuantity)
+    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), *Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity + AddedItemQuantity)
 }
 
 void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
@@ -108,7 +108,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     Underflow = Item.Amount;
 
     // Item 유효성 검사
-    if (!UUGFItemSystemFunctionLibrary::IsValidItem(Item)) return;
+    if (!IsValidItem(Item)) return;
 
     // 아이템 보유 여부 확인
     if (!ItemInventoryIndicesMap.Contains(Item.ItemDefinition))
@@ -165,7 +165,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     // ItemInventoryIndicesMap 업데이트
     ItemInventoryIndicesMap[Item.ItemDefinition].RemoveIndices(InventoryIndicesToRemove);
 
-    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), %Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity - RemovedItemQuantity)
+    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), *Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity - RemovedItemQuantity)
 }
 
 bool UUGFInventoryComponent::HasItem_Implementation(const FUGFItem& Item) const
@@ -178,4 +178,23 @@ bool UUGFInventoryComponent::HasItem_Implementation(const FUGFItem& Item) const
 void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex)
 {
     IUGFInventoryInterface::SwapInventorySlot_Implementation(SelectedIndex, TargetIndex);
+}
+
+bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item) const
+{
+    // null 검사
+    if (Item.ItemDefinition == nullptr)
+    {
+        LOG(Error, TEXT("Item Definition is null"))
+        return false;
+    }
+
+    // 입력 유효성 검사
+    if (Item.Amount <= 0)
+    {
+        LOG(Error, TEXT("Item Amount: %d"), Item.Amount);
+        return false;
+    }
+
+    return true;
 }

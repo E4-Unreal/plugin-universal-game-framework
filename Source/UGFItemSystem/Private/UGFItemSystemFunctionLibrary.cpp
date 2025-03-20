@@ -15,22 +15,3 @@ const UUGFItemConfig* UUGFItemSystemFunctionLibrary::FindItemConfigByClass(UUGFI
     }
     return nullptr;
 }
-
-bool UUGFItemSystemFunctionLibrary::IsValidItem(const FUGFItem& Item)
-{
-    // null 검사
-    if (Item.ItemDefinition == nullptr)
-    {
-        LOG(Error, TEXT("Item Definition is null"))
-        return false;
-    }
-
-    // 입력 유효성 검사
-    if (Item.Amount <= 0)
-    {
-        LOG(Error, TEXT("Item Amount: %d"), Item.Amount);
-        return false;
-    }
-
-    return true;
-}

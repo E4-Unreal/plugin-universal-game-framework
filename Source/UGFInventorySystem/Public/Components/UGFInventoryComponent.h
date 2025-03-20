@@ -84,4 +84,8 @@ public:
     virtual void RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow) override;
     virtual bool HasItem_Implementation(const FUGFItem& Item) const override;
     virtual void SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex) override;
+
+protected:
+    UFUNCTION(BlueprintPure)
+    bool IsValidItem(const FUGFItem& Item) const;
 };
