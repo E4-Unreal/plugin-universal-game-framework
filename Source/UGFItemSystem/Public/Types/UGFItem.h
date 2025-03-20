@@ -22,4 +22,7 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 Amount = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    int32 MaxStack = 1;
 };
