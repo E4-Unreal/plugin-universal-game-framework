@@ -51,7 +51,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     // 새로운 인벤토리 슬롯 생성
     int32 NewInventorySlotIndex = 0;
     TArray<int32> InventoryIndicesToAdd;
-    while (Overflow == 0 || InventorySlots.Num() >= MaxInventorySlotNum)
+    while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
     {
         if (!InventorySlots.Contains(NewInventorySlotIndex))
         {
