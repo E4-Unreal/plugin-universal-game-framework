@@ -103,7 +103,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
         ItemInventoryIndicesMap[Item.ItemDefinition].AddIndices(InventoryIndicesToAdd);
     }
 
-    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), *Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity + AddedItemQuantity)
+    LOG(Log, TEXT("Item added to inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), *Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity + AddedItemQuantity)
 }
 
 void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
