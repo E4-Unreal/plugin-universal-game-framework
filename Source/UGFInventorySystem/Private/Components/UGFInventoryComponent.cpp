@@ -97,7 +97,11 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     }
 
     // ItemInventoryIndicesMap 업데이트
-    ItemInventoryIndicesMap[Item.ItemDefinition].AddIndices(InventoryIndicesToAdd);
+    if (!InventoryIndicesToAdd.IsEmpty())
+    {
+        if (!ItemInventoryIndicesMap.Contains(Item.ItemDefinition)) ItemInventoryIndicesMap.Emplace(Item.ItemDefinition, FUGFInventoryIndices());
+        ItemInventoryIndicesMap[Item.ItemDefinition].AddIndices(InventoryIndicesToAdd);
+    }
 
     LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), *Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity + AddedItemQuantity)
 }
