@@ -4,6 +4,7 @@
 #include "Components/UGFInventoryComponent.h"
 
 #include "Logging.h"
+#include "UGFItemSystemFunctionLibrary.h"
 #include "Data/UGFItemDefinition.h"
 
 void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32& Overflow)
@@ -16,19 +17,8 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     // 초기화
     Underflow = Item.Amount;
 
-    // null 검사
-    if (Item.ItemDefinition == nullptr)
-    {
-        LOG(Error, TEXT("Item Definition is null"))
-        return;
-    }
-
-    // 입력 유효성 검사
-    if (Item.Amount <= 0)
-    {
-        LOG(Error, TEXT("Item Amount: %d"), Item.Amount);
-        return;
-    }
+    // Item 유효성 검사
+    if (!UUGFItemSystemFunctionLibrary::IsValidItem(Item)) return;
 
     // 아이템 보유 여부 확인
     if (!ItemInventoryIndicesMap.Contains(Item.ItemDefinition))
@@ -37,7 +27,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
         return;
     }
 
-    // Remove Item
+    // Update InventorySlots
     const auto& InventoryIndices = ItemInventoryIndicesMap[Item.ItemDefinition].Indices;
     TArray<int32> InventoryIndicesToRemove;
     InventoryIndicesToRemove.Reserve(InventoryIndices.Num());
@@ -65,7 +55,6 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
         }
     }
 
-    // Update InventorySlots
     for (int32 InventoryIndexToRemove : InventoryIndicesToRemove)
     {
         InventorySlots.Remove(InventoryIndexToRemove);
@@ -84,10 +73,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     }
 
     // Update ItemInventoryIndicesMap
-    for (int32 InventoryIndexToRemove : InventoryIndicesToRemove)
-    {
-        ItemInventoryIndicesMap[Item.ItemDefinition].Indices.Remove(InventoryIndexToRemove);
-    }
+    ItemInventoryIndicesMap[Item.ItemDefinition].RemoveIndices(InventoryIndicesToRemove);
 
     LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nInventoryItemQuantity: %d > %d"), %Item.ItemDefinition->GetDisplayName().ToString(), InventoryItemQuantity, InventoryItemQuantity - RemovedItemQuantity)
 }

@@ -14,6 +14,28 @@ struct FUGFInventoryIndices
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSet<int32> Indices;
+
+    void RemoveIndex(int32 Index)
+    {
+        Indices.Remove(Index);
+
+        Sort();
+    }
+
+    void RemoveIndices(TArray<int32> Indices)
+    {
+        for (int32 Index : Indices)
+        {
+            Indices.Remove(Index);
+        }
+
+        Sort();
+    }
+
+    void Sort()
+    {
+        Indices.Sort([](const int32& Lhs, const int32& Rhs){ return Lhs < Rhs; });
+    }
 };
 
 
