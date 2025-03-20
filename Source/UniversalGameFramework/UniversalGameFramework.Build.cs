@@ -11,7 +11,9 @@ public class UniversalGameFramework : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "UGFCore"
+                "UGFCore",
+                "UGFItemSystem",
+                "UGFInventorySystem"
             }
         );
 
