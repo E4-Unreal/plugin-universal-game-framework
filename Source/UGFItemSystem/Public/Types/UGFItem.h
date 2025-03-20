@@ -25,4 +25,6 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;
+
+    bool IsFull() const { return Amount >= MaxStack; }
 };
