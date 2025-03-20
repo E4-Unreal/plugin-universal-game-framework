@@ -22,9 +22,15 @@ class UGFITEMSYSTEM_API UUGFItemDefinition : public UPrimaryDataAsset
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TArray<TObjectPtr<UUGFItemConfig>> ItemConfigs;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetMaxStack, meta = (ClampMin = 1))
+    int32 MaxStack = 1;
+
 public:
     UFUNCTION(BlueprintGetter)
     const FText& GetDisplayName() const { return DisplayName; }
+
+    UFUNCTION(BlueprintGetter)
+    int32 GetMaxStack() const { return MaxStack; }
 
     template<typename T>
     const T* FindItemConfigByClass(TSubclassOf<T> ItemConfigClass) const;

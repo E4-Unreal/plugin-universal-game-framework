@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/UGFItemDefinition.h"
 #include "UObject/Object.h"
 #include "UGFItem.generated.h"
 
@@ -23,8 +24,5 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 Amount = 1;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
-    int32 MaxStack = 1;
-
-    bool IsFull() const { return Amount >= MaxStack; }
+    bool IsFull() const { return Amount >= ItemDefinition->GetMaxStack(); }
 };

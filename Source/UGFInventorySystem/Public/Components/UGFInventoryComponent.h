@@ -15,16 +15,33 @@ struct FUGFInventoryIndices
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSet<int32> Indices;
 
-    void RemoveIndex(int32 Index)
+    void AddIndex(int32 InIndex)
     {
-        Indices.Remove(Index);
+        Indices.Emplace(InIndex);
 
         Sort();
     }
 
-    void RemoveIndices(TArray<int32> Indices)
+    void AddIndices(const TArray<int32>& InIndices)
     {
-        for (int32 Index : Indices)
+        for (int32 Index : InIndices)
+        {
+            Indices.Emplace(Index);
+        }
+
+        Sort();
+    }
+
+    void RemoveIndex(int32 InIndex)
+    {
+        Indices.Remove(InIndex);
+
+        Sort();
+    }
+
+    void RemoveIndices(const TArray<int32>& InIndices)
+    {
+        for (int32 Index : InIndices)
         {
             Indices.Remove(Index);
         }
@@ -45,6 +62,9 @@ class UGFINVENTORYSYSTEM_API UUGFInventoryComponent : public UActorComponent, pu
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
+    int32 MaxInventorySlotNum = 4;
+
     // TMap<Index, Item>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
     TMap<int32, FUGFItem> InventorySlots;
