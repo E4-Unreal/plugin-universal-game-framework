@@ -15,6 +15,8 @@ struct FUGFInventoryIndices
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSet<int32> Indices;
 
+    bool IsEmpty() const { return Indices.IsEmpty(); }
+
     void AddIndex(int32 InIndex)
     {
         Indices.Emplace(InIndex);
@@ -96,6 +98,12 @@ protected:
     UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
 
+    UFUNCTION(BlueprintCallable, Category = "AddItem")
+    virtual void AddItemInventoryIndices(UUGFItemDefinition* ItemDefinition, TArray<int32> InventoryIndicesToAdd);
+
     UFUNCTION(BlueprintCallable, Category = "RemoveItem")
     virtual void RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove);
+
+    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
+    virtual void RemoveItemInventoryIndices(UUGFItemDefinition* ItemDefinition, TArray<int32> InventoryIndicesToRemove);
 };

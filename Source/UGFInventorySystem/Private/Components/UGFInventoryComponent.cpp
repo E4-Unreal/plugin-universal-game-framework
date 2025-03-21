@@ -86,11 +86,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     AddItemQuantity(Item.ItemDefinition, QuantityToAdd);
 
     // ItemInventoryIndicesMap 업데이트
-    if (!InventoryIndicesToAdd.IsEmpty())
-    {
-        if (!ItemInventoryIndicesMap.Contains(Item.ItemDefinition)) ItemInventoryIndicesMap.Emplace(Item.ItemDefinition, FUGFInventoryIndices());
-        ItemInventoryIndicesMap[Item.ItemDefinition].AddIndices(InventoryIndicesToAdd);
-    }
+    AddItemInventoryIndices(Item.ItemDefinition, InventoryIndicesToAdd);
 }
 
 void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
@@ -146,7 +142,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
 
     // ItemInventoryIndicesMap 업데이트
-    ItemInventoryIndicesMap[Item.ItemDefinition].RemoveIndices(InventoryIndicesToRemove);
+    RemoveItemInventoryIndices(Item.ItemDefinition, InventoryIndicesToRemove);
 }
 
 void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex)
@@ -188,6 +184,15 @@ void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition,
     LOG(Log, TEXT("Item added to inventory.\nItem: %s\nItemQuantity: %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToAdd)
 }
 
+void UUGFInventoryComponent::AddItemInventoryIndices(UUGFItemDefinition* ItemDefinition,
+    TArray<int32> InventoryIndicesToAdd)
+{
+    if (InventoryIndicesToAdd.IsEmpty()) return;
+
+    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) ItemInventoryIndicesMap.Emplace(ItemDefinition, FUGFInventoryIndices());
+    ItemInventoryIndicesMap[ItemDefinition].AddIndices(InventoryIndicesToAdd);
+}
+
 void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove)
 {
     int32 OldItemQuantity = GetItemQuantity(ItemDefinition);
@@ -201,4 +206,16 @@ void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefiniti
     }
     int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
     LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nItemQuantity: %d = %d - %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
+}
+
+void UUGFInventoryComponent::RemoveItemInventoryIndices(UUGFItemDefinition* ItemDefinition,
+    TArray<int32> InventoryIndicesToRemove)
+{
+    if (InventoryIndicesToRemove.IsEmpty()) return;
+
+    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
+    {
+        ItemInventoryIndicesMap[ItemDefinition].RemoveIndices(InventoryIndicesToRemove);
+        if (ItemInventoryIndicesMap[ItemDefinition].IsEmpty()) ItemInventoryIndicesMap.Remove(ItemDefinition);
+    }
 }
