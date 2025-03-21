@@ -10,7 +10,7 @@ const T* UUGFItemDefinition::FindItemConfigByClass(TSubclassOf<T> ItemConfigClas
 {
     if (ItemConfigClass == nullptr || !ItemConfigClass->IsChildOf(UUGFItemConfig::StaticClass())) return nullptr;
 
-    for (auto ItemConfig : ItemConfigs)
+    for (auto ItemConfig : Data.ItemConfigs)
     {
         if (ItemConfig && ItemConfig->IsA(ItemConfigClass))
         {

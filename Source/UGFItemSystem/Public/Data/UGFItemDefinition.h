@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Types/UGFItemDefinitionData.h"
 #include "UGFItemDefinition.generated.h"
 
 class UUGFItemConfig;
@@ -16,21 +17,18 @@ class UGFITEMSYSTEM_API UUGFItemDefinition : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetDisplayName, Category = "Config")
-    FText DisplayName;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
-    TArray<TObjectPtr<UUGFItemConfig>> ItemConfigs;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetMaxStack, meta = (ClampMin = 1))
-    int32 MaxStack = 1;
+    UPROPERTY(EditDefaultsOnly)
+    FUGFItemDefinitionData Data;
 
 public:
-    UFUNCTION(BlueprintGetter)
-    const FText& GetDisplayName() const { return DisplayName; }
+    UFUNCTION(BlueprintCallable)
+    void SetData(const FUGFItemDefinitionData& InData) { Data = InData; }
 
-    UFUNCTION(BlueprintGetter)
-    int32 GetMaxStack() const { return MaxStack; }
+    UFUNCTION(BlueprintPure)
+    const FORCEINLINE FText& GetDisplayName() const { return Data.DisplayName; }
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE int32 GetMaxStack() const { return Data.MaxStack; }
 
     template<typename T>
     const T* FindItemConfigByClass(TSubclassOf<T> ItemConfigClass) const;
