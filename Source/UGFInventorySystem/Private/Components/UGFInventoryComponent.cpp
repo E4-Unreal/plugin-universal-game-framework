@@ -140,8 +140,8 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
         }
         else
         {
-            InventorySlot.Amount = 0;
             Underflow -= InventorySlot.Amount;
+            InventorySlot.Amount = 0;
             InventoryIndicesToRemove.Emplace(InventoryIndex);
         }
     }
