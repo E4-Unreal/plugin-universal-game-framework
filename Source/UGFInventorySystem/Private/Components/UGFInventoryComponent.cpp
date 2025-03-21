@@ -211,11 +211,10 @@ void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefiniti
 
 void UUGFInventoryComponent::AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
 {
-    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
-    {
-        ItemInventoryIndicesMap[ItemDefinition].AddIndex(Index);
-        LOG(Log, TEXT("InventoryIndex added: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
-    }
+    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) ItemInventoryIndicesMap.Emplace(ItemDefinition, FUGFInventoryIndices());
+
+    ItemInventoryIndicesMap[ItemDefinition].AddIndex(Index);
+    LOG(Log, TEXT("InventoryIndex added: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
 }
 
 void UUGFInventoryComponent::RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
