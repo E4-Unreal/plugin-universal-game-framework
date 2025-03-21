@@ -96,6 +96,12 @@ protected:
     FORCEINLINE int32 GetItemQuantity(UUGFItemDefinition* ItemDefinition) const { return ItemQuantityMap.Contains(ItemDefinition) ? ItemQuantityMap[ItemDefinition] : 0; }
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
+    virtual void FillInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
+
+    UFUNCTION(BlueprintCallable, Category = "AddItem")
+    virtual TArray<int32> CreateInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
+
+    UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")

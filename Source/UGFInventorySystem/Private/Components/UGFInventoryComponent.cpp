@@ -14,72 +14,11 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     // Item 유효성 검사
     if (!IsValidItem(Item)) return;
 
-    // 변수 선언 및 초기화
-    int32 MaxStack = Item.ItemDefinition->GetMaxStack();
-
     // 기존 인벤토리 슬롯 채워넣기
-    if (ItemInventoryIndicesMap.Contains(Item.ItemDefinition))
-    {
-        const auto& InventoryIndices = ItemInventoryIndicesMap[Item.ItemDefinition].Indices;
-        for (int32 InventoryIndex : InventoryIndices)
-        {
-            auto& InventorySlot = InventorySlots[InventoryIndex];
-            if (InventorySlot.IsFull()) continue;
-
-            int32 Capacity = MaxStack - InventorySlot.Amount;
-            if (Capacity > Overflow)
-            {
-                InventorySlot.Amount += Overflow;
-                Overflow = 0;
-                break;
-            }
-            else if (Capacity == Overflow)
-            {
-                InventorySlot.Amount = MaxStack;
-                Overflow = 0;
-                break;
-            }
-            else
-            {
-                InventorySlot.Amount = MaxStack;
-                Overflow -= Capacity;
-            }
-        }
-    }
+    FillInventorySlots(Item.ItemDefinition, Overflow);
 
     // 새로운 인벤토리 슬롯 생성
-    int32 NewInventorySlotIndex = 0;
-    TArray<int32> InventoryIndicesToAdd;
-    while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
-    {
-        if (!InventorySlots.Contains(NewInventorySlotIndex))
-        {
-            FUGFItem NewInventorySlotItem;
-            NewInventorySlotItem.ItemDefinition = Item.ItemDefinition;
-
-            if (MaxStack > Overflow)
-            {
-                NewInventorySlotItem.Amount = Overflow;
-                Overflow = 0;
-            }
-            else if (MaxStack == Overflow)
-            {
-                NewInventorySlotItem.Amount = MaxStack;
-                Overflow = 0;
-            }
-            else
-            {
-                NewInventorySlotItem.Amount = MaxStack;
-                Overflow -= MaxStack;
-            }
-
-            InventorySlots.Emplace(NewInventorySlotIndex, NewInventorySlotItem);
-            InventoryIndicesToAdd.Emplace(NewInventorySlotIndex);
-        }
-        ++NewInventorySlotIndex;
-    }
-
-    InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; });
+    TArray<int32> InventoryIndicesToAdd = CreateInventorySlots(Item.ItemDefinition, Overflow);
 
     // ItemQuantityMap 업데이트
     int32 QuantityToAdd = Item.Amount - Overflow;
@@ -167,6 +106,84 @@ bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item) const
     }
 
     return true;
+}
+
+void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow)
+{
+    if (ItemDefinition == nullptr) return;
+
+    int32 MaxStack = ItemDefinition->GetMaxStack();
+    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
+    {
+        const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
+        for (int32 InventoryIndex : InventoryIndices)
+        {
+            auto& InventorySlot = InventorySlots[InventoryIndex];
+            if (InventorySlot.IsFull()) continue;
+
+            int32 OldItemQuantity = InventorySlot.Amount;
+            int32 Capacity = MaxStack - InventorySlot.Amount;
+            if (Capacity > Overflow)
+            {
+                InventorySlot.Amount += Overflow;
+                Overflow = 0;
+            }
+            else if (Capacity == Overflow)
+            {
+                InventorySlot.Amount = MaxStack;
+                Overflow = 0;
+            }
+            else
+            {
+                InventorySlot.Amount = MaxStack;
+                Overflow -= Capacity;
+            }
+            int32 NewItemQuantity = InventorySlot.Amount;
+
+            LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), InventoryIndex, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
+
+            if (Overflow <= 0) break;
+        }
+    }
+}
+
+TArray<int32> UUGFInventoryComponent::CreateInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow)
+{
+    int32 MaxStack = ItemDefinition->GetMaxStack();
+    int32 NewInventorySlotIndex = 0;
+    TArray<int32> CreatedInventorySlotIndices;
+    while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
+    {
+        if (!InventorySlots.Contains(NewInventorySlotIndex))
+        {
+            FUGFItem NewInventorySlotItem;
+            NewInventorySlotItem.ItemDefinition = ItemDefinition;
+
+            if (MaxStack > Overflow)
+            {
+                NewInventorySlotItem.Amount = Overflow;
+                Overflow = 0;
+            }
+            else if (MaxStack == Overflow)
+            {
+                NewInventorySlotItem.Amount = MaxStack;
+                Overflow = 0;
+            }
+            else
+            {
+                NewInventorySlotItem.Amount = MaxStack;
+                Overflow -= MaxStack;
+            }
+
+            InventorySlots.Emplace(NewInventorySlotIndex, NewInventorySlotItem);
+            CreatedInventorySlotIndices.Emplace(NewInventorySlotIndex);
+        }
+        ++NewInventorySlotIndex;
+    }
+
+    InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; });
+
+    return CreatedInventorySlotIndices;
 }
 
 void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd)
