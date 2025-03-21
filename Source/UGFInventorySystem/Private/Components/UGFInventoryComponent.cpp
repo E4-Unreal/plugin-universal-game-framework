@@ -8,6 +8,8 @@
 
 void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32& Overflow)
 {
+    check(Item.ItemDefinition != nullptr)
+
     // 초기화
     Overflow = Item.Amount;
 
@@ -27,10 +29,14 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
         AddItemQuantity(Item.ItemDefinition, QuantityToAdd);
         SortInventorySlots();
     }
+
+    LOG(Log, TEXT("Try add item(%s) > Quantity: %d, Overflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Amount, Overflow)
 }
 
 void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
 {
+    check(Item.ItemDefinition != nullptr)
+
     // 초기화
     Underflow = Item.Amount;
 
@@ -47,6 +53,8 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
         RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
         SortInventorySlots();
     }
+
+    LOG(Log, TEXT("Try remove item(%s) > Quantity: %d, Underflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Amount, Underflow)
 }
 
 void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex)
