@@ -250,3 +250,19 @@ void UUGFInventoryComponent::RemoveItemInventoryIndices(UUGFItemDefinition* Item
         if (ItemInventoryIndicesMap[ItemDefinition].IsEmpty()) ItemInventoryIndicesMap.Remove(ItemDefinition);
     }
 }
+
+void UUGFInventoryComponent::AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
+{
+    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
+    {
+        ItemInventoryIndicesMap[ItemDefinition].AddIndex(Index);
+    }
+}
+
+void UUGFInventoryComponent::RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
+{
+    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
+    {
+        ItemInventoryIndicesMap[ItemDefinition].RemoveIndex(Index);
+    }
+}

@@ -115,4 +115,10 @@ protected:
 
     UFUNCTION(BlueprintCallable, Category = "RemoveItem")
     virtual void RemoveItemInventoryIndices(UUGFItemDefinition* ItemDefinition, TArray<int32> InventoryIndicesToRemove);
+
+    UFUNCTION(BlueprintCallable, Category = "AddItem")
+    virtual void AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
+
+    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
+    virtual void RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
 };
