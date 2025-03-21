@@ -92,4 +92,10 @@ protected:
     // 인벤토리에 보유 중인 특정 아이템의 개수
     UFUNCTION(BlueprintPure)
     FORCEINLINE int32 GetItemQuantity(UUGFItemDefinition* ItemDefinition) const { return ItemQuantityMap.Contains(ItemDefinition) ? ItemQuantityMap[ItemDefinition] : 0; }
+
+    UFUNCTION(BlueprintCallable, Category = "AddItem")
+    virtual void AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
+
+    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
+    virtual void RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove);
 };

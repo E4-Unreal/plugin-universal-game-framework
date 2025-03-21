@@ -82,18 +82,8 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; });
 
     // ItemQuantityMap 업데이트
-    int32 OldItemQuantity = GetItemQuantity(Item.ItemDefinition);
-    int32 AddedItemQuantity = Item.Amount - Overflow;
-    if (ItemQuantityMap.Contains(Item.ItemDefinition))
-    {
-        ItemQuantityMap[Item.ItemDefinition] += AddedItemQuantity;
-    }
-    else
-    {
-        ItemQuantityMap.Emplace(Item.ItemDefinition, AddedItemQuantity);
-    }
-    int32 NewItemQuantity = GetItemQuantity(Item.ItemDefinition);
-    LOG(Log, TEXT("Item added to inventory.\nItem: %s\nItemQuantity: %d = %d + %d"), *Item.ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, AddedItemQuantity)
+    int32 QuantityToAdd = Item.Amount - Overflow;
+    AddItemQuantity(Item.ItemDefinition, QuantityToAdd);
 
     // ItemInventoryIndicesMap 업데이트
     if (!InventoryIndicesToAdd.IsEmpty())
@@ -152,18 +142,8 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     }
 
     // ItemQuantityMap 업데이트
-    int32 OldItemQuantity = GetItemQuantity(Item.ItemDefinition);
-    int32 RemovedItemQuantity = Item.Amount - Underflow;
-    if (OldItemQuantity <= RemovedItemQuantity)
-    {
-        ItemQuantityMap.Remove(Item.ItemDefinition);
-    }
-    else
-    {
-        ItemQuantityMap[Item.ItemDefinition] -= RemovedItemQuantity;
-    }
-    int32 NewItemQuantity = GetItemQuantity(Item.ItemDefinition);
-    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nItemQuantity: %d = %d - %d"), *Item.ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, RemovedItemQuantity)
+    int32 QuantityToRemove = Item.Amount - Underflow;
+    RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
 
     // ItemInventoryIndicesMap 업데이트
     ItemInventoryIndicesMap[Item.ItemDefinition].RemoveIndices(InventoryIndicesToRemove);
@@ -191,4 +171,34 @@ bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item) const
     }
 
     return true;
+}
+
+void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd)
+{
+    int32 OldItemQuantity = GetItemQuantity(ItemDefinition);
+    if (ItemQuantityMap.Contains(ItemDefinition))
+    {
+        ItemQuantityMap[ItemDefinition] += QuantityToAdd;
+    }
+    else
+    {
+        ItemQuantityMap.Emplace(ItemDefinition, QuantityToAdd);
+    }
+    int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
+    LOG(Log, TEXT("Item added to inventory.\nItem: %s\nItemQuantity: %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToAdd)
+}
+
+void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove)
+{
+    int32 OldItemQuantity = GetItemQuantity(ItemDefinition);
+    if (OldItemQuantity <= QuantityToRemove)
+    {
+        ItemQuantityMap.Remove(ItemDefinition);
+    }
+    else
+    {
+        ItemQuantityMap[ItemDefinition] -= QuantityToRemove;
+    }
+    int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
+    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nItemQuantity: %d = %d - %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
 }
