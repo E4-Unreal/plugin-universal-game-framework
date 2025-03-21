@@ -223,6 +223,8 @@ void UUGFInventoryComponent::RemoveInventoryIndex(UUGFItemDefinition* ItemDefini
     {
         ItemInventoryIndicesMap[ItemDefinition].RemoveIndex(Index);
         LOG(Log, TEXT("InventoryIndex removed: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
+
+        if (ItemInventoryIndicesMap[ItemDefinition].IsEmpty()) ItemInventoryIndicesMap.Remove(ItemDefinition);
     }
 }
 
