@@ -18,14 +18,15 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     FillInventorySlots(Item.ItemDefinition, Overflow);
 
     // 새로운 인벤토리 슬롯 생성
-    TArray<int32> InventoryIndicesToAdd = AddInventorySlots(Item.ItemDefinition, Overflow);
+    AddInventorySlots(Item.ItemDefinition, Overflow);
 
     // ItemQuantityMap 업데이트
     int32 QuantityToAdd = Item.Amount - Overflow;
-    AddItemQuantity(Item.ItemDefinition, QuantityToAdd);
-
-    // ItemInventoryIndicesMap 업데이트
-    AddItemInventoryIndices(Item.ItemDefinition, InventoryIndicesToAdd);
+    if (QuantityToAdd > 0)
+    {
+        AddItemQuantity(Item.ItemDefinition, QuantityToAdd);
+        SortInventorySlots();
+    }
 }
 
 void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
@@ -37,14 +38,15 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     if (!IsValidItem(Item)) return;
 
     // 기존 인벤토리 슬롯 비우기
-    TArray<int32> InventoryIndicesToRemove = RemoveInventorySlots(Item.ItemDefinition, Underflow);
+    RemoveInventorySlots(Item.ItemDefinition, Underflow);
 
     // ItemQuantityMap 업데이트
     int32 QuantityToRemove = Item.Amount - Underflow;
-    RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
-
-    // ItemInventoryIndicesMap 업데이트
-    RemoveItemInventoryIndices(Item.ItemDefinition, InventoryIndicesToRemove);
+    if (QuantityToRemove > 0)
+    {
+        RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
+        SortInventorySlots();
+    }
 }
 
 void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex)
@@ -84,71 +86,84 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
             auto& InventorySlot = InventorySlots[InventoryIndex];
             if (InventorySlot.IsFull()) continue;
 
-            int32 OldItemQuantity = InventorySlot.Amount;
             int32 Capacity = MaxStack - InventorySlot.Amount;
             if (Capacity > Overflow)
             {
-                InventorySlot.Amount += Overflow;
+                SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Amount + Overflow);
                 Overflow = 0;
             }
             else if (Capacity == Overflow)
             {
-                InventorySlot.Amount = MaxStack;
+                SetInventoryIndex(InventoryIndex, ItemDefinition, MaxStack);
                 Overflow = 0;
             }
             else
             {
-                InventorySlot.Amount = MaxStack;
+                SetInventoryIndex(InventoryIndex, ItemDefinition, MaxStack);
                 Overflow -= Capacity;
             }
-            int32 NewItemQuantity = InventorySlot.Amount;
-
-            LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), InventoryIndex, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
 
             if (Overflow <= 0) break;
         }
     }
 }
 
-TArray<int32> UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow)
+void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow)
 {
     check(ItemDefinition != nullptr);
 
     int32 MaxStack = ItemDefinition->GetMaxStack();
     int32 NewInventorySlotIndex = 0;
-    TArray<int32> InventoryIndicesToAdd;
     while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
     {
         if (!InventorySlots.Contains(NewInventorySlotIndex))
         {
-            FUGFItem NewInventorySlotItem;
-            NewInventorySlotItem.ItemDefinition = ItemDefinition;
-
             if (MaxStack > Overflow)
             {
-                NewInventorySlotItem.Amount = Overflow;
+                SetInventoryIndex(NewInventorySlotIndex, ItemDefinition, Overflow);
                 Overflow = 0;
             }
             else if (MaxStack == Overflow)
             {
-                NewInventorySlotItem.Amount = MaxStack;
+                SetInventoryIndex(NewInventorySlotIndex, ItemDefinition, MaxStack);
                 Overflow = 0;
             }
             else
             {
-                NewInventorySlotItem.Amount = MaxStack;
+                SetInventoryIndex(NewInventorySlotIndex, ItemDefinition, MaxStack);
                 Overflow -= MaxStack;
             }
-
-            InventorySlots.Emplace(NewInventorySlotIndex, NewInventorySlotItem);
-            InventoryIndicesToAdd.Emplace(NewInventorySlotIndex);
         }
         ++NewInventorySlotIndex;
     }
+}
 
-    InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; });
+void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow)
+{
+    check(ItemDefinition != nullptr);
 
-    return InventoryIndicesToAdd;
+    const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
+    for (int32 InventoryIndex : InventoryIndices)
+    {
+        auto& InventorySlot = InventorySlots[InventoryIndex];
+        if (InventorySlot.Amount > Underflow)
+        {
+            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Amount - Underflow);
+            Underflow = 0;
+        }
+        else if (InventorySlot.Amount == Underflow)
+        {
+            SetInventoryIndex(InventoryIndex, ItemDefinition, 0);
+            Underflow = 0;
+        }
+        else
+        {
+            Underflow -= InventorySlot.Amount;
+            SetInventoryIndex(InventoryIndex, ItemDefinition, 0);
+        }
+
+        if (Underflow == 0) break;
+    }
 }
 
 void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd)
@@ -165,59 +180,7 @@ void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition,
         ItemQuantityMap.Emplace(ItemDefinition, QuantityToAdd);
     }
     int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
-    LOG(Log, TEXT("Item added to inventory.\nItem: %s\nItemQuantity: %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToAdd)
-}
-
-void UUGFInventoryComponent::AddItemInventoryIndices(UUGFItemDefinition* ItemDefinition,
-    TArray<int32> InventoryIndicesToAdd)
-{
-    check(ItemDefinition != nullptr);
-
-    if (InventoryIndicesToAdd.IsEmpty()) return;
-
-    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) ItemInventoryIndicesMap.Emplace(ItemDefinition, FUGFInventoryIndices());
-    ItemInventoryIndicesMap[ItemDefinition].AddIndices(InventoryIndicesToAdd);
-}
-
-TArray<int32> UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow)
-{
-    check(ItemDefinition != nullptr);
-
-    const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
-    TArray<int32> InventoryIndicesToRemove;
-    InventoryIndicesToRemove.Reserve(InventoryIndices.Num());
-    for (int32 InventoryIndex : InventoryIndices)
-    {
-        auto& InventorySlot = InventorySlots[InventoryIndex];
-        int32 OldItemQuantity = InventorySlot.Amount;
-        if (InventorySlot.Amount > Underflow)
-        {
-            InventorySlot.Amount -= Underflow;
-            Underflow = 0;
-        }
-        else if (InventorySlot.Amount == Underflow)
-        {
-            InventorySlot.Amount = 0;
-            Underflow = 0;
-        }
-        else
-        {
-            Underflow -= InventorySlot.Amount;
-            InventorySlot.Amount = 0;
-        }
-        int32 NewItemQuantity = InventorySlot.Amount;
-        LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), InventoryIndex, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
-
-        if (InventorySlot.Amount == 0)
-        {
-            InventorySlots.Remove(InventoryIndex);
-            InventoryIndicesToRemove.Emplace(InventoryIndex);
-        }
-
-        if (Underflow == 0) break;
-    }
-
-    return InventoryIndicesToRemove;
+    LOG(Log, TEXT("Item added to inventory: %s > %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToAdd)
 }
 
 void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove)
@@ -234,21 +197,7 @@ void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefiniti
         ItemQuantityMap[ItemDefinition] -= QuantityToRemove;
     }
     int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
-    LOG(Log, TEXT("Item removed from inventory.\nItem: %s\nItemQuantity: %d = %d - %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
-}
-
-void UUGFInventoryComponent::RemoveItemInventoryIndices(UUGFItemDefinition* ItemDefinition,
-    TArray<int32> InventoryIndicesToRemove)
-{
-    check(ItemDefinition != nullptr);
-
-    if (InventoryIndicesToRemove.IsEmpty()) return;
-
-    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
-    {
-        ItemInventoryIndicesMap[ItemDefinition].RemoveIndices(InventoryIndicesToRemove);
-        if (ItemInventoryIndicesMap[ItemDefinition].IsEmpty()) ItemInventoryIndicesMap.Remove(ItemDefinition);
-    }
+    LOG(Log, TEXT("Item removed from inventory: %s > %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
 }
 
 void UUGFInventoryComponent::AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
@@ -256,6 +205,7 @@ void UUGFInventoryComponent::AddInventoryIndex(UUGFItemDefinition* ItemDefinitio
     if (ItemInventoryIndicesMap.Contains(ItemDefinition))
     {
         ItemInventoryIndicesMap[ItemDefinition].AddIndex(Index);
+        LOG(Log, TEXT("InventoryIndex added: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
     }
 }
 
@@ -264,5 +214,45 @@ void UUGFInventoryComponent::RemoveInventoryIndex(UUGFItemDefinition* ItemDefini
     if (ItemInventoryIndicesMap.Contains(ItemDefinition))
     {
         ItemInventoryIndicesMap[ItemDefinition].RemoveIndex(Index);
+        LOG(Log, TEXT("InventoryIndex removed: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
     }
+}
+
+void UUGFInventoryComponent::SetInventoryIndex(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
+{
+    check(ItemQuantity >= 0)
+
+    int32 OldItemQuantity = 0;
+    int32 NewItemQuantity = ItemQuantity;
+    if (InventorySlots.Contains(Index))
+    {
+        check(InventorySlots[Index].ItemDefinition == ItemDefinition)
+
+        // 기존 아이템 수량 저장
+        OldItemQuantity = InventorySlots[Index].Amount;
+
+        // 아이템 수량 변경 혹은 인벤토리 슬롯 비우기
+        if (NewItemQuantity <= 0)
+        {
+            RemoveInventoryIndex(ItemDefinition, Index);
+            InventorySlots.Remove(Index);
+        }
+        else
+        {
+            InventorySlots[Index].Amount = NewItemQuantity;
+        }
+    }
+    else if (ItemQuantity > 0)
+    {
+        // 빈 인벤토리 슬롯에 아이템 추가
+        FUGFItem NewItem
+        {
+            ItemDefinition,
+            NewItemQuantity
+        };
+        InventorySlots.Emplace(Index, NewItem);
+        AddInventoryIndex(ItemDefinition, Index);
+    }
+
+    LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), Index, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
 }

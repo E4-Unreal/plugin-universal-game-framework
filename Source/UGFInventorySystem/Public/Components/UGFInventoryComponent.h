@@ -99,26 +99,26 @@ protected:
     virtual void FillInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
-    virtual TArray<int32> AddInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
+    virtual void AddInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
+
+    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
+    virtual void RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
 
-    UFUNCTION(BlueprintCallable, Category = "AddItem")
-    virtual void AddItemInventoryIndices(UUGFItemDefinition* ItemDefinition, TArray<int32> InventoryIndicesToAdd);
-
-    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
-    virtual TArray<int32> RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow);
-
     UFUNCTION(BlueprintCallable, Category = "RemoveItem")
     virtual void RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove);
-
-    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
-    virtual void RemoveItemInventoryIndices(UUGFItemDefinition* ItemDefinition, TArray<int32> InventoryIndicesToRemove);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
 
     UFUNCTION(BlueprintCallable, Category = "RemoveItem")
     virtual void RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetInventoryIndex(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SortInventorySlots() { InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; }); }
 };
