@@ -206,7 +206,7 @@ void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefiniti
         ItemQuantityMap[ItemDefinition] -= QuantityToRemove;
     }
     int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
-    LOG(Log, TEXT("Item removed from inventory: %s > %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
+    LOG(Log, TEXT("Item removed from inventory: %s > %d = %d - %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
 }
 
 void UUGFInventoryComponent::AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
