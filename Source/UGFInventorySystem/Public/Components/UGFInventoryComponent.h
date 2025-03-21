@@ -99,13 +99,16 @@ protected:
     virtual void FillInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
-    virtual TArray<int32> CreateInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
+    virtual TArray<int32> AddInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void AddItemInventoryIndices(UUGFItemDefinition* ItemDefinition, TArray<int32> InventoryIndicesToAdd);
+
+    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
+    virtual TArray<int32> RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow);
 
     UFUNCTION(BlueprintCallable, Category = "RemoveItem")
     virtual void RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove);
