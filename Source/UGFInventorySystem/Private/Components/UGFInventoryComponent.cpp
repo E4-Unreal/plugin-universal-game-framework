@@ -151,7 +151,7 @@ void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefini
 
     if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
 
-    const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
+    TArray<int32> InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices.Array();
     for (int32 InventoryIndex : InventoryIndices)
     {
         auto& InventorySlot = InventorySlots[InventoryIndex];
