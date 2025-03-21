@@ -4,7 +4,6 @@
 #include "Components/UGFInventoryComponent.h"
 
 #include "Logging.h"
-#include "UGFItemSystemFunctionLibrary.h"
 #include "Data/UGFItemDefinition.h"
 
 void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32& Overflow)
@@ -62,13 +61,11 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
             {
                 NewInventorySlotItem.Amount = Overflow;
                 Overflow = 0;
-                break;
             }
             else if (MaxStack == Overflow)
             {
                 NewInventorySlotItem.Amount = MaxStack;
                 Overflow = 0;
-                break;
             }
             else
             {
@@ -155,7 +152,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     }
 
     // ItemQuantityMap 업데이트
-    int32 InventoryItemQuantity = ItemQuantityMap[Item.ItemDefinition];
+    int32 InventoryItemQuantity = ItemQuantityMap.Contains(Item.ItemDefinition) ? ItemQuantityMap[Item.ItemDefinition] : 0;
     int32 RemovedItemQuantity = Item.Amount - Underflow;
     if (InventoryItemQuantity <= RemovedItemQuantity)
     {
