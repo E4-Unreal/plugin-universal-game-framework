@@ -77,34 +77,33 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
 {
     check(ItemDefinition != nullptr);
 
+    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
+
     int32 MaxStack = ItemDefinition->GetMaxStack();
-    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
+    const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
+    for (int32 InventoryIndex : InventoryIndices)
     {
-        const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
-        for (int32 InventoryIndex : InventoryIndices)
+        auto& InventorySlot = InventorySlots[InventoryIndex];
+        if (InventorySlot.IsFull()) continue;
+
+        int32 Capacity = MaxStack - InventorySlot.Amount;
+        if (Capacity > Overflow)
         {
-            auto& InventorySlot = InventorySlots[InventoryIndex];
-            if (InventorySlot.IsFull()) continue;
-
-            int32 Capacity = MaxStack - InventorySlot.Amount;
-            if (Capacity > Overflow)
-            {
-                SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Amount + Overflow);
-                Overflow = 0;
-            }
-            else if (Capacity == Overflow)
-            {
-                SetInventoryIndex(InventoryIndex, ItemDefinition, MaxStack);
-                Overflow = 0;
-            }
-            else
-            {
-                SetInventoryIndex(InventoryIndex, ItemDefinition, MaxStack);
-                Overflow -= Capacity;
-            }
-
-            if (Overflow <= 0) break;
+            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Amount + Overflow);
+            Overflow = 0;
         }
+        else if (Capacity == Overflow)
+        {
+            SetInventoryIndex(InventoryIndex, ItemDefinition, MaxStack);
+            Overflow = 0;
+        }
+        else
+        {
+            SetInventoryIndex(InventoryIndex, ItemDefinition, MaxStack);
+            Overflow -= Capacity;
+        }
+
+        if (Overflow <= 0) break;
     }
 }
 
@@ -141,6 +140,8 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
 void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow)
 {
     check(ItemDefinition != nullptr);
+
+    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
 
     const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
     for (int32 InventoryIndex : InventoryIndices)
