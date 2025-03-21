@@ -82,10 +82,14 @@ public:
 
     virtual void AddItem_Implementation(const FUGFItem& Item, int32& Overflow) override;
     virtual void RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow) override;
-    virtual bool HasItem_Implementation(const FUGFItem& Item) const override;
+    virtual bool HasItem_Implementation(const FUGFItem& Item) const override { return GetItemQuantity(Item.ItemDefinition) >= Item.Amount; }
     virtual void SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex) override;
 
 protected:
     UFUNCTION(BlueprintPure)
     bool IsValidItem(const FUGFItem& Item) const;
+
+    // 인벤토리에 보유 중인 특정 아이템의 개수
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE int32 GetItemQuantity(UUGFItemDefinition* ItemDefinition) const { return ItemQuantityMap.Contains(ItemDefinition) ? ItemQuantityMap[ItemDefinition] : 0; }
 };
