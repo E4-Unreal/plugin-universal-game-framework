@@ -5,18 +5,12 @@
 
 #include "Data/UGFItemConfig.h"
 
-template <typename T>
-const T* UUGFItemDefinition::FindItemConfigByClass(TSubclassOf<T> ItemConfigClass) const
+bool UUGFItemDefinition::IsValid() const
 {
-    if (ItemConfigClass == nullptr || !ItemConfigClass->IsChildOf(UUGFItemConfig::StaticClass())) return nullptr;
-
-    for (auto ItemConfig : Data.ItemConfigs)
+    for (const auto& ItemConfig : Data.ItemConfigs)
     {
-        if (ItemConfig && ItemConfig->IsA(ItemConfigClass))
-        {
-            return Cast<T>(ItemConfig);
-        }
+        if (!ItemConfig->IsValid()) return false;
     }
 
-    return nullptr;
+    return true;
 }

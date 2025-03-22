@@ -25,5 +25,4 @@ public:
     int32 Quantity = 1;
 
     bool IsValid() const { return ItemDefinition != nullptr && Quantity > 0; }
-    bool IsFull() const { return IsValid() ? Quantity >= ItemDefinition->GetMaxStack() : false; }
 };

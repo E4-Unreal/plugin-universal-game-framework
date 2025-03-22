@@ -4,6 +4,7 @@
 #include "Components/UGFInventoryComponent.h"
 
 #include "Logging.h"
+#include "Data/UGFInventoryItemConfig.h"
 #include "Data/UGFItemDefinition.h"
 
 void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32& Overflow)
@@ -87,12 +88,15 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
 
     if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
 
-    int32 MaxStack = ItemDefinition->GetMaxStack();
+    const auto& InventoryItemConfig = ItemDefinition->GetItemConfigByClass(TSubclassOf<UUGFInventoryItemConfig>(UUGFInventoryItemConfig::StaticClass()));
+    if (InventoryItemConfig == nullptr) return;
+
+    int32 MaxStack = InventoryItemConfig->GetMaxStack();
     const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
     for (int32 InventoryIndex : InventoryIndices)
     {
         auto& InventorySlot = InventorySlots[InventoryIndex];
-        if (InventorySlot.IsFull()) continue;
+        if (InventorySlot.Quantity >= MaxStack) continue;
 
         int32 Capacity = MaxStack - InventorySlot.Quantity;
         if (Capacity > Overflow)
@@ -119,7 +123,10 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
 {
     check(ItemDefinition != nullptr);
 
-    int32 MaxStack = ItemDefinition->GetMaxStack();
+    const auto& InventoryItemConfig = ItemDefinition->GetItemConfigByClass(TSubclassOf<UUGFInventoryItemConfig>(UUGFInventoryItemConfig::StaticClass()));
+    if (InventoryItemConfig == nullptr) return;
+
+    int32 MaxStack = InventoryItemConfig->GetMaxStack();
     int32 NewInventorySlotIndex = 0;
     while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
     {

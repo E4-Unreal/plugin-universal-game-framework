@@ -24,7 +24,4 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<TObjectPtr<UUGFItemConfig>> ItemConfigs;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
-    int32 MaxStack = 1;
 };
