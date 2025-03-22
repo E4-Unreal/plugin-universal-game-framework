@@ -15,6 +15,8 @@ struct FUGInventoryItemConfigData
     int32 MaxStack = 1;
 };
 
+class UUGFItemDefinition;
+
 /**
  * ItemConfig For UGFInventoryComponent
  */
@@ -28,5 +30,8 @@ class UGFINVENTORYSYSTEM_API UUGFInventoryItemConfig : public UUGFItemConfig
 
 public:
     UFUNCTION(BlueprintPure)
-    FORCEINLINE int32 GetMaxStack() const { return Data.MaxStack; }
+    static const UUGFInventoryItemConfig* GetFromItemDefinition(const UUGFItemDefinition* ItemDefinition);
+
+    UFUNCTION(BlueprintPure)
+    const FORCEINLINE FUGInventoryItemConfigData& GetData() const { return Data; }
 };

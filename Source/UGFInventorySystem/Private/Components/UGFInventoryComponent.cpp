@@ -88,10 +88,12 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
 
     if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
 
-    const auto& InventoryItemConfig = ItemDefinition->GetItemConfigByClass(TSubclassOf<UUGFInventoryItemConfig>(UUGFInventoryItemConfig::StaticClass()));
+    const auto& InventoryItemConfig = UUGFInventoryItemConfig::GetFromItemDefinition(ItemDefinition);
     if (InventoryItemConfig == nullptr) return;
 
-    int32 MaxStack = InventoryItemConfig->GetMaxStack();
+    const auto& Data = InventoryItemConfig->GetData();
+
+    int32 MaxStack = Data.MaxStack;
     const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
     for (int32 InventoryIndex : InventoryIndices)
     {
@@ -123,10 +125,12 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
 {
     check(ItemDefinition != nullptr);
 
-    const auto& InventoryItemConfig = ItemDefinition->GetItemConfigByClass(TSubclassOf<UUGFInventoryItemConfig>(UUGFInventoryItemConfig::StaticClass()));
+    const auto& InventoryItemConfig = UUGFInventoryItemConfig::GetFromItemDefinition(ItemDefinition);
     if (InventoryItemConfig == nullptr) return;
 
-    int32 MaxStack = InventoryItemConfig->GetMaxStack();
+    const auto& Data = InventoryItemConfig->GetData();
+
+    int32 MaxStack = Data.MaxStack;
     int32 NewInventorySlotIndex = 0;
     while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
     {
