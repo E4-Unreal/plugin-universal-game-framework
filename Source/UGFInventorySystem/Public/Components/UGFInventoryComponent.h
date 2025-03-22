@@ -84,7 +84,7 @@ public:
 
     virtual void AddItem_Implementation(const FUGFItem& Item, int32& Overflow) override;
     virtual void RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow) override;
-    virtual bool HasItem_Implementation(const FUGFItem& Item) const override { return GetItemQuantity(Item.ItemDefinition) >= Item.Amount; }
+    virtual bool HasItem_Implementation(const FUGFItem& Item) const override { return GetItemQuantity(Item.ItemDefinition) >= Item.Quantity; }
     virtual void SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex) override;
 
 protected:

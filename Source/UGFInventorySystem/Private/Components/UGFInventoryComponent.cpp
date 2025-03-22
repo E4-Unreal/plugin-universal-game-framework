@@ -11,7 +11,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     check(Item.ItemDefinition != nullptr)
 
     // 초기화
-    Overflow = Item.Amount;
+    Overflow = Item.Quantity;
 
     // Item 유효성 검사
     if (!IsValidItem(Item)) return;
@@ -23,14 +23,14 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     AddInventorySlots(Item.ItemDefinition, Overflow);
 
     // ItemQuantityMap 업데이트
-    int32 QuantityToAdd = Item.Amount - Overflow;
+    int32 QuantityToAdd = Item.Quantity - Overflow;
     if (QuantityToAdd > 0)
     {
         AddItemQuantity(Item.ItemDefinition, QuantityToAdd);
         SortInventorySlots();
     }
 
-    LOG(Log, TEXT("Try add item(%s) > Quantity: %d, Overflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Amount, Overflow)
+    LOG(Log, TEXT("Try add item(%s) > Quantity: %d, Overflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Quantity, Overflow)
 }
 
 void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
@@ -38,7 +38,7 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     check(Item.ItemDefinition != nullptr)
 
     // 초기화
-    Underflow = Item.Amount;
+    Underflow = Item.Quantity;
 
     // Item 유효성 검사
     if (!IsValidItem(Item)) return;
@@ -47,14 +47,14 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     RemoveInventorySlots(Item.ItemDefinition, Underflow);
 
     // ItemQuantityMap 업데이트
-    int32 QuantityToRemove = Item.Amount - Underflow;
+    int32 QuantityToRemove = Item.Quantity - Underflow;
     if (QuantityToRemove > 0)
     {
         RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
         SortInventorySlots();
     }
 
-    LOG(Log, TEXT("Try remove item(%s) > Quantity: %d, Underflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Amount, Underflow)
+    LOG(Log, TEXT("Try remove item(%s) > Quantity: %d, Underflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Quantity, Underflow)
 }
 
 void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex)
@@ -72,9 +72,9 @@ bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item) const
     }
 
     // 입력 유효성 검사
-    if (Item.Amount <= 0)
+    if (Item.Quantity <= 0)
     {
-        LOG(Error, TEXT("Item Amount: %d"), Item.Amount);
+        LOG(Error, TEXT("Item Amount: %d"), Item.Quantity);
         return false;
     }
 
@@ -94,10 +94,10 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
         auto& InventorySlot = InventorySlots[InventoryIndex];
         if (InventorySlot.IsFull()) continue;
 
-        int32 Capacity = MaxStack - InventorySlot.Amount;
+        int32 Capacity = MaxStack - InventorySlot.Quantity;
         if (Capacity > Overflow)
         {
-            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Amount + Overflow);
+            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Quantity + Overflow);
             Overflow = 0;
         }
         else if (Capacity == Overflow)
@@ -155,19 +155,19 @@ void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefini
     for (int32 InventoryIndex : InventoryIndices)
     {
         auto& InventorySlot = InventorySlots[InventoryIndex];
-        if (InventorySlot.Amount > Underflow)
+        if (InventorySlot.Quantity > Underflow)
         {
-            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Amount - Underflow);
+            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Quantity - Underflow);
             Underflow = 0;
         }
-        else if (InventorySlot.Amount == Underflow)
+        else if (InventorySlot.Quantity == Underflow)
         {
             SetInventoryIndex(InventoryIndex, ItemDefinition, 0);
             Underflow = 0;
         }
         else
         {
-            Underflow -= InventorySlot.Amount;
+            Underflow -= InventorySlot.Quantity;
             SetInventoryIndex(InventoryIndex, ItemDefinition, 0);
         }
 
@@ -239,7 +239,7 @@ void UUGFInventoryComponent::SetInventoryIndex(int32 Index, UUGFItemDefinition* 
         check(InventorySlots[Index].ItemDefinition == ItemDefinition)
 
         // 기존 아이템 수량 저장
-        OldItemQuantity = InventorySlots[Index].Amount;
+        OldItemQuantity = InventorySlots[Index].Quantity;
 
         // 아이템 수량 변경 혹은 인벤토리 슬롯 비우기
         if (NewItemQuantity <= 0)
@@ -249,7 +249,7 @@ void UUGFInventoryComponent::SetInventoryIndex(int32 Index, UUGFItemDefinition* 
         }
         else
         {
-            InventorySlots[Index].Amount = NewItemQuantity;
+            InventorySlots[Index].Quantity = NewItemQuantity;
         }
     }
     else if (ItemQuantity > 0)

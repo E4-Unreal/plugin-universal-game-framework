@@ -25,6 +25,9 @@ public:
     void SetData(const FUGFItemDefinitionData& InData) { Data = InData; }
 
     UFUNCTION(BlueprintPure)
+    FORCEINLINE int32 GetID() const { return Data.ID; }
+
+    UFUNCTION(BlueprintPure)
     const FORCEINLINE FText& GetDisplayName() const { return Data.DisplayName; }
 
     UFUNCTION(BlueprintPure)

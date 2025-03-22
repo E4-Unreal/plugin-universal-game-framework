@@ -16,6 +16,9 @@ struct UGFITEMSYSTEM_API FUGFItemDefinitionData
     GENERATED_BODY()
 
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
+    int32 ID;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText DisplayName;
 
