@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class UniversalGameFramework : ModuleRules
+public class UGFItemSystem : ModuleRules
 {
-    public UniversalGameFramework(ReadOnlyTargetRules Target) : base(Target)
+    public UGFItemSystem(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -11,9 +11,7 @@ public class UniversalGameFramework : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "UGFCore",
-                "UGFItemSystem",
-                "UGFInventorySystem"
+                "UGFCore"
             }
         );
 

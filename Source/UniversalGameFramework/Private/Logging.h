@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "UniversalUtilities.h"
+#include "UniversalLogging.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogUniversalGameFramework, Log, All)
 
