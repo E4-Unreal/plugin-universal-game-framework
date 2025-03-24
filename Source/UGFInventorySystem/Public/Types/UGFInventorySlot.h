@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/UGFInventoryItemConfig.h"
 #include "UObject/Object.h"
 #include "UGFInventorySlot.generated.h"
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Interfaces/UGFInventoryInterface.h"
+#include "Types/UGFInventorySlot.h"
 #include "UGFInventoryComponent.generated.h"
 
 USTRUCT(Atomic, BlueprintType)
@@ -69,7 +70,7 @@ protected:
 
     // TMap<Index, Item>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
-    TMap<int32, FUGFItem> InventorySlots;
+    TMap<int32, FUGFInventorySlot> InventorySlots;
 
     // TMap<Item, Quantity>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
