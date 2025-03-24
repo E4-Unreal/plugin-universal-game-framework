@@ -148,25 +148,22 @@ void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefini
     TArray<int32> InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices.Array();
     for (int32 InventoryIndex : InventoryIndices)
     {
+        // 기존 인벤토리 슬롯에서 제거할 수량 계산 및 제거
         auto& InventorySlot = InventorySlots[InventoryIndex];
-        if (InventorySlot.Quantity > Underflow)
+        int32 QuantityToRemove = InventorySlot.Quantity > Underflow ? Underflow : InventorySlot.Quantity;
+        InventorySlot.Quantity -= QuantityToRemove;
+        Underflow -= QuantityToRemove;
+
+        if (InventorySlot.Quantity <= 0)
         {
-            SetInventoryIndex(InventoryIndex, ItemDefinition, InventorySlot.Quantity - Underflow);
-            Underflow = 0;
-        }
-        else if (InventorySlot.Quantity == Underflow)
-        {
-            SetInventoryIndex(InventoryIndex, ItemDefinition, 0);
-            Underflow = 0;
-        }
-        else
-        {
-            Underflow -= InventorySlot.Quantity;
-            SetInventoryIndex(InventoryIndex, ItemDefinition, 0);
+            InventorySlots.Remove(InventoryIndex);
+            RemoveInventoryIndex(ItemDefinition, InventoryIndex);
         }
 
         if (Underflow == 0) break;
     }
+
+    SortInventorySlots();
 }
 
 void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd)
