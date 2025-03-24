@@ -33,7 +33,7 @@ public:
     virtual bool IsValid() const;
 
     template<typename T>
-    const T* GetItemConfigByClass(TSubclassOf<T> ItemConfigClass) const
+    T* GetItemConfigByClass(TSubclassOf<T> ItemConfigClass) const
     {
         if (ItemConfigClass == nullptr || !ItemConfigClass->IsChildOf(UUGFItemConfig::StaticClass())) return nullptr;
 

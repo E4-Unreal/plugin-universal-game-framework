@@ -30,7 +30,7 @@ class UGFINVENTORYSYSTEM_API UUGFInventoryItemConfig : public UUGFItemConfig
 
 public:
     UFUNCTION(BlueprintPure)
-    static const UUGFInventoryItemConfig* GetFromItemDefinition(const UUGFItemDefinition* ItemDefinition);
+    static UUGFInventoryItemConfig* GetFromItemDefinition(const UUGFItemDefinition* ItemDefinition);
 
     UFUNCTION(BlueprintPure)
     const FORCEINLINE FUGInventoryItemConfigData& GetData() const { return Data; }
