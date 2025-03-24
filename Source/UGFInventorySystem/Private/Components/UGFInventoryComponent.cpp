@@ -94,10 +94,12 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
         int32 Capacity = MaxStack - InventorySlot.Quantity;
         if (Capacity <= 0) continue;
 
-        // 기존 인벤토리 슬롯 채우기
+        // 기존 인벤토리 슬롯에 추가할 수량 계산
         int32 QuantityToAdd = Capacity > Overflow ? Overflow : Capacity;
-        InventorySlot.Quantity += QuantityToAdd;
         Overflow -= QuantityToAdd;
+
+        // 기존 인벤토리 슬롯 채우기
+        SetInventorySlot(InventoryIndex, ItemDefinition, InventorySlot.Quantity + QuantityToAdd);
 
         if (Overflow <= 0) break;
     }
@@ -118,19 +120,11 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
         if (InventorySlots.Contains(NewInventorySlotIndex)) continue;
 
         // 새로운 인벤토리 슬롯에 추가할 수량 계산
-        int32 Quantity = MaxStack > Overflow ? Overflow : MaxStack;
-        Overflow -= Quantity;
+        int32 QuantityToAdd = MaxStack > Overflow ? Overflow : MaxStack;
+        Overflow -= QuantityToAdd;
 
         // 새로운 인벤토리 슬롯 생성 및 추가
-        FUGFInventorySlot NewInventorySlot;
-        NewInventorySlot.Index = NewInventorySlotIndex;
-        NewInventorySlot.ItemDefinition = ItemDefinition;
-        NewInventorySlot.InventoryItemConfig = InventoryItemConfig;
-        NewInventorySlot.Quantity = Quantity;
-
-        // 새로운 인벤토리 슬롯 추가
-        InventorySlots.Emplace(NewInventorySlot.Index, NewInventorySlot);
-        AddInventoryIndex(NewInventorySlot.ItemDefinition, NewInventorySlot.Index);
+        SetInventorySlot(NewInventorySlotIndex, ItemDefinition, QuantityToAdd);
 
         ++NewInventorySlotIndex;
     }
@@ -148,11 +142,13 @@ void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefini
     TArray<int32> InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices.Array();
     for (int32 InventoryIndex : InventoryIndices)
     {
-        // 기존 인벤토리 슬롯에서 제거할 수량 계산 및 제거
+        // 기존 인벤토리 슬롯에서 제거할 수량 계산
         auto& InventorySlot = InventorySlots[InventoryIndex];
         int32 QuantityToRemove = InventorySlot.Quantity > Underflow ? Underflow : InventorySlot.Quantity;
-        InventorySlot.Quantity -= QuantityToRemove;
         Underflow -= QuantityToRemove;
+
+        // 기존 인벤토리 슬롯에서 수량 제거
+        SetInventorySlot(InventoryIndex, ItemDefinition, InventorySlot.Quantity - QuantityToRemove);
 
         if (InventorySlot.Quantity <= 0)
         {
@@ -219,39 +215,42 @@ void UUGFInventoryComponent::RemoveInventoryIndex(UUGFItemDefinition* ItemDefini
     }
 }
 
-void UUGFInventoryComponent::SetInventoryIndex(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
+void UUGFInventoryComponent::SetInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
 {
-    check(ItemQuantity >= 0)
-
     int32 OldItemQuantity = 0;
     int32 NewItemQuantity = ItemQuantity;
     if (InventorySlots.Contains(Index))
     {
-        check(InventorySlots[Index].ItemDefinition == ItemDefinition)
+        // 기존 인벤토리 슬롯 가져오기
+        auto& InventorySlot = InventorySlots[Index];
+        check(InventorySlot.ItemDefinition == ItemDefinition);
 
         // 기존 아이템 수량 저장
-        OldItemQuantity = InventorySlots[Index].Quantity;
+        OldItemQuantity = InventorySlot.Quantity;
 
         // 아이템 수량 변경 혹은 인벤토리 슬롯 비우기
         if (NewItemQuantity <= 0)
         {
+            // 기존 인벤토리 슬롯 제거 및 캐시 업데이트
             RemoveInventoryIndex(ItemDefinition, Index);
             InventorySlots.Remove(Index);
         }
         else
         {
-            InventorySlots[Index].Quantity = NewItemQuantity;
+            InventorySlot.Quantity = NewItemQuantity;
         }
     }
-    else if (ItemQuantity > 0)
+    else if (NewItemQuantity > 0)
     {
-        // 빈 인벤토리 슬롯에 아이템 추가
-        FUGFItem NewItem
-        {
-            ItemDefinition,
-            NewItemQuantity
-        };
-        InventorySlots.Emplace(Index, NewItem);
+        // 새로운 인벤토리 슬롯 생성
+        FUGFInventorySlot NewInventorySlot;
+        NewInventorySlot.Index = Index;
+        NewInventorySlot.ItemDefinition = ItemDefinition;
+        NewInventorySlot.InventoryItemConfig = UUGFInventoryItemConfig::GetFromItemDefinition(ItemDefinition);
+        NewInventorySlot.Quantity = NewItemQuantity;
+
+        // 새로운 인벤토리 슬롯 추가 및 캐시 업데이트
+        InventorySlots.Emplace(Index, NewInventorySlot);
         AddInventoryIndex(ItemDefinition, Index);
     }
 

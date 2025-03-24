@@ -118,7 +118,7 @@ protected:
     virtual void RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetInventoryIndex(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
+    virtual void SetInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
 
     UFUNCTION(BlueprintCallable)
     virtual void SortInventorySlots() { InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; }); }
