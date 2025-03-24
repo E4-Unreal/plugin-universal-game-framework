@@ -24,5 +24,5 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 Quantity = 1;
 
-    bool IsValid() const { return ItemDefinition != nullptr && Quantity > 0; }
+    bool IsValid() const;
 };

@@ -63,19 +63,15 @@ void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedInde
     IUGFInventoryInterface::SwapInventorySlot_Implementation(SelectedIndex, TargetIndex);
 }
 
-bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item) const
+bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)
 {
-    // null 검사
-    if (Item.ItemDefinition == nullptr)
-    {
-        LOG(Error, TEXT("Item Definition is null"))
-        return false;
-    }
+    if (!Item.IsValid()) return false;
 
-    // 입력 유효성 검사
-    if (Item.Quantity <= 0)
+    // InventoryItemConfig 설정 여부 확인
+    const UUGFInventoryItemConfig* InventoryItemConfig = UUGFInventoryItemConfig::GetFromItemDefinition(Item.ItemDefinition);
+    if (InventoryItemConfig == nullptr)
     {
-        LOG(Error, TEXT("Item Amount: %d"), Item.Quantity);
+        LOG_NULL(InventoryItemConfig);
         return false;
     }
 

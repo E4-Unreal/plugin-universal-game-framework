@@ -89,7 +89,7 @@ public:
 
 protected:
     UFUNCTION(BlueprintPure)
-    bool IsValidItem(const FUGFItem& Item) const;
+    static bool IsValidItem(const FUGFItem& Item);
 
     // 인벤토리에 보유 중인 특정 아이템의 개수
     UFUNCTION(BlueprintPure)
