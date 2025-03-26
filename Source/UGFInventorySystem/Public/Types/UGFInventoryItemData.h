@@ -11,6 +11,8 @@ struct FUGFInventoryItemData
 {
     GENERATED_BODY()
 
+    static const FUGFInventoryItemData EmptyData;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;
 

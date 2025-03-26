@@ -2,3 +2,5 @@
 
 
 #include "Types/UGFInventoryItemData.h"
+
+const FUGFInventoryItemData FUGFInventoryItemData::EmptyData;
