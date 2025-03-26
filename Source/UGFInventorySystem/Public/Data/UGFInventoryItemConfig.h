@@ -4,19 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Data/UGFItemConfig.h"
+#include "Types/UGFInventoryItemData.h"
 #include "UGFInventoryItemConfig.generated.h"
-
-USTRUCT(Atomic, BlueprintType)
-struct FUGInventoryItemConfigData
-{
-    GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
-    int32 MaxStack = 1;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UTexture2D> ThumbnailTexture;
-};
 
 class UUGFItemDefinition;
 
@@ -29,12 +18,12 @@ class UGFINVENTORYSYSTEM_API UUGFInventoryItemConfig : public UUGFItemConfig
     GENERATED_BODY()
 
     UPROPERTY(EditDefaultsOnly)
-    FUGInventoryItemConfigData Data;
+    FUGFInventoryItemData Data;
 
 public:
     UFUNCTION(BlueprintPure)
     static UUGFInventoryItemConfig* GetFromItemDefinition(const UUGFItemDefinition* ItemDefinition);
 
     UFUNCTION(BlueprintPure)
-    const FORCEINLINE FUGInventoryItemConfigData& GetData() const { return Data; }
+    const FORCEINLINE FUGFInventoryItemData& GetData() const { return Data; }
 };
