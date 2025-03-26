@@ -26,7 +26,7 @@ void UUGFInventoryPanelWidget::NativePreConstruct()
 
 void UUGFInventoryPanelWidget::CreateSlotWidgets()
 {
-    if (InventoryPanel == nullptr) return;
+    if (InventoryPanel == nullptr || SlotWidgetClass == nullptr) return;
 
     int32 MaxSlotNum = InventoryComponent != nullptr ? InventoryComponent->GetMaxSlotNum() : PreviewSlotNum;
     for (int32 Index = 0; Index < MaxSlotNum; ++Index)

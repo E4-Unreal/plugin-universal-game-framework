@@ -17,7 +17,11 @@ void UUGFInventorySlotWidget::InitializeInventorySlot(UUGFInventoryComponent* In
 
 void UUGFInventorySlotWidget::Refresh()
 {
-    if (InventoryComponent == nullptr) SetInventorySlot(DefaultInventorySlot);
+    if (InventoryComponent == nullptr)
+    {
+        SetInventorySlot(DefaultInventorySlot);
+        return;
+    }
 
     const auto& InventorySlot = InventoryComponent->GetInventorySlot(Index);
     if (InventorySlot.Index < 0) SetInventorySlot(DefaultInventorySlot);
