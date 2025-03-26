@@ -90,8 +90,11 @@ public:
 
     /* Getter */
 
-    UFUNCTION(BlueprintPure)
+    UFUNCTION(BlueprintPure, Category = "UI")
     FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
+
+    UFUNCTION(BlueprintPure, Category = "UI")
+    const FUGFInventorySlot& GetInventorySlot(int32 Index) const { return InventorySlots.Contains(Index) ? InventorySlots[Index] : FUGFInventorySlot::EmptySlot; }
 
 protected:
     UFUNCTION(BlueprintPure)
