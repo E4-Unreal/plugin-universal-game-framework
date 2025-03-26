@@ -114,7 +114,7 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
 
     // 빈 인벤토리 슬롯에 아이템 추가
     int32 NewInventorySlotIndex = 0;
-    while (Overflow != 0 && InventorySlots.Num() < MaxInventorySlotNum)
+    while (Overflow != 0 && InventorySlots.Num() < MaxSlotNum)
     {
         // 빈 인벤토리 슬롯인지 확인
         if (InventorySlots.Contains(NewInventorySlotIndex)) continue;

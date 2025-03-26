@@ -66,7 +66,7 @@ class UGFINVENTORYSYSTEM_API UUGFInventoryComponent : public UActorComponent, pu
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
-    int32 MaxInventorySlotNum = 4;
+    int32 MaxSlotNum = 4;
 
     // TMap<Index, Item>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
@@ -87,6 +87,11 @@ public:
     virtual void RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow) override;
     virtual bool HasItem_Implementation(const FUGFItem& Item) const override { return GetItemQuantity(Item.ItemDefinition) >= Item.Quantity; }
     virtual void SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex) override;
+
+    /* Getter */
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
 
 protected:
     UFUNCTION(BlueprintPure)
