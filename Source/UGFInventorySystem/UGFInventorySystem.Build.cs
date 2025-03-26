@@ -10,6 +10,7 @@ public class UGFInventorySystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UMG",
                 "UniversalUtilities",
                 "UGFCore",
                 "UGFItemSystem"
