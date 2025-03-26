@@ -13,6 +13,9 @@ struct FUGInventoryItemConfigData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<UTexture2D> ThumbnailTexture;
 };
 
 class UUGFItemDefinition;
