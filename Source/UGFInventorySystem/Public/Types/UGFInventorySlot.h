@@ -18,8 +18,10 @@ struct UGFINVENTORYSYSTEM_API FUGFInventorySlot
 {
     GENERATED_BODY()
 
+    static const FUGFInventorySlot EmptySlot;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
-    int32 Index;
+    int32 Index = -1;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UUGFItemDefinition> ItemDefinition;
@@ -29,4 +31,6 @@ struct UGFINVENTORYSYSTEM_API FUGFInventorySlot
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UUGFInventoryItemConfig> InventoryItemConfig;
+
+    FUGFInventorySlot() {}
 };

@@ -2,3 +2,5 @@
 
 
 #include "Types/UGFInventorySlot.h"
+
+const FUGFInventorySlot FUGFInventorySlot::EmptySlot;
