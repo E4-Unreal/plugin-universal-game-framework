@@ -16,9 +16,11 @@ class UGFINPUTSYSTEM_API UUGFInputConfig : public UPrimaryDataAsset
 
 public:
     void BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
+    void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
     static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
 
     virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { }
+    virtual void OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { }
 };

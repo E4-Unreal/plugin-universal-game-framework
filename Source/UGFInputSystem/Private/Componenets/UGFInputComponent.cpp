@@ -60,6 +60,13 @@ void UUGFInputComponent::BindEnhancedInput()
     AddMappingContexts();
 }
 
+void UUGFInputComponent::UnBindEnhancedInput()
+{
+    UnBindInputConfigs();
+
+    RemoveMappingContexts();
+}
+
 void UUGFInputComponent::BindInputConfigs()
 {
     if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
@@ -74,15 +81,43 @@ void UUGFInputComponent::BindInputConfigs()
     }
 }
 
+void UUGFInputComponent::UnBindInputConfigs()
+{
+    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    {
+        for (const auto& InputConfig : InputConfigs)
+        {
+            if(InputConfig)
+            {
+                InputConfig->UnBindEnhancedInput(EnhancedInputComponent);
+            }
+        }
+    }
+}
+
 void UUGFInputComponent::AddMappingContexts()
 {
     if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
     {
-        for (const auto& InputMappingContextData : InputMappingContextDataList)
+        for (const auto& [InputMappingContext, Priority] : InputMappingContextDataList)
         {
-            if (!Subsystem->HasMappingContext(InputMappingContextData.InputMappingContext))
+            if (!Subsystem->HasMappingContext(InputMappingContext))
             {
-                Subsystem->AddMappingContext(InputMappingContextData.InputMappingContext, InputMappingContextData.Priority);
+                Subsystem->AddMappingContext(InputMappingContext, Priority);
+            }
+        }
+    }
+}
+
+void UUGFInputComponent::RemoveMappingContexts()
+{
+    if (UEnhancedInputLocalPlayerSubsystem* Subsystem = GetEnhancedInputLocalPlayerSubsystem())
+    {
+        for (const auto& [InputMappingContext, Priority] : InputMappingContextDataList)
+        {
+            if (Subsystem->HasMappingContext(InputMappingContext))
+            {
+                Subsystem->RemoveMappingContext(InputMappingContext);
             }
         }
     }

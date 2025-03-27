@@ -12,6 +12,13 @@ void UUGFInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputCo
     OnBindEnhancedInput(EnhancedInputComponent);
 }
 
+void UUGFInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (EnhancedInputComponent == nullptr) return;
+
+    OnUnBindEnhancedInput(EnhancedInputComponent);
+}
+
 APlayerController* UUGFInputConfig::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent)

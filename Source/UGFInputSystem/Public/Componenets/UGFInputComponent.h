@@ -42,6 +42,9 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void BindEnhancedInput();
 
+    UFUNCTION(BlueprintCallable)
+    virtual void UnBindEnhancedInput();
+
 protected:
     UFUNCTION(BlueprintPure)
     APawn* GetOwningPawn() const;
@@ -59,5 +62,11 @@ protected:
     virtual void BindInputConfigs();
 
     UFUNCTION(BlueprintCallable)
+    virtual void UnBindInputConfigs();
+
+    UFUNCTION(BlueprintCallable)
     virtual void AddMappingContexts();
+
+    UFUNCTION(BlueprintCallable)
+    virtual void RemoveMappingContexts();
 };
