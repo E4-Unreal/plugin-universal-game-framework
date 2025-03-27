@@ -10,8 +10,13 @@ public class UGFWidgetSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UMG",
+                "EnhancedInput",
+
                 "UniversalUtilities",
-                "UGFCore"
+
+                "UGFCore",
+                "UGFInputSystem"
             }
         );
 
