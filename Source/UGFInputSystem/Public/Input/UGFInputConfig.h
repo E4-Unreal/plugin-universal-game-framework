@@ -19,6 +19,7 @@ public:
     void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
+    static APawn* GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent);
     static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
 
     virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { }

@@ -19,17 +19,27 @@ void UUGFInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInput
     OnUnBindEnhancedInput(EnhancedInputComponent);
 }
 
-APlayerController* UUGFInputConfig::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+APawn* UUGFInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent)
     {
-        if (AActor* Owner = EnhancedInputComponent->GetOwner())
+        if (AActor* OwningActor = EnhancedInputComponent->GetOwner())
         {
-            if (APawn* OwnerPawn = Cast<APawn>(Owner))
+            if (APawn* OwningPawn = Cast<APawn>(OwningActor))
             {
-                return Cast<APlayerController>(OwnerPawn->GetController());
+                return OwningPawn;
             }
         }
+    }
+
+    return nullptr;
+}
+
+APlayerController* UUGFInputConfig::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (APawn* OwningPawn = GetOwningPlayerPawn(EnhancedInputComponent))
+    {
+        return Cast<APlayerController>(OwningPawn->GetController());
     }
 
     return nullptr;
