@@ -18,5 +18,7 @@ public:
     void BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
+    static APlayerController* GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent);
+
     virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { }
 };
