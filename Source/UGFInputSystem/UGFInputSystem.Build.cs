@@ -10,6 +10,7 @@ public class UGFInputSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "EnhancedInput",
                 "UniversalUtilities",
                 "UGFCore"
             }
