@@ -35,7 +35,7 @@ APawn* UUGFInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInp
     return nullptr;
 }
 
-APlayerController* UUGFInputConfig::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+APlayerController* UUGFInputConfig::GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (APawn* OwningPawn = GetOwningPlayerPawn(EnhancedInputComponent))
     {

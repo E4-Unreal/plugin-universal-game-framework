@@ -15,7 +15,7 @@ void UUGFInputConfig_UserWidget::OnBindEnhancedInput(UEnhancedInputComponent* En
 {
     if (EnhancedInputComponent)
     {
-        if (APlayerController* PlayerController = GetPlayerController(EnhancedInputComponent))
+        if (APlayerController* PlayerController = GetOwningPlayer(EnhancedInputComponent))
         {
             for (const auto& InputActionData : InputActionDataList)
             {
