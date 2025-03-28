@@ -7,30 +7,16 @@
 #include "Logging.h"
 #include "GameFramework/PlayerState.h"
 
-UUserWidget* UUGFWidgetManagerComponent::GetWidget(TSubclassOf<UUserWidget> WidgetClass)
+UUserWidget* UUGFWidgetManagerComponent::GetOrCreateWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (WidgetMap.Contains(WidgetClass))
-    {
-        return WidgetMap[WidgetClass];
-    }
-    else
-    {
-        LOG_ACTOR_COMPONENT(Error, TEXT("%s is not exist."), *WidgetClass->GetName())
+    if (WidgetClass ==  nullptr) return nullptr;
 
-        return nullptr;
-    }
+    return WidgetMap.Contains(WidgetClass) ? WidgetMap[WidgetClass].Get() : RegisterWidget(WidgetClass);
 }
 
 void UUGFWidgetManagerComponent::ShowWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    // 유효성 검사
-    if (WidgetClass == nullptr) return;
-
-    // 위젯이 존재하지 않는 경우 생성
-    if (!WidgetMap.Contains(WidgetClass)) RegisterWidget(WidgetClass);
-
-    // 위젯 활성화
-    if (UUserWidget* Widget = GetWidget(WidgetClass))
+    if (UUserWidget* Widget = GetOrCreateWidget(WidgetClass))
     {
         if (Widget->IsInViewport())
         {
@@ -47,11 +33,8 @@ void UUGFWidgetManagerComponent::ShowWidget(TSubclassOf<UUserWidget> WidgetClass
 
 void UUGFWidgetManagerComponent::HideWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    // 유효성 검사
-    if (WidgetClass == nullptr) return;
-
     // 위젯 비활성화
-    if (UUserWidget* Widget = GetWidget(WidgetClass))
+    if (UUserWidget* Widget = GetOrCreateWidget(WidgetClass))
     {
         if (!Widget->IsInViewport())
         {
@@ -68,7 +51,7 @@ void UUGFWidgetManagerComponent::HideWidget(TSubclassOf<UUserWidget> WidgetClass
 
 void UUGFWidgetManagerComponent::ToggleWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (UUserWidget* Widget = GetWidget(WidgetClass))
+    if (UUserWidget* Widget = GetOrCreateWidget(WidgetClass))
     {
         if (Widget->IsInViewport())
         {
@@ -106,23 +89,26 @@ APlayerController* UUGFWidgetManagerComponent::GetPlayerController() const
     return nullptr;
 }
 
-void UUGFWidgetManagerComponent::RegisterWidget(TSubclassOf<UUserWidget> WidgetClass)
+UUserWidget* UUGFWidgetManagerComponent::RegisterWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
     // 유효성 검사
-    if (WidgetClass == nullptr) return;
+    if (WidgetClass == nullptr) return nullptr;
 
     // 중복 호출 방지
     if (WidgetMap.Contains(WidgetClass))
     {
         LOG_ACTOR_COMPONENT(Error, TEXT("%s is already registered."), *WidgetClass->GetName())
-        return;
+    }
+    else
+    {
+        // 위젯 생성 및 등록
+        UUserWidget* Widget = CreateWidget<UUserWidget>(GetPlayerController(), WidgetClass);
+        WidgetMap.Emplace(WidgetClass, Widget);
+
+        LOG_ACTOR_COMPONENT(Log, TEXT("%s is registered"), *WidgetClass->GetName())
     }
 
-    // 위젯 생성 및 등록
-    UUserWidget* Widget = CreateWidget<UUserWidget>(GetPlayerController(), WidgetClass);
-    WidgetMap.Emplace(WidgetClass, Widget);
-
-    LOG_ACTOR_COMPONENT(Log, TEXT("%s is registered"), *WidgetClass->GetName())
+    return WidgetMap[WidgetClass];
 }
 
 void UUGFWidgetManagerComponent::UnRegisterWidget(TSubclassOf<UUserWidget> WidgetClass)

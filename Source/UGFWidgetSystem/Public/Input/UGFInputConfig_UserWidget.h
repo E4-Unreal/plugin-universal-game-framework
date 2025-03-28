@@ -7,6 +7,7 @@
 #include "InputTriggers.h"
 #include "UGFInputConfig_UserWidget.generated.h"
 
+class UUGFWidgetManagerComponent;
 class UInputAction;
 
 USTRUCT(Atomic, BlueprintType)
@@ -39,7 +40,7 @@ protected:
     TArray<FUGFInputActionData> InputActionDataList;
 
 protected:
-    virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
+    static UUGFWidgetManagerComponent* GetWidgetManagerComponent(UEnhancedInputComponent* EnhancedInputComponent);
 
-    virtual void ToggleWidget(UUserWidget* Widget);
+    virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
 };

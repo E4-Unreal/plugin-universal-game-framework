@@ -18,7 +18,7 @@ protected:
 
 public:
     UFUNCTION(BlueprintPure)
-    FORCEINLINE UUserWidget* GetWidget(TSubclassOf<UUserWidget> WidgetClass);
+    FORCEINLINE UUserWidget* GetOrCreateWidget(TSubclassOf<UUserWidget> WidgetClass);
 
     UFUNCTION(BlueprintCallable)
     virtual void ShowWidget(TSubclassOf<UUserWidget> WidgetClass);
@@ -34,7 +34,7 @@ protected:
     APlayerController* GetPlayerController() const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void RegisterWidget(TSubclassOf<UUserWidget> WidgetClass);
+    virtual UUserWidget* RegisterWidget(TSubclassOf<UUserWidget> WidgetClass);
 
     UFUNCTION(BlueprintCallable)
     virtual void UnRegisterWidget(TSubclassOf<UUserWidget> WidgetClass);

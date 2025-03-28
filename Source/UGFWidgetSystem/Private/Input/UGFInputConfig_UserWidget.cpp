@@ -5,47 +5,43 @@
 
 #include "EnhancedInputComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/UGFWidgetManagerComponent.h"
 
 bool FUGFInputActionData::IsValid() const
 {
     return InputAction && TriggerEvent != ETriggerEvent::None && WidgetClass;
 }
 
-void UUGFInputConfig_UserWidget::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+UUGFWidgetManagerComponent* UUGFInputConfig_UserWidget::GetWidgetManagerComponent(
+    UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (EnhancedInputComponent)
+    if (APawn* OwningPlayerPawn = GetOwningPlayerPawn(EnhancedInputComponent))
     {
-        if (APlayerController* PlayerController = GetOwningPlayer(EnhancedInputComponent))
-        {
-            for (const auto& InputActionData : InputActionDataList)
-            {
-                if (InputActionData.IsValid())
-                {
-                    UUserWidget* Widget = CreateWidget(PlayerController, InputActionData.WidgetClass);
-                    EnhancedInputComponent->BindAction(
-                        InputActionData.InputAction,
-                        InputActionData.TriggerEvent,
-                        this,
-                        &ThisClass::ToggleWidget,
-                        Widget
-                        );
-                }
-            }
-        }
+        return OwningPlayerPawn->GetComponentByClass<UUGFWidgetManagerComponent>();
     }
+
+    return nullptr;
 }
 
-void UUGFInputConfig_UserWidget::ToggleWidget(UUserWidget* Widget)
+void UUGFInputConfig_UserWidget::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (Widget)
+    APlayerController* PlayerController = GetOwningPlayer(EnhancedInputComponent);
+    UUGFWidgetManagerComponent* WidgetManagerComponent = GetWidgetManagerComponent(EnhancedInputComponent);
+
+    if (PlayerController && WidgetManagerComponent)
     {
-        if (Widget->IsInViewport())
+        for (const auto& InputActionData : InputActionDataList)
         {
-            Widget->RemoveFromParent();
-        }
-        else
-        {
-            Widget->AddToViewport();
+            if (InputActionData.IsValid())
+            {
+                EnhancedInputComponent->BindAction(
+                    InputActionData.InputAction,
+                    InputActionData.TriggerEvent,
+                    WidgetManagerComponent,
+                    &UUGFWidgetManagerComponent::ToggleWidget,
+                    InputActionData.WidgetClass
+                    );
+            }
         }
     }
 }
