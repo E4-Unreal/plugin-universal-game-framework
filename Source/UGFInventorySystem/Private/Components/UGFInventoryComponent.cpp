@@ -120,20 +120,19 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
     int32 MaxStack = Data.MaxStack;
 
     // 빈 인벤토리 슬롯에 아이템 추가
-    int32 NewInventorySlotIndex = 0;
-    while (Overflow != 0 && InventorySlots.Num() < MaxSlotNum)
+    for (int32 Index = 0; Index < MaxSlotNum; ++Index)
     {
         // 빈 인벤토리 슬롯인지 확인
-        if (InventorySlots.Contains(NewInventorySlotIndex)) continue;
+        if (InventorySlots.Contains(Index)) continue;
 
         // 새로운 인벤토리 슬롯에 추가할 수량 계산
         int32 QuantityToAdd = MaxStack > Overflow ? Overflow : MaxStack;
         Overflow -= QuantityToAdd;
 
         // 새로운 인벤토리 슬롯 생성 및 추가
-        SetInventorySlot(NewInventorySlotIndex, ItemDefinition, QuantityToAdd);
+        SetInventorySlot(Index, ItemDefinition, QuantityToAdd);
 
-        ++NewInventorySlotIndex;
+        if (Overflow <= 0) break;
     }
 
     // 인벤토리 슬롯 정렬
