@@ -23,8 +23,9 @@ UUGFWidgetManagerComponent* UUGFInputConfig_UserWidget::GetWidgetManagerComponen
     return nullptr;
 }
 
-void UUGFInputConfig_UserWidget::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+TArray<uint32> UUGFInputConfig_UserWidget::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
+    TArray<uint32> InputBindingHandles;
     APlayerController* PlayerController = GetOwningPlayer(EnhancedInputComponent);
     UUGFWidgetManagerComponent* WidgetManagerComponent = GetWidgetManagerComponent(EnhancedInputComponent);
 
@@ -34,14 +35,18 @@ void UUGFInputConfig_UserWidget::OnBindEnhancedInput(UEnhancedInputComponent* En
         {
             if (InputActionData.IsValid())
             {
-                EnhancedInputComponent->BindAction(
+                FEnhancedInputActionEventBinding& Binding = EnhancedInputComponent->BindAction(
                     InputActionData.InputAction,
                     InputActionData.TriggerEvent,
                     WidgetManagerComponent,
                     &UUGFWidgetManagerComponent::ToggleWidget,
                     InputActionData.WidgetClass
                     );
+
+                InputBindingHandles.Emplace(Binding.GetHandle());
             }
         }
     }
+
+    return InputBindingHandles;
 }

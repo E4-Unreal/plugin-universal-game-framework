@@ -15,13 +15,11 @@ class UGFINPUTSYSTEM_API UUGFInputConfig : public UPrimaryDataAsset
     GENERATED_BODY()
 
 public:
-    void BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
-    void UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
+    TArray<uint32> BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent);
 
 protected:
     static APawn* GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent);
     static APlayerController* GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent);
 
-    virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { }
-    virtual void OnUnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { }
+    virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) { return TArray<uint32>(); }
 };

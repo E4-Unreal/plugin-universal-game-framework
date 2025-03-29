@@ -42,5 +42,5 @@ protected:
 protected:
     static UUGFWidgetManagerComponent* GetWidgetManagerComponent(UEnhancedInputComponent* EnhancedInputComponent);
 
-    virtual void OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
+    virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
 };

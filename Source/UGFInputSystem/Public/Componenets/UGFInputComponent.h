@@ -38,6 +38,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TArray<TObjectPtr<UUGFInputConfig>> InputConfigs;
 
+    UPROPERTY(VisibleInstanceOnly, Category = "State")
+    TArray<uint32> InputBindingHandles;
+
 public:
     UFUNCTION(BlueprintCallable)
     virtual void BindEnhancedInput();

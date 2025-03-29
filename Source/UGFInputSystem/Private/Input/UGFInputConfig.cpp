@@ -5,18 +5,9 @@
 
 #include "EnhancedInputComponent.h"
 
-void UUGFInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+TArray<uint32> UUGFInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (EnhancedInputComponent == nullptr) return;
-
-    OnBindEnhancedInput(EnhancedInputComponent);
-}
-
-void UUGFInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (EnhancedInputComponent == nullptr) return;
-
-    OnUnBindEnhancedInput(EnhancedInputComponent);
+    return EnhancedInputComponent != nullptr ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
 APawn* UUGFInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent)
