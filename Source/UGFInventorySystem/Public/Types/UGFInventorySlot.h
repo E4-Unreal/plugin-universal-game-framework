@@ -33,4 +33,6 @@ struct UGFINVENTORYSYSTEM_API FUGFInventorySlot
     TObjectPtr<UUGFInventoryItemConfig> InventoryItemConfig;
 
     FUGFInventorySlot() {}
+
+    bool IsValid() const { return Index >= 0 && ItemDefinition != nullptr && InventoryItemConfig != nullptr; }
 };

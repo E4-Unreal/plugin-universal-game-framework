@@ -17,22 +17,58 @@ void UUGFInventorySlotWidget::InitializeInventorySlot(UUGFInventoryComponent* In
 
 void UUGFInventorySlotWidget::Refresh()
 {
-    if (InventoryComponent == nullptr)
-    {
-        SetInventorySlot(DefaultInventorySlot);
-        return;
-    }
+    if (InventoryComponent == nullptr) return;
 
     const auto& InventorySlot = InventoryComponent->GetInventorySlot(Index);
-    if (InventorySlot.Index < 0) SetInventorySlot(DefaultInventorySlot);
-    else SetInventorySlot(InventorySlot);
+    if (InventorySlot.IsValid())
+    {
+        SetInventorySlot(InventorySlot);
+    }
+    else
+    {
+        Clear();
+    }
+}
+
+void UUGFInventorySlotWidget::Clear()
+{
+    SetThumbnailImage(nullptr);
+    SetQuantityTextBlock(0);
 }
 
 void UUGFInventorySlotWidget::SetInventorySlot(const FUGFInventorySlot& InInventorySlot)
 {
-    if (InInventorySlot.InventoryItemConfig == nullptr) return;
+    if (InInventorySlot.InventoryItemConfig == nullptr)
+    {
+        Clear();
+        return;
+    }
 
     const auto& Data = InInventorySlot.InventoryItemConfig->GetData();
-    if (ThumbnailImage) ThumbnailImage->SetBrushFromSoftTexture(Data.ThumbnailTexture);
-    if (QuantityTextBlock) QuantityTextBlock->SetText(FText::FromString(FString::FromInt(InInventorySlot.Quantity)));
+    SetThumbnailImage(Data.ThumbnailTexture);
+    SetQuantityTextBlock(InInventorySlot.Quantity);
+}
+
+void UUGFInventorySlotWidget::SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture)
+{
+    if (ThumbnailImage)
+    {
+        if (ThumbnailTexture == nullptr) ThumbnailImage->SetBrushFromTexture(nullptr);
+        else ThumbnailImage->SetBrushFromSoftTexture(ThumbnailTexture);
+    }
+}
+
+void UUGFInventorySlotWidget::SetQuantityTextBlock(int32 Quantity)
+{
+    if (QuantityTextBlock)
+    {
+        if (Quantity <= 0)
+        {
+            QuantityTextBlock->SetText(FText::GetEmpty());
+        }
+        else
+        {
+            QuantityTextBlock->SetText(FText::FromString(FString::FromInt(Quantity)));
+        }
+    }
 }

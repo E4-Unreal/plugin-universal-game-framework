@@ -27,9 +27,6 @@ private:
     TObjectPtr<UTextBlock> QuantityTextBlock;
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    FUGFInventorySlot DefaultInventorySlot;
-
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Transient, Category = "State")
     int32 Index;
 
@@ -43,7 +40,16 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void Refresh();
 
+    UFUNCTION(BlueprintCallable)
+    virtual void Clear();
+
 protected:
     UFUNCTION(BlueprintCallable)
     virtual void SetInventorySlot(const FUGFInventorySlot& InInventorySlot);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetQuantityTextBlock(int32 Quantity);
 };
