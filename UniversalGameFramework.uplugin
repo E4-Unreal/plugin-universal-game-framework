@@ -34,9 +34,23 @@
 			"Name": "UGFItemSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UGFInputSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UGFWidgetSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
+        {
+            "Name": "EnhancedInput",
+            "Enabled": true
+        },
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
