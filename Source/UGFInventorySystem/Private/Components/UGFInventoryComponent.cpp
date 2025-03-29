@@ -261,6 +261,9 @@ void UUGFInventoryComponent::SetInventorySlot(int32 Index, UUGFItemDefinition* I
     }
 
     LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), Index, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
+
+    // 이벤트 호출
+    InventoryUpdated.Broadcast(Index);
 }
 
 void UUGFInventoryComponent::AddDefaultItems()

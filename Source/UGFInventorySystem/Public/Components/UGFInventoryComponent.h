@@ -8,6 +8,8 @@
 #include "Types/UGFInventorySlot.h"
 #include "UGFInventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUGFInventoryUpdatedSignature, int32, SlotIndex);
+
 USTRUCT(Atomic, BlueprintType)
 struct FUGFInventoryIndices
 {
@@ -63,6 +65,10 @@ UCLASS(meta = (BlueprintSpawnableComponent))
 class UGFINVENTORYSYSTEM_API UUGFInventoryComponent : public UActorComponent, public IUGFInventoryInterface
 {
     GENERATED_BODY()
+
+public:
+    UPROPERTY(BlueprintAssignable)
+    FUGFInventoryUpdatedSignature InventoryUpdated;
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
