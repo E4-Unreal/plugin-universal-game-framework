@@ -14,6 +14,11 @@ void UUGFInventoryPanelWidget::NativeOnInitialized()
     if (auto OwningPlayer = GetOwningPlayerPawn())
     {
         InventoryComponent = OwningPlayer->GetComponentByClass<UUGFInventoryComponent>();
+
+        if (InventoryComponent != nullptr)
+        {
+            InventoryComponent->InventoryUpdated.AddDynamic(this, &ThisClass::OnInventoryUpdated);
+        }
     }
 }
 
@@ -37,5 +42,15 @@ void UUGFInventoryPanelWidget::CreateSlotWidgets()
         int32 SlotColumn = Index % MaxSlotColumn;
         int32 SlotRow = Index / MaxSlotColumn;
         InventoryPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
+
+        SlotWidgets.Emplace(Index, SlotWidget);
+    }
+}
+
+void UUGFInventoryPanelWidget::OnInventoryUpdated(int32 SlotIndex)
+{
+    if (SlotWidgets.Contains(SlotIndex))
+    {
+        SlotWidgets[SlotIndex]->Refresh();
     }
 }

@@ -46,4 +46,7 @@ protected:
 
     UFUNCTION(BlueprintCallable)
     virtual void CreateSlotWidgets();
+
+    UFUNCTION(BlueprintCallable)
+    virtual void OnInventoryUpdated(int32 SlotIndex);
 };
