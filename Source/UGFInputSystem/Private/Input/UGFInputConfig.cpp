@@ -5,31 +5,32 @@
 
 #include "EnhancedInputComponent.h"
 
-void UUGFInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+TArray<uint32> UUGFInputConfig::BindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
 {
-    if (EnhancedInputComponent == nullptr) return;
-
-    OnBindEnhancedInput(EnhancedInputComponent);
+    return EnhancedInputComponent != nullptr ? OnBindEnhancedInput(EnhancedInputComponent) : TArray<uint32>();
 }
 
-void UUGFInputConfig::UnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
-{
-    if (EnhancedInputComponent == nullptr) return;
-
-    OnUnBindEnhancedInput(EnhancedInputComponent);
-}
-
-APlayerController* UUGFInputConfig::GetPlayerController(UEnhancedInputComponent* EnhancedInputComponent)
+APawn* UUGFInputConfig::GetOwningPlayerPawn(UEnhancedInputComponent* EnhancedInputComponent)
 {
     if (EnhancedInputComponent)
     {
-        if (AActor* Owner = EnhancedInputComponent->GetOwner())
+        if (AActor* OwningActor = EnhancedInputComponent->GetOwner())
         {
-            if (APawn* OwnerPawn = Cast<APawn>(Owner))
+            if (APawn* OwningPawn = Cast<APawn>(OwningActor))
             {
-                return Cast<APlayerController>(OwnerPawn->GetController());
+                return OwningPawn;
             }
         }
+    }
+
+    return nullptr;
+}
+
+APlayerController* UUGFInputConfig::GetOwningPlayer(UEnhancedInputComponent* EnhancedInputComponent)
+{
+    if (APawn* OwningPawn = GetOwningPlayerPawn(EnhancedInputComponent))
+    {
+        return Cast<APlayerController>(OwningPawn->GetController());
     }
 
     return nullptr;
