@@ -6,41 +6,68 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Input/UGFInputConfig.h"
+#include "Logging.h"
+
+#define LOG_OWNER_ERROR LOG_ACTOR_COMPONENT(Error, TEXT("Owner should be PlayerController or Pawn!"))
 
 APawn* UUGFInputComponent::GetOwningPawn() const
 {
-    if (AActor* Owner = GetOwner())
+    if (IsPawn())
     {
-        return Cast<APawn>(Owner);
+        APawn* OwningPawn = Cast<APawn>(GetOwner());
+        return OwningPawn;
     }
+    else if (IsPlayerController())
+    {
+        APlayerController* OwningPlayer = Cast<APlayerController>(GetOwner());
+        return OwningPlayer->GetPawn();
+    }
+    else
+    {
+        LOG_OWNER_ERROR
 
-    return nullptr;
+        return nullptr;
+    }
 }
 
 APlayerController* UUGFInputComponent::GetOwningPlayer() const
 {
-    if (APawn* Pawn = GetOwningPawn())
+    if (IsPawn())
     {
-        if (AController* Controller = Pawn->GetController())
-        {
-            return Cast<APlayerController>(Controller);
-        }
+        APawn* OwningPawn = Cast<APawn>(GetOwner());
+        return Cast<APlayerController>(OwningPawn->GetController());
     }
+    else if (IsPlayerController())
+    {
+        APlayerController* OwningPlayer = Cast<APlayerController>(GetOwner());
+        return OwningPlayer;
+    }
+    else
+    {
+        LOG_OWNER_ERROR
 
-    return nullptr;
+        return nullptr;
+    }
 }
 
 UEnhancedInputComponent* UUGFInputComponent::GetEnhancedInputComponent() const
 {
-    if (APawn* OwningPawn = GetOwningPawn())
+    if (IsPawn())
     {
-        if (OwningPawn->InputComponent)
-        {
-            return Cast<UEnhancedInputComponent>(OwningPawn->InputComponent);
-        }
+        APawn* OwningPawn = Cast<APawn>(GetOwner());
+        return Cast<UEnhancedInputComponent>(OwningPawn->InputComponent);
     }
+    else if (IsPlayerController())
+    {
+        APlayerController* OwningPlayer = Cast<APlayerController>(GetOwner());
+        return Cast<UEnhancedInputComponent>(OwningPlayer->InputComponent);
+    }
+    else
+    {
+        LOG_OWNER_ERROR
 
-    return nullptr;
+        return nullptr;
+    }
 }
 
 UEnhancedInputLocalPlayerSubsystem* UUGFInputComponent::GetEnhancedInputLocalPlayerSubsystem() const

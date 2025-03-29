@@ -24,7 +24,7 @@ struct FUGFInputMappingContextData
 };
 
 /**
- * Pawn 전용 입력 액션 컴포넌트
+ * PlayerController 및 Pawn 전용 입력 액션 컴포넌트
  */
 UCLASS(meta = (BlueprintSpawnableComponent))
 class UGFINPUTSYSTEM_API UUGFInputComponent : public UActorComponent
@@ -49,6 +49,12 @@ public:
     virtual void UnBindEnhancedInput();
 
 protected:
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool IsPawn() const { return GetOwner()->GetClass()->IsChildOf(APawn::StaticClass()); }
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool IsPlayerController() const { return GetOwner()->GetClass()->IsChildOf(APlayerController::StaticClass()); }
+
     UFUNCTION(BlueprintPure)
     APawn* GetOwningPawn() const;
 
