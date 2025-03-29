@@ -8,6 +8,13 @@
 #include "Data/UGFItemDefinition.h"
 #include "Types/UGFInventorySlot.h"
 
+void UUGFInventoryComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    AddDefaultItems();
+}
+
 void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32& Overflow)
 {
     check(Item.ItemDefinition != nullptr)
@@ -255,4 +262,13 @@ void UUGFInventoryComponent::SetInventorySlot(int32 Index, UUGFItemDefinition* I
     }
 
     LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), Index, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
+}
+
+void UUGFInventoryComponent::AddDefaultItems()
+{
+    for (const auto& DefaultItem : DefaultItems)
+    {
+        int32 Overflow;
+        Execute_AddItem(this, DefaultItem, Overflow);
+    }
 }

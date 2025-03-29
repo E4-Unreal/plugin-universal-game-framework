@@ -68,6 +68,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
     int32 MaxSlotNum = 4;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TArray<FUGFItem> DefaultItems;
+
     // TMap<Index, Item>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
     TMap<int32, FUGFInventorySlot> InventorySlots;
@@ -81,6 +84,10 @@ protected:
     TMap<TObjectPtr<UUGFItemDefinition>, FUGFInventoryIndices> ItemInventoryIndicesMap;
 
 public:
+    /* ActorComponent */
+
+    virtual void BeginPlay() override;
+
     /* IUGFInventoryInterface */
 
     virtual void AddItem_Implementation(const FUGFItem& Item, int32& Overflow) override;
@@ -130,4 +137,7 @@ protected:
 
     UFUNCTION(BlueprintCallable)
     virtual void SortInventorySlots() { InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; }); }
+
+    UFUNCTION(BlueprintCallable)
+    virtual void AddDefaultItems();
 };
