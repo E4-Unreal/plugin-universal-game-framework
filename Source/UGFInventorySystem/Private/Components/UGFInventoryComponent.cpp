@@ -252,7 +252,6 @@ void UUGFInventoryComponent::SetInventorySlot(int32 Index, UUGFItemDefinition* I
         FUGFInventorySlot NewInventorySlot;
         NewInventorySlot.Index = Index;
         NewInventorySlot.ItemDefinition = ItemDefinition;
-        NewInventorySlot.InventoryItemConfig = UUGFInventoryItemConfig::GetFromItemDefinition(ItemDefinition);
         NewInventorySlot.Quantity = NewItemQuantity;
 
         // 새로운 인벤토리 슬롯 추가 및 캐시 업데이트
@@ -271,6 +270,6 @@ void UUGFInventoryComponent::AddDefaultItems()
     for (const auto& DefaultItem : DefaultItems)
     {
         int32 Overflow;
-        Execute_AddItem(this, DefaultItem, Overflow);
+        AddItem(DefaultItem, Overflow);
     }
 }

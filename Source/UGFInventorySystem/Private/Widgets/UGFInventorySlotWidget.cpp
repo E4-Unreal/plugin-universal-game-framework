@@ -38,13 +38,13 @@ void UUGFInventorySlotWidget::Clear()
 
 void UUGFInventorySlotWidget::SetInventorySlot(const FUGFInventorySlot& InInventorySlot)
 {
-    if (InInventorySlot.InventoryItemConfig == nullptr)
+    if (!InInventorySlot.IsValid())
     {
         Clear();
         return;
     }
 
-    const auto& Data = InInventorySlot.InventoryItemConfig->GetData();
+    const auto& Data = InInventorySlot.GetInventoryItemData();
     SetThumbnailImage(Data.ThumbnailTexture);
     SetQuantityTextBlock(InInventorySlot.Quantity);
 }
