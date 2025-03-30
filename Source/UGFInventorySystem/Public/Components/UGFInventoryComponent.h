@@ -83,11 +83,11 @@ protected:
 
     // TMap<Item, Quantity>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
-    TMap<TObjectPtr<UUGFItemDefinition>, int32> ItemQuantityMap;
+    TMap<TObjectPtr<UUGFItemDefinition>, int32> CachedQuantityMap;
 
     // TMap<Item, InventoryIndices>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
-    TMap<TObjectPtr<UUGFItemDefinition>, FUGFInventoryIndices> ItemInventoryIndicesMap;
+    TMap<TObjectPtr<UUGFItemDefinition>, FUGFInventoryIndices> CachedIndicesMap;
 
 public:
     /* ActorComponent */
@@ -122,7 +122,7 @@ protected:
 
     // 인벤토리에 보유 중인 특정 아이템의 개수
     UFUNCTION(BlueprintPure)
-    FORCEINLINE int32 GetItemQuantity(UUGFItemDefinition* ItemDefinition) const { return ItemQuantityMap.Contains(ItemDefinition) ? ItemQuantityMap[ItemDefinition] : 0; }
+    FORCEINLINE int32 GetItemQuantity(UUGFItemDefinition* ItemDefinition) const { return CachedQuantityMap.Contains(ItemDefinition) ? CachedQuantityMap[ItemDefinition] : 0; }
 
     UFUNCTION(BlueprintCallable, Category = "AddItem")
     virtual void FillInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow);
@@ -133,20 +133,17 @@ protected:
     UFUNCTION(BlueprintCallable, Category = "RemoveItem")
     virtual void RemoveInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Underflow);
 
-    UFUNCTION(BlueprintCallable, Category = "AddItem")
-    virtual void AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
+    UFUNCTION(BlueprintCallable, Category = "CachedQuantityMap")
+    virtual void AddCachedQuantityMap(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd);
 
-    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
-    virtual void RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove);
+    UFUNCTION(BlueprintCallable, Category = "CachedQuantityMap")
+    virtual void RemoveCachedQuantityMap(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove);
 
-    UFUNCTION(BlueprintCallable, Category = "AddItem")
-    virtual void AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
+    UFUNCTION(BlueprintCallable, Category = "CachedIndicesMap")
+    virtual void AddCachedIndicesMap(UUGFItemDefinition* ItemDefinition, int32 Index);
 
-    UFUNCTION(BlueprintCallable, Category = "RemoveItem")
-    virtual void RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SetInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
+    UFUNCTION(BlueprintCallable, Category = "CachedIndicesMap")
+    virtual void RemoveCachedIndicesMap(UUGFItemDefinition* ItemDefinition, int32 Index);
 
     UFUNCTION(BlueprintCallable)
     virtual void SortInventorySlots() { InventorySlots.KeySort([](int32 Lhs, int32 Rhs){ return Lhs < Rhs; }); }
@@ -155,11 +152,14 @@ protected:
     virtual void AddDefaultItems();
 
     UFUNCTION(BlueprintCallable)
-    virtual void AddInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
+    virtual void AddInventorySlot(int32 SlotIndex, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
 
     UFUNCTION(BlueprintCallable)
-    virtual void RemoveInventorySlot(int32 Index);
+    virtual void RemoveInventorySlot(int32 SlotIndex);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetItemQuantity(int32 Index, int32 Quantity);
+    virtual void AddQuantityToSlot(int32 SlotIndex, int32 QuantityToAdd);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void RemoveQuantityFromSlot(int32 SlotIndex, int32 QuantityToRemove);
 };

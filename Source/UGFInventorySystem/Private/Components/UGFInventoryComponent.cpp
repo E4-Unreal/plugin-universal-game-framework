@@ -31,10 +31,6 @@ void UUGFInventoryComponent::AddItem(const FUGFItem& Item, int32& Overflow)
     // 새로운 인벤토리 슬롯 생성
     AddInventorySlots(Item.ItemDefinition, Overflow);
 
-    // ItemQuantityMap 업데이트
-    int32 AddedQuantity = Item.Quantity - Overflow;
-    if (AddedQuantity > 0) AddItemQuantity(Item.ItemDefinition, AddedQuantity);
-
     LOG(Log, TEXT("Try add item(%s) > Quantity: %d, Overflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Quantity, Overflow)
 }
 
@@ -50,14 +46,6 @@ void UUGFInventoryComponent::RemoveItem(const FUGFItem& Item, int32& Underflow)
 
     // 기존 인벤토리 슬롯 비우기
     RemoveInventorySlots(Item.ItemDefinition, Underflow);
-
-    // ItemQuantityMap 업데이트
-    int32 QuantityToRemove = Item.Quantity - Underflow;
-    if (QuantityToRemove > 0)
-    {
-        RemoveItemQuantity(Item.ItemDefinition, QuantityToRemove);
-        SortInventorySlots();
-    }
 
     LOG(Log, TEXT("Try remove item(%s) > Quantity: %d, Underflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Quantity, Underflow)
 }
@@ -85,7 +73,7 @@ bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)
 void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefinition, int32& Overflow)
 {
     // 기존 인벤토리 슬롯 확인
-    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
+    if (!CachedIndicesMap.Contains(ItemDefinition)) return;
 
     // 인벤토리 전용 아이템 데이터 가져오기
     auto InventoryItemConfig = UUGFInventoryItemConfig::GetFromItemDefinition(ItemDefinition);
@@ -93,7 +81,7 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
     int32 MaxStack = Data.MaxStack;
 
     // 기존 인벤토리 슬롯 채우기
-    const auto& InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices;
+    const auto& InventoryIndices = CachedIndicesMap[ItemDefinition].Indices;
     for (int32 InventoryIndex : InventoryIndices)
     {
         // 기존 인벤토리 슬롯 용량 확인
@@ -106,7 +94,7 @@ void UUGFInventoryComponent::FillInventorySlots(UUGFItemDefinition* ItemDefiniti
         Overflow -= QuantityToAdd;
 
         // 기존 인벤토리 슬롯 채우기
-        SetInventorySlot(InventoryIndex, ItemDefinition, InventorySlot.Quantity + QuantityToAdd);
+        AddQuantityToSlot(InventoryIndex, QuantityToAdd);
 
         if (Overflow <= 0) break;
     }
@@ -130,7 +118,7 @@ void UUGFInventoryComponent::AddInventorySlots(UUGFItemDefinition* ItemDefinitio
         Overflow -= QuantityToAdd;
 
         // 새로운 인벤토리 슬롯 생성 및 추가
-        SetInventorySlot(Index, ItemDefinition, QuantityToAdd);
+        AddInventorySlot(Index, ItemDefinition, QuantityToAdd);
 
         if (Overflow <= 0) break;
     }
@@ -143,9 +131,9 @@ void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefini
 {
     check(ItemDefinition != nullptr);
 
-    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) return;
+    if (!CachedIndicesMap.Contains(ItemDefinition)) return;
 
-    TArray<int32> InventoryIndices = ItemInventoryIndicesMap[ItemDefinition].Indices.Array();
+    TArray<int32> InventoryIndices = CachedIndicesMap[ItemDefinition].Indices.Array();
     for (int32 InventoryIndex : InventoryIndices)
     {
         // 기존 인벤토리 슬롯에서 제거할 수량 계산
@@ -154,115 +142,66 @@ void UUGFInventoryComponent::RemoveInventorySlots(UUGFItemDefinition* ItemDefini
         Underflow -= QuantityToRemove;
 
         // 기존 인벤토리 슬롯에서 수량 제거
-        SetInventorySlot(InventoryIndex, ItemDefinition, InventorySlot.Quantity - QuantityToRemove);
-
-        if (InventorySlot.Quantity <= 0)
-        {
-            InventorySlots.Remove(InventoryIndex);
-            RemoveInventoryIndex(ItemDefinition, InventoryIndex);
-        }
+        RemoveQuantityFromSlot(InventoryIndex, QuantityToRemove);
 
         if (Underflow == 0) break;
     }
 
+    // 인벤토리 슬롯 정렬
     SortInventorySlots();
 }
 
-void UUGFInventoryComponent::AddItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd)
+void UUGFInventoryComponent::AddCachedQuantityMap(UUGFItemDefinition* ItemDefinition, int32 QuantityToAdd)
 {
     check(ItemDefinition != nullptr);
 
     int32 OldItemQuantity = GetItemQuantity(ItemDefinition);
-    if (ItemQuantityMap.Contains(ItemDefinition))
+    if (CachedQuantityMap.Contains(ItemDefinition))
     {
-        ItemQuantityMap[ItemDefinition] += QuantityToAdd;
+        CachedQuantityMap[ItemDefinition] += QuantityToAdd;
     }
     else
     {
-        ItemQuantityMap.Emplace(ItemDefinition, QuantityToAdd);
+        CachedQuantityMap.Emplace(ItemDefinition, QuantityToAdd);
     }
     int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
     LOG(Log, TEXT("Item added to inventory: %s > %d = %d + %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToAdd)
 }
 
-void UUGFInventoryComponent::RemoveItemQuantity(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove)
+void UUGFInventoryComponent::RemoveCachedQuantityMap(UUGFItemDefinition* ItemDefinition, int32 QuantityToRemove)
 {
     check(ItemDefinition != nullptr);
 
     int32 OldItemQuantity = GetItemQuantity(ItemDefinition);
     if (OldItemQuantity <= QuantityToRemove)
     {
-        ItemQuantityMap.Remove(ItemDefinition);
+        CachedQuantityMap.Remove(ItemDefinition);
     }
     else
     {
-        ItemQuantityMap[ItemDefinition] -= QuantityToRemove;
+        CachedQuantityMap[ItemDefinition] -= QuantityToRemove;
     }
     int32 NewItemQuantity = GetItemQuantity(ItemDefinition);
     LOG(Log, TEXT("Item removed from inventory: %s > %d = %d - %d"), *ItemDefinition->GetDisplayName().ToString(), NewItemQuantity, OldItemQuantity, QuantityToRemove)
 }
 
-void UUGFInventoryComponent::AddInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
+void UUGFInventoryComponent::AddCachedIndicesMap(UUGFItemDefinition* ItemDefinition, int32 Index)
 {
-    if (!ItemInventoryIndicesMap.Contains(ItemDefinition)) ItemInventoryIndicesMap.Emplace(ItemDefinition, FUGFInventoryIndices());
+    if (!CachedIndicesMap.Contains(ItemDefinition)) CachedIndicesMap.Emplace(ItemDefinition, FUGFInventoryIndices());
 
-    ItemInventoryIndicesMap[ItemDefinition].AddIndex(Index);
+    CachedIndicesMap[ItemDefinition].AddIndex(Index);
     LOG(Log, TEXT("InventoryIndex added: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
 }
 
-void UUGFInventoryComponent::RemoveInventoryIndex(UUGFItemDefinition* ItemDefinition, int32 Index)
+void UUGFInventoryComponent::RemoveCachedIndicesMap(UUGFItemDefinition* ItemDefinition, int32 Index)
 {
-    if (ItemInventoryIndicesMap.Contains(ItemDefinition))
+    if (CachedIndicesMap.Contains(ItemDefinition))
     {
-        ItemInventoryIndicesMap[ItemDefinition].RemoveIndex(Index);
+        CachedIndicesMap[ItemDefinition].RemoveIndex(Index);
         LOG(Log, TEXT("InventoryIndex removed: %s > %d"), *ItemDefinition->GetDisplayName().ToString(), Index)
 
-        if (ItemInventoryIndicesMap[ItemDefinition].IsEmpty()) ItemInventoryIndicesMap.Remove(ItemDefinition);
+        if (CachedIndicesMap[ItemDefinition].IsEmpty()) CachedIndicesMap.Remove(ItemDefinition);
     }
-}
-
-void UUGFInventoryComponent::SetInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
-{
-    int32 OldItemQuantity = 0;
-    int32 NewItemQuantity = ItemQuantity;
-    if (InventorySlots.Contains(Index))
-    {
-        // 기존 인벤토리 슬롯 가져오기
-        auto& InventorySlot = InventorySlots[Index];
-        check(InventorySlot.ItemDefinition == ItemDefinition);
-
-        // 기존 아이템 수량 저장
-        OldItemQuantity = InventorySlot.Quantity;
-
-        // 아이템 수량 변경 혹은 인벤토리 슬롯 비우기
-        if (NewItemQuantity <= 0)
-        {
-            // 기존 인벤토리 슬롯 제거 및 캐시 업데이트
-            RemoveInventoryIndex(ItemDefinition, Index);
-            InventorySlots.Remove(Index);
-        }
-        else
-        {
-            InventorySlot.Quantity = NewItemQuantity;
-        }
-    }
-    else if (NewItemQuantity > 0)
-    {
-        // 새로운 인벤토리 슬롯 생성
-        FUGFInventorySlot NewInventorySlot;
-        NewInventorySlot.Index = Index;
-        NewInventorySlot.ItemDefinition = ItemDefinition;
-        NewInventorySlot.Quantity = NewItemQuantity;
-
-        // 새로운 인벤토리 슬롯 추가 및 캐시 업데이트
-        InventorySlots.Emplace(Index, NewInventorySlot);
-        AddInventoryIndex(ItemDefinition, Index);
-    }
-
-    LOG(Log, TEXT("InventorySlots[%d](%s): %d > %d"), Index, *ItemDefinition->GetDisplayName().ToString(), OldItemQuantity, NewItemQuantity)
-
-    // 이벤트 호출
-    InventoryUpdated.Broadcast(Index);
 }
 
 void UUGFInventoryComponent::AddDefaultItems()
@@ -274,69 +213,92 @@ void UUGFInventoryComponent::AddDefaultItems()
     }
 }
 
-void UUGFInventoryComponent::AddInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
+void UUGFInventoryComponent::AddInventorySlot(int32 SlotIndex, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
 {
     // 유효성 검사
-    if (Index < 0 || ItemDefinition == nullptr || ItemQuantity <= 0) return;
+    if (SlotIndex < 0 || ItemDefinition == nullptr || ItemQuantity <= 0) return;
 
     // 이미 존재하는 경우
-    if (InventorySlots.Contains(Index)) return;
+    if (InventorySlots.Contains(SlotIndex)) return;
 
     // 새로운 슬롯 생성
     FUGFInventorySlot NewInventorySlot;
-    NewInventorySlot.Index = Index;
+    NewInventorySlot.Index = SlotIndex;
     NewInventorySlot.ItemDefinition = ItemDefinition;
     NewInventorySlot.Quantity = ItemQuantity;
 
     // 슬롯 추가
-    InventorySlots.Emplace(Index, NewInventorySlot);
+    InventorySlots.Emplace(SlotIndex, NewInventorySlot);
 
     // 캐시 업데이트
-    AddInventoryIndex(ItemDefinition, Index);
-    AddItemQuantity(ItemDefinition, ItemQuantity);
+    AddCachedIndicesMap(ItemDefinition, SlotIndex);
+    AddCachedQuantityMap(ItemDefinition, ItemQuantity);
+
+    // 이벤트 호출
+    InventoryUpdated.Broadcast(SlotIndex);
 }
 
-void UUGFInventoryComponent::RemoveInventorySlot(int32 Index)
+void UUGFInventoryComponent::RemoveInventorySlot(int32 SlotIndex)
 {
     // 유효성 검사
-    if (Index < 0) return;
+    if (SlotIndex < 0) return;
 
     // 이미 비어있는 경우
-    if (!InventorySlots.Contains(Index)) return;
+    if (!InventorySlots.Contains(SlotIndex)) return;
 
     // 정리할 슬롯 가져오기
-    const auto& InventorySlotToClear = InventorySlots[Index];
+    const auto& InventorySlotToClear = InventorySlots[SlotIndex];
 
     // 캐시 업데이트
-    RemoveItemQuantity(InventorySlotToClear.ItemDefinition, InventorySlotToClear.Quantity);
-    RemoveInventoryIndex(InventorySlotToClear.ItemDefinition, Index);
+    RemoveCachedQuantityMap(InventorySlotToClear.ItemDefinition, InventorySlotToClear.Quantity);
+    RemoveCachedIndicesMap(InventorySlotToClear.ItemDefinition, SlotIndex);
 
     // 슬롯 제거
-    InventorySlots.Remove(Index);
+    InventorySlots.Remove(SlotIndex);
+
+    // 이벤트 호출
+    InventoryUpdated.Broadcast(SlotIndex);
 }
 
-void UUGFInventoryComponent::SetItemQuantity(int32 Index, int32 Quantity)
+void UUGFInventoryComponent::AddQuantityToSlot(int32 SlotIndex, int32 QuantityToAdd)
 {
     // 유효성 검사
-    if (Index < 0) return;
+    if (SlotIndex < 0 || QuantityToAdd <= 0) return;
 
     // 존재하지 않는 경우
-    if (!InventorySlots.Contains(Index)) return;
-
-    // 비우는 경우
-    if (Quantity <= 0)
-    {
-        RemoveInventorySlot(Index);
-        return;
-    }
+    if (!InventorySlots.Contains(SlotIndex)) return;
 
     // 슬롯 업데이트
-    auto& InventorySlot = InventorySlots[Index];
-    int32 Difference = InventorySlot.Quantity - Quantity;
-    if (Difference == 0) return;
-    InventorySlot.Quantity = Quantity;
+    auto& InventorySlot = InventorySlots[SlotIndex];
+    InventorySlot.Quantity += QuantityToAdd;
 
     // 캐시 업데이트
-    if (Difference > 0) RemoveItemQuantity(InventorySlot.ItemDefinition, Difference);
-    else AddItemQuantity(InventorySlot.ItemDefinition, -Difference);
+    AddCachedQuantityMap(InventorySlot.ItemDefinition, QuantityToAdd);
+
+    // 이벤트 호출
+    InventoryUpdated.Broadcast(SlotIndex);
+}
+
+void UUGFInventoryComponent::RemoveQuantityFromSlot(int32 SlotIndex, int32 QuantityToRemove)
+{
+    // 유효성 검사
+    if (SlotIndex < 0 || QuantityToRemove <= 0) return;
+
+    // 존재하지 않는 경우
+    if (!InventorySlots.Contains(SlotIndex)) return;
+
+    // 슬롯 업데이트
+    auto& InventorySlot = InventorySlots[SlotIndex];
+    if (InventorySlot.Quantity == QuantityToRemove)
+    {
+        RemoveInventorySlot(SlotIndex);
+        return;
+    }
+    InventorySlot.Quantity -= QuantityToRemove;
+
+    // 캐시 업데이트
+    RemoveCachedQuantityMap(InventorySlot.ItemDefinition, QuantityToRemove);
+
+    // 이벤트 호출
+    InventoryUpdated.Broadcast(SlotIndex);
 }
