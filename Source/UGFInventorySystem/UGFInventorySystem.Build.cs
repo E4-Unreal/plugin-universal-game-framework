@@ -11,6 +11,7 @@ public class UGFInventorySystem : ModuleRules
             {
                 "Core",
                 "UMG",
+                "InputCore",
                 "UniversalUtilities",
                 "UGFCore",
                 "UGFItemSystem"

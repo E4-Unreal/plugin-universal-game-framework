@@ -7,6 +7,7 @@
 #include "Types/UGFInventorySlot.h"
 #include "UGFInventorySlotWidget.generated.h"
 
+class UUGFDraggedInventorySlotWidget;
 class UTextBlock;
 class UImage;
 class UUGFInventoryComponent;
@@ -27,6 +28,9 @@ private:
     TObjectPtr<UTextBlock> QuantityTextBlock;
 
 protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+    TSubclassOf<UUGFDraggedInventorySlotWidget> DraggedWidgetClass;
+
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Transient, Category = "State")
     int32 Index;
 
@@ -44,6 +48,18 @@ public:
     virtual void Clear();
 
 protected:
+    /* UserWidget */
+
+    virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+    virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
+    virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
+    UFUNCTION(BlueprintPure)
+    virtual UImage* GetThumbnailImage() const { return ThumbnailImage; }
+
+    UFUNCTION(BlueprintPure)
+    virtual UTextBlock* GetQuantityTextBlock() const { return QuantityTextBlock; }
+
     UFUNCTION(BlueprintCallable)
     virtual void SetInventorySlot(const FUGFInventorySlot& InInventorySlot);
 

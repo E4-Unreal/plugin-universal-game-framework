@@ -11,7 +11,7 @@ class UImage;
 /**
  *
  */
-UCLASS()
+UCLASS(Abstract)
 class UGFINVENTORYSYSTEM_API UUGFDraggedInventorySlotWidget : public UUserWidget
 {
     GENERATED_BODY()
@@ -19,6 +19,10 @@ class UGFINVENTORYSYSTEM_API UUGFDraggedInventorySlotWidget : public UUserWidget
 private:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> ThumbnailImage;
+
+public:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)
+    int32 SlotIndex;
 
 public:
     UFUNCTION(BlueprintCallable)

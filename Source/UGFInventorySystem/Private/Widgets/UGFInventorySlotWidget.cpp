@@ -3,9 +3,11 @@
 
 #include "Widgets/UGFInventorySlotWidget.h"
 
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/UGFInventoryComponent.h"
+#include "Widgets/UGFDraggedInventorySlotWidget.h"
 
 void UUGFInventorySlotWidget::InitializeInventorySlot(UUGFInventoryComponent* InInventoryComponent, int32 InIndex)
 {
@@ -34,6 +36,54 @@ void UUGFInventorySlotWidget::Clear()
 {
     SetThumbnailImage(nullptr);
     SetQuantityTextBlock(0);
+}
+
+FReply UUGFInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+    if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
+    {
+        FEventReply EventReply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+        return EventReply.NativeReply;
+    }
+
+    return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
+}
+
+void UUGFInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
+    UDragDropOperation*& OutOperation)
+{
+    if (DraggedWidgetClass)
+    {
+        auto DraggedWidget = CreateWidget<UUGFDraggedInventorySlotWidget>(this, DraggedWidgetClass);
+        if (ThumbnailImage) DraggedWidget->SetThumbnailImage(ThumbnailImage->GetBrush().GetResourceObject());
+        DraggedWidget->SlotIndex = Index;
+
+        auto DragAndDropOperation = NewObject<UDragDropOperation>(this, UDragDropOperation::StaticClass());
+        DragAndDropOperation->DefaultDragVisual = DraggedWidget;
+
+        OutOperation = DragAndDropOperation;
+    }
+    else
+    {
+        Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
+    }
+}
+
+bool UUGFInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+    UDragDropOperation* InOperation)
+{
+    if (InOperation && InOperation->DefaultDragVisual)
+    {
+        if (auto DraggedInventorySlotWidget = Cast<UUGFDraggedInventorySlotWidget>(InOperation->DefaultDragVisual))
+        {
+            if (InventoryComponent)
+            {
+                InventoryComponent->SwapInventorySlot(DraggedInventorySlotWidget->SlotIndex, Index);
+            }
+        }
+    }
+
+    return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
 
 void UUGFInventorySlotWidget::SetInventorySlot(const FUGFInventorySlot& InInventorySlot)
