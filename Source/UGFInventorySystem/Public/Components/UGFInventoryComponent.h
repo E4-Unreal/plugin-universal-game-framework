@@ -153,4 +153,13 @@ protected:
 
     UFUNCTION(BlueprintCallable)
     virtual void AddDefaultItems();
+
+    UFUNCTION(BlueprintCallable)
+    virtual void AddInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void RemoveInventorySlot(int32 Index);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetItemQuantity(int32 Index, int32 Quantity);
 };

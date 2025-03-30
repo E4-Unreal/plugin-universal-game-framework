@@ -64,7 +64,7 @@ void UUGFInventoryComponent::RemoveItem(const FUGFItem& Item, int32& Underflow)
 
 void UUGFInventoryComponent::SwapInventorySlot(int32 SourceIndex, int32 TargetIndex)
 {
-    LOG_TODO
+
 }
 
 bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)
@@ -272,4 +272,71 @@ void UUGFInventoryComponent::AddDefaultItems()
         int32 Overflow;
         AddItem(DefaultItem, Overflow);
     }
+}
+
+void UUGFInventoryComponent::AddInventorySlot(int32 Index, UUGFItemDefinition* ItemDefinition, int32 ItemQuantity)
+{
+    // 유효성 검사
+    if (Index < 0 || ItemDefinition == nullptr || ItemQuantity <= 0) return;
+
+    // 이미 존재하는 경우
+    if (InventorySlots.Contains(Index)) return;
+
+    // 새로운 슬롯 생성
+    FUGFInventorySlot NewInventorySlot;
+    NewInventorySlot.Index = Index;
+    NewInventorySlot.ItemDefinition = ItemDefinition;
+    NewInventorySlot.Quantity = ItemQuantity;
+
+    // 슬롯 추가
+    InventorySlots.Emplace(Index, NewInventorySlot);
+
+    // 캐시 업데이트
+    AddInventoryIndex(ItemDefinition, Index);
+    AddItemQuantity(ItemDefinition, ItemQuantity);
+}
+
+void UUGFInventoryComponent::RemoveInventorySlot(int32 Index)
+{
+    // 유효성 검사
+    if (Index < 0) return;
+
+    // 이미 비어있는 경우
+    if (!InventorySlots.Contains(Index)) return;
+
+    // 정리할 슬롯 가져오기
+    const auto& InventorySlotToClear = InventorySlots[Index];
+
+    // 캐시 업데이트
+    RemoveItemQuantity(InventorySlotToClear.ItemDefinition, InventorySlotToClear.Quantity);
+    RemoveInventoryIndex(InventorySlotToClear.ItemDefinition, Index);
+
+    // 슬롯 제거
+    InventorySlots.Remove(Index);
+}
+
+void UUGFInventoryComponent::SetItemQuantity(int32 Index, int32 Quantity)
+{
+    // 유효성 검사
+    if (Index < 0) return;
+
+    // 존재하지 않는 경우
+    if (!InventorySlots.Contains(Index)) return;
+
+    // 비우는 경우
+    if (Quantity <= 0)
+    {
+        RemoveInventorySlot(Index);
+        return;
+    }
+
+    // 슬롯 업데이트
+    auto& InventorySlot = InventorySlots[Index];
+    int32 Difference = InventorySlot.Quantity - Quantity;
+    if (Difference == 0) return;
+    InventorySlot.Quantity = Quantity;
+
+    // 캐시 업데이트
+    if (Difference > 0) RemoveItemQuantity(InventorySlot.ItemDefinition, Difference);
+    else AddItemQuantity(InventorySlot.ItemDefinition, -Difference);
 }
