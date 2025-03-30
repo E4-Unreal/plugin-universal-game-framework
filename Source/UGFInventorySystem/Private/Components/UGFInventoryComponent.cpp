@@ -52,7 +52,35 @@ void UUGFInventoryComponent::RemoveItem(const FUGFItem& Item, int32& Underflow)
 
 void UUGFInventoryComponent::SwapInventorySlot(int32 SourceIndex, int32 TargetIndex)
 {
+    // 유효성 검사
+    if (SourceIndex < 0 || TargetIndex < 0 || SourceIndex == TargetIndex) return;
 
+    const auto& SourceInventorySlot = GetInventorySlot(SourceIndex);
+    const auto& TargetInventorySlot = GetInventorySlot(TargetIndex);
+
+    if (SourceInventorySlot.IsEmpty()) return;
+    if (TargetInventorySlot.IsEmpty())
+    {
+        RemoveInventorySlot(SourceIndex);
+        AddInventorySlot(TargetIndex, SourceInventorySlot.ItemDefinition, SourceInventorySlot.Quantity);
+        return;
+    }
+
+    if (SourceInventorySlot.ItemDefinition != TargetInventorySlot.ItemDefinition || TargetInventorySlot.IsFull())
+    {
+        RemoveInventorySlot(SourceIndex);
+        RemoveInventorySlot(TargetIndex);
+
+        AddInventorySlot(SourceIndex, TargetInventorySlot.ItemDefinition, TargetInventorySlot.Quantity);
+        AddInventorySlot(TargetIndex, SourceInventorySlot.ItemDefinition, SourceInventorySlot.Quantity);
+    }
+    else
+    {
+        int32 Capacity = TargetInventorySlot.GetCapacity();
+        int32 QuantityToMove = Capacity >= SourceInventorySlot.Quantity ? SourceInventorySlot.Quantity : Capacity;
+        AddQuantityToSlot(TargetIndex, QuantityToMove);
+        RemoveQuantityFromSlot(SourceIndex, QuantityToMove);
+    }
 }
 
 bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)

@@ -35,5 +35,11 @@ public:
 
     const FUGFInventoryItemData& GetInventoryItemData() const;
 
+    bool IsEmpty() const { return ItemDefinition == nullptr || Quantity <= 0; }
+
+    bool IsFull() const { return GetInventoryItemData().MaxStack <= Quantity; }
+
+    int32 GetCapacity() const { return FMath::Max(GetInventoryItemData().MaxStack - Quantity, 0); }
+
     bool IsValid() const { return Index >= 0 && ItemDefinition != nullptr && Quantity > 0; }
 };
