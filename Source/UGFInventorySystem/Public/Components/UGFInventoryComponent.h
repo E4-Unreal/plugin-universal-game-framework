@@ -62,7 +62,7 @@ struct FUGFInventoryIndices
 
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class UGFINVENTORYSYSTEM_API UUGFInventoryComponent : public UActorComponent, public IUGFInventoryInterface
+class UGFINVENTORYSYSTEM_API UUGFInventoryComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -94,13 +94,6 @@ public:
 
     virtual void BeginPlay() override;
 
-    /* IUGFInventoryInterface */
-
-    virtual void AddItem_Implementation(const FUGFItem& Item, int32& Overflow) override;
-    virtual void RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow) override;
-    virtual bool HasItem_Implementation(const FUGFItem& Item) const override { return GetItemQuantity(Item.ItemDefinition) >= Item.Quantity; }
-    virtual void SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex) override;
-
     /* Getter */
 
     UFUNCTION(BlueprintPure, Category = "UI")
@@ -108,6 +101,20 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "UI")
     const FUGFInventorySlot& GetInventorySlot(int32 Index) const { return InventorySlots.Contains(Index) ? InventorySlots[Index] : FUGFInventorySlot::EmptySlot; }
+
+    /* UGFInventoryComponent */
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    virtual void AddItem(const FUGFItem& Item, int32& Overflow);
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    virtual void RemoveItem(const FUGFItem& Item, int32& Underflow);
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    virtual bool HasItem(const FUGFItem& Item) const { return GetItemQuantity(Item.ItemDefinition) >= Item.Quantity; }
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    virtual void SwapInventorySlot(int32 SourceIndex, int32 TargetIndex);
 
 protected:
     UFUNCTION(BlueprintPure)

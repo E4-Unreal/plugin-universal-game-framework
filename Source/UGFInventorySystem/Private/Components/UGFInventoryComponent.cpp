@@ -15,7 +15,7 @@ void UUGFInventoryComponent::BeginPlay()
     AddDefaultItems();
 }
 
-void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32& Overflow)
+void UUGFInventoryComponent::AddItem(const FUGFItem& Item, int32& Overflow)
 {
     check(Item.ItemDefinition != nullptr)
 
@@ -38,7 +38,7 @@ void UUGFInventoryComponent::AddItem_Implementation(const FUGFItem& Item, int32&
     LOG(Log, TEXT("Try add item(%s) > Quantity: %d, Overflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Quantity, Overflow)
 }
 
-void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int32& Underflow)
+void UUGFInventoryComponent::RemoveItem(const FUGFItem& Item, int32& Underflow)
 {
     check(Item.ItemDefinition != nullptr)
 
@@ -62,9 +62,9 @@ void UUGFInventoryComponent::RemoveItem_Implementation(const FUGFItem& Item, int
     LOG(Log, TEXT("Try remove item(%s) > Quantity: %d, Underflow: %d"), *Item.ItemDefinition->GetDisplayName().ToString(), Item.Quantity, Underflow)
 }
 
-void UUGFInventoryComponent::SwapInventorySlot_Implementation(int32 SelectedIndex, int32 TargetIndex)
+void UUGFInventoryComponent::SwapInventorySlot(int32 SourceIndex, int32 TargetIndex)
 {
-    IUGFInventoryInterface::SwapInventorySlot_Implementation(SelectedIndex, TargetIndex);
+    LOG_TODO
 }
 
 bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)
