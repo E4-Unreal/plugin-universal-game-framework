@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UGFItemActorInterface.h"
 #include "GameFramework/Actor.h"
 #include "Types/UGFItem.h"
-#include "UGFPickupItem.generated.h"
+#include "UGFItemActor.generated.h"
 
 class USphereComponent;
 
 UCLASS(Abstract)
-class UNIVERSALGAMEFRAMEWORK_API AUGFPickupItem : public AActor
+class UNIVERSALGAMEFRAMEWORK_API AUGFItemActor : public AActor, public IUGFItemActorInterface
 {
     GENERATED_BODY()
 
@@ -28,10 +29,15 @@ protected:
     bool bAutoPickup = true;
 
 public:
-    AUGFPickupItem(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    AUGFItemActor(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE USphereComponent* GetOverlapSphere() const { return OverlapSphere; }
+
+    /* UGFPickupItem */
+
+    virtual void SetItem_Implementation(const FUGFItem& InItem) override;
+    virtual void SetItems_Implementation(const TArray<FUGFItem>& InItems) override;
 
 protected:
     virtual void BeginPlay() override;
