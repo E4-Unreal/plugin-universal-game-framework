@@ -106,13 +106,13 @@ void UUGFInventoryComponent::DropItemFromSlot(int32 Index, int32 Quantity)
     auto Owner = GetOwner();
     auto TransformToSpawn = Owner->GetTransform();
     auto ItemActor = World->SpawnActorDeferred<AActor>(ItemActorClass, TransformToSpawn, Owner, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    auto ItemActorInterface = Cast<IUGFItemActorInterface>(ItemActor);
     FUGFItem NewItem
     {
         InventorySlot.ItemDefinition,
         Quantity
     };
-    ItemActorInterface->SetItem(NewItem);
+
+    IUGFItemActorInterface::Execute_SetItem(ItemActor, NewItem);
     ItemActor->FinishSpawning(TransformToSpawn);
 }
 
