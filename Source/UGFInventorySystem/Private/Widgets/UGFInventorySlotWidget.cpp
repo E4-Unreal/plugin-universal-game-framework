@@ -52,6 +52,9 @@ FReply UUGFInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeome
 void UUGFInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
     UDragDropOperation*& OutOperation)
 {
+    const auto& InventorySlot = InventoryComponent->GetInventorySlot(Index);
+    if (InventorySlot.IsEmpty()) return;
+
     if (DraggedWidgetClass)
     {
         auto DraggedWidget = CreateWidget<UUGFDraggedInventorySlotWidget>(this, DraggedWidgetClass);
