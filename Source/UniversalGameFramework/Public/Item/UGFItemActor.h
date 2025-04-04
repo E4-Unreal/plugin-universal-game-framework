@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UGFItemActorInterface.h"
+#include "Interfaces/UGFItemActorInterface.h"
 #include "GameFramework/Actor.h"
 #include "Types/UGFItem.h"
 #include "UGFItemActor.generated.h"
