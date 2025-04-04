@@ -6,6 +6,8 @@
 #include "Logging.h"
 #include "Data/UGFInventoryItemConfig.h"
 #include "Data/UGFItemDefinition.h"
+#include "Interfaces/UGFItemActorInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Types/UGFInventorySlot.h"
 
 void UUGFInventoryComponent::BeginPlay()
@@ -86,6 +88,32 @@ void UUGFInventoryComponent::SwapInventorySlot(int32 SourceIndex, int32 TargetIn
 void UUGFInventoryComponent::ClearInventorySlot(int32 Index)
 {
     RemoveInventorySlot(Index);
+}
+
+void UUGFInventoryComponent::DropItemFromSlot(int32 Index, int32 Quantity)
+{
+    // 유효성 검사
+    if (ItemActorClass == nullptr || !ItemActorClass->ImplementsInterface(UUGFItemActorInterface::StaticClass())) return;
+
+    const auto& InventorySlot = GetInventorySlot(Index);
+    if (InventorySlot.IsEmpty() || InventorySlot.Quantity < Quantity) return;
+
+    // 인벤토리에서 제거
+    RemoveQuantityFromSlot(Index, Quantity);
+
+    // ItemActor 스폰
+    auto World = GetWorld();
+    auto Owner = GetOwner();
+    auto TransformToSpawn = Owner->GetTransform();
+    auto ItemActor = World->SpawnActorDeferred<AActor>(ItemActorClass, TransformToSpawn, Owner, nullptr, ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+    auto ItemActorInterface = Cast<IUGFItemActorInterface>(ItemActor);
+    FUGFItem NewItem
+    {
+        InventorySlot.ItemDefinition,
+        Quantity
+    };
+    ItemActorInterface->SetItem(NewItem);
+    ItemActor->FinishSpawning(TransformToSpawn);
 }
 
 bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)

@@ -77,6 +77,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TArray<FUGFItem> DefaultItems;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "UGFItemActorInterface"), Category = "Config")
+    TSubclassOf<AActor> ItemActorClass;
+
     // TMap<Index, Item>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
     TMap<int32, FUGFInventorySlot> InventorySlots;
@@ -118,6 +121,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     virtual void ClearInventorySlot(int32 Index);
+
+    UFUNCTION(BLueprintCallable, Category = "UI")
+    virtual void DropItemFromSlot(int32 Index, int32 Quantity);
 
 protected:
     UFUNCTION(BlueprintPure)
