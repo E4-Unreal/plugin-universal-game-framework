@@ -113,8 +113,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     virtual bool HasItem(const FUGFItem& Item) const { return GetItemQuantity(Item.ItemDefinition) >= Item.Quantity; }
 
-    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    UFUNCTION(BlueprintCallable, Category = "UI")
     virtual void SwapInventorySlot(int32 SourceIndex, int32 TargetIndex);
+
+    UFUNCTION(BlueprintCallable, Category = "UI")
+    virtual void ClearInventorySlot(int32 Index);
 
 protected:
     UFUNCTION(BlueprintPure)

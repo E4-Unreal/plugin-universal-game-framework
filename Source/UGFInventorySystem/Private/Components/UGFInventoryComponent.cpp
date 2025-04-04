@@ -83,6 +83,11 @@ void UUGFInventoryComponent::SwapInventorySlot(int32 SourceIndex, int32 TargetIn
     }
 }
 
+void UUGFInventoryComponent::ClearInventorySlot(int32 Index)
+{
+    RemoveInventorySlot(Index);
+}
+
 bool UUGFInventoryComponent::IsValidItem(const FUGFItem& Item)
 {
     if (!Item.IsValid()) return false;
