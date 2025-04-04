@@ -38,6 +38,9 @@ void AUGFItemActor::OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedC
 {
     if (bAutoPickup)
     {
+        // 자신이 버린 물건 제외
+        if (OtherActor == GetOwner()) return;
+
         if (auto OtherPawn = Cast<APawn>(OtherActor))
         {
             if (auto InventoryComponent = OtherPawn->GetComponentByClass<UUGFInventoryComponent>())
