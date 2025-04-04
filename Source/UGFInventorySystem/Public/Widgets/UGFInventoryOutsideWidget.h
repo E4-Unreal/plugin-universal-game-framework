@@ -11,7 +11,7 @@ class UUGFInventoryComponent;
 /**
  *
  */
-UCLASS()
+UCLASS(Abstract)
 class UGFINVENTORYSYSTEM_API UUGFInventoryOutsideWidget : public UUserWidget
 {
     GENERATED_BODY()
