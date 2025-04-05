@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UGFItemConfig.h"
 #include "Engine/DataAsset.h"
 #include "Types/UGFItemDefinitionData.h"
 #include "UGFItemDefinition.generated.h"
-
-class UUGFItemConfig;
 
 /**
  *
@@ -25,11 +24,27 @@ public:
     void SetData(const FUGFItemDefinitionData& InData) { Data = InData; }
 
     UFUNCTION(BlueprintPure)
+    FORCEINLINE int32 GetID() const { return Data.ID; }
+
+    UFUNCTION(BlueprintPure)
     const FORCEINLINE FText& GetDisplayName() const { return Data.DisplayName; }
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE int32 GetMaxStack() const { return Data.MaxStack; }
+    virtual bool IsValid() const;
 
     template<typename T>
-    const T* FindItemConfigByClass(TSubclassOf<T> ItemConfigClass) const;
+    T* GetItemConfigByClass(TSubclassOf<T> ItemConfigClass) const
+    {
+        if (ItemConfigClass == nullptr || !ItemConfigClass->IsChildOf(UUGFItemConfig::StaticClass())) return nullptr;
+
+        for (auto ItemConfig : Data.ItemConfigs)
+        {
+            if (ItemConfig && ItemConfig->IsA(ItemConfigClass))
+            {
+                return Cast<T>(ItemConfig);
+            }
+        }
+
+        return nullptr;
+    }
 };

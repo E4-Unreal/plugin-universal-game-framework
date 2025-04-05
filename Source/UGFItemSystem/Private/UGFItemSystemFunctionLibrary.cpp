@@ -11,7 +11,7 @@ const UUGFItemConfig* UUGFItemSystemFunctionLibrary::FindItemConfigByClass(UUGFI
 {
     if ((ItemDefinition != nullptr) && (ItemConfigClass != nullptr))
     {
-        return ItemDefinition->FindItemConfigByClass(ItemConfigClass);
+        return ItemDefinition->GetItemConfigByClass(ItemConfigClass);
     }
     return nullptr;
 }

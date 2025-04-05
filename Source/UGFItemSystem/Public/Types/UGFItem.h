@@ -22,7 +22,7 @@ public:
     TObjectPtr<UUGFItemDefinition> ItemDefinition;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
-    int32 Amount = 1;
+    int32 Quantity = 1;
 
-    bool IsFull() const { return Amount >= ItemDefinition->GetMaxStack(); }
+    bool IsValid() const;
 };

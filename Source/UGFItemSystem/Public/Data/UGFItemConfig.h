@@ -9,8 +9,12 @@
 /**
  *
  */
-UCLASS(Abstract, Blueprintable, Const, DefaultToInstanced, EditInlineNew)
+UCLASS(Abstract, Blueprintable, Const, DefaultToInstanced, EditInlineNew, CollapseCategories)
 class UGFITEMSYSTEM_API UUGFItemConfig : public UPrimaryDataAsset
 {
     GENERATED_BODY()
+
+public:
+    UFUNCTION(BlueprintPure)
+    virtual FORCEINLINE bool IsValid() const { return true; }
 };

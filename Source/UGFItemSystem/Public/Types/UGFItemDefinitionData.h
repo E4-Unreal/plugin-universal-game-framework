@@ -16,12 +16,12 @@ struct UGFITEMSYSTEM_API FUGFItemDefinitionData
     GENERATED_BODY()
 
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
+    int32 ID;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText DisplayName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TArray<TObjectPtr<UUGFItemConfig>> ItemConfigs;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
-    int32 MaxStack = 1;
 };
