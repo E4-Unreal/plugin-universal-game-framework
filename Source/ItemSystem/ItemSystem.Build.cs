@@ -11,7 +11,7 @@ public class ItemSystem : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "EditorScriptingUtilities"
+                "Blutility"
             }
         );
 
@@ -21,7 +21,9 @@ public class ItemSystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "EditorScriptingUtilities",
+                "UnrealEd",
             }
         );
     }
