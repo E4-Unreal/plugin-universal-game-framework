@@ -38,7 +38,7 @@ public:
     UFUNCTION(BlueprintPure)
     const FORCEINLINE FItemDefinitionData& GetData() const { return Data; }
 
-    bool Update(int32 ID, FItemDataTableRow* Row);
+    bool Update(int32 ID, FItemDataTableRow* Row, const TArray<TSubclassOf<UItemConfig>>& ItemConfigClasses);
 
     template<typename T>
     T* GetItemConfigByClass(TSubclassOf<T> ItemConfigClass) const

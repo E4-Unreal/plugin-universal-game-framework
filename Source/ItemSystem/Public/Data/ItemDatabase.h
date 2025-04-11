@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "ItemDatabase.generated.h"
 
+class UItemConfig;
 class UItemDefinition;
 struct FItemDataTableRow;
 
@@ -26,6 +27,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TObjectPtr<UDataTable> ItemDataTable;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    TArray<TSubclassOf<UItemConfig>> ItemConfigClasses;
 
     UPROPERTY(VisibleDefaultsOnly, Category = "State")
     TMap<int32, TObjectPtr<UItemDefinition>> ItemDefinitionMap;
