@@ -21,17 +21,28 @@ bool UItemDefinition::Update(int32 ID, FItemDataTableRow* Row)
 
 bool UItemDefinition::OnUpdate(int32 ID, FItemDataTableRow* Row)
 {
-    // 데이터 생성
+    bool bDirty = false;
+
+    // ItemDefinition 업데이트
     FItemDefinitionData NewData
     {
         ID,
         Row->DisplayText
     };
 
-    // 데이터 비교
-    if (Data == NewData) return false;
-    Data = NewData;
+    if (Data != NewData)
+    {
+        bDirty = true;
+        Data = NewData;
+    }
 
-    return true;
+    // ItemConfigs 업데이트
+    for (auto ItemConfig : ItemConfigs)
+    {
+        bool bResult = ItemConfig->Update(this, Row);
+        bDirty = bDirty || bResult;
+    }
+
+    return bDirty;
 }
 
