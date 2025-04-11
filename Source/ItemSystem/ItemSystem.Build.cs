@@ -10,6 +10,7 @@ public class ItemSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities"
             }
         );
 
