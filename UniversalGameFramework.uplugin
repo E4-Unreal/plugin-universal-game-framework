@@ -59,6 +59,10 @@
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "EditorScriptingUtilities",
+            "Enabled": true
+        }
 	]
 }
