@@ -21,6 +21,7 @@ bool UItemDefinition::Update(int32 ID, FItemDataTableRow* Row, const TArray<TSub
         auto NewItemConfig = NewObject<UItemConfig>(this, ItemConfigClass, NewItemConfigName);
         ItemConfigs.Emplace(NewItemConfig);
     }
+    GetPackage()->MarkPackageDirty();
 
     bValid = true;
 
