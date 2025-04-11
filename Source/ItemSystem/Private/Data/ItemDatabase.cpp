@@ -19,6 +19,25 @@ void UItemDatabase::HardUpdate()
     Update();
 }
 
+bool UItemDatabase::CheckRowName(FName RowName, int32& ID)
+{
+    FString IDString = RowName.ToString();
+    if (!IDString.IsNumeric())
+    {
+        LOG(Error, TEXT("ID should be numeric!"))
+        return false;
+    }
+
+    ID = FCString::Atoi(*IDString);
+    if (ID < 0)
+    {
+        LOG(Error, TEXT("ID should be positive number!"))
+        return false;
+    }
+
+    return true;
+}
+
 void UItemDatabase::DeleteAllItemDefinitions()
 {
     for (auto [ID, ItemDefinition] : ItemDefinitionMap)
@@ -41,19 +60,9 @@ void UItemDatabase::Update()
     {
         /* Check ID */
 
-        FString IDString = RowName.ToString();
-        if (!IDString.IsNumeric())
-        {
-            LOG(Error, TEXT("ID should be numeric!"))
-            continue;
-        }
-
-        int32 ID = FCString::Atoi(*IDString);
-        if (ID < 0)
-        {
-            LOG(Error, TEXT("ID should be positive number!"))
-            continue;
-        }
+        int32 ID;
+        bool bValid = CheckRowName(RowName, ID);
+        if (!bValid) continue;
 
         /* Create ItemDefinition */
 

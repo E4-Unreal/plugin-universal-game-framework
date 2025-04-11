@@ -36,6 +36,9 @@ public:
 
 protected:
     UFUNCTION(BlueprintPure)
+    static bool CheckRowName(FName RowName, int32& ID);
+
+    UFUNCTION(BlueprintPure)
     FString GetAssetName(int32 ID) const;
 
     UFUNCTION(BlueprintPure)
