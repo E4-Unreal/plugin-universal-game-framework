@@ -25,13 +25,16 @@ protected:
     bool bValid = true;
 
 public:
-    bool Update(int32 ID, FItemDataTableRow* Row);
-
     UFUNCTION(BlueprintPure)
     FORCEINLINE bool IsValid() const { return bValid; }
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
+
+    UFUNCTION(BlueprintPure)
+    const FORCEINLINE FItemDefinitionData& GetData() const { return Data; }
+
+    bool Update(int32 ID, FItemDataTableRow* Row);
 
 protected:
     virtual bool OnUpdate(int32 ID, FItemDataTableRow* Row);
