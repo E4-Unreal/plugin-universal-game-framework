@@ -5,7 +5,7 @@
 #include "ItemDefinitionData.generated.h"
 
 /**
- *
+ * ItemDefinition 데이터 에셋 전용 구조체
  */
 USTRUCT(Atomic, BlueprintType)
 struct FItemDefinitionData
