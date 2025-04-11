@@ -7,6 +7,8 @@
 #include "Types/ItemDefinitionData.h"
 #include "ItemDefinition.generated.h"
 
+struct FItemDataTableRow;
+
 /**
  *
  */
@@ -19,9 +21,18 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ShowOnlyInnerProperties))
     FItemDefinitionData Data;
 
+    UPROPERTY(VisibleDefaultsOnly, Category = "State")
+    bool bValid = true;
+
 public:
-#if WITH_EDITOR
-    UFUNCTION(BlueprintCallable)
-    virtual bool SetData(const FItemDefinitionData& InData);
-#endif
+    bool Update(int32 ID, FItemDataTableRow* Row);
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool IsValid() const { return bValid; }
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
+
+protected:
+    virtual bool OnUpdate(int32 ID, FItemDataTableRow* Row);
 };

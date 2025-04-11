@@ -3,18 +3,35 @@
 
 #include "Data/ItemDefinition.h"
 
-#include "EditorAssetLibrary.h"
+#include "Types/ItemDataTableRow.h"
 
-#if WITH_EDITOR
-bool UItemDefinition::SetData(const FItemDefinitionData& InData)
+bool UItemDefinition::Update(int32 ID, FItemDataTableRow* Row)
 {
-    if (Data == InData) return false;
-    Data = InData;
+    // 입력 유효성 검사
+    if (ID < 0 || Row == nullptr)
+    {
+        bValid = false;
+        return false;
+    }
 
-    GetPackage()->FullyLoad();
-    UEditorAssetLibrary::SaveLoadedAsset(this);
+    bValid = true;
+
+    return OnUpdate(ID, Row);
+}
+
+bool UItemDefinition::OnUpdate(int32 ID, FItemDataTableRow* Row)
+{
+    // 데이터 생성
+    FItemDefinitionData NewData
+    {
+        ID,
+        Row->DisplayText
+    };
+
+    // 데이터 비교
+    if (Data == NewData) return false;
+    Data = NewData;
 
     return true;
 }
-#endif
 

@@ -7,6 +7,7 @@
 #include "ItemDatabase.generated.h"
 
 class UItemDefinition;
+struct FItemDataTableRow;
 
 /**
  * ItemDataTable을 통해 ItemDefinition 데이터 에셋을 생성하거나 업데이트합니다.
@@ -48,8 +49,4 @@ protected:
 
     UFUNCTION(BlueprintCallable)
     void DeleteAllItemDefinitions();
-
-    void UpdateItemDefinition(UItemDefinition* ItemDefinition, int32 ID, FTableRowBase* Row);
-
-    virtual void OnUpdateItemDefinition(UItemDefinition* ItemDefinition, int32 ID, FTableRowBase* Row);
 };

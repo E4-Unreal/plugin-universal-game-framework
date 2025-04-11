@@ -7,6 +7,7 @@
 #include "Logging.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/ItemDefinition.h"
+#include "Types/ItemDataTableRow.h"
 #include "UObject/SavePackage.h"
 
 void UItemDatabase::HardUpdate()
@@ -31,9 +32,7 @@ void UItemDatabase::DeleteAllItemDefinitions()
 
 void UItemDatabase::Update()
 {
-    if (ItemDataTable == nullptr) return;
-
-    GetPackage()->FullyLoad();
+    if (ItemDataTable == nullptr || !ItemDataTable->GetRowStruct()->IsChildOf(FItemDataTableRow::StaticStruct())) return;
 
     TArray<FTableRowBase*> Rows;
     const TArray<FName> RowNames = ItemDataTable->GetRowNames();
@@ -41,6 +40,7 @@ void UItemDatabase::Update()
     for (const auto& RowName : RowNames)
     {
         /* Check ID */
+
         FString IDString = RowName.ToString();
         if (!IDString.IsNumeric())
         {
@@ -57,11 +57,29 @@ void UItemDatabase::Update()
 
         /* Create ItemDefinition */
 
+        // ItemDefinition 생성
         UItemDefinition* NewItemDefinition = CreateItemDefinition(ID);
-        UpdateItemDefinition(NewItemDefinition, ID, ItemDataTable->FindRow<FTableRowBase>(RowName, ""));
-        ItemDefinitionMap.Emplace(ID, NewItemDefinition);
+
+        // ItemDefinition 업데이트 및 저장
+        FItemDataTableRow* Row = ItemDataTable->FindRow<FItemDataTableRow>(RowName, "");
+        if (NewItemDefinition->Update(ID, Row))
+        {
+            NewItemDefinition->GetPackage()->FullyLoad();
+            UEditorAssetLibrary::SaveLoadedAsset(NewItemDefinition);
+        }
+
+        // ItemDefinition 유효성 검사
+        if (NewItemDefinition->IsNotValid())
+        {
+            UEditorAssetLibrary::DeleteLoadedAsset(NewItemDefinition);
+        }
+        else
+        {
+            ItemDefinitionMap.Emplace(ID, NewItemDefinition);
+        }
     }
 
+    GetPackage()->FullyLoad();
     UEditorAssetLibrary::SaveAsset(GetPackage()->GetPathName());
 }
 
@@ -91,17 +109,6 @@ UItemDefinition* UItemDatabase::CreateItemDefinition(int32 ID) const
     UPackage::SavePackage(Package, NewItemDefinition, *PackageFileName, SavePackageArgs);
 
     return NewItemDefinition;
-}
-
-void UItemDatabase::UpdateItemDefinition(UItemDefinition* ItemDefinition, int32 ID, FTableRowBase* Row)
-{
-    OnUpdateItemDefinition(ItemDefinition, ID, Row);
-    ItemDefinition->MarkPackageDirty();
-    UEditorAssetLibrary::SaveLoadedAsset(ItemDefinition);
-}
-
-void UItemDatabase::OnUpdateItemDefinition(UItemDefinition* ItemDefinition, int32 ID, FTableRowBase* Row)
-{
 }
 
 FString UItemDatabase::GetAssetName(int32 ID) const
