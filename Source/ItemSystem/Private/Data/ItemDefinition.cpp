@@ -3,8 +3,18 @@
 
 #include "Data/ItemDefinition.h"
 
-void UItemDefinition::Update(int32 NewID, const FText& NewDisplayText)
+#include "EditorAssetLibrary.h"
+
+#if WITH_EDITOR
+bool UItemDefinition::SetData(const FItemDefinitionData& InData)
 {
-    ID = NewID;
-    DisplayText = NewDisplayText;
+    if (Data == InData) return false;
+    Data = InData;
+
+    GetPackage()->FullyLoad();
+    UEditorAssetLibrary::SaveLoadedAsset(this);
+
+    return true;
 }
+#endif
+

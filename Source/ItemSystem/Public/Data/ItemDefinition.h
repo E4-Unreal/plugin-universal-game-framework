@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Types/ItemDefinitionData.h"
 #include "ItemDefinition.generated.h"
 
 /**
@@ -15,12 +16,12 @@ class ITEMSYSTEM_API UItemDefinition : public UPrimaryDataAsset
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ClampMin = 0))
-    int32 ID;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
-    FText DisplayText;
+    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ShowOnlyInnerProperties))
+    FItemDefinitionData Data;
 
 public:
-    virtual void Update(int32 NewID, const FText& NewDisplayText);
+#if WITH_EDITOR
+    UFUNCTION(BlueprintCallable)
+    virtual bool SetData(const FItemDefinitionData& InData);
+#endif
 };
