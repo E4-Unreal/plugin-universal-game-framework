@@ -8,6 +8,7 @@
 
 class UItemConfig;
 class UItemDefinition;
+struct FItemData;
 
 /**
  *
@@ -19,4 +20,7 @@ class ITEMSYSTEM_API UItemSystemFunctionLibrary : public UBlueprintFunctionLibra
 
     UFUNCTION(BlueprintCallable, meta = (DeterminesOutputType = ItemConfigClass))
     static const UItemConfig* FindItemConfigByClass(UItemDefinition* ItemDefinition, TSubclassOf<UItemConfig> ItemConfigClass);
+
+    UFUNCTION(BlueprintCallable)
+    static UItemDefinition* GetItemDefinition(const FItemData& ItemData);
 };

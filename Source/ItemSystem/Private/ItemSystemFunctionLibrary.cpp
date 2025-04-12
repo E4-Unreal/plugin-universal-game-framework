@@ -5,6 +5,7 @@
 
 #include "Data/ItemConfig.h"
 #include "Data/ItemDefinition.h"
+#include "Types/ItemData.h"
 
 const UItemConfig* UItemSystemFunctionLibrary::FindItemConfigByClass(UItemDefinition* ItemDefinition,
                                                                      TSubclassOf<UItemConfig> ItemConfigClass)
@@ -12,4 +13,10 @@ const UItemConfig* UItemSystemFunctionLibrary::FindItemConfigByClass(UItemDefini
     if (ItemDefinition == nullptr || ItemConfigClass == nullptr) return nullptr;
 
     return ItemDefinition->GetItemConfigByClass(ItemConfigClass);
+}
+
+UItemDefinition* UItemSystemFunctionLibrary::GetItemDefinition(const FItemData& ItemData)
+{
+    FItemData* ItemDataPtr = const_cast<FItemData*>(&ItemData);
+    return ItemDataPtr->GetItemDefinition();
 }
