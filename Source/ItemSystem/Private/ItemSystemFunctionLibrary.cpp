@@ -9,9 +9,7 @@
 const UItemConfig* UItemSystemFunctionLibrary::FindItemConfigByClass(UItemDefinition* ItemDefinition,
                                                                      TSubclassOf<UItemConfig> ItemConfigClass)
 {
-    if (ItemDefinition != nullptr && ItemConfigClass != nullptr)
-    {
-        return ItemDefinition->GetItemConfigByClass(ItemConfigClass);
-    }
-    return nullptr;
+    if (ItemDefinition == nullptr || ItemConfigClass == nullptr) return nullptr;
+
+    return ItemDefinition->GetItemConfigByClass(ItemConfigClass);
 }

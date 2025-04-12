@@ -5,6 +5,42 @@
 
 #include "Types/ItemDataTableRow.h"
 
+const UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
+{
+    if (ItemConfigClass == nullptr) return nullptr;
+
+    UItemConfig* FoundItemConfig = nullptr;
+
+    for (auto ItemConfig : ItemConfigs)
+    {
+        if (ItemConfig && ItemConfig->IsA(ItemConfigClass))
+        {
+            FoundItemConfig = ItemConfig;
+            break;
+        }
+    }
+
+    return FoundItemConfig;
+}
+
+const UItemConfig* UItemDefinition::GetItemConfigByInterface(const TSubclassOf<UInterface> Interface)
+{
+    if (Interface == nullptr) return nullptr;
+
+    UItemConfig* FoundItemConfig = nullptr;
+
+    for (auto ItemConfig : ItemConfigs)
+    {
+        if (ItemConfig && ItemConfig->GetClass()->ImplementsInterface(Interface))
+        {
+            FoundItemConfig = ItemConfig;
+            break;
+        }
+    }
+
+    return FoundItemConfig;
+}
+
 bool UItemDefinition::Update(int32 ID, FItemDataTableRow* Row, const TArray<TSubclassOf<UItemConfig>>& ItemConfigClasses)
 {
     // 입력 유효성 검사
