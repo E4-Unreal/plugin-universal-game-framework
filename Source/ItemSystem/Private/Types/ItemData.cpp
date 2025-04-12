@@ -9,7 +9,7 @@ UItemDefinition* FItemData::GetItemDefinition()
 {
     if (ItemDefinition != nullptr) return ItemDefinition;
 
-    ItemDefinition = GEngine->GetWorld()->GetGameInstance()->GetSubsystem<UItemSubsystem>()->GetItemDefinitionByID(ID);
+    ItemDefinition = GEngine->GetEngineSubsystem<UItemSubsystem>()->GetItemDefinitionByID(ID);
 
     return ItemDefinition;
 }

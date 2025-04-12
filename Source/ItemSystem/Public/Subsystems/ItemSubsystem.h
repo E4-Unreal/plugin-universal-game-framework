@@ -12,7 +12,7 @@ class UItemDefinition;
  *
  */
 UCLASS()
-class ITEMSYSTEM_API UItemSubsystem : public UGameInstanceSubsystem
+class ITEMSYSTEM_API UItemSubsystem : public UEngineSubsystem
 {
     GENERATED_BODY()
 
