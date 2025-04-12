@@ -7,7 +7,7 @@
 #include "DefaultItemDataInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Blueprintable)
 class UDefaultItemDataInterface : public UInterface
 {
     GENERATED_BODY()
@@ -22,5 +22,6 @@ class ITEMSYSTEM_API IDefaultItemDataInterface
 
     // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-    virtual UStaticMesh* GetStaticMesh() const = 0;
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UStaticMesh* GetStaticMesh() const;
 };

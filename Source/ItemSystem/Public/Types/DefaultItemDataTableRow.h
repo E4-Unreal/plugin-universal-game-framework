@@ -18,5 +18,5 @@ struct FDefaultItemDataTableRow : public FItemDataTableRow, public IDefaultItemD
 
     /* IDisplayItemDataInterface */
 
-    virtual UStaticMesh* GetStaticMesh() const override { return StaticMesh.LoadSynchronous(); }
+    virtual UStaticMesh* GetStaticMesh_Implementation() const override { return StaticMesh.LoadSynchronous(); }
 };
