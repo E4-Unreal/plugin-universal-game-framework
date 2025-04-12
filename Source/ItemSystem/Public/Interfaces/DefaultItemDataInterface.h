@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "DisplayItemDataInterface.generated.h"
+#include "DefaultItemDataInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UDisplayItemDataInterface : public UInterface
+class UDefaultItemDataInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -16,7 +16,7 @@ class UDisplayItemDataInterface : public UInterface
 /**
  *
  */
-class ITEMSYSTEM_API IDisplayItemDataInterface
+class ITEMSYSTEM_API IDefaultItemDataInterface
 {
     GENERATED_BODY()
 

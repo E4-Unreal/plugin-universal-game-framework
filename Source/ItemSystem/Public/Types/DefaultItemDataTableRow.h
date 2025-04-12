@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "ItemDataTableRow.h"
-#include "Interfaces/DisplayItemDataInterface.h"
+#include "Interfaces/DefaultItemDataInterface.h"
 #include "UObject/Object.h"
 #include "DefaultItemDataTableRow.generated.h"
 
 USTRUCT()
-struct FDefaultItemDataTableRow : public FItemDataTableRow, public IDisplayItemDataInterface
+struct FDefaultItemDataTableRow : public FItemDataTableRow, public IDefaultItemDataInterface
 {
     GENERATED_BODY()
 
