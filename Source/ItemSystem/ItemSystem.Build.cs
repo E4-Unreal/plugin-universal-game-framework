@@ -10,8 +10,9 @@ public class ItemSystem : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities",
-                "Blutility"
+                "DeveloperSettings",
+                "Blutility",
+                "UniversalUtilities"
             }
         );
 

@@ -11,7 +11,7 @@ class UItemDatabase;
 /**
  *
  */
-UCLASS()
+UCLASS(config = ItemSystem, meta = (DisplayName = "Item System", ToolTip = "Settings for Item System"))
 class ITEMSYSTEM_API UItemSystemSettings : public UDeveloperSettings
 {
     GENERATED_BODY()
