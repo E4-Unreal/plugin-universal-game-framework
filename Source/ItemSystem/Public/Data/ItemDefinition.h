@@ -40,10 +40,10 @@ public:
 
     bool Update(int32 ID, FItemDataTableRow* Row, const TArray<TSubclassOf<UItemConfig>>& ItemConfigClasses);
 
-    template<typename T>
+    template<typename T = UItemConfig>
     T* GetItemConfigByClass(TSubclassOf<T> ItemConfigClass) const
     {
-        if (ItemConfigClass == nullptr || !ItemConfigClass->IsChildOf(UItemConfig::StaticClass())) return nullptr;
+        if (ItemConfigClass == nullptr) return nullptr;
 
         for (auto ItemConfig : ItemConfigs)
         {
