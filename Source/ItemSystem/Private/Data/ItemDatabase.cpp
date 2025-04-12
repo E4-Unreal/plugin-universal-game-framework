@@ -19,6 +19,13 @@ void UItemDatabase::HardUpdate()
     Update();
 }
 
+UItemDefinition* UItemDatabase::GetItemDefinitionByID(int32 ID)
+{
+    if (ID < 0 || !ItemDefinitionMap.Contains(ID)) return nullptr;
+
+    return ItemDefinitionMap[ID];
+}
+
 bool UItemDatabase::CheckRowName(FName RowName, int32& ID)
 {
     FString IDString = RowName.ToString();

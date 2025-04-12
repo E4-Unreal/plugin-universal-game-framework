@@ -38,6 +38,9 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void HardUpdate();
 
+    UFUNCTION(BlueprintCallable)
+    virtual UItemDefinition* GetItemDefinitionByID(int32 ID);
+
 protected:
     UFUNCTION(BlueprintPure)
     static bool CheckRowName(FName RowName, int32& ID);
