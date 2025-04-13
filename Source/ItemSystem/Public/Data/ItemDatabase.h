@@ -28,9 +28,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TObjectPtr<UDataTable> ItemDataTable;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
-    TArray<TSubclassOf<UItemConfig>> ItemConfigClasses;
-
     UPROPERTY(VisibleDefaultsOnly, Category = "State")
     TMap<int32, TObjectPtr<UItemDefinition>> ItemDefinitionMap;
 
@@ -39,24 +36,19 @@ public:
     virtual UItemDefinition* GetItemDefinitionByID(int32 ID);
 
 protected:
+#if WITH_EDITOR
     UFUNCTION(CallInEditor)
-    virtual void HardUpdate();
+    void HardUpdate();
 
-    UFUNCTION(BlueprintPure)
-    static bool CheckRowName(FName RowName, int32& ID);
+    UFUNCTION(CallInEditor)
+    void Update();
 
-    UFUNCTION(BlueprintPure)
-    FString GetAssetName(int32 ID) const;
-
-    UFUNCTION(BlueprintPure)
-    FString GetPackageName(int32 ID) const;
-
-    UFUNCTION(BlueprintPure)
-    UItemDefinition* CreateItemDefinition(int32 ID) const;
-
-    UFUNCTION(BlueprintCallable)
-    virtual void Update();
-
-    UFUNCTION(BlueprintCallable)
+    void CreateItemDefinition(int32 ID);
     void DeleteAllItemDefinitions();
+    void UpdateItemDefinition(int32 ID, FTableRowBase* Row);
+
+    static bool CheckRowName(FName RowName, int32& ID);
+    FString GetAssetName(int32 ID) const;
+    FString GetPackageName(int32 ID) const;
+#endif
 };
