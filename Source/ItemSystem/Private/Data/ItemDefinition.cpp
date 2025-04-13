@@ -58,6 +58,15 @@ void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
         }
     }
 
+    // Delete ItemConfigs
+    for (int32 Index = ItemConfigs.Num() - 1; Index >= 0; --Index)
+    {
+        if (ItemConfigs[Index]->IsNotValid())
+        {
+            ItemConfigs.RemoveAt(Index);
+        }
+    }
+
     UpdateItemConfigs(TableRow);
 }
 
