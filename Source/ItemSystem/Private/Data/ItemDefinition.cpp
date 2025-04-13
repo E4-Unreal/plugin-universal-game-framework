@@ -13,7 +13,7 @@ const UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItem
 
     for (auto ItemConfig : ItemConfigs)
     {
-        if (ItemConfig && ItemConfig->IsA(ItemConfigClass))
+        if (ItemConfig && ItemConfig->IsA(ItemConfigClass) && ItemConfig->IsValid())
         {
             FoundItemConfig = ItemConfig;
             break;
@@ -31,7 +31,7 @@ const UItemConfig* UItemDefinition::GetItemConfigByInterface(const TSubclassOf<U
 
     for (auto ItemConfig : ItemConfigs)
     {
-        if (ItemConfig && ItemConfig->GetClass()->ImplementsInterface(Interface))
+        if (ItemConfig && ItemConfig->GetClass()->ImplementsInterface(Interface) && ItemConfig->IsValid())
         {
             FoundItemConfig = ItemConfig;
             break;
