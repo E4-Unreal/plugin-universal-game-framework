@@ -2,3 +2,21 @@
 
 
 #include "Data/ItemDataAssetBase.h"
+
+void UItemDataAssetBase::Update(int32 NewID, FTableRowBase* NewRow)
+{
+    if (ID != NewID)
+    {
+        ID = NewID;
+        MarkPackageDirty();
+    }
+
+    SetData(NewRow);
+
+    bValid = IsValid();
+}
+
+void UItemDataAssetBase::SetData(FTableRowBase* NewRow)
+{
+
+}

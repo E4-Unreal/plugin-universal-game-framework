@@ -17,6 +17,8 @@ class ITEMSYSTEM_API UItemDefinition : public UItemDataAssetBase
 {
     GENERATED_BODY()
 
+    friend class UItemDatabase;
+
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ShowOnlyInnerProperties))
     FItemDefinitionData Data;

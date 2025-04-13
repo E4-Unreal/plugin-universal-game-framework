@@ -15,7 +15,11 @@ class ITEMSYSTEM_API UItemDataAssetBase : public UPrimaryDataAsset
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleDefaultsOnly, Category = "State")
+    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ClampMin = 0))
+    int32 ID;
+
+private:
+    UPROPERTY(VisibleDefaultsOnly, Category = "State", meta = (DisplayName = 0))
     bool bValid = true;
 
 public:
@@ -25,5 +29,7 @@ public:
     UFUNCTION(BlueprintPure)
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 
-    virtual bool SetData(int32 ID, FTableRowBase* Row) { return true; }
+protected:
+    void Update(int32 NewID, FTableRowBase* NewRow);
+    virtual void SetData(FTableRowBase* NewRow);
 };

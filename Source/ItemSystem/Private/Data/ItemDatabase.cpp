@@ -7,7 +7,6 @@
 #include "Logging.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/ItemDefinition.h"
-#include "Types/ItemDataTableRow.h"
 #include "UObject/SavePackage.h"
 
 UItemDefinition* UItemDatabase::GetItemDefinitionByID(int32 ID)
@@ -112,7 +111,7 @@ void UItemDatabase::UpdateItemDefinition(int32 ID, FTableRowBase* Row)
 {
     if (UItemDefinition* ItemDefinition = GetItemDefinitionByID(ID))
     {
-        ItemDefinition->SetData(ID, Row);
+        ItemDefinition->Update(ID, Row);
         UEditorAssetLibrary::SaveAsset(ItemDefinition->GetPackage()->GetPathName());
     }
 }
