@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemDefinition.h"
 #include "Engine/DataAsset.h"
 #include "ItemDatabase.generated.h"
 
@@ -27,6 +28,9 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TObjectPtr<UDataTable> ItemDataTable;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Config")
+    TSubclassOf<UItemDefinition> ItemDefinitionClass = UItemDefinition::StaticClass();
 
     UPROPERTY(VisibleDefaultsOnly, Category = "State")
     TMap<int32, TObjectPtr<UItemDefinition>> ItemDefinitionMap;

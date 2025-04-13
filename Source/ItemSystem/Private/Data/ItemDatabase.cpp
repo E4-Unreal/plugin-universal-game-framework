@@ -52,7 +52,7 @@ void UItemDatabase::Update()
 
         // ItemDefinition 업데이트
         UItemDefinition* ItemDefinition = GetOrCreateItemDefinition(ID);
-        ItemDefinition->Update(Row);
+        if (ItemDefinition) ItemDefinition->Update(Row);
     }
 
     // ItemDatabase 저장
@@ -68,6 +68,8 @@ UItemDefinition* UItemDatabase::GetOrCreateItemDefinition(int32 ID)
     if (ItemDefinition != nullptr) return ItemDefinition;
 
     /* Create ItemDefinition */
+    if (ItemDefinitionClass == nullptr) return nullptr;
+
     // 패키지 생성
     FString AssetName = GetAssetName(ID);
     FString PackageName = GetPackageName(ID);
@@ -76,7 +78,7 @@ UItemDefinition* UItemDatabase::GetOrCreateItemDefinition(int32 ID)
     Package->FullyLoad();
 
     // 에셋 생성
-    ItemDefinition = NewObject<UItemDefinition>(Package, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+    ItemDefinition = NewObject<UItemDefinition>(Package, ItemDefinitionClass, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
     ItemDefinition->SetID(ID);
 
     Package->MarkPackageDirty();
