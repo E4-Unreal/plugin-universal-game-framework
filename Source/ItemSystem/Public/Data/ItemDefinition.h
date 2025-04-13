@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "ItemDataAssetBase.h"
-#include "Types/ItemDefinitionData.h"
 #include "ItemDefinition.generated.h"
 
 struct FItemDataTableRow;
@@ -22,8 +21,8 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetID, Category = "Config", meta = (ClampMin = 0))
     int32 ID;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetData, Category = "Config", meta = (ShowOnlyInnerProperties))
-    FItemDefinitionData Data;
+    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetDisplayText, Category = "Config")
+    FText DisplayText;
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TArray<TObjectPtr<UItemConfig>> ItemConfigs;
@@ -68,5 +67,5 @@ public:
     FORCEINLINE void SetID(int32 Value) { ID = Value; }
 
     UFUNCTION(BlueprintGetter)
-    const FORCEINLINE FItemDefinitionData& GetData() const { return Data; }
+    const FORCEINLINE FText& GetDisplayText() const { return DisplayText; }
 };

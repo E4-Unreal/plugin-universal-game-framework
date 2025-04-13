@@ -8,7 +8,7 @@
 
 bool UItemDefinition::IsValid() const
 {
-    return Super::IsValid() && Data.IsValid();
+    return Super::IsValid() && !DisplayText.IsEmpty();
 }
 
 const UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
@@ -51,14 +51,9 @@ void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
 {
     if (FItemDataTableRow* ItemDataTableRow = static_cast<FItemDataTableRow*>(TableRow))
     {
-        FItemDefinitionData NewData
+        if (!DisplayText.IdenticalTo(ItemDataTableRow->DisplayText))
         {
-            ItemDataTableRow->DisplayText
-        };
-
-        if (Data != NewData)
-        {
-            Data = NewData;
+            DisplayText = ItemDataTableRow->DisplayText;
             MarkPackageDirty();
         }
     }
@@ -66,6 +61,6 @@ void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
 
 void UItemDefinition::OnReset()
 {
-    Data = FItemDefinitionData::EmptyData;
+    DisplayText = FText::GetEmpty();
     ItemConfigs.Reset();
 }
