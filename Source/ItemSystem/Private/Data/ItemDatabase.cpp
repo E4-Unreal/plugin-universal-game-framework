@@ -78,11 +78,11 @@ void UItemDatabase::Update()
 
         // ItemDefinition 업데이트 및 저장
         FItemDataTableRow* Row = ItemDataTable->FindRow<FItemDataTableRow>(RowName, "");
-        if (NewItemDefinition->Update(ID, Row, ItemConfigClasses))
+        /*if (NewItemDefinition->Update(ID, Row, ItemConfigClasses))
         {
             NewItemDefinition->GetPackage()->FullyLoad();
             UEditorAssetLibrary::SaveLoadedAsset(NewItemDefinition);
-        }
+        }*/
 
         // ItemDefinition 유효성 검사
         if (NewItemDefinition->IsNotValid())
