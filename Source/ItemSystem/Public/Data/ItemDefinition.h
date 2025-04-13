@@ -68,6 +68,8 @@ protected:
         return Cast<T>(GetOrCreateItemConfig(T::StaticClass()));
     }
 
+    virtual void UpdateItemConfigs(FTableRowBase* TableRow);
+
 public:
     /* Getter */
 

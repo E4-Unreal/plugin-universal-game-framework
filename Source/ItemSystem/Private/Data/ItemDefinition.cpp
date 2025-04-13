@@ -57,6 +57,8 @@ void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
             MarkPackageDirty();
         }
     }
+
+    UpdateItemConfigs(TableRow);
 }
 
 void UItemDefinition::OnReset()
@@ -76,4 +78,21 @@ UItemConfig* UItemDefinition::GetOrCreateItemConfig(TSubclassOf<UItemConfig> Ite
     }
 
     return ItemConfig;
+}
+
+void UItemDefinition::UpdateItemConfigs(FTableRowBase* TableRow)
+{
+    /**
+     * if(FProjectItemDataTableRow* ProjectItemDataTableRow = static_cast<FProjectItemDataTableRow*>(TableRow))
+     * {
+     *   FInventoryItemData InventoryItemData
+     *   {
+     *      ProjectItemDataTableRow->MaxStack,
+     *      ProjectItemDataTableRow->Thumbnail,
+     *      ...
+     *   };
+     *   UInventoryItemConfig* InventoryItemConfig = GetOrCreateItemConfig<UInventoryItemConfig>();
+     *   InventoryItemConfig->Update(InventoryItemData);
+     * }
+     */
 }
