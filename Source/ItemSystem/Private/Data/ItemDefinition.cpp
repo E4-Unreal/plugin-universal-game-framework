@@ -11,7 +11,7 @@ bool UItemDefinition::IsValid() const
     return Super::IsValid() && !DisplayText.IsEmpty();
 }
 
-const UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
+UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
 {
     if (ItemConfigClass == nullptr) return nullptr;
 
@@ -29,7 +29,7 @@ const UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItem
     return FoundItemConfig;
 }
 
-const UItemConfig* UItemDefinition::GetItemConfigByInterface(const TSubclassOf<UInterface> Interface)
+UItemConfig* UItemDefinition::GetItemConfigByInterface(const TSubclassOf<UInterface> Interface)
 {
     if (Interface == nullptr) return nullptr;
 
@@ -63,4 +63,17 @@ void UItemDefinition::OnReset()
 {
     DisplayText = FText::GetEmpty();
     ItemConfigs.Reset();
+}
+
+UItemConfig* UItemDefinition::GetOrCreateItemConfig(TSubclassOf<UItemConfig> ItemConfigClass)
+{
+    UItemConfig* ItemConfig = GetItemConfigByClass(ItemConfigClass);
+    if (ItemConfig == nullptr)
+    {
+        ItemConfig = NewObject<UItemConfig>(this, ItemConfigClass);
+        ItemConfigs.Emplace(ItemConfig);
+        MarkPackageDirty();
+    }
+
+    return ItemConfig;
 }

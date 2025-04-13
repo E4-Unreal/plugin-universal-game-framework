@@ -35,10 +35,10 @@ public:
     /* ItemDefinition */
 
     UFUNCTION(BlueprintPure)
-    const UItemConfig* GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass);
+    UItemConfig* GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass);
 
     UFUNCTION(BlueprintPure)
-    const UItemConfig* GetItemConfigByInterface(const TSubclassOf<UInterface> Interface);
+    UItemConfig* GetItemConfigByInterface(const TSubclassOf<UInterface> Interface);
 
     template<typename T = UItemConfig>
     T* GetItemConfigByClass() const
@@ -57,6 +57,16 @@ protected:
 
     virtual void OnUpdate(FTableRowBase* TableRow) override;
     virtual void OnReset() override;
+
+    /* ItemDefinition */
+
+    UItemConfig* GetOrCreateItemConfig(TSubclassOf<UItemConfig> ItemConfigClass);
+
+    template<typename T = UItemConfig>
+    T* GetOrCreateItemConfig()
+    {
+        return Cast<T>(GetOrCreateItemConfig(T::StaticClass()));
+    }
 
 public:
     /* Getter */
