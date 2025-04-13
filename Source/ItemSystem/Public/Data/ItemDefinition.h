@@ -7,28 +7,33 @@
 #include "Types/ItemDefinitionData.h"
 #include "ItemDefinition.generated.h"
 
+struct FItemDataTableRow;
 class UItemConfig;
 
 /**
  *
  */
-UCLASS()
+UCLASS(Const)
 class ITEMSYSTEM_API UItemDefinition : public UItemDataAssetBase
 {
     GENERATED_BODY()
 
-    friend class UItemDatabase;
-
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ShowOnlyInnerProperties))
+    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetID, Category = "Config", meta = (ClampMin = 0))
+    int32 ID;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetData, Category = "Config", meta = (ShowOnlyInnerProperties))
     FItemDefinitionData Data;
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TArray<TObjectPtr<UItemConfig>> ItemConfigs;
 
 public:
-    UFUNCTION(BlueprintPure)
-    const FORCEINLINE FItemDefinitionData& GetData() const { return Data; }
+    /* ItemDataAssetBase */
+
+    virtual bool IsValid() const override;
+
+    /* ItemDefinition */
 
     UFUNCTION(BlueprintPure)
     const UItemConfig* GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass);
@@ -47,4 +52,21 @@ public:
     {
         return GetItemConfigByInterface(T::StaticClass());
     }
+
+protected:
+    /* ItemDataAssetBase */
+
+    virtual void OnUpdate(FTableRowBase* TableRow) override;
+    virtual void OnReset() override;
+
+public:
+    /* Getter */
+
+    UFUNCTION(BlueprintGetter)
+    FORCEINLINE int32 GetID() const { return ID; }
+
+    FORCEINLINE void SetID(int32 Value) { ID = Value; }
+
+    UFUNCTION(BlueprintGetter)
+    const FORCEINLINE FItemDefinitionData& GetData() const { return Data; }
 };

@@ -20,7 +20,7 @@ class ITEMSYSTEM_API UItemDatabase : public UPrimaryDataAsset
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
-    FString Path = "/Game/Project/Data/Item/ItemDefinitions";
+    FString Path = "/Game/Project/Data/Item/ItemDefinitions/";
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     FString Prefix = "DA_ID_";
@@ -43,9 +43,8 @@ protected:
     UFUNCTION(CallInEditor)
     void Update();
 
-    void CreateItemDefinition(int32 ID);
+    UItemDefinition* GetOrCreateItemDefinition(int32 ID);
     void DeleteAllItemDefinitions();
-    void UpdateItemDefinition(int32 ID, FTableRowBase* Row);
 
     static bool CheckRowName(FName RowName, int32& ID);
     FString GetAssetName(int32 ID) const;

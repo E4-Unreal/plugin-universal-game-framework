@@ -3,20 +3,31 @@
 
 #include "Data/ItemDataAssetBase.h"
 
-void UItemDataAssetBase::Update(int32 NewID, FTableRowBase* NewRow)
+void UItemDataAssetBase::Update(FTableRowBase* TableRow)
 {
-    if (ID != NewID)
+    if (TableRow == nullptr)
     {
-        ID = NewID;
-        MarkPackageDirty();
+        Reset();
+        return;
     }
 
-    SetData(NewRow);
+    OnUpdate(TableRow);
 
     bValid = IsValid();
 }
 
-void UItemDataAssetBase::SetData(FTableRowBase* NewRow)
+void UItemDataAssetBase::Reset()
+{
+    OnReset();
+
+    bValid = false;
+}
+
+void UItemDataAssetBase::OnUpdate(FTableRowBase* TableRow)
 {
 
+}
+
+void UItemDataAssetBase::OnReset()
+{
 }

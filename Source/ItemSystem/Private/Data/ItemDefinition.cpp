@@ -4,6 +4,12 @@
 #include "Data/ItemDefinition.h"
 
 #include "Data/ItemConfig.h"
+#include "Types/ItemDataTableRow.h"
+
+bool UItemDefinition::IsValid() const
+{
+    return Super::IsValid() && Data.IsValid();
+}
 
 const UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
 {
@@ -39,4 +45,27 @@ const UItemConfig* UItemDefinition::GetItemConfigByInterface(const TSubclassOf<U
     }
 
     return FoundItemConfig;
+}
+
+void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
+{
+    if (FItemDataTableRow* ItemDataTableRow = static_cast<FItemDataTableRow*>(TableRow))
+    {
+        FItemDefinitionData NewData
+        {
+            ItemDataTableRow->DisplayText
+        };
+
+        if (Data != NewData)
+        {
+            Data = NewData;
+            MarkPackageDirty();
+        }
+    }
+}
+
+void UItemDefinition::OnReset()
+{
+    Data = FItemDefinitionData::EmptyData;
+    ItemConfigs.Reset();
 }

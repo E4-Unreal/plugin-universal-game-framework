@@ -15,6 +15,12 @@ struct FItemDefinitionData
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText DisplayText;
 
+    static const FItemDefinitionData EmptyData;
+
+    bool IsValid() const { return !DisplayText.IsEmpty(); }
+
+    bool IsNotValid() const { return !IsValid(); }
+
     FORCEINLINE bool operator ==(const FItemDefinitionData& Other) const
     {
         return DisplayText.IdenticalTo(Other.DisplayText);

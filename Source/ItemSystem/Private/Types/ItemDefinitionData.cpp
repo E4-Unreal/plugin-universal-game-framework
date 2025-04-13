@@ -2,3 +2,5 @@
 
 
 #include "Types/ItemDefinitionData.h"
+
+const FItemDefinitionData FItemDefinitionData::EmptyData;

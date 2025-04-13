@@ -47,11 +47,13 @@ void UItemDatabase::Update()
         int32 ID;
         if (!CheckRowName(RowName, ID)) continue;
 
-        // ItemDefinition 생성
-        CreateItemDefinition(ID);
+        // Row 가져오기
+        FTableRowBase* Row = ItemDataTable->FindRow<FTableRowBase>(RowName, "");
 
         // ItemDefinition 업데이트
-        UpdateItemDefinition(ID, ItemDataTable->FindRow<FTableRowBase>(RowName, ""));
+        UItemDefinition* ItemDefinition = GetOrCreateItemDefinition(ID);
+        ItemDefinition->Update(Row);
+        UEditorAssetLibrary::SaveAsset(ItemDefinition->GetPathName());
     }
 
     // ItemDatabase 저장
@@ -60,15 +62,13 @@ void UItemDatabase::Update()
     UEditorAssetLibrary::SaveAsset(Package->GetPathName());
 }
 
-void UItemDatabase::CreateItemDefinition(int32 ID)
+UItemDefinition* UItemDatabase::GetOrCreateItemDefinition(int32 ID)
 {
-    // 중복 생성 방지
-    if (UItemDefinition* OldItemDefinition = GetItemDefinitionByID(ID))
-    {
-        LOG(Error, TEXT("%s is already exist!"), *OldItemDefinition->GetName());
-        return;
-    }
+    /* Get ItemDefinition */
+    UItemDefinition* ItemDefinition = GetItemDefinitionByID(ID);
+    if (ItemDefinition != nullptr) return ItemDefinition;
 
+    /* Create ItemDefinition */
     // 패키지 생성
     FString AssetName = GetAssetName(ID);
     FString PackageName = GetPackageName(ID);
@@ -77,10 +77,11 @@ void UItemDatabase::CreateItemDefinition(int32 ID)
     Package->FullyLoad();
 
     // 에셋 생성
-    UItemDefinition* NewItemDefinition = NewObject<UItemDefinition>(Package, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+    ItemDefinition = NewObject<UItemDefinition>(Package, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+    ItemDefinition->SetID(ID);
 
     Package->MarkPackageDirty();
-    FAssetRegistryModule::AssetCreated(NewItemDefinition);
+    FAssetRegistryModule::AssetCreated(ItemDefinition);
 
     // 패키지 저장
     FString PackageFileName = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
@@ -90,10 +91,12 @@ void UItemDatabase::CreateItemDefinition(int32 ID)
     SavePackageArgs.bForceByteSwapping = true;
     SavePackageArgs.SaveFlags = SAVE_NoError;
 
-    UPackage::SavePackage(Package, NewItemDefinition, *PackageFileName, SavePackageArgs);
+    UPackage::SavePackage(Package, ItemDefinition, *PackageFileName, SavePackageArgs);
 
     // ItemDefinitionMap 등록
-    ItemDefinitionMap.Emplace(ID, NewItemDefinition);
+    ItemDefinitionMap.Emplace(ID, ItemDefinition);
+
+    return ItemDefinition;
 }
 
 void UItemDatabase::DeleteAllItemDefinitions()
@@ -105,15 +108,6 @@ void UItemDatabase::DeleteAllItemDefinitions()
     }
 
     ItemDefinitionMap.Reset();
-}
-
-void UItemDatabase::UpdateItemDefinition(int32 ID, FTableRowBase* Row)
-{
-    if (UItemDefinition* ItemDefinition = GetItemDefinitionByID(ID))
-    {
-        ItemDefinition->Update(ID, Row);
-        UEditorAssetLibrary::SaveAsset(ItemDefinition->GetPackage()->GetPathName());
-    }
 }
 
 bool UItemDatabase::CheckRowName(FName RowName, int32& ID)
