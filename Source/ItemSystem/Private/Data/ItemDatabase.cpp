@@ -53,7 +53,6 @@ void UItemDatabase::Update()
         // ItemDefinition 업데이트
         UItemDefinition* ItemDefinition = GetOrCreateItemDefinition(ID);
         ItemDefinition->Update(Row);
-        UEditorAssetLibrary::SaveAsset(ItemDefinition->GetPathName());
     }
 
     // ItemDatabase 저장

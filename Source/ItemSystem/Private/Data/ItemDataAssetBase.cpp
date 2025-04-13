@@ -3,6 +3,8 @@
 
 #include "Data/ItemDataAssetBase.h"
 
+#include "EditorAssetLibrary.h"
+
 void UItemDataAssetBase::Update(FTableRowBase* TableRow)
 {
     if (TableRow == nullptr)
@@ -14,6 +16,8 @@ void UItemDataAssetBase::Update(FTableRowBase* TableRow)
     OnUpdate(TableRow);
 
     bValid = IsValid();
+
+    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDataAssetBase::Reset()
@@ -21,6 +25,8 @@ void UItemDataAssetBase::Reset()
     OnReset();
 
     bValid = false;
+
+    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDataAssetBase::OnUpdate(FTableRowBase* TableRow)
