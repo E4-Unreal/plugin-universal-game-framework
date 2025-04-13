@@ -20,7 +20,7 @@ class ITEMSYSTEM_API UItemDatabase : public UPrimaryDataAsset
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
-    FString Directory = "/Game/Project/Data/Item/ItemDefinitions/";
+    FString Path = "/Game/Project/Data/Item/ItemDefinitions";
 
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     FString Prefix = "DA_ID_";
@@ -36,12 +36,12 @@ protected:
 
 public:
     UFUNCTION(BlueprintCallable)
-    virtual void HardUpdate();
-
-    UFUNCTION(BlueprintCallable)
     virtual UItemDefinition* GetItemDefinitionByID(int32 ID);
 
 protected:
+    UFUNCTION(CallInEditor)
+    virtual void HardUpdate();
+
     UFUNCTION(BlueprintPure)
     static bool CheckRowName(FName RowName, int32& ID);
 

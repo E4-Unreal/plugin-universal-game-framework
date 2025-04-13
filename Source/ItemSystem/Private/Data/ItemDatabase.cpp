@@ -134,5 +134,5 @@ FString UItemDatabase::GetAssetName(int32 ID) const
 
 FString UItemDatabase::GetPackageName(int32 ID) const
 {
-    return Directory + GetAssetName(ID);;
+    return Path + GetAssetName(ID);;
 }
