@@ -4,19 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "ItemDataTableRow.h"
-#include "Interfaces/DefaultItemDataInterface.h"
 #include "UObject/Object.h"
 #include "DefaultItemDataTableRow.generated.h"
 
 USTRUCT()
-struct FDefaultItemDataTableRow : public FItemDataTableRow, public IDefaultItemDataInterface
+struct FDefaultItemDataTableRow : public FItemDataTableRow
 {
     GENERATED_BODY()
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UStaticMesh> StaticMesh;
-
-    /* IDisplayItemDataInterface */
-
-    virtual UStaticMesh* GetStaticMesh_Implementation() const override { return StaticMesh.LoadSynchronous(); }
 };
