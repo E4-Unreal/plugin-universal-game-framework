@@ -45,6 +45,7 @@ void UItemDatabaseAssetAction::Update(UItemDatabase* ItemDatabase)
     if (ItemDatabase->ItemDataTable == nullptr)
     {
         DeleteAllItemDefinitions(ItemDatabase);
+        UEditorAssetLibrary::SaveAsset(ItemDatabase->GetPathName());
         return;
     }
 
