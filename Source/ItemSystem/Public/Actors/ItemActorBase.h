@@ -7,6 +7,9 @@
 #include "Types/ItemContainer.h"
 #include "ItemActorBase.generated.h"
 
+class UStaticMeshComponent;
+class USphereComponent;
+
 UCLASS()
 class ITEMSYSTEM_API AItemActorBase : public AActor
 {
@@ -14,10 +17,14 @@ class ITEMSYSTEM_API AItemActorBase : public AActor
 
 protected:
     static FName DisplayMeshName;
+    static FName OverlapSphereName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UStaticMeshComponent> DisplayMesh;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<USphereComponent> OverlapSphere;
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Config")
@@ -41,4 +48,5 @@ public:
 
 public:
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
+    FORCEINLINE USphereComponent* GetOverlapSphere() const { return OverlapSphere; }
 };

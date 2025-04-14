@@ -3,18 +3,26 @@
 
 #include "Actors/ItemActorBase.h"
 
+#include "Components/SphereComponent.h"
 #include "Data/ItemDefinition.h"
 #include "Types/ActorItemData.h"
 
 FName AItemActorBase::DisplayMeshName(TEXT("DisplayMesh"));
+FName AItemActorBase::OverlapSphereName(TEXT("OverlapSphere"));
 
 AItemActorBase::AItemActorBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    /* OverlapSphere */
+    OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
+    SetRootComponent(OverlapSphere);
+
     /* DisplayMesh */
     DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(DisplayMeshName);
-    SetRootComponent(DisplayMesh);
+    DisplayMesh->SetupAttachment(OverlapSphere);
     DisplayMesh->SetSimulatePhysics(true);
+
+    ItemContainer.Quantity = 1;
 }
 
 void AItemActorBase::PostInitializeComponents()
