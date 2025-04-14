@@ -42,7 +42,10 @@ public:
     /* ItemDefinition */
 
     UFUNCTION(BlueprintPure)
-    const FInstancedStruct& GetData(const UScriptStruct* StructType = nullptr) const;
+    bool HasData(const UScriptStruct* StructType) const;
+
+    UFUNCTION(BlueprintPure)
+    const FInstancedStruct& GetData(const UScriptStruct* StructType) const;
 
     UFUNCTION(BlueprintCallable)
     void SetData(const FInstancedStruct& Value);
@@ -52,6 +55,12 @@ public:
 
     UFUNCTION(BlueprintPure)
     UItemConfig* GetItemConfigByInterface(const TSubclassOf<UInterface> Interface);
+
+    template<typename T = UScriptStruct>
+    bool HasData()
+    {
+        return HasData(T::StaticStruct());
+    }
 
     template<typename T = UScriptStruct>
     const T& GetData()

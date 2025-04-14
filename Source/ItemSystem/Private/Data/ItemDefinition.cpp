@@ -13,6 +13,19 @@ bool UItemDefinition::IsValid() const
     return Super::IsValid() && !DisplayText.IsEmpty();
 }
 
+bool UItemDefinition::HasData(const UScriptStruct* StructType) const
+{
+    for (const auto& Data : DataList)
+    {
+        if (Data.GetScriptStruct()->IsChildOf(StructType))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const FInstancedStruct& UItemDefinition::GetData(const UScriptStruct* StructType) const
 {
     for (const auto& Data : DataList)
