@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemData.h"
 #include "ActorItemData.generated.h"
 
 USTRUCT(Atomic, BlueprintType)
-struct FActorItemData
+struct FActorItemData : public FItemData
 {
     GENERATED_BODY()
 

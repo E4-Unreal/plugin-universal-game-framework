@@ -18,8 +18,7 @@ void UDefaultItemDefinition::UpdateDataList(FTableRowBase* TableRow)
 
 void UDefaultItemDefinition::UpdateDataList(const FDefaultItemDataTableRow& DefaultItemDataTableRow)
 {
-    SetData(FActorItemData
-    {
-        DefaultItemDataTableRow.StaticMesh
-    });
+    FActorItemData ActorItemData;
+    ActorItemData.StaticMesh = DefaultItemDataTableRow.StaticMesh;
+    SetData(ActorItemData);
 }
