@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ItemDataAssetBase.h"
 #include "InstancedStruct.h"
+#include "Types/ItemDataTableRow.h"
 #include "ItemDefinition.generated.h"
 
 struct FItemDataTableRow;
@@ -43,6 +44,9 @@ public:
     UFUNCTION(BlueprintPure)
     const FInstancedStruct& GetData(const UScriptStruct* StructType = nullptr) const;
 
+    UFUNCTION(BlueprintCallable)
+    void SetData(const FInstancedStruct& Value);
+
     UFUNCTION(BlueprintPure)
     UItemConfig* GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass);
 
@@ -53,6 +57,13 @@ public:
     const T& GetData()
     {
         return GetData(T::StaticStruct()).template Get<T>();
+    }
+
+    template<typename T = UScriptStruct>
+    void SetData(const T& Value)
+    {
+        FInstancedStruct InstancedStruct = FInstancedStruct::Make(Value);
+        SetData(InstancedStruct);
     }
 
     template<typename T = UItemConfig>

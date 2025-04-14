@@ -26,6 +26,21 @@ const FInstancedStruct& UItemDefinition::GetData(const UScriptStruct* StructType
     return EmptyData;
 }
 
+void UItemDefinition::SetData(const FInstancedStruct& Value)
+{
+    const UScriptStruct* StructType = Value.GetScriptStruct();
+    for (auto& Data : DataList)
+    {
+        if (Data.GetScriptStruct()->IsChildOf(StructType))
+        {
+            Data = Value;
+            return;
+        }
+    }
+
+    DataList.Emplace(Value);
+}
+
 UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
 {
     if (ItemConfigClass == nullptr) return nullptr;
