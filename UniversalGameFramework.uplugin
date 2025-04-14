@@ -56,6 +56,10 @@
 			"Name": "EnhancedInput",
 			"Enabled": true
 		},
+        {
+            "Name": "StructUtils",
+            "Enabled": true
+        },
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
