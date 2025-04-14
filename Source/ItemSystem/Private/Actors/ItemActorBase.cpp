@@ -24,6 +24,16 @@ void AItemActorBase::PostInitializeComponents()
     Refresh();
 }
 
+void AItemActorBase::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (ItemContainer.IsNotValid())
+    {
+        Destroy();
+    }
+}
+
 #if WITH_EDITOR
 void AItemActorBase::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {

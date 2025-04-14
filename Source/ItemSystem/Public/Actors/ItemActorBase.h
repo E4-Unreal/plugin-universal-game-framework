@@ -30,6 +30,7 @@ public:
     AItemActorBase(const FObjectInitializer& ObjectInitializer);
 
     virtual void PostInitializeComponents() override;
+    virtual void BeginPlay() override;
 
 #if WITH_EDITOR
     virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
