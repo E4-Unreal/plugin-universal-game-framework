@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ItemSystemFunctionLibrary.generated.h"
 
+class AItemActorBase;
 class UItemDefinition;
 struct FItemContainer;
 
@@ -19,4 +20,7 @@ class ITEMSYSTEM_API UItemSystemFunctionLibrary : public UBlueprintFunctionLibra
 
     UFUNCTION(BlueprintCallable)
     static UItemDefinition* GetItemDefinition(const FItemContainer& ItemData);
+
+    UFUNCTION(BlueprintCallable)
+    static AItemActorBase* SpawnItemActor(AActor* Owner, TSubclassOf<AItemActorBase> ItemActorClass, const FItemContainer& ItemContainer, const FTransform& SpawnTransform);
 };

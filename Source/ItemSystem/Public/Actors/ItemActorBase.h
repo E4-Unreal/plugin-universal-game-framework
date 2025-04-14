@@ -30,7 +30,8 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Config")
     TObjectPtr<UStaticMesh> DefaultStaticMesh;
 
-    UPROPERTY(EditAnywhere, Category = "Config")
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FItemContainer ItemContainer;
 
 public:
