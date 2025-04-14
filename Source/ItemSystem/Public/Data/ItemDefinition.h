@@ -25,7 +25,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetDisplayText, Category = "Config")
     FText DisplayText;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (BaseStruct = "TableRowBase"))
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (BaseStruct = "/Script/Engine.TableRowBase"))
     TArray<FInstancedStruct> DataList;
 
     UPROPERTY(VisibleDefaultsOnly, Category = "State")
