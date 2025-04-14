@@ -14,14 +14,15 @@ FName AItemActorBase::OverlapSphereName(TEXT("OverlapSphere"));
 AItemActorBase::AItemActorBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    /* OverlapSphere */
-    OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
-    SetRootComponent(OverlapSphere);
-
     /* DisplayMesh */
     DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(DisplayMeshName);
-    DisplayMesh->SetupAttachment(OverlapSphere);
+    SetRootComponent(DisplayMesh);
     DisplayMesh->SetSimulatePhysics(true);
+
+    /* OverlapSphere */
+    OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
+    OverlapSphere->SetupAttachment(RootComponent);
+    OverlapSphere->InitSphereRadius(128.0f);
 
     ItemContainer.Quantity = 1;
 }
