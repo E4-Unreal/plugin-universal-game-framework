@@ -60,23 +60,24 @@ public:
     UFUNCTION(BlueprintPure)
     bool HasData(const UScriptStruct* StructType) const;
 
-    UFUNCTION(BlueprintPure)
-    const FInstancedStruct& GetData(const UScriptStruct* StructType) const;
-
-    UFUNCTION(BlueprintCallable)
-    void SetData(const FInstancedStruct& Value);
-
     template<typename T = UScriptStruct>
     bool HasData()
     {
         return HasData(T::StaticStruct());
     }
 
+    UFUNCTION(BlueprintPure)
+    const FInstancedStruct& GetData(const UScriptStruct* StructType) const;
+
     template<typename T = UScriptStruct>
     const T& GetData()
     {
         return GetData(T::StaticStruct()).template Get<T>();
     }
+
+protected:
+    UFUNCTION(BlueprintCallable)
+    void SetData(const FInstancedStruct& Value);
 
     template<typename T = UScriptStruct>
     void SetData(const T& Value)
