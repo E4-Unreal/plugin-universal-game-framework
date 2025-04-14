@@ -21,10 +21,16 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Config")
-    FItemContainer ItemData;
+    FItemContainer ItemContainer;
 
 public:
     AItemActorBase(const FObjectInitializer& ObjectInitializer);
 
+    virtual void PostInitializeComponents() override;
+
+    UFUNCTION(BlueprintCallable)
+    virtual void Refresh();
+
+public:
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
 };
