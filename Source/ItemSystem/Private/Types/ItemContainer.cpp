@@ -1,11 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Types/ItemData.h"
+#include "Types/ItemContainer.h"
 
 #include "Subsystems/ItemSubsystem.h"
 
-UItemDefinition* FItemData::GetItemDefinition()
+UItemDefinition* FItemContainer::GetItemDefinition()
 {
     if (ItemDefinition != nullptr) return ItemDefinition;
 

@@ -3,10 +3,10 @@
 
 #include "ItemSystemFunctionLibrary.h"
 
-#include "Types/ItemData.h"
+#include "Types/ItemContainer.h"
 
-UItemDefinition* UItemSystemFunctionLibrary::GetItemDefinition(const FItemData& ItemData)
+UItemDefinition* UItemSystemFunctionLibrary::GetItemDefinition(const FItemContainer& ItemData)
 {
-    FItemData* ItemDataPtr = const_cast<FItemData*>(&ItemData);
+    FItemContainer* ItemDataPtr = const_cast<FItemContainer*>(&ItemData);
     return ItemDataPtr->GetItemDefinition();
 }

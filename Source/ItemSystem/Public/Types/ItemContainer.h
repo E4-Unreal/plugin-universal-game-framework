@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "ItemData.generated.h"
+#include "ItemContainer.generated.h"
 
 class UItemDefinition;
 
 USTRUCT(Atomic, BlueprintType)
-struct ITEMSYSTEM_API FItemData
+struct ITEMSYSTEM_API FItemContainer
 {
     GENERATED_BODY()
 

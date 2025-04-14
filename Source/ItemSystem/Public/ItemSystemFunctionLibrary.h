@@ -7,7 +7,7 @@
 #include "ItemSystemFunctionLibrary.generated.h"
 
 class UItemDefinition;
-struct FItemData;
+struct FItemContainer;
 
 /**
  *
@@ -18,5 +18,5 @@ class ITEMSYSTEM_API UItemSystemFunctionLibrary : public UBlueprintFunctionLibra
     GENERATED_BODY()
 
     UFUNCTION(BlueprintCallable)
-    static UItemDefinition* GetItemDefinition(const FItemData& ItemData);
+    static UItemDefinition* GetItemDefinition(const FItemContainer& ItemData);
 };

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Types/ItemData.h"
+#include "Types/ItemContainer.h"
 #include "ItemActorBase.generated.h"
 
 UCLASS()
@@ -21,7 +21,7 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Config")
-    FItemData ItemData;
+    FItemContainer ItemData;
 
 public:
     AItemActorBase(const FObjectInitializer& ObjectInitializer);
