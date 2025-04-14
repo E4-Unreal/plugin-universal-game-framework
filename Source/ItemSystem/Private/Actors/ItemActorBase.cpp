@@ -27,11 +27,7 @@ void AItemActorBase::PostEditChangeProperty(struct FPropertyChangedEvent& Proper
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
 
-    FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(AItemActorBase, ItemContainer.ID) || PropertyName == GET_MEMBER_NAME_CHECKED(AItemActorBase, ItemContainer.ItemDefinition))
-    {
-        Refresh();
-    }
+    Refresh();
 }
 #endif
 

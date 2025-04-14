@@ -13,9 +13,9 @@ UItemDefinition* FItemContainer::GetItemDefinition()
     {
         if (auto ItemSubsystem = GEngine->GetEngineSubsystem<UItemSubsystem>())
         {
-            ItemDefinition = ItemSubsystem->GetItemDefinitionByID(ID);
+            return ItemSubsystem->GetItemDefinitionByID(ID);
         }
     }
 
-    return ItemDefinition;
+    return nullptr;
 }
