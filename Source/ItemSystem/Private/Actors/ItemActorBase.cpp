@@ -27,7 +27,13 @@ void AItemActorBase::PostEditChangeProperty(struct FPropertyChangedEvent& Proper
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
 
-    Refresh();
+    // 변경된 프로퍼티의 이름을 가져온다.
+    FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(FItemContainer, ID) || PropertyName == GET_MEMBER_NAME_CHECKED(FItemContainer, ItemDefinition))
+    {
+        Refresh();
+    }
 }
 #endif
 
