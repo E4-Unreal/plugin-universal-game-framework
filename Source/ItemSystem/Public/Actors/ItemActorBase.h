@@ -38,14 +38,22 @@ public:
     AItemActorBase(const FObjectInitializer& ObjectInitializer);
 
     virtual void PostInitializeComponents() override;
-    virtual void BeginPlay() override;
 
 #if WITH_EDITOR
-    virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
+
+protected:
+    virtual void BeginPlay() override;
 
     UFUNCTION(BlueprintCallable)
     virtual void Refresh();
+
+    UFUNCTION()
+    virtual void OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    virtual void OnOverlapSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }

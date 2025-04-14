@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Data/ItemDefinition.h"
 #include "Types/ActorItemData.h"
+#include "Logging.h"
 
 FName AItemActorBase::DisplayMeshName(TEXT("DisplayMesh"));
 FName AItemActorBase::OverlapSphereName(TEXT("OverlapSphere"));
@@ -39,7 +40,12 @@ void AItemActorBase::BeginPlay()
     if (ItemContainer.IsNotValid())
     {
         Destroy();
+        return;
     }
+
+    // Bind OverlapSphere Events
+    OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
+    OverlapSphere->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
 }
 
 #if WITH_EDITOR
@@ -73,4 +79,16 @@ void AItemActorBase::Refresh()
     }
 
     DisplayMesh->SetStaticMesh(DefaultStaticMesh);
+}
+
+void AItemActorBase::OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+    LOG(Log, TEXT(""))
+}
+
+void AItemActorBase::OnOverlapSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    LOG(Log, TEXT(""))
 }
