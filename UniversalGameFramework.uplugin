@@ -49,6 +49,11 @@
 			"Name": "ItemSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "ItemSystemEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -56,17 +61,17 @@
 			"Name": "EnhancedInput",
 			"Enabled": true
 		},
-        {
-            "Name": "StructUtils",
-            "Enabled": true
-        },
+		{
+			"Name": "StructUtils",
+			"Enabled": true
+		},
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
 		},
-        {
-            "Name": "EditorScriptingUtilities",
-            "Enabled": true
-        }
+		{
+			"Name": "EditorScriptingUtilities",
+			"Enabled": true
+		}
 	]
 }
