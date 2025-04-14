@@ -44,16 +44,29 @@
 			"Name": "UGFWidgetSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "ItemSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		},
         {
-            "Name": "EnhancedInput",
+            "Name": "StructUtils",
             "Enabled": true
         },
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "EditorScriptingUtilities",
+            "Enabled": true
+        }
 	]
 }
