@@ -18,8 +18,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Quantity;
 
-protected:
-    UPROPERTY(EditAnywhere)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UItemDefinition> ItemDefinition;
 
 public:
