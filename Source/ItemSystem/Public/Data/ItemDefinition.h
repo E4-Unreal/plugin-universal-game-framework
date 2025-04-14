@@ -3,19 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemDataAssetBase.h"
 #include "InstancedStruct.h"
-#include "Types/ItemDataTableRow.h"
 #include "ItemDefinition.generated.h"
 
 struct FItemDataTableRow;
-class UItemConfig;
 
 /**
  *
  */
 UCLASS(Const)
-class ITEMSYSTEM_API UItemDefinition : public UItemDataAssetBase
+class ITEMSYSTEM_API UItemDefinition : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
@@ -28,18 +25,36 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetDisplayText, Category = "Config")
     FText DisplayText;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
-    TArray<TObjectPtr<UItemConfig>> ItemConfigs;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (BaseStruct = "TableRowBase"))
     TArray<FInstancedStruct> DataList;
 
+    UPROPERTY(VisibleDefaultsOnly, Category = "State")
+    bool bValid = true;
+
 public:
-    /* ItemDataAssetBase */
+    void Update(int32 NewID, FTableRowBase* TableRow);
+    void Reset();
 
-    virtual bool IsValid() const override;
+protected:
+    virtual void OnUpdate(FTableRowBase* TableRow);
+    virtual void UpdateDataList(FTableRowBase* TableRow);
+    virtual void OnReset();
 
-    /* ItemDefinition */
+public:
+    UFUNCTION(BlueprintGetter)
+    FORCEINLINE int32 GetID() const { return ID; }
+
+    UFUNCTION(BlueprintGetter)
+    const FORCEINLINE FText& GetDisplayText() const { return DisplayText; }
+
+    UFUNCTION(BlueprintPure)
+    virtual FORCEINLINE bool IsValid() const { return bValid; }
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
+
+    UFUNCTION(BlueprintCallable)
+    virtual void CheckValid();
 
     UFUNCTION(BlueprintPure)
     bool HasData(const UScriptStruct* StructType) const;
@@ -49,12 +64,6 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void SetData(const FInstancedStruct& Value);
-
-    UFUNCTION(BlueprintPure)
-    UItemConfig* GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass);
-
-    UFUNCTION(BlueprintPure)
-    UItemConfig* GetItemConfigByInterface(const TSubclassOf<UInterface> Interface);
 
     template<typename T = UScriptStruct>
     bool HasData()
@@ -74,45 +83,4 @@ public:
         FInstancedStruct InstancedStruct = FInstancedStruct::Make(Value);
         SetData(InstancedStruct);
     }
-
-    template<typename T = UItemConfig>
-    T* GetItemConfigByClass() const
-    {
-        return Cast<T>(GetItemConfigByClass(T::StaticClass()));
-    }
-
-    template<typename T = UInterface>
-    UItemConfig* GetItemConfigByInterface() const
-    {
-        return GetItemConfigByInterface(T::StaticClass());
-    }
-
-protected:
-    /* ItemDataAssetBase */
-
-    virtual void OnUpdate(FTableRowBase* TableRow) override;
-    virtual void OnReset() override;
-
-    /* ItemDefinition */
-
-    UItemConfig* GetOrCreateItemConfig(TSubclassOf<UItemConfig> ItemConfigClass);
-
-    template<typename T = UItemConfig>
-    T* GetOrCreateItemConfig()
-    {
-        return Cast<T>(GetOrCreateItemConfig(T::StaticClass()));
-    }
-
-    virtual void UpdateItemConfigs(FTableRowBase* TableRow);
-
-public:
-    /* Getter */
-
-    UFUNCTION(BlueprintGetter)
-    FORCEINLINE int32 GetID() const { return ID; }
-
-    FORCEINLINE void SetID(int32 Value) { ID = Value; }
-
-    UFUNCTION(BlueprintGetter)
-    const FORCEINLINE FText& GetDisplayText() const { return DisplayText; }
 };

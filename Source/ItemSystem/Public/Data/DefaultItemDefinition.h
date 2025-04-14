@@ -6,6 +6,7 @@
 #include "ItemDefinition.h"
 #include "DefaultItemDefinition.generated.h"
 
+struct FDefaultItemDataTableRow;
 /**
  *
  */
@@ -15,7 +16,6 @@ class ITEMSYSTEM_API UDefaultItemDefinition : public UItemDefinition
     GENERATED_BODY()
 
 protected:
-    virtual void UpdateItemConfigs(FTableRowBase* TableRow) override;
-
-    void UpdateActorItemConfig(FTableRowBase* TableRow);
+    virtual void UpdateDataList(FTableRowBase* TableRow) override;
+    void UpdateDataList(const FDefaultItemDataTableRow& DefaultItemDataTableRow);
 };

@@ -12,7 +12,7 @@ const UItemConfig* UItemSystemFunctionLibrary::FindItemConfigByClass(UItemDefini
 {
     if (ItemDefinition == nullptr || ItemConfigClass == nullptr) return nullptr;
 
-    return ItemDefinition->GetItemConfigByClass(ItemConfigClass);
+    return nullptr;
 }
 
 UItemDefinition* UItemSystemFunctionLibrary::GetItemDefinition(const FItemData& ItemData)

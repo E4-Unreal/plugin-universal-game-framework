@@ -6,21 +6,19 @@
 #include "Data/ItemConfig_Actor.h"
 #include "Types/DefaultItemDataTableRow.h"
 
-void UDefaultItemDefinition::UpdateItemConfigs(FTableRowBase* TableRow)
+void UDefaultItemDefinition::UpdateDataList(FTableRowBase* TableRow)
 {
-    Super::UpdateItemConfigs(TableRow);
+    Super::UpdateDataList(TableRow);
 
-    UpdateActorItemConfig(TableRow);
+    if (FDefaultItemDataTableRow* DefaultItemDataTableRow = static_cast<FDefaultItemDataTableRow*>(TableRow))
+    {
+        UpdateDataList(*DefaultItemDataTableRow);
+    }
 }
 
-void UDefaultItemDefinition::UpdateActorItemConfig(FTableRowBase* TableRow)
+void UDefaultItemDefinition::UpdateDataList(const FDefaultItemDataTableRow& DefaultItemDataTableRow)
 {
-    if (FDefaultItemDataTableRow* ItemDataTableRow = static_cast<FDefaultItemDataTableRow*>(TableRow))
-    {
-        FItemConfigData_Actor NewData;
-        NewData.StaticMesh = ItemDataTableRow->StaticMesh;
-
-        UItemConfig_Actor* ItemConfig = GetOrCreateItemConfig<UItemConfig_Actor>();
-        if (ItemConfig) ItemConfig->Update(&NewData);
-    }
+    FItemConfigData_Actor ActorItemData;
+    ActorItemData.StaticMesh = DefaultItemDataTableRow.StaticMesh;
+    SetData(ActorItemData);
 }

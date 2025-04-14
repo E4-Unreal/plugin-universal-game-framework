@@ -3,14 +3,14 @@
 
 #include "Data/ItemDefinition.h"
 
-#include "Data/ItemConfig.h"
+#include "EditorAssetLibrary.h"
 #include "Types/ItemDataTableRow.h"
 
 const FInstancedStruct UItemDefinition::EmptyData;
 
-bool UItemDefinition::IsValid() const
+void UItemDefinition::CheckValid()
 {
-    return Super::IsValid() && !DisplayText.IsEmpty();
+    bValid = ID >= 0 && !DisplayText.IsEmpty();
 }
 
 bool UItemDefinition::HasData(const UScriptStruct* StructType) const
@@ -54,40 +54,25 @@ void UItemDefinition::SetData(const FInstancedStruct& Value)
     DataList.Emplace(Value);
 }
 
-UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
+void UItemDefinition::Update(int32 NewID, FTableRowBase* TableRow)
 {
-    if (ItemConfigClass == nullptr) return nullptr;
-
-    UItemConfig* FoundItemConfig = nullptr;
-
-    for (auto ItemConfig : ItemConfigs)
+    if (ID != NewID)
     {
-        if (ItemConfig && ItemConfig->IsA(ItemConfigClass) && ItemConfig->IsValid())
-        {
-            FoundItemConfig = ItemConfig;
-            break;
-        }
+        ID = NewID;
+        MarkPackageDirty();
     }
 
-    return FoundItemConfig;
-}
-
-UItemConfig* UItemDefinition::GetItemConfigByInterface(const TSubclassOf<UInterface> Interface)
-{
-    if (Interface == nullptr) return nullptr;
-
-    UItemConfig* FoundItemConfig = nullptr;
-
-    for (auto ItemConfig : ItemConfigs)
+    if (TableRow == nullptr)
     {
-        if (ItemConfig && ItemConfig->GetClass()->ImplementsInterface(Interface) && ItemConfig->IsValid())
-        {
-            FoundItemConfig = ItemConfig;
-            break;
-        }
+        Reset();
+        return;
     }
 
-    return FoundItemConfig;
+    OnUpdate(TableRow);
+
+    CheckValid();
+
+    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
@@ -101,50 +86,27 @@ void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
         }
     }
 
-    // Delete ItemConfigs
-    for (int32 Index = ItemConfigs.Num() - 1; Index >= 0; --Index)
-    {
-        if (ItemConfigs[Index]->IsNotValid())
-        {
-            ItemConfigs.RemoveAt(Index);
-        }
-    }
+    UpdateDataList(TableRow);
+}
 
-    UpdateItemConfigs(TableRow);
+void UItemDefinition::UpdateDataList(FTableRowBase* TableRow)
+{
+    // SetData<T>();
+}
+
+void UItemDefinition::Reset()
+{
+    OnReset();
+
+    bValid = false;
+
+    MarkPackageDirty();
+
+    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDefinition::OnReset()
 {
     DisplayText = FText::GetEmpty();
-    ItemConfigs.Reset();
-}
-
-UItemConfig* UItemDefinition::GetOrCreateItemConfig(TSubclassOf<UItemConfig> ItemConfigClass)
-{
-    UItemConfig* ItemConfig = GetItemConfigByClass(ItemConfigClass);
-    if (ItemConfig == nullptr)
-    {
-        ItemConfig = NewObject<UItemConfig>(this, ItemConfigClass);
-        ItemConfigs.Emplace(ItemConfig);
-        MarkPackageDirty();
-    }
-
-    return ItemConfig;
-}
-
-void UItemDefinition::UpdateItemConfigs(FTableRowBase* TableRow)
-{
-    /**
-     * if(FProjectItemDataTableRow* ProjectItemDataTableRow = static_cast<FProjectItemDataTableRow*>(TableRow))
-     * {
-     *   FInventoryItemData InventoryItemData
-     *   {
-     *      ProjectItemDataTableRow->MaxStack,
-     *      ProjectItemDataTableRow->Thumbnail,
-     *      ...
-     *   };
-     *   UInventoryItemConfig* InventoryItemConfig = GetOrCreateItemConfig<UInventoryItemConfig>();
-     *   InventoryItemConfig->Update(InventoryItemData);
-     * }
-     */
+    DataList.Reset();
 }

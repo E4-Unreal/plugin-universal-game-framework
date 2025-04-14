@@ -52,7 +52,7 @@ void UItemDatabase::Update()
 
         // ItemDefinition 업데이트
         UItemDefinition* ItemDefinition = GetOrCreateItemDefinition(ID);
-        if (ItemDefinition) ItemDefinition->Update(Row);
+        if (ItemDefinition) ItemDefinition->Update(ID, Row);
     }
 
     // ItemDatabase 저장
@@ -79,7 +79,6 @@ UItemDefinition* UItemDatabase::GetOrCreateItemDefinition(int32 ID)
 
     // 에셋 생성
     ItemDefinition = NewObject<UItemDefinition>(Package, ItemDefinitionClass, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
-    ItemDefinition->SetID(ID);
 
     Package->MarkPackageDirty();
     FAssetRegistryModule::AssetCreated(ItemDefinition);
