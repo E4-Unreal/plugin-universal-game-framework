@@ -3,7 +3,6 @@
 
 #include "Data/ItemDefinition.h"
 
-#include "EditorAssetLibrary.h"
 #include "Types/ItemDataTableRow.h"
 
 const FInstancedStruct UItemDefinition::EmptyData;
@@ -71,8 +70,6 @@ void UItemDefinition::Update(int32 NewID, FTableRowBase* TableRow)
     OnUpdate(TableRow);
 
     CheckValid();
-
-    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
@@ -101,8 +98,6 @@ void UItemDefinition::Reset()
     bValid = false;
 
     MarkPackageDirty();
-
-    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDefinition::OnReset()

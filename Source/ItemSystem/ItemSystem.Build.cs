@@ -22,8 +22,7 @@ public class ItemSystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore",
-                "EditorScriptingUtilities"
+                "SlateCore"
             }
         );
     }
