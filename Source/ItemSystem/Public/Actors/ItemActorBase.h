@@ -21,12 +21,19 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, Category = "Config")
+    TObjectPtr<UStaticMesh> DefaultStaticMesh;
+
+    UPROPERTY(EditAnywhere, Category = "Config")
     FItemContainer ItemContainer;
 
 public:
     AItemActorBase(const FObjectInitializer& ObjectInitializer);
 
     virtual void PostInitializeComponents() override;
+
+#if WITH_EDITOR
+    virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 
     UFUNCTION(BlueprintCallable)
     virtual void Refresh();
