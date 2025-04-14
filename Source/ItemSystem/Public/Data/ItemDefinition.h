@@ -33,12 +33,12 @@ protected:
     bool bValid = true;
 
 public:
-    void Update(int32 NewID, FTableRowBase* TableRow);
+    void Update(int32 NewID, UScriptStruct* RowStruct, FTableRowBase* TableRow);
     void Reset();
 
 protected:
-    virtual void OnUpdate(FTableRowBase* TableRow);
-    virtual void UpdateDataList(FTableRowBase* TableRow);
+    virtual void OnUpdate(UScriptStruct* RowStruct, FTableRowBase* TableRow);
+    virtual void UpdateDataList(UScriptStruct* RowStruct, FTableRowBase* TableRow);
     virtual void OnReset();
 
 public:

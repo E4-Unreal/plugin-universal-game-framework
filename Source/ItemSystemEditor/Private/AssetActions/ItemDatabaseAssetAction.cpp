@@ -64,7 +64,7 @@ void UItemDatabaseAssetAction::Update(UItemDatabase* ItemDatabase)
         UItemDefinition* ItemDefinition = GetOrCreateItemDefinition(ItemDatabase, ID);
         if (ItemDefinition)
         {
-            ItemDefinition->Update(ID, Row);
+            ItemDefinition->Update(ID, ItemDatabase->ItemDataTable->RowStruct, Row);
             UEditorAssetLibrary::SaveAsset(ItemDefinition->GetPathName());
         }
     }
