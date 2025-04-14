@@ -9,9 +9,10 @@
 struct FItemDataTableRow;
 
 /**
- *
+ * 프로젝트 전용 ItemDefinition 클래스 작성이 필요합니다.
+ * DefaultItemDefinition 참조
  */
-UCLASS(Const)
+UCLASS(Abstract)
 class ITEMSYSTEM_API UItemDefinition : public UPrimaryDataAsset
 {
     GENERATED_BODY()

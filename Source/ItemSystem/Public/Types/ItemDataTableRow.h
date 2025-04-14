@@ -6,7 +6,8 @@
 #include "ItemDataTableRow.generated.h"
 
 /**
- * 아이템 데이터 테이블 전용 구조체
+ * 프로젝트 전용 ItemDataTableRow 구조체 작성이 필요합니다.
+ * DefaultItemDataTableRow 참조
  */
 USTRUCT(Atomic, BlueprintType)
 struct FItemDataTableRow : public FTableRowBase
