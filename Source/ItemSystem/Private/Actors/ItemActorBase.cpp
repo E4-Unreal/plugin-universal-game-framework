@@ -13,6 +13,8 @@ AItemActorBase::AItemActorBase(const FObjectInitializer& ObjectInitializer)
 {
     /* DisplayMesh */
     DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(DisplayMeshName);
+    SetRootComponent(DisplayMesh);
+    DisplayMesh->SetSimulatePhysics(true);
 }
 
 void AItemActorBase::PostInitializeComponents()
