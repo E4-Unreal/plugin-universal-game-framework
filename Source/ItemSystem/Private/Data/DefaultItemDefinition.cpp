@@ -3,7 +3,7 @@
 
 #include "Data/DefaultItemDefinition.h"
 
-#include "Data/ItemConfig_Actor.h"
+#include "Types/ActorItemData.h"
 #include "Types/DefaultItemDataTableRow.h"
 
 void UDefaultItemDefinition::UpdateDataList(FTableRowBase* TableRow)
@@ -18,7 +18,8 @@ void UDefaultItemDefinition::UpdateDataList(FTableRowBase* TableRow)
 
 void UDefaultItemDefinition::UpdateDataList(const FDefaultItemDataTableRow& DefaultItemDataTableRow)
 {
-    FItemConfigData_Actor ActorItemData;
-    ActorItemData.StaticMesh = DefaultItemDataTableRow.StaticMesh;
-    SetData(ActorItemData);
+    SetData(FActorItemData
+    {
+        DefaultItemDataTableRow.StaticMesh
+    });
 }
