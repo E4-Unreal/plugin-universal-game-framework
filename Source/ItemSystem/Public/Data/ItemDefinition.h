@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ItemDataAssetBase.h"
+#include "InstancedStruct.h"
 #include "ItemDefinition.generated.h"
 
 struct FItemDataTableRow;
@@ -17,6 +18,8 @@ class ITEMSYSTEM_API UItemDefinition : public UItemDataAssetBase
 {
     GENERATED_BODY()
 
+    static const FInstancedStruct EmptyData;
+
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintGetter = GetID, Category = "Config", meta = (ClampMin = 0))
     int32 ID;
@@ -27,6 +30,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     TArray<TObjectPtr<UItemConfig>> ItemConfigs;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (BaseStruct = "TableRowBase"))
+    TArray<FInstancedStruct> DataList;
+
 public:
     /* ItemDataAssetBase */
 
@@ -35,10 +41,19 @@ public:
     /* ItemDefinition */
 
     UFUNCTION(BlueprintPure)
+    const FInstancedStruct& GetData(const UScriptStruct* StructType = nullptr) const;
+
+    UFUNCTION(BlueprintPure)
     UItemConfig* GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass);
 
     UFUNCTION(BlueprintPure)
     UItemConfig* GetItemConfigByInterface(const TSubclassOf<UInterface> Interface);
+
+    template<typename T = UScriptStruct>
+    const T& GetData()
+    {
+        return GetData(T::StaticStruct()).template Get<T>();
+    }
 
     template<typename T = UItemConfig>
     T* GetItemConfigByClass() const

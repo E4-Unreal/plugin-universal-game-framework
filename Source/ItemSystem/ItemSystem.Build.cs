@@ -12,6 +12,7 @@ public class ItemSystem : ModuleRules
                 "Core",
                 "DeveloperSettings",
                 "Blutility",
+                "StructUtils",
                 "UniversalUtilities"
             }
         );

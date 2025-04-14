@@ -6,9 +6,24 @@
 #include "Data/ItemConfig.h"
 #include "Types/ItemDataTableRow.h"
 
+const FInstancedStruct UItemDefinition::EmptyData;
+
 bool UItemDefinition::IsValid() const
 {
     return Super::IsValid() && !DisplayText.IsEmpty();
+}
+
+const FInstancedStruct& UItemDefinition::GetData(const UScriptStruct* StructType) const
+{
+    for (const auto& Data : DataList)
+    {
+        if (Data.GetScriptStruct()->IsChildOf(StructType))
+        {
+            return Data;
+        }
+    }
+
+    return EmptyData;
 }
 
 UItemConfig* UItemDefinition::GetItemConfigByClass(const TSubclassOf<UItemConfig> ItemConfigClass)
