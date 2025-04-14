@@ -19,6 +19,8 @@ class ITEMSYSTEM_API UItemDatabase : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
+    friend class UItemDatabaseAssetAction;
+
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
     FString Path = "/Game/Project/Data/Item/ItemDefinitions/";
