@@ -7,6 +7,5 @@
 
 UItemDefinition* UItemSystemFunctionLibrary::GetItemDefinition(const FItemContainer& ItemData)
 {
-    FItemContainer* ItemDataPtr = const_cast<FItemContainer*>(&ItemData);
-    return ItemDataPtr->GetItemDefinition();
+    return ItemData.GetItemDefinition();
 }
