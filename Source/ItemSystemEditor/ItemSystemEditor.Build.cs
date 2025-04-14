@@ -10,7 +10,9 @@ public class ItemSystemEditor : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "Blutility",
+                "UniversalUtilities",
+                "ItemSystem"
             }
         );
 
@@ -20,7 +22,9 @@ public class ItemSystemEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "UnrealEd",
+                "EditorScriptingUtilities"
             }
         );
     }
