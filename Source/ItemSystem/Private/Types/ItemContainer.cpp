@@ -5,7 +5,7 @@
 
 #include "Subsystems/ItemSubsystem.h"
 
-UItemDefinition* FItemContainer::GetItemDefinition()
+UItemDefinition* FItemContainer::GetItemDefinition() const
 {
     if (ItemDefinition != nullptr) return ItemDefinition;
 

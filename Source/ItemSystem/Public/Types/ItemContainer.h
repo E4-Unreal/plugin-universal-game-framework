@@ -11,7 +11,6 @@ struct ITEMSYSTEM_API FItemContainer
 {
     GENERATED_BODY()
 
-public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 ID;
 
@@ -21,6 +20,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UItemDefinition> ItemDefinition;
 
-public:
-    UItemDefinition* GetItemDefinition();
+    UItemDefinition* GetItemDefinition() const;
+
+    FORCEINLINE bool IsValid() const { return Quantity > 0 && GetItemDefinition() != nullptr; }
+    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 };
