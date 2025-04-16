@@ -7,9 +7,11 @@
 #include "Actors/SocketSkeletalMeshActor.h"
 #include "Actors/SocketStaticMeshActor.h"
 #include "GameFramework/Character.h"
+#include "Net/UnrealNetwork.h"
 
 USocketManagerComponent::USocketManagerComponent()
 {
+    SetIsReplicated(true);
     OverrideBodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 }
 
@@ -17,7 +19,7 @@ void USocketManagerComponent::PostInitProperties()
 {
     Super::PostInitProperties();
 
-    SocketActorMap.Reserve(SocketNameMap.Num());
+    Refresh();
 }
 
 void USocketManagerComponent::BeginPlay()
@@ -25,6 +27,13 @@ void USocketManagerComponent::BeginPlay()
     Super::BeginPlay();
 
     FindTargetMesh();
+}
+
+void USocketManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, SocketActorSlots);
 }
 
 void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
@@ -107,6 +116,15 @@ void USocketManagerComponent::FindTargetMesh()
     }
 }
 
+void USocketManagerComponent::Refresh()
+{
+    SocketActorMap.Empty(SocketNameMap.Num());
+    for (const auto& [SocketTag, Actor] : SocketActorSlots)
+    {
+        SocketActorMap.Emplace(SocketTag, Actor);
+    }
+}
+
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
 {
     // 입력 유효성 검사
@@ -147,6 +165,11 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
     SpawnedActor->SetReplicates(ShouldReplicate());
 
     return SpawnedActor;
+}
+
+void USocketManagerComponent::OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots)
+{
+    Refresh();
 }
 
 bool USocketManagerComponent::DoesSocketExist(const FGameplayTag& SocketTag) const

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameplayTagContainer.h"
+#include "Types/SocketActorSlot.h"
 #include "SocketManagerComponent.generated.h"
 
 UCLASS(meta = (BlueprintSpawnableComponent))
@@ -22,6 +23,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ShowOnlyInnerProperties, SkipUCSModifiedProperties))
     FBodyInstance OverrideBodyInstance;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_SocketActorSlots, Transient, Category = "State")
+    TArray<FSocketActorSlot> SocketActorSlots;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
     TMap<FGameplayTag, TObjectPtr<AActor>> SocketActorMap;
 
@@ -30,6 +34,7 @@ public:
 
     virtual void PostInitProperties() override;
     virtual void BeginPlay() override;
+    virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UFUNCTION(BlueprintCallable)
     virtual void SetTargetMesh(UMeshComponent* InTargetMesh);
@@ -51,6 +56,8 @@ public:
 protected:
     virtual void FindTargetMesh();
 
+    virtual void Refresh();
+
     UFUNCTION(BlueprintCallable)
     virtual AActor* SpawnActor(TSubclassOf<AActor> ActorClass);
 
@@ -62,6 +69,8 @@ protected:
     template<typename T = AActor>
     T* SpawnActorDeferred(TSubclassOf<AActor> ActorClass = T::StaticClass()) { return Cast<T>(SpawnActorDeferred(ActorClass)); }
 
+    /* Query */
+
     FORCEINLINE bool ShouldReplicate() const { return GetOwner()->GetIsReplicated(); }
 
     UFUNCTION(BlueprintPure)
@@ -72,4 +81,9 @@ protected:
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE UMeshComponent* GetTargetMesh() const { return TargetMesh.Get(); }
+
+    /* Replicate */
+
+    UFUNCTION()
+    virtual void OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots);
 };
