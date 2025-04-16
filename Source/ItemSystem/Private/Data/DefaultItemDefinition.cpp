@@ -6,12 +6,13 @@
 #include "Types/ActorItemData.h"
 #include "Types/DefaultItemDataTableRow.h"
 
-void UDefaultItemDefinition::UpdateDataList(FTableRowBase* TableRow)
+void UDefaultItemDefinition::UpdateDataList(UScriptStruct* RowStruct, FTableRowBase* TableRow)
 {
-    Super::UpdateDataList(TableRow);
+    Super::UpdateDataList(RowStruct, TableRow);
 
-    if (FDefaultItemDataTableRow* DefaultItemDataTableRow = static_cast<FDefaultItemDataTableRow*>(TableRow))
+    if (RowStruct->IsChildOf(FDefaultItemDataTableRow::StaticStruct()))
     {
+        FDefaultItemDataTableRow* DefaultItemDataTableRow = static_cast<FDefaultItemDataTableRow*>(TableRow);
         UpdateDataList(*DefaultItemDataTableRow);
     }
 }

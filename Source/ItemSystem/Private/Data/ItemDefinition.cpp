@@ -3,7 +3,6 @@
 
 #include "Data/ItemDefinition.h"
 
-#include "EditorAssetLibrary.h"
 #include "Types/ItemDataTableRow.h"
 
 const FInstancedStruct UItemDefinition::EmptyData;
@@ -54,7 +53,7 @@ void UItemDefinition::SetData(const FInstancedStruct& Value)
     DataList.Emplace(Value);
 }
 
-void UItemDefinition::Update(int32 NewID, FTableRowBase* TableRow)
+void UItemDefinition::Update(int32 NewID, UScriptStruct* RowStruct, FTableRowBase* TableRow)
 {
     if (ID != NewID)
     {
@@ -62,23 +61,22 @@ void UItemDefinition::Update(int32 NewID, FTableRowBase* TableRow)
         MarkPackageDirty();
     }
 
-    if (TableRow == nullptr)
+    if (RowStruct == nullptr || TableRow == nullptr)
     {
         Reset();
         return;
     }
 
-    OnUpdate(TableRow);
+    OnUpdate(RowStruct, TableRow);
 
     CheckValid();
-
-    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
-void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
+void UItemDefinition::OnUpdate(UScriptStruct* RowStruct, FTableRowBase* TableRow)
 {
-    if (FItemDataTableRow* ItemDataTableRow = static_cast<FItemDataTableRow*>(TableRow))
+    if (RowStruct->IsChildOf(FItemDataTableRow::StaticStruct()))
     {
+        FItemDataTableRow* ItemDataTableRow = static_cast<FItemDataTableRow*>(TableRow);
         if (!DisplayText.IdenticalTo(ItemDataTableRow->DisplayText))
         {
             DisplayText = ItemDataTableRow->DisplayText;
@@ -86,10 +84,10 @@ void UItemDefinition::OnUpdate(FTableRowBase* TableRow)
         }
     }
 
-    UpdateDataList(TableRow);
+    UpdateDataList(RowStruct, TableRow);
 }
 
-void UItemDefinition::UpdateDataList(FTableRowBase* TableRow)
+void UItemDefinition::UpdateDataList(UScriptStruct* RowStruct, FTableRowBase* TableRow)
 {
     // SetData<T>();
 }
@@ -101,8 +99,6 @@ void UItemDefinition::Reset()
     bValid = false;
 
     MarkPackageDirty();
-
-    UEditorAssetLibrary::SaveAsset(GetPathName());
 }
 
 void UItemDefinition::OnReset()

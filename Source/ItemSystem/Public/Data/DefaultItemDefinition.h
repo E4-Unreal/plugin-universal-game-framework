@@ -16,6 +16,6 @@ class ITEMSYSTEM_API UDefaultItemDefinition : public UItemDefinition
     GENERATED_BODY()
 
 protected:
-    virtual void UpdateDataList(FTableRowBase* TableRow) override;
+    virtual void UpdateDataList(UScriptStruct* RowStruct, FTableRowBase* TableRow) override;
     void UpdateDataList(const FDefaultItemDataTableRow& DefaultItemDataTableRow);
 };

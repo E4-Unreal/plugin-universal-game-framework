@@ -7,9 +7,7 @@
 #include "Engine/DataAsset.h"
 #include "ItemDatabase.generated.h"
 
-class UItemConfig;
 class UItemDefinition;
-struct FItemDataTableRow;
 
 /**
  * ItemDataTable을 통해 ItemDefinition 데이터 에셋을 생성하거나 업데이트합니다.
@@ -18,6 +16,8 @@ UCLASS()
 class ITEMSYSTEM_API UItemDatabase : public UPrimaryDataAsset
 {
     GENERATED_BODY()
+
+    friend class UItemDatabaseAssetAction;
 
 protected:
     UPROPERTY(EditDefaultsOnly, Category = "Config")
@@ -38,20 +38,4 @@ protected:
 public:
     UFUNCTION(BlueprintCallable)
     virtual UItemDefinition* GetItemDefinitionByID(int32 ID);
-
-protected:
-#if WITH_EDITOR
-    UFUNCTION(CallInEditor)
-    void HardUpdate();
-
-    UFUNCTION(CallInEditor)
-    void Update();
-
-    UItemDefinition* GetOrCreateItemDefinition(int32 ID);
-    void DeleteAllItemDefinitions();
-
-    static bool CheckRowName(FName RowName, int32& ID);
-    FString GetAssetName(int32 ID) const;
-    FString GetPackageName(int32 ID) const;
-#endif
 };
