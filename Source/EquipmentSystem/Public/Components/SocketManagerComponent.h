@@ -7,8 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "SocketManagerComponent.generated.h"
 
-class ASkeletalMeshActor;
-class AStaticMeshActor;
+class ASocketMeshActor;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class EQUIPMENTSYSTEM_API USocketManagerComponent : public UActorComponent
@@ -43,31 +42,22 @@ public:
     virtual void SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh, TSubclassOf<ASkeletalMeshActor> SkeletalMeshActorClass = nullptr);
+    virtual void SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh, TSubclassOf<AStaticMeshActor> StaticMeshActorClass = nullptr);
+    virtual void SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh);
 
 protected:
     UFUNCTION(BlueprintCallable)
     virtual AActor* SpawnActor(TSubclassOf<AActor> ActorClass);
 
     template<typename T = AActor>
-    T* SpawnActor(TSubclassOf<AActor> ActorClass) { return Cast<T>(SpawnActor(ActorClass)); }
+    T* SpawnActor(TSubclassOf<AActor> ActorClass = T::StaticClass()) { return Cast<T>(SpawnActor(ActorClass)); }
 
     virtual AActor* SpawnActorDeferred(TSubclassOf<AActor> ActorClass);
 
     template<typename T = AActor>
-    T* SpawnActorDeferred(TSubclassOf<AActor> ActorClass) { return Cast<T>(SpawnActorDeferred(ActorClass)); }
-
-    UFUNCTION(BlueprintCallable)
-    virtual ASkeletalMeshActor* SpawnSkeletalMeshActor(USkeletalMesh* SkeletalMesh, TSubclassOf<ASkeletalMeshActor> SkeletalMeshActorClass = nullptr);
-
-    UFUNCTION(BlueprintCallable)
-    virtual AStaticMeshActor* SpawnStaticMeshActor(UStaticMesh* StaticMesh, TSubclassOf<AStaticMeshActor> StaticMeshActorClass = nullptr);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SetBodyInstance(UPrimitiveComponent* PrimitiveComponent);
+    T* SpawnActorDeferred(TSubclassOf<AActor> ActorClass = T::StaticClass()) { return Cast<T>(SpawnActorDeferred(ActorClass)); }
 
     UFUNCTION(BlueprintPure)
     bool DoesSocketExist(const FGameplayTag& SocketTag) const;
