@@ -67,6 +67,34 @@ void USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& Socket
     SpawnMeshToSocket(SocketTag, StaticMesh);
 }
 
+void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
+{
+    // 입력 유효성 검사
+    if (Mesh == nullptr || !DoesSocketExist(SocketTag)) return;
+
+    // 액터 스폰
+    TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
+    if (Mesh->GetClass() == USkeletalMesh::StaticClass())
+    {
+        SocketMeshActorClass = ASocketSkeletalMeshActor::StaticClass();
+    }
+    else if (Mesh->GetClass() == UStaticMesh::StaticClass())
+    {
+        SocketMeshActorClass = ASocketStaticMeshActor::StaticClass();
+    }
+    else
+    {
+        return;
+    }
+
+    auto SpawnedActor = SpawnActor<ASocketMeshActor>(SocketMeshActorClass);
+    SpawnedActor->SetBodyInstance(OverrideBodyInstance);
+    SpawnedActor->SetMesh(Mesh);
+
+    // 액터 부착
+    AttachActorToSocket(SocketTag, SpawnedActor);
+}
+
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
 {
     // 입력 유효성 검사
@@ -107,34 +135,6 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
     SpawnedActor->SetReplicates(ShouldReplicate());
 
     return SpawnedActor;
-}
-
-void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
-{
-    // 입력 유효성 검사
-    if (Mesh == nullptr || !DoesSocketExist(SocketTag)) return;
-
-    // 액터 스폰
-    TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
-    if (Mesh->GetClass() == USkeletalMesh::StaticClass())
-    {
-        SocketMeshActorClass = ASocketSkeletalMeshActor::StaticClass();
-    }
-    else if (Mesh->GetClass() == UStaticMesh::StaticClass())
-    {
-        SocketMeshActorClass = ASocketStaticMeshActor::StaticClass();
-    }
-    else
-    {
-        return;
-    }
-
-    auto SpawnedActor = SpawnActor<ASocketMeshActor>(SocketMeshActorClass);
-    SpawnedActor->SetBodyInstance(OverrideBodyInstance);
-    SpawnedActor->SetMesh(Mesh);
-
-    // 액터 부착
-    AttachActorToSocket(SocketTag, SpawnedActor);
 }
 
 bool USocketManagerComponent::DoesSocketExist(const FGameplayTag& SocketTag) const

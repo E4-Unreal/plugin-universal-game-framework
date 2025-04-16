@@ -45,6 +45,8 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh);
 
+    virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
+
 protected:
     UFUNCTION(BlueprintCallable)
     virtual AActor* SpawnActor(TSubclassOf<AActor> ActorClass);
@@ -56,8 +58,6 @@ protected:
 
     template<typename T = AActor>
     T* SpawnActorDeferred(TSubclassOf<AActor> ActorClass = T::StaticClass()) { return Cast<T>(SpawnActorDeferred(ActorClass)); }
-
-    virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
     FORCEINLINE bool ShouldReplicate() const { return GetOwner()->GetIsReplicated(); }
 
