@@ -53,10 +53,19 @@ public:
 
     virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
+    /* Query */
+
+    UFUNCTION(BlueprintPure)
+    AActor* GetActorByTag(const FGameplayTag& SocketTag) const { return SocketActorMap.FindRef(SocketTag); }
+
 protected:
     virtual void FindTargetMesh();
 
     virtual void Refresh();
+
+    virtual void RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor);
+
+    virtual void UnRegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor);
 
     UFUNCTION(BlueprintCallable)
     virtual AActor* SpawnActor(TSubclassOf<AActor> ActorClass);

@@ -50,7 +50,7 @@ void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag,
 
     // 액터 부착
     Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), GetSocketName(SocketTag));
-    SocketActorMap.Emplace(SocketTag, Actor);
+    RegisterSocketActor(SocketTag, Actor);
 }
 
 void USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
@@ -123,6 +123,30 @@ void USocketManagerComponent::Refresh()
     {
         SocketActorMap.Emplace(SocketTag, Actor);
     }
+}
+
+void USocketManagerComponent::RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor)
+{
+    // 입력 유효성 검사
+    if (SocketActorMap.Contains(SocketTag) || Actor == nullptr) return;
+
+    // 배열에 등록
+    SocketActorSlots.Emplace(FSocketActorSlot(SocketTag, Actor));
+
+    // 맵에 등록
+    SocketActorMap.Emplace(SocketTag, Actor);
+}
+
+void USocketManagerComponent::UnRegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor)
+{
+    // 입력 유효성 검사
+    if (!SocketActorMap.Contains(SocketTag) || Actor == nullptr) return;
+
+    // 배열로부터 등록 해제
+    SocketActorSlots.Remove(FSocketActorSlot(SocketTag, Actor));
+
+    // 맵으로부터 등록 해제
+    SocketActorMap.Remove(SocketTag);
 }
 
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
