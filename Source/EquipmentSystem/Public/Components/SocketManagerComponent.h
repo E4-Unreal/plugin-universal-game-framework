@@ -13,7 +13,7 @@ class EQUIPMENTSYSTEM_API USocketManagerComponent : public UActorComponent
     GENERATED_BODY()
 
 private:
-    TWeakObjectPtr<USkeletalMeshComponent> TargetMesh;
+    TWeakObjectPtr<UMeshComponent> TargetMesh;
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
@@ -28,10 +28,11 @@ protected:
 public:
     USocketManagerComponent();
 
-    virtual void InitializeComponent() override;
+    virtual void PostInitProperties() override;
+    virtual void BeginPlay() override;
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetTargetMesh(USkeletalMeshComponent* Value);
+    virtual void SetTargetMesh(UMeshComponent* InTargetMesh);
 
     UFUNCTION(BlueprintCallable)
     virtual void AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor);
@@ -48,6 +49,8 @@ public:
     virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
 protected:
+    virtual void FindTargetMesh();
+
     UFUNCTION(BlueprintCallable)
     virtual AActor* SpawnActor(TSubclassOf<AActor> ActorClass);
 
@@ -68,5 +71,5 @@ protected:
     FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.Contains(SocketTag) ? SocketNameMap[SocketTag] : FName(NAME_None); }
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE USkeletalMeshComponent* GetTargetMesh() const { return TargetMesh.Get(); }
+    FORCEINLINE UMeshComponent* GetTargetMesh() const { return TargetMesh.Get(); }
 };

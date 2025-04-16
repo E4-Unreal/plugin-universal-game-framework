@@ -10,28 +10,28 @@
 
 USocketManagerComponent::USocketManagerComponent()
 {
-    bWantsInitializeComponent = true;
-
     OverrideBodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 }
 
-void USocketManagerComponent::InitializeComponent()
+void USocketManagerComponent::PostInitProperties()
 {
-    Super::InitializeComponent();
+    Super::PostInitProperties();
 
     SocketActorMap.Reserve(SocketNameMap.Num());
-
-    if (auto OwnerCharacter = Cast<ACharacter>(GetOwner()))
-    {
-        SetTargetMesh(OwnerCharacter->GetMesh());
-    }
 }
 
-void USocketManagerComponent::SetTargetMesh(USkeletalMeshComponent* Value)
+void USocketManagerComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    FindTargetMesh();
+}
+
+void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
 {
     if (TargetMesh.IsValid()) return;
 
-    TargetMesh = Value;
+    TargetMesh = InTargetMesh;
 }
 
 void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor)
@@ -93,6 +93,18 @@ void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, U
 
     // 액터 부착
     AttachActorToSocket(SocketTag, SpawnedActor);
+}
+
+void USocketManagerComponent::FindTargetMesh()
+{
+    if (auto OwnerCharacter = Cast<ACharacter>(GetOwner()))
+    {
+        SetTargetMesh(OwnerCharacter->GetMesh());
+    }
+    else
+    {
+        SetTargetMesh(GetOwner()->GetComponentByClass<UMeshComponent>());
+    }
 }
 
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
