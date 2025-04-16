@@ -59,6 +59,8 @@ protected:
 
     virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
+    FORCEINLINE bool ShouldReplicate() const { return GetOwner()->GetIsReplicated(); }
+
     UFUNCTION(BlueprintPure)
     bool DoesSocketExist(const FGameplayTag& SocketTag) const;
 

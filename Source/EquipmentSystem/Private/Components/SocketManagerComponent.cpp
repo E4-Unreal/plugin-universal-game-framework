@@ -86,7 +86,7 @@ AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
     // 액터 스폰
     const FVector SpawnLocation = Owner->GetActorLocation();
     AActor* SpawnedActor = World->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
-    SpawnedActor->SetReplicates(GetIsReplicated());
+    SpawnedActor->SetReplicates(ShouldReplicate());
 
     return SpawnedActor;
 }
@@ -104,7 +104,7 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
     // 액터 스폰
     FTransform SpawnTransform = FTransform(Owner->GetActorLocation());
     AActor* SpawnedActor = World->SpawnActorDeferred<AActor>(ActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    SpawnedActor->SetReplicates(GetIsReplicated());
+    SpawnedActor->SetReplicates(ShouldReplicate());
 
     return SpawnedActor;
 }
