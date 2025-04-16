@@ -10,6 +10,7 @@ public class EquipmentSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "GameplayTags",
                 "UniversalUtilities"
             }
         );
