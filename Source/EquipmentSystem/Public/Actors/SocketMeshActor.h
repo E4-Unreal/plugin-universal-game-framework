@@ -6,27 +6,22 @@
 #include "GameFramework/Actor.h"
 #include "SocketMeshActor.generated.h"
 
-UCLASS()
+UCLASS(Abstract)
 class EQUIPMENTSYSTEM_API ASocketMeshActor : public AActor
 {
     GENERATED_BODY()
 
 protected:
-    static const FName DefaultSceneRootName;
-    static const FName SkeletalMeshComponentName;
-    static const FName StaticMeshComponentName;
+    static const FName MeshComponentName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<USceneComponent> DefaultSceneRoot;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+    TObjectPtr<UMeshComponent> MeshComponent;
 
 protected:
+    UPROPERTY(ReplicatedUsing = OnRep_Mesh, Transient)
+    TObjectPtr<UStreamableRenderAsset> Mesh;
+
     UPROPERTY(ReplicatedUsing = OnRep_BodyInstance, Transient)
     FBodyInstance BodyInstance;
 
@@ -36,21 +31,23 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetSkeletalMesh(USkeletalMesh* SkeletalMesh);
+    virtual void SetMesh(UStreamableRenderAsset* NewMesh);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetStaticMesh(UStaticMesh* StaticMesh);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SetBodyInstance(const FBodyInstance& Value);
+    virtual void SetBodyInstance(const FBodyInstance& NewBodyInstance);
 
 protected:
     void ApplyBodyInstance() const;
 
     UFUNCTION()
+    virtual void OnRep_Mesh(UStreamableRenderAsset* OldMesh);
+
+    UFUNCTION()
     virtual void OnRep_BodyInstance();
 
 public:
-    FORCEINLINE USkeletalMeshComponent* GetSkeletalMeshComponent() const { return SkeletalMeshComponent; }
-    FORCEINLINE UStaticMeshComponent* GetStaticMeshComponent() const { return StaticMeshComponent; }
+    FORCEINLINE UMeshComponent* GetMeshComponent() const { return MeshComponent; }
+
+    template<typename T = UMeshComponent>
+    T* GetMeshComponent() const { return Cast<T>(MeshComponent); }
 };

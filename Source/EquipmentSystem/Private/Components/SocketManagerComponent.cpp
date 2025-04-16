@@ -4,6 +4,8 @@
 #include "Components/SocketManagerComponent.h"
 
 #include "Actors/SocketMeshActor.h"
+#include "Actors/SocketSkeletalMeshActor.h"
+#include "Actors/SocketStaticMeshActor.h"
 #include "GameFramework/Character.h"
 
 USocketManagerComponent::USocketManagerComponent()
@@ -57,30 +59,12 @@ void USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, 
 
 void USocketManagerComponent::SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh)
 {
-    // 입력 유효성 검사
-    if (SkeletalMesh == nullptr || !DoesSocketExist(SocketTag)) return;
-
-    // 액터 스폰
-    auto SpawnedActor = SpawnActor<ASocketMeshActor>();
-    SpawnedActor->SetBodyInstance(OverrideBodyInstance);
-    SpawnedActor->SetSkeletalMesh(SkeletalMesh);
-
-    // 액터 부착
-    AttachActorToSocket(SocketTag, SpawnedActor);
+    SpawnMeshToSocket(SocketTag, SkeletalMesh);
 }
 
 void USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh)
 {
-    // 입력 유효성 검사
-    if (StaticMesh == nullptr || !DoesSocketExist(SocketTag)) return;
-
-    // 액터 스폰
-    auto SpawnedActor = SpawnActor<ASocketMeshActor>();
-    SpawnedActor->SetBodyInstance(OverrideBodyInstance);
-    SpawnedActor->SetStaticMesh(StaticMesh);
-
-    // 액터 부착
-    AttachActorToSocket(SocketTag, SpawnedActor);
+    SpawnMeshToSocket(SocketTag, StaticMesh);
 }
 
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
@@ -95,7 +79,6 @@ AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
 
     // ActorSpawnParameters 설정
     FActorSpawnParameters ActorSpawnParameters;
-    ActorSpawnParameters.Name = FName(Owner->GetName() + "_" + ActorClass->GetName());
     ActorSpawnParameters.Owner = Owner;
     ActorSpawnParameters.Instigator = Owner->GetInstigator();
     ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -103,6 +86,7 @@ AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
     // 액터 스폰
     const FVector SpawnLocation = Owner->GetActorLocation();
     AActor* SpawnedActor = World->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
+    SpawnedActor->SetReplicates(GetIsReplicated());
 
     return SpawnedActor;
 }
@@ -120,8 +104,37 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
     // 액터 스폰
     FTransform SpawnTransform = FTransform(Owner->GetActorLocation());
     AActor* SpawnedActor = World->SpawnActorDeferred<AActor>(ActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
+    SpawnedActor->SetReplicates(GetIsReplicated());
 
     return SpawnedActor;
+}
+
+void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
+{
+    // 입력 유효성 검사
+    if (Mesh == nullptr || !DoesSocketExist(SocketTag)) return;
+
+    // 액터 스폰
+    TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
+    if (Mesh->GetClass() == USkeletalMesh::StaticClass())
+    {
+        SocketMeshActorClass = ASocketSkeletalMeshActor::StaticClass();
+    }
+    else if (Mesh->GetClass() == UStaticMesh::StaticClass())
+    {
+        SocketMeshActorClass = ASocketStaticMeshActor::StaticClass();
+    }
+    else
+    {
+        return;
+    }
+
+    auto SpawnedActor = SpawnActor<ASocketMeshActor>(SocketMeshActorClass);
+    SpawnedActor->SetBodyInstance(OverrideBodyInstance);
+    SpawnedActor->SetMesh(Mesh);
+
+    // 액터 부착
+    AttachActorToSocket(SocketTag, SpawnedActor);
 }
 
 bool USocketManagerComponent::DoesSocketExist(const FGameplayTag& SocketTag) const

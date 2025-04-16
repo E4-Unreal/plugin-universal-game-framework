@@ -4,55 +4,46 @@
 #include "Actors/SocketMeshActor.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Logging.h"
 
-const FName ASocketMeshActor::DefaultSceneRootName(TEXT("DefaultSceneRoot"));
-const FName ASocketMeshActor::SkeletalMeshComponentName(TEXT("SkeletalMesh"));
-const FName ASocketMeshActor::StaticMeshComponentName(TEXT("StaticMesh"));
+const FName ASocketMeshActor::MeshComponentName(TEXT("Mesh"));
 
 ASocketMeshActor::ASocketMeshActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    bReplicates = true;
-    BodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-
-    /* DefaultSceneRoot */
-    DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(DefaultSceneRootName);
-    SetRootComponent(DefaultSceneRoot);
-
-    /* SkeletalMeshComponent */
-    SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(SkeletalMeshComponentName);
-    SkeletalMeshComponent->SetupAttachment(RootComponent);
-    SkeletalMeshComponent->SetIsReplicated(true);
-
-    /* StaticMeshComponent */
-    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(StaticMeshComponentName);
-    StaticMeshComponent->SetupAttachment(RootComponent);
-    StaticMeshComponent->SetIsReplicated(true);
-    StaticMeshComponent->SetMobility(EComponentMobility::Movable);
-
-    ApplyBodyInstance();
+    /* MeshComponent */
+    MeshComponent = CreateDefaultSubobject<UMeshComponent>(MeshComponentName);
+    SetRootComponent(MeshComponent);
+    if (MeshComponent)
+    {
+        MeshComponent->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+        BodyInstance = MeshComponent->BodyInstance;
+    }
 }
 
 void ASocketMeshActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+    DOREPLIFETIME(ThisClass, Mesh);
     DOREPLIFETIME(ThisClass, BodyInstance);
 }
 
-void ASocketMeshActor::SetSkeletalMesh(USkeletalMesh* SkeletalMesh)
+void ASocketMeshActor::SetMesh(UStreamableRenderAsset* NewMesh)
 {
-    if (SkeletalMeshComponent) SkeletalMeshComponent->SetSkeletalMesh(SkeletalMesh);
+    if (Mesh == NewMesh) return;
+
+    Mesh = NewMesh;
 }
 
-void ASocketMeshActor::SetStaticMesh(UStaticMesh* StaticMesh)
+void ASocketMeshActor::SetBodyInstance(const FBodyInstance& NewBodyInstance)
 {
-    if (StaticMeshComponent) StaticMeshComponent->SetStaticMesh(StaticMesh);
-}
+    // 중복 호출 방지
+    FName OldCollisionProfileName = BodyInstance.GetCollisionProfileName();
+    if (OldCollisionProfileName != UCollisionProfile::CustomCollisionProfileName && OldCollisionProfileName == NewBodyInstance.GetCollisionProfileName()) return;
 
-void ASocketMeshActor::SetBodyInstance(const FBodyInstance& Value)
-{
-    BodyInstance = Value;
+    // BodyInstance 설정
+    BodyInstance = NewBodyInstance;
     ApplyBodyInstance();
 }
 
@@ -60,20 +51,23 @@ void ASocketMeshActor::ApplyBodyInstance() const
 {
     if (BodyInstance.GetCollisionProfileName() == UCollisionProfile::CustomCollisionProfileName)
     {
-        SkeletalMeshComponent->SetCollisionEnabled(BodyInstance.GetCollisionEnabled());
-        SkeletalMeshComponent->SetCollisionObjectType(BodyInstance.GetObjectType());
-        SkeletalMeshComponent->SetCollisionResponseToChannels(BodyInstance.GetResponseToChannels());
-
-        StaticMeshComponent->SetCollisionEnabled(BodyInstance.GetCollisionEnabled());
-        StaticMeshComponent->SetCollisionObjectType(BodyInstance.GetObjectType());
-        StaticMeshComponent->SetCollisionResponseToChannels(BodyInstance.GetResponseToChannels());
+        MeshComponent->SetCollisionEnabled(BodyInstance.GetCollisionEnabled());
+        MeshComponent->SetCollisionObjectType(BodyInstance.GetObjectType());
+        MeshComponent->SetCollisionResponseToChannels(BodyInstance.GetResponseToChannels());
     }
     else
     {
-        SkeletalMeshComponent->SetCollisionProfileName(BodyInstance.GetCollisionProfileName());
-
-        StaticMeshComponent->SetCollisionProfileName(BodyInstance.GetCollisionProfileName());
+        MeshComponent->SetCollisionProfileName(BodyInstance.GetCollisionProfileName());
     }
+}
+
+void ASocketMeshActor::OnRep_Mesh(UStreamableRenderAsset* OldMesh)
+{
+    auto NewMesh = Mesh;
+    if (OldMesh == NewMesh) return;
+
+    Mesh = OldMesh;
+    SetMesh(NewMesh);
 }
 
 void ASocketMeshActor::OnRep_BodyInstance()

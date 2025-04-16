@@ -7,8 +7,6 @@
 #include "GameplayTagContainer.h"
 #include "SocketManagerComponent.generated.h"
 
-class ASocketMeshActor;
-
 UCLASS(meta = (BlueprintSpawnableComponent))
 class EQUIPMENTSYSTEM_API USocketManagerComponent : public UActorComponent
 {
@@ -58,6 +56,8 @@ protected:
 
     template<typename T = AActor>
     T* SpawnActorDeferred(TSubclassOf<AActor> ActorClass = T::StaticClass()) { return Cast<T>(SpawnActorDeferred(ActorClass)); }
+
+    virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
     UFUNCTION(BlueprintPure)
     bool DoesSocketExist(const FGameplayTag& SocketTag) const;
