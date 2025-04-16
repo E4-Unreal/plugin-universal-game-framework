@@ -53,6 +53,17 @@ void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag,
     RegisterSocketActor(SocketTag, Actor);
 }
 
+AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& SocketTag)
+{
+    auto SocketActor = GetActorByTag(SocketTag);
+    if (SocketActor == nullptr) return nullptr;
+
+    SocketActor->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepRelative, true));
+    UnRegisterSocketActor(SocketTag);
+
+    return SocketActor;
+}
+
 void USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
 {
     // 입력 유효성 검사
@@ -137,13 +148,20 @@ void USocketManagerComponent::RegisterSocketActor(const FGameplayTag& SocketTag,
     SocketActorMap.Emplace(SocketTag, Actor);
 }
 
-void USocketManagerComponent::UnRegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor)
+void USocketManagerComponent::UnRegisterSocketActor(const FGameplayTag& SocketTag)
 {
     // 입력 유효성 검사
-    if (!SocketActorMap.Contains(SocketTag) || Actor == nullptr) return;
+    if (!SocketActorMap.Contains(SocketTag)) return;
 
     // 배열로부터 등록 해제
-    SocketActorSlots.Remove(FSocketActorSlot(SocketTag, Actor));
+    for (int32 Index = SocketActorSlots.Num() - 1; Index >= 0; --Index)
+    {
+        if (SocketActorSlots[Index].SocketTag == SocketTag)
+        {
+            SocketActorSlots.RemoveAt(Index);
+            break;
+        }
+    }
 
     // 맵으로부터 등록 해제
     SocketActorMap.Remove(SocketTag);

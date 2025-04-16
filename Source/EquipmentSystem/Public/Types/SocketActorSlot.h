@@ -17,6 +17,6 @@ struct FSocketActorSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;
 
-    bool operator==(const FSocketActorSlot &Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
-    bool operator!=(const FSocketActorSlot &Other) const { return !(*this == Other); }
+    bool operator==(const FSocketActorSlot& Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
+    bool operator!=(const FSocketActorSlot& Other) const { return !(*this == Other); }
 };

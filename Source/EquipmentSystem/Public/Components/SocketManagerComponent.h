@@ -43,6 +43,9 @@ public:
     virtual void AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor);
 
     UFUNCTION(BlueprintCallable)
+    virtual AActor* DetachActorFromSocket(const FGameplayTag& SocketTag);
+
+    UFUNCTION(BlueprintCallable)
     virtual void SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
 
     UFUNCTION(BlueprintCallable)
@@ -66,7 +69,7 @@ protected:
 
     virtual void RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor);
 
-    virtual void UnRegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor);
+    virtual void UnRegisterSocketActor(const FGameplayTag& SocketTag);
 
     UFUNCTION(BlueprintCallable)
     virtual AActor* SpawnActor(TSubclassOf<AActor> ActorClass);
