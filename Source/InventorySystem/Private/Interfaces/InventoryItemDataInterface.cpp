@@ -8,7 +8,7 @@
 
 
 // Add default functionality here for any IInventoryItemDataInterface functions that are not pure virtual.
-const FInventoryItemData& IInventoryItemDataInterface::GetInventoryItemData_Implementation() const
+const FInventoryItemData IInventoryItemDataInterface::GetInventoryItemData_Implementation() const
 {
     LOG_TODO_INTERFACE
 

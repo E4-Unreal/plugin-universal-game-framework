@@ -22,7 +22,7 @@ struct FInventorySlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Quantity;
 
-    const FInventoryItemData& GetInventoryItemData() const;
+    const FInventoryItemData GetInventoryItemData() const;
     int32 GetCapacity() const;
 
     FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && GetInventoryItemData().IsValid(); }

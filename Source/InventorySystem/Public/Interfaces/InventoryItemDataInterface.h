@@ -25,8 +25,8 @@ class INVENTORYSYSTEM_API IInventoryItemDataInterface
     // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    const FInventoryItemData& GetInventoryItemData() const;
-    virtual const FInventoryItemData& GetInventoryItemData_Implementation() const;
+    const FInventoryItemData GetInventoryItemData() const;
+    virtual const FInventoryItemData GetInventoryItemData_Implementation() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool Equip();
