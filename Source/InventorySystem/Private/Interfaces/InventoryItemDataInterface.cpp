@@ -14,3 +14,24 @@ const FInventoryItemData& IInventoryItemDataInterface::GetInventoryItemData_Impl
 
     return FInventoryItemData::Empty;
 }
+
+bool IInventoryItemDataInterface::Equip_Implementation() const
+{
+    LOG_TODO_INTERFACE
+
+    return false;
+}
+
+bool IInventoryItemDataInterface::UnEquip_Implementation() const
+{
+    LOG_TODO_INTERFACE
+
+    return false;
+}
+
+bool IInventoryItemDataInterface::Use_Implementation() const
+{
+    LOG_TODO_INTERFACE
+
+    return false;
+}

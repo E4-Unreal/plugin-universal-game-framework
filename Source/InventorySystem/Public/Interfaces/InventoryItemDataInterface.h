@@ -27,4 +27,16 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     const FInventoryItemData& GetInventoryItemData() const;
     virtual const FInventoryItemData& GetInventoryItemData_Implementation() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool Equip();
+    virtual bool Equip_Implementation() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool UnEquip();
+    virtual bool UnEquip_Implementation() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool Use();
+    virtual bool Use_Implementation() const;
 };
