@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "SocketMeshActor.h"
-#include "SocketSkeletalMeshActor.generated.h"
+#include "SocketStaticMeshActor.generated.h"
 
 UCLASS()
-class EQUIPMENTSYSTEM_API ASocketSkeletalMeshActor : public ASocketMeshActor
+class SOCKETMANAGER_API ASocketStaticMeshActor : public ASocketMeshActor
 {
     GENERATED_BODY()
 
 public:
-    ASocketSkeletalMeshActor(const FObjectInitializer& ObjectInitializer);
+    ASocketStaticMeshActor(const FObjectInitializer& ObjectInitializer);
 
     virtual void SetMesh(UStreamableRenderAsset* NewMesh) override;
 
     UFUNCTION(BlueprintCallable)
-    void SetSkeletalMesh(USkeletalMesh* NewMesh, bool bReinitPose = true);
+    void SetStaticMesh(UStaticMesh* NewMesh);
 };

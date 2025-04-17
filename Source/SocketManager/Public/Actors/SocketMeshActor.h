@@ -7,7 +7,7 @@
 #include "SocketMeshActor.generated.h"
 
 UCLASS(Abstract)
-class EQUIPMENTSYSTEM_API ASocketMeshActor : public AActor
+class SOCKETMANAGER_API ASocketMeshActor : public AActor
 {
     GENERATED_BODY()
 

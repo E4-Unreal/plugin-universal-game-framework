@@ -56,11 +56,6 @@
 			"LoadingPhase": "PreDefault"
 		},
 		{
-			"Name": "EquipmentSystem",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
 			"Name": "SocketManager",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"

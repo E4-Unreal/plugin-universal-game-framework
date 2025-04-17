@@ -9,7 +9,7 @@
 #include "SocketManagerComponent.generated.h"
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class EQUIPMENTSYSTEM_API USocketManagerComponent : public UActorComponent
+class SOCKETMANAGER_API USocketManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 

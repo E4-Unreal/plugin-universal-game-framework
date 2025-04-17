@@ -4,7 +4,6 @@
 #include "Actors/SocketMeshActor.h"
 
 #include "Net/UnrealNetwork.h"
-#include "Logging.h"
 
 const FName ASocketMeshActor::MeshComponentName(TEXT("Mesh"));
 
