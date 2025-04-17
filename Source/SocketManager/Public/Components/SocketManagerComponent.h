@@ -40,22 +40,22 @@ public:
     virtual void SetTargetMesh(UMeshComponent* InTargetMesh);
 
     UFUNCTION(BlueprintCallable)
-    virtual void AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor);
+    virtual bool AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor);
 
     UFUNCTION(BlueprintCallable)
     virtual AActor* DetachActorFromSocket(const FGameplayTag& SocketTag);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
+    virtual bool SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh);
+    virtual bool SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh);
+    virtual bool SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
+    virtual bool SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
     UFUNCTION(BlueprintCallable)
     virtual void SwapSockets(const FGameplayTag& SourceTag, const FGameplayTag& DestinationTag);

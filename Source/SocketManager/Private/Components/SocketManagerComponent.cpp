@@ -43,10 +43,10 @@ void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
     TargetMesh = InTargetMesh;
 }
 
-void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor)
+bool USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor)
 {
     // 실행 가능 여부 확인
-    if (bool bCanAttach = Actor && IsSocketValid(SocketTag) && IsSocketEmpty(SocketTag); !bCanAttach) return;
+    if (bool bCanAttach = Actor && IsSocketValid(SocketTag) && IsSocketEmpty(SocketTag); !bCanAttach) return false;
 
     // 액터 부착
     Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), GetSocketName(SocketTag));
@@ -63,6 +63,8 @@ void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag,
 
     // 액터 등록
     RegisterSocketActor(SocketTag, Actor);
+
+    return true;
 }
 
 AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& SocketTag)
@@ -80,33 +82,36 @@ AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& Socke
     return SocketActor;
 }
 
-void USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
+bool USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
 {
     // 실행 가능 여부 확인
-    if (bool bCanSpawn = ActorClass && IsSocketValid(SocketTag); !bCanSpawn) return;
+    if (bool bCanSpawn = ActorClass && IsSocketValid(SocketTag); !bCanSpawn) return false;
 
     // 액터 스폰
     AActor* SpawnedActor = SpawnActor(ActorClass);
-    if (SpawnedActor == nullptr) return;
+    if (SpawnedActor == nullptr) return false;
 
     // 액터 부착
-    AttachActorToSocket(SocketTag, SpawnedActor);
+    bool bSucceed = AttachActorToSocket(SocketTag, SpawnedActor);
+    if (!bSucceed) SpawnedActor->Destroy();
+
+    return bSucceed;
 }
 
-void USocketManagerComponent::SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh)
+bool USocketManagerComponent::SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh)
 {
-    SpawnMeshToSocket(SocketTag, SkeletalMesh);
+    return SpawnMeshToSocket(SocketTag, SkeletalMesh);
 }
 
-void USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh)
+bool USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh)
 {
-    SpawnMeshToSocket(SocketTag, StaticMesh);
+    return SpawnMeshToSocket(SocketTag, StaticMesh);
 }
 
-void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
+bool USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
 {
     // 실행 가능 여부 확인
-    if (bool bCanSpawn = Mesh && IsSocketValid(SocketTag); !bCanSpawn) return;
+    if (bool bCanSpawn = Mesh && IsSocketValid(SocketTag); !bCanSpawn) return false;
 
     // 액터 스폰
     TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
@@ -120,7 +125,7 @@ void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, U
     }
     else
     {
-        return;
+        return false;
     }
 
     auto SpawnedActor = SpawnActor<ASocketMeshActor>(SocketMeshActorClass);
@@ -128,7 +133,10 @@ void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, U
     SpawnedActor->SetMesh(Mesh);
 
     // 액터 부착
-    AttachActorToSocket(SocketTag, SpawnedActor);
+    bool bSucceed = AttachActorToSocket(SocketTag, SpawnedActor);
+    if (!bSucceed) SpawnedActor->Destroy();
+
+    return bSucceed;
 }
 
 void USocketManagerComponent::SwapSockets(const FGameplayTag& SourceTag, const FGameplayTag& DestinationTag)
