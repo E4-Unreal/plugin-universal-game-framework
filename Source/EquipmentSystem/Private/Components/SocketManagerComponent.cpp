@@ -140,6 +140,12 @@ void USocketManagerComponent::SwapSockets(const FGameplayTag& SourceTag, const F
     AttachActorToSocket(SourceTag, DestinationActor);
 }
 
+void USocketManagerComponent::ClearSocket(const FGameplayTag& SourceTag)
+{
+    AActor* SocketActor = DetachActorFromSocket(SourceTag);
+    if (SocketActor) SocketActor->Destroy();
+}
+
 void USocketManagerComponent::FindTargetMesh()
 {
     if (auto OwnerCharacter = Cast<ACharacter>(GetOwner()))

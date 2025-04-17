@@ -60,6 +60,9 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SwapSockets(const FGameplayTag& SourceTag, const FGameplayTag& DestinationTag);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void ClearSocket(const FGameplayTag& SourceTag);
+
     /* Query */
 
     UFUNCTION(BlueprintPure)
