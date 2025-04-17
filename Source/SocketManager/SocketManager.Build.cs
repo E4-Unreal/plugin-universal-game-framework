@@ -10,6 +10,7 @@ public class SocketManager : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities"
             }
         );
 
