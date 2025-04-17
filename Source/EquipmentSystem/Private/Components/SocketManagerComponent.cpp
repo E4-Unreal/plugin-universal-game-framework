@@ -127,6 +127,15 @@ void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, U
     AttachActorToSocket(SocketTag, SpawnedActor);
 }
 
+void USocketManagerComponent::SwapSockets(const FGameplayTag& SourceTag, const FGameplayTag& DestinationTag)
+{
+    AActor* SourceActor = DetachActorFromSocket(SourceTag);
+    AActor* DestinationActor = DetachActorFromSocket(DestinationTag);
+
+    AttachActorToSocket(DestinationTag, SourceActor);
+    AttachActorToSocket(SourceTag, DestinationActor);
+}
+
 void USocketManagerComponent::FindTargetMesh()
 {
     if (auto OwnerCharacter = Cast<ACharacter>(GetOwner()))

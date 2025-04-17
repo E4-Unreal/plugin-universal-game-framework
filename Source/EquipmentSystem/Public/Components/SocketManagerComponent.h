@@ -57,6 +57,9 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void SwapSockets(const FGameplayTag& SourceTag, const FGameplayTag& DestinationTag);
+
     /* Query */
 
     UFUNCTION(BlueprintPure)
