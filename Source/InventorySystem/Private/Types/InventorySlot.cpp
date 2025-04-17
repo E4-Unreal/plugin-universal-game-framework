@@ -6,6 +6,8 @@
 #include "Interfaces/InventoryItemDataInterface.h"
 #include "Types/InventoryItemData.h"
 
+const FInventorySlot FInventorySlot::EmptySlot{ -1, nullptr, -1 };
+
 const FInventoryItemData FInventorySlot::GetInventoryItemData() const
 {
     if (Item && Item->Implements<UInventoryItemDataInterface>())

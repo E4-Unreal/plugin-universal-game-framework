@@ -13,6 +13,8 @@ struct FInventorySlot
 {
     GENERATED_BODY()
 
+    static const FInventorySlot EmptySlot;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Index;
 
@@ -27,4 +29,12 @@ struct FInventorySlot
 
     FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && GetInventoryItemData().IsValid(); }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
+
+    bool operator==(const FInventorySlot& Other) const { return Index == Other.Index; }
+    bool operator!=(const FInventorySlot& Other) const { return !(*this == Other); }
+    bool operator<(const FInventorySlot& Other) const { return Index < Other.Index; }
+    bool operator>(const FInventorySlot& Other) const { return Index > Other.Index; }
+
+    bool operator==(int32 OtherIndex) const { return Index == OtherIndex; }
+    bool operator!=(int32 OtherIndex) const { return !(*this == OtherIndex); }
 };
