@@ -46,10 +46,22 @@ void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
 void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor)
 {
     // 입력 유효성 검사
-    if (Actor == nullptr || !DoesSocketExist(SocketTag)) return;
+    if (Actor == nullptr || !IsSocketValid(SocketTag)) return;
 
     // 액터 부착
     Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), GetSocketName(SocketTag));
+
+    // 소켓 존재 여부에 따라 액터 표시 혹은 숨기기
+    if (DoesSocketExist(SocketTag))
+    {
+        if (Actor->IsHidden()) Actor->SetHidden(false);
+    }
+    else
+    {
+        if (!Actor->IsHidden()) Actor->SetHidden(true);
+    }
+
+    // 소켓 액터 등록
     RegisterSocketActor(SocketTag, Actor);
 }
 
@@ -67,7 +79,7 @@ AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& Socke
 void USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
 {
     // 입력 유효성 검사
-    if (ActorClass == nullptr || !DoesSocketExist(SocketTag)) return;
+    if (ActorClass == nullptr || !IsSocketValid(SocketTag)) return;
 
     // 액터 스폰
     AActor* SpawnedActor = SpawnActor(ActorClass);
@@ -90,7 +102,7 @@ void USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& Socket
 void USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
 {
     // 입력 유효성 검사
-    if (Mesh == nullptr || !DoesSocketExist(SocketTag)) return;
+    if (Mesh == nullptr || !IsSocketValid(SocketTag)) return;
 
     // 액터 스폰
     TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
@@ -212,12 +224,4 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
 void USocketManagerComponent::OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots)
 {
     Refresh();
-}
-
-bool USocketManagerComponent::DoesSocketExist(const FGameplayTag& SocketTag) const
-{
-    FName SocketName = GetSocketName(SocketTag);
-    if (SocketName.IsNone()) return false;
-
-    return TargetMesh.IsValid() && TargetMesh->DoesSocketExist(SocketName);
 }
