@@ -54,11 +54,11 @@ void USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag,
     // 소켓 존재 여부에 따라 액터 표시 혹은 숨기기
     if (DoesSocketExist(SocketTag))
     {
-        if (Actor->IsHidden()) Actor->SetHidden(false);
+        Actor->SetActorHiddenInGame(false);
     }
     else
     {
-        if (!Actor->IsHidden()) Actor->SetHidden(true);
+        Actor->SetActorHiddenInGame(true);
     }
 
     // 액터 등록
