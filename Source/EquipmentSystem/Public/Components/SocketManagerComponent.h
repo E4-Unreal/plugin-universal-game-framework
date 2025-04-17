@@ -63,6 +63,9 @@ public:
     /* Query */
 
     UFUNCTION(BlueprintPure)
+    bool IsSocketEmpty(const FGameplayTag& SocketTag) const { return !SocketActorMap.Contains(SocketTag); }
+
+    UFUNCTION(BlueprintPure)
     AActor* GetActorByTag(const FGameplayTag& SocketTag) const { return SocketActorMap.FindRef(SocketTag); }
 
 protected:
