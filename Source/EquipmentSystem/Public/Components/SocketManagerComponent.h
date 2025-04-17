@@ -93,13 +93,13 @@ protected:
     FORCEINLINE bool ShouldReplicate() const { return GetOwner()->GetIsReplicated(); }
 
     UFUNCTION(BlueprintPure)
-    bool IsSocketValid(const FGameplayTag& SocketTag) const { return !GetSocketName(SocketTag).IsNone(); }
+    bool IsSocketValid(const FGameplayTag& SocketTag) const { return SocketNameMap.Contains(SocketTag); }
 
     UFUNCTION(BlueprintPure)
     bool DoesSocketExist(const FGameplayTag& SocketTag) const { return TargetMesh.IsValid() && TargetMesh->DoesSocketExist(GetSocketName(SocketTag)); }
 
     UFUNCTION(BlueprintPure)
-    FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.Contains(SocketTag) ? SocketNameMap[SocketTag] : FName(NAME_None); }
+    FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.FindRef(SocketTag); }
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE UMeshComponent* GetTargetMesh() const { return TargetMesh.Get(); }
