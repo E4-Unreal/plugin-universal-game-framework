@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Object.h"
+#include "GameplayTagContainer.h"
 #include "InventoryItemData.generated.h"
 
 USTRUCT(Atomic, BlueprintType)
@@ -15,6 +15,9 @@ struct FInventoryItemData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTagContainer ItemTypes;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bCanEquip = false;
