@@ -11,7 +11,7 @@
 
 USocketManagerComponent::USocketManagerComponent()
 {
-    SetIsReplicated(true);
+    SetIsReplicatedByDefault(true);
     OverrideBodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
 }
 
