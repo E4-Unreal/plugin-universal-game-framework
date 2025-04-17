@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryItemData.h"
 #include "InventorySlot.generated.h"
+
+struct FInventoryItemData;
 
 USTRUCT(Atomic, BlueprintType)
 struct FInventorySlot
@@ -18,4 +21,10 @@ struct FInventorySlot
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Quantity;
+
+    const FInventoryItemData& GetInventoryItemData() const;
+    int32 GetCapacity() const;
+
+    FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && GetInventoryItemData().IsValid(); }
+    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 };
