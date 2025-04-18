@@ -58,6 +58,7 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
         int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
         InventorySlot.Quantity += QuantityToAdd;
         Quantity -= QuantityToAdd;
+        InventorySlots.Emplace(InventorySlot);
 
         if (Quantity <= 0) return true;
     }
