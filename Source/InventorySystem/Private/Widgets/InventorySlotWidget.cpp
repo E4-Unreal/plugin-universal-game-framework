@@ -39,21 +39,11 @@ void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, con
     }
 }
 
-bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-    UDragDropOperation* InOperation)
+void UInventorySlotWidget::OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget)
 {
-    if (InOperation && InOperation->DefaultDragVisual)
-    {
-        if (auto DraggedWidget = Cast<UInventorySlotWidgetBase>(InOperation->DefaultDragVisual))
-        {
-            if (GetInventoryComponent())
-            {
-                GetInventoryComponent()->SwapOrFillInventorySlots(DraggedWidget->GetSlotIndex(), SlotIndex);
-            }
-        }
-    }
+    Super::OnInventorySlotWidgetDrop(InventorySlotWidget);
 
-    return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+    GetInventoryComponent()->SwapOrFillInventorySlots(InventorySlotWidget->GetSlotIndex(), SlotIndex);
 }
 
 void UInventorySlotWidget::UpdateInventorySlot(const FInventorySlot& InventorySlot)

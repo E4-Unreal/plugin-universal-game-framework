@@ -6,10 +6,7 @@
 #include "InventorySlotWidgetBase.h"
 #include "InventorySlotWidget.generated.h"
 
-class UDraggedInventorySlotWidget;
 class UTextBlock;
-class UImage;
-class UInventoryComponent;
 struct FInventorySlot;
 
 /**
@@ -33,7 +30,10 @@ protected:
 
     virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
     virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
-    virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
+    /* InventoryWidgetBase */
+
+    virtual void OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget) override;
 
     /* InventorySlotWidgetBase */
 

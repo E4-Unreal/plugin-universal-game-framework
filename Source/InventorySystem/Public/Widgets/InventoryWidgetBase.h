@@ -7,6 +7,7 @@
 #include "InventoryWidgetBase.generated.h"
 
 class UInventoryComponent;
+class UInventorySlotWidgetBase;
 
 UCLASS(Abstract)
 class INVENTORYSYSTEM_API UInventoryWidgetBase : public UCommonUserWidget
@@ -24,7 +25,12 @@ public:
     virtual void Refresh() {}
 
 protected:
+    /* UserWidget */
+
     virtual void NativeOnInitialized() override;
+    virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+
+    /* InventoryWidgetBase */
 
     virtual void FindInventoryComponent();
 
@@ -33,6 +39,8 @@ protected:
     void FindInventoryComponentFromPlayerPawn();
 
     virtual void OnInventoryComponentChanged(UInventoryComponent* OldInventoryComponent, UInventoryComponent* NewInventoryComponent) {}
+
+    virtual void OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget) {}
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE UInventoryComponent* GetInventoryComponent() const { return InventoryComponentPrivate.Get(); }

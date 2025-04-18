@@ -3,7 +3,9 @@
 
 #include "Widgets/InventoryWidgetBase.h"
 
+#include "Blueprint/DragDropOperation.h"
 #include "Components/InventoryComponent.h"
+#include "Widgets/InventorySlotWidgetBase.h"
 
 void UInventoryWidgetBase::SetInventoryComponent(UInventoryComponent* NewInventoryComponent)
 {
@@ -17,6 +19,20 @@ void UInventoryWidgetBase::NativeOnInitialized()
     Super::NativeOnInitialized();
 
     FindInventoryComponent();
+}
+
+bool UInventoryWidgetBase::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+    UDragDropOperation* InOperation)
+{
+    if (InOperation && InOperation->DefaultDragVisual)
+    {
+        if (auto DraggedWidget = Cast<UInventorySlotWidgetBase>(InOperation->DefaultDragVisual))
+        {
+            OnInventorySlotWidgetDrop(DraggedWidget);
+        }
+    }
+
+    return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
 
 void UInventoryWidgetBase::FindInventoryComponent()
