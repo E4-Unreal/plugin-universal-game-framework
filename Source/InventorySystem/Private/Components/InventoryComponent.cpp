@@ -71,9 +71,6 @@ bool UInventoryComponent::AddItem(const TScriptInterface<IInventoryItemDataInter
         if (Quantity <= 0) return true;
     }
 
-    // 정렬
-    InventorySlots.Sort();
-
     check(Quantity <= 0)
     return true;
 }
@@ -136,6 +133,7 @@ bool UInventoryComponent::SetInventorySlot(const FInventorySlot& NewInventorySlo
     if (IsSlotEmpty(NewInventorySlot.Index))
     {
         InventorySlots.Emplace(NewInventorySlot);
+        InventorySlots.Sort();
     }
     else
     {
