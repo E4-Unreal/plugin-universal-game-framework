@@ -24,20 +24,22 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+    UFUNCTION(BlueprintPure)
+    bool HasItem(UObject* Item, int32 Quantity = 1) const;
+
     UFUNCTION(BlueprintCallable)
     virtual bool AddItem(UObject* Item, int32 Quantity);
 
     UFUNCTION(BlueprintCallable)
     virtual bool RemoveItem(UObject* Item, int32 Quantity);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "UI")
     virtual void ClearInventorySlot(int32 SlotIndex);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "UI")
     virtual void SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex);
 
-    UFUNCTION(BlueprintPure)
-    bool HasItem(UObject* Item, int32 Quantity = 1) const;
+    /* Getter */
 
     // 현재 아이템 보유 수량
     UFUNCTION(BlueprintPure)
@@ -47,7 +49,10 @@ public:
     UFUNCTION(BlueprintPure)
     int32 GetItemCapacity(UObject* Item) const;
 
-    UFUNCTION(BlueprintPure)
+    UFUNCTION(BlueprintPure, Category = "UI")
+    FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
+
+    UFUNCTION(BlueprintPure, Category = "UI")
     const FInventorySlot& GetInventorySlot(int32 Index) const;
 
 protected:

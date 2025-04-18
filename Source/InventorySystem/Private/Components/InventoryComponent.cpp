@@ -18,6 +18,12 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
     DOREPLIFETIME(ThisClass, InventorySlots)
 }
 
+bool UInventoryComponent::HasItem(UObject* Item, int32 Quantity) const
+{
+    int32 ItemQuantity = GetItemQuantity(Item);
+    return ItemQuantity >= Quantity;
+}
+
 bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
 {
     // 실행 가능 여부 확인
@@ -115,12 +121,6 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
         if (DestinationInventorySlot) DestinationInventorySlot->Index = SourceIndex;
         InventorySlots.Sort();
     }
-}
-
-bool UInventoryComponent::HasItem(UObject* Item, int32 Quantity) const
-{
-    int32 ItemQuantity = GetItemQuantity(Item);
-    return ItemQuantity >= Quantity;
 }
 
 int32 UInventoryComponent::GetItemQuantity(UObject* Item) const
