@@ -11,6 +11,13 @@ UInventoryComponent::UInventoryComponent()
     SetIsReplicatedByDefault(true);
 }
 
+void UInventoryComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    AddDefaultItems();
+}
+
 void UInventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -209,6 +216,14 @@ const FInventorySlot& UInventoryComponent::GetInventorySlot(int32 Index) const
     const FInventorySlot* InventorySlot = InventorySlots.FindByKey(Index);
 
     return InventorySlot ? *InventorySlot : FInventorySlot::EmptySlot;
+}
+
+void UInventoryComponent::AddDefaultItems()
+{
+    for (const auto& DefaultItem : DefaultItems)
+    {
+        AddItem(DefaultItem.Item, DefaultItem.Quantity);
+    }
 }
 
 bool UInventoryComponent::IsValidItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)

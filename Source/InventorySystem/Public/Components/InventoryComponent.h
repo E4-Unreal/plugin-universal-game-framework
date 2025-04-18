@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Types/InventoryItem.h"
 #include "Types/InventorySlot.h"
 #include "InventoryComponent.generated.h"
 
@@ -22,7 +23,10 @@ public:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
-    int32 MaxSlotNum;
+    int32 MaxSlotNum = 4;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TArray<FInventoryItem> DefaultItems;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_InventorySlots, Transient, Category = "State")
     TArray<FInventorySlot> InventorySlots;
@@ -30,6 +34,7 @@ protected:
 public:
     UInventoryComponent();
 
+    virtual void BeginPlay() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UFUNCTION(BlueprintPure)
@@ -70,6 +75,8 @@ public:
     const FInventorySlot& GetInventorySlot(int32 Index) const;
 
 protected:
+    virtual void AddDefaultItems();
+
     static bool IsValidItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity);
     static const FInventoryItemData GetInventoryItemData(const TScriptInterface<IInventoryItemDataInterface>& Item);
 
