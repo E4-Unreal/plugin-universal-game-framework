@@ -39,8 +39,11 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual bool RemoveItem(UObject* Item, int32 Quantity);
 
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    virtual void ClearInventorySlot(int32 SlotIndex);
+    UFUNCTION(BlueprintCallable)
+    virtual bool SetInventorySlot(const FInventorySlot& NewInventorySlot);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void RemoveInventorySlot(int32 SlotIndex);
 
     UFUNCTION(BlueprintCallable, Category = "UI")
     virtual void SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex);

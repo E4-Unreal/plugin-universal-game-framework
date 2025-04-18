@@ -32,14 +32,17 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
     // 기존 인벤토리 슬롯 채우기
     TSet<int32> ExistingIndices;
     ExistingIndices.Reserve(InventorySlots.Num());
-    for (auto& InventorySlot : InventorySlots)
+    for (const auto& InventorySlot : InventorySlots)
     {
         ExistingIndices.Emplace(InventorySlot.Index);
         if (InventorySlot.Item != Item) continue;
 
         int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
-        InventorySlot.Quantity += QuantityToAdd;
         Quantity -= QuantityToAdd;
+
+        FInventorySlot NewInventorySlot = InventorySlot;
+        NewInventorySlot.Quantity += QuantityToAdd;
+        SetInventorySlot(NewInventorySlot);
 
         if (Quantity <= 0) return true;
     }
@@ -49,16 +52,16 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
     {
         if (ExistingIndices.Contains(Index)) continue;
 
-        FInventorySlot InventorySlot
-        {
-            Index,
-            Item,
-            0
-        };
-        int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
-        InventorySlot.Quantity += QuantityToAdd;
+        FInventorySlot NewInventorySlot;
+        NewInventorySlot.Index = Index;
+        NewInventorySlot.Item = Item;
+
+        int32 QuantityToAdd = FMath::Min(Quantity, NewInventorySlot.GetCapacity());
         Quantity -= QuantityToAdd;
-        InventorySlots.Emplace(InventorySlot);
+
+        NewInventorySlot.Quantity = QuantityToAdd;
+
+        SetInventorySlot(NewInventorySlot);
 
         if (Quantity <= 0) return true;
     }
@@ -78,14 +81,23 @@ bool UInventoryComponent::RemoveItem(UObject* Item, int32 Quantity)
     // 역순으로 인벤토리 조회 및 아이템 제거
     for (int32 Index = InventorySlots.Num() - 1; Index >= 0; --Index)
     {
-        auto& InventorySlot = InventorySlots[Index];
+        const auto& InventorySlot = InventorySlots[Index];
         if (InventorySlot.Item != Item) continue;
 
         int32 QuantityToRemove = FMath::Min(Quantity, InventorySlot.Quantity);
-        InventorySlot.Quantity -= QuantityToRemove;
         Quantity -= QuantityToRemove;
 
-        if (InventorySlot.Quantity <= 0) InventorySlots.RemoveAt(Index);
+        if (InventorySlot.Quantity == QuantityToRemove)
+        {
+            RemoveInventorySlot(Index);
+        }
+        else
+        {
+            FInventorySlot NewInventorySlot = InventorySlot;
+            NewInventorySlot.Quantity -= QuantityToRemove;
+            SetInventorySlot(NewInventorySlot);
+        }
+
         if (Quantity <= 0) return true;
     }
 
@@ -93,10 +105,32 @@ bool UInventoryComponent::RemoveItem(UObject* Item, int32 Quantity)
     return true;
 }
 
-void UInventoryComponent::ClearInventorySlot(int32 SlotIndex)
+bool UInventoryComponent::SetInventorySlot(const FInventorySlot& NewInventorySlot)
+{
+    if (bool bCanSet = NewInventorySlot.IsValid() && NewInventorySlot.Index < MaxSlotNum; !bCanSet) return false;
+
+    if (auto OldInventorySlotPtr = InventorySlots.FindByKey(NewInventorySlot.Index))
+    {
+        *OldInventorySlotPtr = NewInventorySlot;
+    }
+    else
+    {
+        InventorySlots.Emplace(NewInventorySlot);
+    }
+
+    InventoryUpdated.Broadcast(NewInventorySlot.Index);
+
+    return true;
+}
+
+void UInventoryComponent::RemoveInventorySlot(int32 SlotIndex)
 {
     FInventorySlot* InventorySlot = InventorySlots.FindByKey(SlotIndex);
-    if (InventorySlot) InventorySlots.Remove(*InventorySlot);
+    if (InventorySlot)
+    {
+        InventorySlots.Remove(*InventorySlot);
+        InventoryUpdated.Broadcast(SlotIndex);
+    }
 }
 
 void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex)
