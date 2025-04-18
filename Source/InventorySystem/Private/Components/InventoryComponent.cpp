@@ -159,7 +159,7 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
 
     if (!SourceInventorySlot) return;
 
-    if (DestinationInventorySlot && DestinationInventorySlot->Item == SourceInventorySlot->Item)
+    if (DestinationInventorySlot && DestinationInventorySlot->Item == SourceInventorySlot->Item && DestinationInventorySlot->GetCapacity() > 0)
     {
         // Fill
         int32 QuantityToMove = FMath::Min(SourceInventorySlot->Quantity, DestinationInventorySlot->GetCapacity());
