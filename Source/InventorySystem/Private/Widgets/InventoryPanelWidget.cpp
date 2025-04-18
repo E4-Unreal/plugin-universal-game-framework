@@ -26,7 +26,7 @@ void UInventoryPanelWidget::OnInventoryComponentChanged(UInventoryComponent* Old
 
     if (NewInventoryComponent)
     {
-        OldInventoryComponent->InventoryUpdated.AddDynamic(this, &ThisClass::OnInventoryUpdated);
+        NewInventoryComponent->InventoryUpdated.AddDynamic(this, &ThisClass::OnInventoryUpdated);
     }
 }
 
