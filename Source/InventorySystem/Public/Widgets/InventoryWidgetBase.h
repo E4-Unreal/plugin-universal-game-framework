@@ -19,9 +19,6 @@ private:
 
 public:
     UFUNCTION(BlueprintCallable)
-    void SetInventoryComponent(UInventoryComponent* NewInventoryComponent);
-
-    UFUNCTION(BlueprintCallable)
     virtual void Refresh() {}
 
 protected:
@@ -34,6 +31,8 @@ protected:
 
     virtual void FindInventoryComponent();
 
+    void FindInventoryComponentFromParentWidget();
+
     void FindInventoryComponentFromPlayer();
 
     void FindInventoryComponentFromPlayerPawn();
@@ -45,4 +44,7 @@ protected:
 public:
     UFUNCTION(BlueprintPure)
     FORCEINLINE UInventoryComponent* GetInventoryComponent() const { return InventoryComponentPrivate.Get(); }
+
+    UFUNCTION(BlueprintCallable)
+    void SetInventoryComponent(UInventoryComponent* NewInventoryComponent);
 };

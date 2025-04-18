@@ -3,6 +3,7 @@
 
 #include "Widgets/InventoryWidgetBase.h"
 
+#include "CommonUIUtils.h"
 #include "Blueprint/DragDropOperation.h"
 #include "Components/InventoryComponent.h"
 #include "Widgets/InventorySlotWidgetBase.h"
@@ -40,8 +41,17 @@ bool UInventoryWidgetBase::NativeOnDrop(const FGeometry& InGeometry, const FDrag
 
 void UInventoryWidgetBase::FindInventoryComponent()
 {
-    if (!InventoryComponentPrivate.IsValid()) FindInventoryComponentFromPlayerPawn();
-    if (!InventoryComponentPrivate.IsValid()) FindInventoryComponentFromPlayer();
+    if (!GetInventoryComponent()) FindInventoryComponentFromParentWidget();
+    if (!GetInventoryComponent()) FindInventoryComponentFromPlayerPawn();
+    if (!GetInventoryComponent()) FindInventoryComponentFromPlayer();
+}
+
+void UInventoryWidgetBase::FindInventoryComponentFromParentWidget()
+{
+    if (UInventoryWidgetBase* ParentWidget = Cast<UInventoryWidgetBase>(CommonUIUtils::GetOwningUserWidget(this)))
+    {
+        InventoryComponentPrivate = ParentWidget->GetInventoryComponent();
+    }
 }
 
 void UInventoryWidgetBase::FindInventoryComponentFromPlayer()
