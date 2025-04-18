@@ -25,7 +25,7 @@ protected:
     TSubclassOf<UInventorySlotWidget> SlotWidgetClass;
 
     UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "State")
-    TMap<int32, TObjectPtr<UInventorySlotWidget>> SlotWidgets;
+    TMap<int32, TObjectPtr<UInventorySlotWidget>> SlotWidgetMap;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 1))
     int32 PreviewSlotNum = 1;

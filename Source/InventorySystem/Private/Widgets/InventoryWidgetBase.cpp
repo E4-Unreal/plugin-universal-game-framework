@@ -9,9 +9,12 @@
 
 void UInventoryWidgetBase::SetInventoryComponent(UInventoryComponent* NewInventoryComponent)
 {
-    OnInventoryComponentChanged(InventoryComponentPrivate.Get(), NewInventoryComponent);
-
-    InventoryComponentPrivate = NewInventoryComponent;
+    auto OldInventoryComponent = InventoryComponentPrivate.Get();
+    if (OldInventoryComponent != NewInventoryComponent)
+    {
+        OnInventoryComponentChanged(OldInventoryComponent, NewInventoryComponent);
+        InventoryComponentPrivate = NewInventoryComponent;
+    }
 }
 
 void UInventoryWidgetBase::NativeOnInitialized()

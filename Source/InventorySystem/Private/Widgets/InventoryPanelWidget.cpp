@@ -39,20 +39,21 @@ void UInventoryPanelWidget::CreateSlotWidgets()
     for (int32 Index = 0; Index < MaxSlotNum; ++Index)
     {
         auto SlotWidget = CreateWidget<UInventorySlotWidget>(this, SlotWidgetClass);
+        SlotWidget->SetInventoryComponent(InventoryComponent);
         SlotWidget->SetSlotIndex(Index);
 
         int32 SlotColumn = Index % MaxSlotColumn;
         int32 SlotRow = Index / MaxSlotColumn;
         InventoryPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
 
-        SlotWidgets.Emplace(Index, SlotWidget);
+        SlotWidgetMap.Emplace(Index, SlotWidget);
     }
 }
 
 void UInventoryPanelWidget::OnInventoryUpdated(int32 SlotIndex)
 {
-    if (SlotWidgets.Contains(SlotIndex))
+    if (SlotWidgetMap.Contains(SlotIndex))
     {
-        SlotWidgets[SlotIndex]->Refresh();
+        SlotWidgetMap[SlotIndex]->Refresh();
     }
 }
