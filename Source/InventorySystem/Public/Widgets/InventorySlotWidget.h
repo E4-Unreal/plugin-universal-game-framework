@@ -36,7 +36,7 @@ protected:
 
 public:
     UFUNCTION(BlueprintCallable)
-    void SetIndex(int32 NewIndex) { Index = NewIndex; }
+    void SetIndex(int32 NewIndex);
 
     UFUNCTION(BlueprintCallable)
     virtual void Clear();

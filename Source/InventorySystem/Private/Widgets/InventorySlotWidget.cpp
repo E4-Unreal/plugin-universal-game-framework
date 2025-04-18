@@ -17,6 +17,12 @@ void UInventorySlotWidget::Refresh()
     FetchInventorySlot(InventoryComponent->GetInventorySlot(Index));
 }
 
+void UInventorySlotWidget::SetIndex(int32 NewIndex)
+{
+    Index = NewIndex;
+    Refresh();
+}
+
 void UInventorySlotWidget::Clear()
 {
     SetThumbnailImage(nullptr);
