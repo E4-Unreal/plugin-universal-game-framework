@@ -13,6 +13,9 @@ struct FInventoryItemData
 
     static const FInventoryItemData Empty;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FText DisplayName;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;
 
