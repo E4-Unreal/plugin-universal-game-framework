@@ -11,6 +11,9 @@ public class InventorySystem : ModuleRules
             {
                 "Core",
                 "GameplayTags",
+                "UMG",
+                "CommonUI",
+                "InputCore",
                 "UniversalUtilities"
             }
         );
