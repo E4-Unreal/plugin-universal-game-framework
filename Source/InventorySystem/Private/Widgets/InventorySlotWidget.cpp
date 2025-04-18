@@ -9,29 +9,9 @@
 #include "Components/InventoryComponent.h"
 #include "Widgets/DraggedInventorySlotWidget.h"
 
-void UInventorySlotWidget::Refresh()
-{
-    auto InventoryComponent = GetInventoryComponent();
-    if (!InventoryComponent) return;
-
-    FetchInventorySlot(InventoryComponent->GetInventorySlot(Index));
-}
-
-void UInventorySlotWidget::SetIndex(int32 NewIndex)
-{
-    Index = NewIndex;
-    Refresh();
-}
-
-void UInventorySlotWidget::Clear()
-{
-    SetThumbnailImage(nullptr);
-    SetQuantityTextBlock(0);
-}
-
 FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-    if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton))
+    if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton) && !GetInventoryComponent()->IsSlotEmpty(SlotIndex))
     {
         FEventReply EventReply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
         return EventReply.NativeReply;
@@ -43,15 +23,10 @@ FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry
 void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
     UDragDropOperation*& OutOperation)
 {
-    auto InventoryComponent = GetInventoryComponent();
-    const auto& InventorySlot = InventoryComponent->GetInventorySlot(Index);
-    if (InventorySlot.IsNotValid()) return;
-
     if (DraggedWidgetClass)
     {
-        auto DraggedWidget = CreateWidget<UDraggedInventorySlotWidget>(this, DraggedWidgetClass);
-        if (ThumbnailImage) DraggedWidget->SetThumbnailImage(ThumbnailImage->GetBrush().GetResourceObject());
-        DraggedWidget->SlotIndex = Index;
+        auto DraggedWidget = CreateWidget<UInventorySlotWidgetBase>(this, DraggedWidgetClass);
+        DraggedWidget->SetSlotIndex(SlotIndex);
 
         auto DragAndDropOperation = NewObject<UDragDropOperation>(this, UDragDropOperation::StaticClass());
         DragAndDropOperation->DefaultDragVisual = DraggedWidget;
@@ -69,12 +44,11 @@ bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDrag
 {
     if (InOperation && InOperation->DefaultDragVisual)
     {
-        if (auto DraggedInventorySlotWidget = Cast<UDraggedInventorySlotWidget>(InOperation->DefaultDragVisual))
+        if (auto DraggedWidget = Cast<UInventorySlotWidgetBase>(InOperation->DefaultDragVisual))
         {
-            auto InventoryComponent = GetInventoryComponent();
-            if (InventoryComponent)
+            if (GetInventoryComponent())
             {
-                InventoryComponent->SwapOrFillInventorySlots(DraggedInventorySlotWidget->SlotIndex, Index);
+                GetInventoryComponent()->SwapOrFillInventorySlots(DraggedWidget->GetSlotIndex(), SlotIndex);
             }
         }
     }
@@ -82,26 +56,18 @@ bool UInventorySlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDrag
     return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 }
 
-void UInventorySlotWidget::FetchInventorySlot(const FInventorySlot& InventorySlot)
+void UInventorySlotWidget::UpdateInventorySlot(const FInventorySlot& InventorySlot)
 {
-    if (InventorySlot.IsNotValid())
-    {
-        Clear();
-        return;
-    }
+    Super::UpdateInventorySlot(InventorySlot);
 
-    const auto& InventoryItemData = InventorySlot.GetInventoryItemData();
-    SetThumbnailImage(InventoryItemData.ThumbnailTexture);
     SetQuantityTextBlock(InventorySlot.Quantity);
 }
 
-void UInventorySlotWidget::SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture)
+void UInventorySlotWidget::Clear()
 {
-    if (ThumbnailImage)
-    {
-        if (ThumbnailTexture == nullptr) ThumbnailImage->SetBrushFromTexture(nullptr);
-        else ThumbnailImage->SetBrushFromSoftTexture(ThumbnailTexture);
-    }
+    Super::Clear();
+
+    SetQuantityTextBlock(0);
 }
 
 void UInventorySlotWidget::SetQuantityTextBlock(int32 Quantity)

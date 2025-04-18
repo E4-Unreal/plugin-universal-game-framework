@@ -24,14 +24,14 @@ void UInventorySlotWidgetBase::Refresh()
         }
         else
         {
-            UpdateInventoryItemData(GetInventoryComponent()->GetInventorySlot(SlotIndex).GetInventoryItemData());
+            UpdateInventorySlot(GetInventoryComponent()->GetInventorySlot(SlotIndex));
         }
     }
 }
 
-void UInventorySlotWidgetBase::UpdateInventoryItemData(const FInventoryItemData& InventoryItemData)
+void UInventorySlotWidgetBase::UpdateInventorySlot(const FInventorySlot& InventorySlot)
 {
-    SetThumbnailImage(InventoryItemData.ThumbnailTexture);
+    SetThumbnailImage(InventorySlot.GetInventoryItemData().ThumbnailTexture);
 }
 
 void UInventorySlotWidgetBase::Clear()

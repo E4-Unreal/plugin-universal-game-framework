@@ -39,7 +39,7 @@ void UInventoryPanelWidget::CreateSlotWidgets()
     for (int32 Index = 0; Index < MaxSlotNum; ++Index)
     {
         auto SlotWidget = CreateWidget<UInventorySlotWidget>(this, SlotWidgetClass);
-        SlotWidget->SetIndex(Index);
+        SlotWidget->SetSlotIndex(Index);
 
         int32 SlotColumn = Index % MaxSlotColumn;
         int32 SlotRow = Index / MaxSlotColumn;

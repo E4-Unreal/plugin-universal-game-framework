@@ -3,28 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventoryWidgetBase.h"
+#include "InventorySlotWidgetBase.h"
 #include "DraggedInventorySlotWidget.generated.h"
-
-class UImage;
 
 /**
  *
  */
 UCLASS(Abstract)
-class INVENTORYSYSTEM_API UDraggedInventorySlotWidget : public UInventoryWidgetBase
+class INVENTORYSYSTEM_API UDraggedInventorySlotWidget : public UInventorySlotWidgetBase
 {
     GENERATED_BODY()
-
-private:
-    UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UImage> ThumbnailImage;
-
-public:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient)
-    int32 SlotIndex;
-
-public:
-    UFUNCTION(BlueprintCallable)
-    virtual void SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture);
 };

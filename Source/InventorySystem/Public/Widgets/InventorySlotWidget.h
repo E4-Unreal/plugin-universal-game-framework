@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventoryWidgetBase.h"
+#include "InventorySlotWidgetBase.h"
 #include "InventorySlotWidget.generated.h"
 
 class UDraggedInventorySlotWidget;
@@ -16,34 +16,17 @@ struct FInventorySlot;
  *
  */
 UCLASS(Abstract)
-class INVENTORYSYSTEM_API UInventorySlotWidget : public UInventoryWidgetBase
+class INVENTORYSYSTEM_API UInventorySlotWidget : public UInventorySlotWidgetBase
 {
     GENERATED_BODY()
 
 private:
     UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UImage> ThumbnailImage;
-
-    UPROPERTY(meta = (BindWidget))
     TObjectPtr<UTextBlock> QuantityTextBlock;
 
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    TSubclassOf<UDraggedInventorySlotWidget> DraggedWidgetClass;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Transient, Category = "State")
-    int32 Index;
-
-public:
-    UFUNCTION(BlueprintCallable)
-    void SetIndex(int32 NewIndex);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void Clear();
-
-    /* InventoryWidgetBase */
-
-    virtual void Refresh() override;
+    TSubclassOf<UInventorySlotWidgetBase> DraggedWidgetClass;
 
 protected:
     /* UserWidget */
@@ -52,19 +35,15 @@ protected:
     virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
     virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
+    /* InventorySlotWidgetBase */
+
+    virtual void UpdateInventorySlot(const FInventorySlot& InventorySlot) override;
+    virtual void Clear() override;
+
     /* InventoryWidgetBase */
 
     UFUNCTION(BlueprintPure)
-    virtual UImage* GetThumbnailImage() const { return ThumbnailImage; }
-
-    UFUNCTION(BlueprintPure)
     virtual UTextBlock* GetQuantityTextBlock() const { return QuantityTextBlock; }
-
-    UFUNCTION(BlueprintCallable)
-    virtual void FetchInventorySlot(const FInventorySlot& InventorySlot);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture);
 
     UFUNCTION(BlueprintCallable)
     virtual void SetQuantityTextBlock(int32 Quantity);

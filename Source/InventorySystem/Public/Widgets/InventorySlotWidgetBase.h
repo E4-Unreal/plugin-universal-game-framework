@@ -6,7 +6,7 @@
 #include "InventoryWidgetBase.h"
 #include "InventorySlotWidgetBase.generated.h"
 
-struct FInventoryItemData;
+struct FInventorySlot;
 class UImage;
 
 /**
@@ -29,15 +29,19 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetSlotIndex(int32 NewSlotIndex);
 
-protected:
+    UFUNCTION(BlueprintPure)
+    int32 GetSlotIndex() const { return SlotIndex; }
+
+public:
     /* InventoryWidgetBase */
 
     virtual void Refresh() override;
 
+protected:
     /* InventorySlotWidgetBase */
 
     UFUNCTION(BlueprintCallable)
-    virtual void UpdateInventoryItemData(const FInventoryItemData& InventoryItemData);
+    virtual void UpdateInventorySlot(const FInventorySlot& InventorySlot);
 
     UFUNCTION(BlueprintCallable)
     virtual void Clear();
