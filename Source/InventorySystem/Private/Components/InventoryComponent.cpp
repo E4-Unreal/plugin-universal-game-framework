@@ -18,16 +18,18 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
     DOREPLIFETIME(ThisClass, InventorySlots)
 }
 
-bool UInventoryComponent::HasItem(UObject* Item, int32 Quantity) const
+bool UInventoryComponent::HasItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity) const
 {
+    if(!IsValidItem(Item, Quantity)) return false;
+
     int32 ItemQuantity = GetItemQuantity(Item);
     return ItemQuantity >= Quantity;
 }
 
-bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
+bool UInventoryComponent::AddItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)
 {
     // 실행 가능 여부 확인
-    if (bool bCanAdd = Quantity <= GetItemCapacity(Item); !bCanAdd) return false;
+    if (!IsValidItem(Item, Quantity)) return false;
 
     // 기존 인벤토리 슬롯 채우기
     TSet<int32> ExistingIndices;
@@ -49,14 +51,12 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
     {
         if (ExistingIndices.Contains(Index)) continue;
 
+        int32 QuantityToAdd = FMath::Min(Quantity, GetInventoryItemData(Item).MaxStack);
+        Quantity -= QuantityToAdd;
+
         FInventorySlot NewInventorySlot;
         NewInventorySlot.Index = Index;
         NewInventorySlot.Item = Item;
-        NewInventorySlot.Quantity = 0;
-
-        int32 QuantityToAdd = FMath::Min(Quantity, NewInventorySlot.GetCapacity());
-        Quantity -= QuantityToAdd;
-
         NewInventorySlot.Quantity = QuantityToAdd;
 
         SetInventorySlot(NewInventorySlot);
@@ -71,7 +71,7 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
     return true;
 }
 
-bool UInventoryComponent::RemoveItem(UObject* Item, int32 Quantity)
+bool UInventoryComponent::RemoveItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)
 {
     // 실행 가능 여부 확인
     if (!HasItem(Item, Quantity)) return false;
@@ -170,14 +170,14 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
     }
 }
 
-int32 UInventoryComponent::GetItemQuantity(UObject* Item) const
+int32 UInventoryComponent::GetItemQuantity(const TScriptInterface<IInventoryItemDataInterface>& Item) const
 {
-    if (!IsValidItem(Item)) return 0;
+    if (!Item) return 0;
 
     int32 Quantity = 0;
     for (const auto& InventorySlot : InventorySlots)
     {
-        if (Item == InventorySlot.Item)
+        if (Item == InventorySlot.Item.GetObject())
         {
             Quantity += InventorySlot.Quantity;
         }
@@ -186,7 +186,7 @@ int32 UInventoryComponent::GetItemQuantity(UObject* Item) const
     return Quantity;
 }
 
-int32 UInventoryComponent::GetItemCapacity(UObject* Item) const
+int32 UInventoryComponent::GetItemCapacity(const TScriptInterface<IInventoryItemDataInterface>& Item) const
 {
     const FInventoryItemData InventoryItemData = GetInventoryItemData(Item);
     if (InventoryItemData.IsNotValid()) return 0;
@@ -211,14 +211,16 @@ const FInventorySlot& UInventoryComponent::GetInventorySlot(int32 Index) const
     return InventorySlot ? *InventorySlot : FInventorySlot::EmptySlot;
 }
 
-bool UInventoryComponent::IsValidItem(UObject* Item)
+bool UInventoryComponent::IsValidItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)
 {
-    return Item && Item->Implements<UInventoryItemDataInterface>();
+    const auto& InventoryItemData = GetInventoryItemData(Item);
+    UE_LOG(LogTemp, Error, TEXT("%d"), InventoryItemData.MaxStack)
+    return InventoryItemData.IsValid() && Quantity > 0;
 }
 
-const FInventoryItemData UInventoryComponent::GetInventoryItemData(UObject* Item)
+const FInventoryItemData UInventoryComponent::GetInventoryItemData(const TScriptInterface<IInventoryItemDataInterface>& Item)
 {
-    return IsValidItem(Item) ? IInventoryItemDataInterface::Execute_GetInventoryItemData(Item) : FInventoryItemData::Empty;
+    return Item.GetObject() ? IInventoryItemDataInterface::Execute_GetInventoryItemData(Item.GetObject()) : FInventoryItemData::Empty;
 }
 
 void UInventoryComponent::OnRep_InventorySlots(const TArray<FInventorySlot>& OldInventorySlots)

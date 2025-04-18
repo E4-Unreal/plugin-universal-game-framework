@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "InventoryItemData.h"
+#include "Interfaces/InventoryItemDataInterface.h"
 #include "InventorySlot.generated.h"
 
 struct FInventoryItemData;
@@ -19,7 +20,7 @@ struct FInventorySlot
     int32 Index;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UObject> Item;
+    TScriptInterface<IInventoryItemDataInterface> Item;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Quantity;

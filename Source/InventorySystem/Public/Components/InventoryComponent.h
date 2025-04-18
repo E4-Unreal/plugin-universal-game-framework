@@ -9,6 +9,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUGFInventoryUpdatedSignature, int32, SlotIndex);
 
+class IInventoryItemDataInterface;
+
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UInventoryComponent : public UActorComponent
 {
@@ -31,13 +33,13 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UFUNCTION(BlueprintPure)
-    bool HasItem(UObject* Item, int32 Quantity = 1) const;
+    bool HasItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity = 1) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddItem(UObject* Item, int32 Quantity);
+    virtual bool AddItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity);
 
     UFUNCTION(BlueprintCallable)
-    virtual bool RemoveItem(UObject* Item, int32 Quantity);
+    virtual bool RemoveItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity);
 
     UFUNCTION(BlueprintCallable)
     virtual bool SetInventorySlotQuantity(int32 SlotIndex, int32 NewQuantity);
@@ -55,11 +57,11 @@ public:
 
     // 현재 아이템 보유 수량
     UFUNCTION(BlueprintPure)
-    int32 GetItemQuantity(UObject* Item) const;
+    int32 GetItemQuantity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
 
     // 현재 추가 가능한 아이템 수량
     UFUNCTION(BlueprintPure)
-    int32 GetItemCapacity(UObject* Item) const;
+    int32 GetItemCapacity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
 
     UFUNCTION(BlueprintPure, Category = "UI")
     FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
@@ -68,9 +70,8 @@ public:
     const FInventorySlot& GetInventorySlot(int32 Index) const;
 
 protected:
-    static bool IsValidItem(UObject* Item);
-
-    static const FInventoryItemData GetInventoryItemData(UObject* Item);
+    static bool IsValidItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity);
+    static const FInventoryItemData GetInventoryItemData(const TScriptInterface<IInventoryItemDataInterface>& Item);
 
     UFUNCTION()
     virtual void OnRep_InventorySlots(const TArray<FInventorySlot>& OldInventorySlots);

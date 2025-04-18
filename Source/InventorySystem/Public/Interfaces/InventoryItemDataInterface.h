@@ -9,7 +9,7 @@
 struct FInventoryItemData;
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType, Blueprintable)
 class UInventoryItemDataInterface : public UInterface
 {
     GENERATED_BODY()
