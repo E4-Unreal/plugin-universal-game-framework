@@ -58,21 +58,24 @@ public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     virtual void SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex);
 
+    UFUNCTION(BlueprintPure)
+    virtual bool IsSlotEmpty(int32 SlotIndex) { return !InventorySlots.FindByKey(SlotIndex); }
+
     /* Getter */
 
     // 현재 아이템 보유 수량
     UFUNCTION(BlueprintPure)
-    int32 GetItemQuantity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
+    virtual int32 GetItemQuantity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
 
     // 현재 추가 가능한 아이템 수량
     UFUNCTION(BlueprintPure)
-    int32 GetItemCapacity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
+    virtual int32 GetItemCapacity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
 
     UFUNCTION(BlueprintPure, Category = "UI")
     FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
 
     UFUNCTION(BlueprintPure, Category = "UI")
-    const FInventorySlot& GetInventorySlot(int32 Index) const;
+    virtual const FInventorySlot& GetInventorySlot(int32 Index) const;
 
 protected:
     virtual void AddDefaultItems();

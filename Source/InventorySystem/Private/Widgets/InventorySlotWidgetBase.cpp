@@ -18,14 +18,13 @@ void UInventorySlotWidgetBase::Refresh()
 
     if (GetInventoryComponent())
     {
-        const auto& InventorySlot = GetInventoryComponent()->GetInventorySlot(SlotIndex);
-        if (InventorySlot.IsNotValid())
+        if (GetInventoryComponent()->IsSlotEmpty(SlotIndex))
         {
             Clear();
         }
         else
         {
-            UpdateInventoryItemData(InventorySlot.GetInventoryItemData());
+            UpdateInventoryItemData(GetInventoryComponent()->GetInventorySlot(SlotIndex).GetInventoryItemData());
         }
     }
 }

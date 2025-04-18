@@ -133,13 +133,14 @@ bool UInventoryComponent::SetInventorySlot(const FInventorySlot& NewInventorySlo
 {
     if (bool bCanSet = NewInventorySlot.IsValid() && NewInventorySlot.Index < MaxSlotNum; !bCanSet) return false;
 
-    if (auto OldInventorySlotPtr = InventorySlots.FindByKey(NewInventorySlot.Index))
+    if (IsSlotEmpty(NewInventorySlot.Index))
     {
-        *OldInventorySlotPtr = NewInventorySlot;
+        InventorySlots.Emplace(NewInventorySlot);
     }
     else
     {
-        InventorySlots.Emplace(NewInventorySlot);
+        auto& InventorySlot = const_cast<FInventorySlot&>(NewInventorySlot);
+        InventorySlot = NewInventorySlot;
     }
 
     InventoryUpdated.Broadcast(NewInventorySlot.Index);
