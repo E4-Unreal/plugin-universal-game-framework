@@ -32,7 +32,7 @@ void UInventoryPanelWidget::OnInventoryComponentChanged(UInventoryComponent* Old
 
 void UInventoryPanelWidget::CreateSlotWidgets()
 {
-    if (bool bCanCreate = InventoryPanel && SlotWidgetClass; !bCanCreate) return;
+    if (bool bCanCreate = InventoryPanel && SlotWidgetClass && SlotWidgetMap.IsEmpty(); !bCanCreate) return;
 
     auto InventoryComponent = GetInventoryComponent();
     int32 MaxSlotNum = InventoryComponent ? InventoryComponent->GetMaxSlotNum() : PreviewSlotNum;
