@@ -42,6 +42,7 @@ protected:
 
     virtual void OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget) {}
 
+public:
     UFUNCTION(BlueprintPure)
     FORCEINLINE UInventoryComponent* GetInventoryComponent() const { return InventoryComponentPrivate.Get(); }
 };
