@@ -7,10 +7,16 @@
 #include "Types/InventorySlot.h"
 #include "InventoryComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUGFInventoryUpdatedSignature, int32, SlotIndex);
+
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UInventoryComponent : public UActorComponent
 {
     GENERATED_BODY()
+
+public:
+    UPROPERTY(BlueprintAssignable, Category = "UI")
+    FUGFInventoryUpdatedSignature InventoryUpdated;
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))

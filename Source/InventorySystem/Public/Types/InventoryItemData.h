@@ -14,7 +14,7 @@ struct FInventoryItemData
     static const FInventoryItemData Empty;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FText DisplayName;
+    FText DisplayText;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;
@@ -27,6 +27,15 @@ struct FInventoryItemData
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bCanUse = false;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<UTexture2D> ThumbnailTexture;
+
+    FInventoryItemData() {}
+    FInventoryItemData(int32 InMaxStack)
+    {
+        MaxStack = InMaxStack;
+    }
 
     FORCEINLINE bool IsValid() const { return MaxStack > 0; }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
