@@ -56,7 +56,7 @@ public:
     virtual void RemoveInventorySlot(int32 SlotIndex);
 
     UFUNCTION(BlueprintCallable, Category = "UI")
-    virtual void SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex);
+    virtual void SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex, UInventoryComponent* OtherInventoryComponent = nullptr);
 
     UFUNCTION(BlueprintPure)
     virtual bool IsSlotEmpty(int32 SlotIndex) { return !InventorySlots.FindByKey(SlotIndex); }

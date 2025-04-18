@@ -43,7 +43,9 @@ void UInventorySlotWidget::OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* I
 {
     Super::OnInventorySlotWidgetDrop(InventorySlotWidget);
 
-    GetInventoryComponent()->SwapOrFillInventorySlots(InventorySlotWidget->GetSlotIndex(), SlotIndex);
+    auto SourceInventoryComponent = InventorySlotWidget->GetInventoryComponent();
+    int32 SourceIndex = InventorySlotWidget->GetSlotIndex();
+    SourceInventoryComponent->SwapOrFillInventorySlots(SourceIndex, SlotIndex, GetInventoryComponent());
 }
 
 void UInventorySlotWidget::UpdateInventorySlot(const FInventorySlot& InventorySlot)
