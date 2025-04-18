@@ -40,6 +40,9 @@ public:
     virtual bool RemoveItem(UObject* Item, int32 Quantity);
 
     UFUNCTION(BlueprintCallable)
+    virtual bool SetInventorySlotQuantity(int32 SlotIndex, int32 NewQuantity);
+
+    UFUNCTION(BlueprintCallable)
     virtual bool SetInventorySlot(const FInventorySlot& NewInventorySlot);
 
     UFUNCTION(BlueprintCallable)

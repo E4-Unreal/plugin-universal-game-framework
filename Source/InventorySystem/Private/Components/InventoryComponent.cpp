@@ -39,10 +39,7 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
 
         int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
         Quantity -= QuantityToAdd;
-
-        FInventorySlot NewInventorySlot = InventorySlot;
-        NewInventorySlot.Quantity += QuantityToAdd;
-        SetInventorySlot(NewInventorySlot);
+        SetInventorySlotQuantity(InventorySlot.Index, InventorySlot.Quantity + QuantityToAdd);
 
         if (Quantity <= 0) return true;
     }
@@ -55,6 +52,7 @@ bool UInventoryComponent::AddItem(UObject* Item, int32 Quantity)
         FInventorySlot NewInventorySlot;
         NewInventorySlot.Index = Index;
         NewInventorySlot.Item = Item;
+        NewInventorySlot.Quantity = 0;
 
         int32 QuantityToAdd = FMath::Min(Quantity, NewInventorySlot.GetCapacity());
         Quantity -= QuantityToAdd;
@@ -105,6 +103,25 @@ bool UInventoryComponent::RemoveItem(UObject* Item, int32 Quantity)
     return true;
 }
 
+bool UInventoryComponent::SetInventorySlotQuantity(int32 SlotIndex, int32 NewQuantity)
+{
+    auto InventorySlot = InventorySlots.FindByKey(SlotIndex);
+    if (bool bCanSet = InventorySlot && InventorySlot->GetInventoryItemData().MaxStack >= NewQuantity; !bCanSet) return false;
+
+    if (NewQuantity <= 0)
+    {
+        InventorySlots.Remove(*InventorySlot);
+    }
+    else
+    {
+        InventorySlot->Quantity = NewQuantity;
+    }
+
+    InventoryUpdated.Broadcast(SlotIndex);
+
+    return true;
+}
+
 bool UInventoryComponent::SetInventorySlot(const FInventorySlot& NewInventorySlot)
 {
     if (bool bCanSet = NewInventorySlot.IsValid() && NewInventorySlot.Index < MaxSlotNum; !bCanSet) return false;
@@ -125,12 +142,7 @@ bool UInventoryComponent::SetInventorySlot(const FInventorySlot& NewInventorySlo
 
 void UInventoryComponent::RemoveInventorySlot(int32 SlotIndex)
 {
-    FInventorySlot* InventorySlot = InventorySlots.FindByKey(SlotIndex);
-    if (InventorySlot)
-    {
-        InventorySlots.Remove(*InventorySlot);
-        InventoryUpdated.Broadcast(SlotIndex);
-    }
+    SetInventorySlotQuantity(SlotIndex, 0);
 }
 
 void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 DestinationIndex)
@@ -143,11 +155,9 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
     if (DestinationInventorySlot && DestinationInventorySlot->Item == SourceInventorySlot->Item)
     {
         // Fill
-        int32 QuantityToAdd = FMath::Min(SourceInventorySlot->Quantity, DestinationInventorySlot->GetCapacity());
-        SourceInventorySlot->Quantity -= QuantityToAdd;
-        DestinationInventorySlot->Quantity += QuantityToAdd;
-
-        if (SourceInventorySlot->Quantity <= 0) InventorySlots.Remove(*SourceInventorySlot);
+        int32 QuantityToMove = FMath::Min(SourceInventorySlot->Quantity, DestinationInventorySlot->GetCapacity());
+        SetInventorySlotQuantity(SourceIndex, SourceInventorySlot->Quantity - QuantityToMove);
+        SetInventorySlotQuantity(DestinationIndex, DestinationInventorySlot->Quantity + QuantityToMove);
     }
     else
     {
@@ -155,6 +165,8 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
         SourceInventorySlot->Index = DestinationIndex;
         if (DestinationInventorySlot) DestinationInventorySlot->Index = SourceIndex;
         InventorySlots.Sort();
+        InventoryUpdated.Broadcast(SourceIndex);
+        InventoryUpdated.Broadcast(DestinationIndex);
     }
 }
 
