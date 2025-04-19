@@ -10,6 +10,7 @@ public class InteractionSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities"
             }
         );
 
