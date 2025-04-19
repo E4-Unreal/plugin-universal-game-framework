@@ -24,7 +24,7 @@ TArray<uint32> UInputConfig_Interact::OnBindEnhancedInput(UEnhancedInputComponen
 
     FEnhancedInputActionEventBinding& CancelInteractBinding = EnhancedInputComponent->BindAction(
                InteractAction,
-               ETriggerEvent::Canceled,
+               ETriggerEvent::Completed,
                this,
                &ThisClass::CancelInteract,
                OwningPawn
