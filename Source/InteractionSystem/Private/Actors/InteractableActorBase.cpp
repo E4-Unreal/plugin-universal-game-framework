@@ -3,136 +3,52 @@
 
 #include "Actors/InteractableActorBase.h"
 
-#include "Logging.h"
-#include "Components/InteractionSystemComponentBase.h"
+#include "Components/InteractableComponent.h"
 #include "Components/SphereComponent.h"
 
 FName AInteractableActorBase::DisplayMeshName(TEXT("DisplayMesh"));
 FName AInteractableActorBase::OverlapShapeName(TEXT("OverlapShape"));
+FName AInteractableActorBase::InteractableComponentName(TEXT("InteractableComponent"));
 
 AInteractableActorBase::AInteractableActorBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     /* DisplayMesh */
     DisplayMesh = CreateDefaultSubobject<UMeshComponent>(DisplayMeshName);
-    if (DisplayMesh)
-    {
-        SetRootComponent(DisplayMesh);
-    }
+    if (DisplayMesh) SetRootComponent(DisplayMesh);
 
     /* OverlapShape */
     OverlapShape = CreateDefaultSubobject<UShapeComponent>(OverlapShapeName);
-    if (OverlapShape)
-    {
-        OverlapShape->SetupAttachment(RootComponent);
-    }
+    if (OverlapShape) OverlapShape->SetupAttachment(RootComponent);
+
+    /* InteractableComponent */
+    InteractableComponent = CreateDefaultSubobject<UInteractableComponent>(InteractableComponentName);
+    if (OverlapShape) InteractableComponent->SetOverlapShape(OverlapShape);
 }
 
 void AInteractableActorBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    OverlapShape->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeBeginOverlap);
-    OverlapShape->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeEndOverlap);
+    InteractableComponent->OnInteractionTriggered.AddDynamic(this, &ThisClass::OnInteractionTriggered);
 }
 
-void AInteractableActorBase::Destroyed()
+bool AInteractableActorBase::CanInteract_Implementation(AActor* Interactor)
 {
-    ClearAllInteractionTimers();
-
-    Super::Destroyed();
+    return Execute_CanInteract(InteractableComponent, Interactor);
 }
 
 void AInteractableActorBase::TryInteract_Implementation(AActor* Interactor)
 {
-    SetInteractionTimer(Interactor);
+    Execute_TryInteract(InteractableComponent, Interactor);
 }
 
 void AInteractableActorBase::CancelInteract_Implementation(AActor* Interactor)
 {
-    ClearInteractionTimer(Interactor);
+    Execute_CancelInteract(InteractableComponent, Interactor);
 }
 
-void AInteractableActorBase::SetInteractionTimer(AActor* Interactor)
+void AInteractableActorBase::OnInteractionTriggered_Implementation(AActor* Interactor)
 {
-    ClearInteractionTimer(Interactor);
 
-    if (InteractionTime < 0 || FMath::IsNearlyZero(InteractionTime))
-    {
-        OnInteract(Interactor);
-    }
-    else
-    {
-        FTimerHandle Timer;
-        FTimerDelegate TimerDelegate;
-        TimerDelegate.BindUObject(this, &ThisClass::Interact, Interactor);
-        GetWorldTimerManager().SetTimer(Timer, TimerDelegate, InteractionTime, false);
-
-        InteractionTimerMap.Emplace(Interactor, Timer);
-    }
-}
-
-void AInteractableActorBase::ClearInteractionTimer(AActor* Interactor)
-{
-    if (InteractionTimerMap.Contains(Interactor))
-    {
-        GetWorldTimerManager().ClearTimer(InteractionTimerMap[Interactor]);
-        InteractionTimerMap.Remove(Interactor);
-    }
-}
-
-void AInteractableActorBase::ClearAllInteractionTimers()
-{
-    for (const auto& [Interactor, Timer] : InteractionTimerMap)
-    {
-        ClearInteractionTimer(Interactor);
-    }
-}
-
-void AInteractableActorBase::OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponentBase>())
-    {
-        OnInteractorBeginOverlap(OtherActor, InteractionSystem);
-    }
-}
-
-void AInteractableActorBase::OnOverlapShapeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-    if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponentBase>())
-    {
-        OnInteractorEndOverlap(OtherActor, InteractionSystem);
-    }
-}
-
-void AInteractableActorBase::Interact(AActor* Interactor)
-{
-    ClearInteractionTimer(Interactor);
-
-    if (Execute_CanInteract(this, Interactor))
-    {
-        if (bCanInteractOnlyOnce)
-        {
-            bCanInteract = false;
-            ClearAllInteractionTimers();
-        }
-        OnInteract(Interactor);
-    }
-}
-
-void AInteractableActorBase::OnInteract_Implementation(AActor* Interactor)
-{
-    LOG_TODO
-}
-
-void AInteractableActorBase::OnInteractorBeginOverlap_Implementation(AActor* Interactor, UInteractionSystemComponentBase* InteractionSystem)
-{
-    InteractionSystem->AddTarget(this);
-}
-
-void AInteractableActorBase::OnInteractorEndOverlap_Implementation(AActor* Interactor, UInteractionSystemComponentBase* InteractionSystem)
-{
-    InteractionSystem->RemoveTarget(this);
 }

@@ -58,9 +58,9 @@ void AItemActor::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyCh
 }
 #endif
 
-void AItemActor::OnInteract_Implementation(AActor* Interactor)
+void AItemActor::OnInteractionTriggered_Implementation(AActor* Interactor)
 {
-    Super::OnInteract_Implementation(Interactor);
+    Super::OnInteractionTriggered_Implementation(Interactor);
 
     if (auto InventoryComponent = Interactor->GetComponentByClass<UInventoryComponent>())
     {

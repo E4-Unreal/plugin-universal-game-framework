@@ -36,7 +36,7 @@ public:
 protected:
     /* InteractableActor */
 
-    virtual void OnInteract_Implementation(AActor* Interactor) override;
+    virtual void OnInteractionTriggered_Implementation(AActor* Interactor) override;
 
     /* ItemActor */
 

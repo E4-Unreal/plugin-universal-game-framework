@@ -19,8 +19,8 @@ public:
 
 public:
     UFUNCTION(BlueprintPure)
-    FORCEINLINE UStaticMeshComponent* GetDisplayStaticMesh() const { return GetDisplayMesh<UStaticMeshComponent>(); }
+    FORCEINLINE UStaticMeshComponent* GetDisplayStaticMesh() const { return Cast<UStaticMeshComponent>(GetDisplayMesh()); }
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE USphereComponent* GetOverlapSphere() const { return GetOverlapShape<USphereComponent>(); }
+    FORCEINLINE USphereComponent* GetOverlapSphere() const { return Cast<USphereComponent>(GetOverlapShape()); }
 };

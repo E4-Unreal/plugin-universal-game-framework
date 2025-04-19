@@ -7,7 +7,7 @@
 #include "Interfaces/InteractableInterface.h"
 #include "InteractableActorBase.generated.h"
 
-class UInteractionSystemComponentBase;
+class UInteractableComponent;
 
 UCLASS(Abstract)
 class INTERACTIONSYSTEM_API AInteractableActorBase : public AActor, public IInteractableInterface
@@ -17,6 +17,7 @@ class INTERACTIONSYSTEM_API AInteractableActorBase : public AActor, public IInte
 protected:
     static FName DisplayMeshName;
     static FName OverlapShapeName;
+    static FName InteractableComponentName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -25,63 +26,26 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UShapeComponent> OverlapShape;
 
-protected:
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    bool bCanInteractOnlyOnce = true;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    float InteractionTime = -1.0f;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    bool bCanInteract = true;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<TObjectPtr<AActor>, FTimerHandle> InteractionTimerMap;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInteractableComponent> InteractableComponent;
 
 public:
     AInteractableActorBase(const FObjectInitializer& ObjectInitializer);
 
     virtual void BeginPlay() override;
-    virtual void Destroyed() override;
 
     /* InteractableInterface */
 
-    virtual bool CanInteract_Implementation(AActor* Interactor) override { return bCanInteract && !IsHidden(); }
+    virtual bool CanInteract_Implementation(AActor* Interactor) override;
     virtual void TryInteract_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;
 
 protected:
-    void SetInteractionTimer(AActor* Interactor);
-
-    void ClearInteractionTimer(AActor* Interactor);
-
-    void ClearAllInteractionTimers();
-
-    UFUNCTION()
-    virtual void OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-    UFUNCTION()
-    virtual void OnOverlapShapeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
     UFUNCTION(BlueprintNativeEvent)
-    void OnInteractorBeginOverlap(AActor* Interactor, UInteractionSystemComponentBase* InteractionSystem);
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnInteractorEndOverlap(AActor* Interactor,UInteractionSystemComponentBase* InteractionSystem);
-
-    virtual void Interact(AActor* Interactor);
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnInteract(AActor* Interactor);
+    void OnInteractionTriggered(AActor* Interactor);
 
 public:
     FORCEINLINE UMeshComponent* GetDisplayMesh() const { return DisplayMesh.Get(); }
-
-    template<typename T = UMeshComponent>
-    T* GetDisplayMesh() const { return Cast<T>(GetDisplayMesh()); }
-
     FORCEINLINE UShapeComponent* GetOverlapShape() const { return OverlapShape.Get(); }
-
-    template<typename T = UShapeComponent>
-    T* GetOverlapShape() const { return Cast<T>(GetOverlapShape()); }
+    FORCEINLINE UInteractableComponent* GetInteractableComponent() const { return InteractableComponent.Get(); }
 };
