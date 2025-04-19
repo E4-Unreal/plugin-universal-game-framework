@@ -65,8 +65,7 @@ void AInteractableActorBase::SetInteractionTimer(AActor* Interactor)
     {
         FTimerHandle Timer;
         FTimerDelegate TimerDelegate;
-        TimerDelegate.BindUObject(this, &ThisClass::OnInteract, Interactor);
-        TimerDelegate.BindUObject(this, &ThisClass::ClearInteractionTimer, Interactor);
+        TimerDelegate.BindUObject(this, &ThisClass::Interact, Interactor);
         GetWorldTimerManager().SetTimer(Timer, TimerDelegate, InteractionTime, false);
 
         InteractionTimerMap.Emplace(Interactor, Timer);
@@ -110,6 +109,8 @@ void AInteractableActorBase::OnOverlapShapeEndOverlap(UPrimitiveComponent* Overl
 
 void AInteractableActorBase::Interact(AActor* Interactor)
 {
+    ClearInteractionTimer(Interactor);
+
     if (Execute_CanInteract(this, Interactor))
     {
         if (bCanInteractOnlyOnce)
