@@ -29,6 +29,9 @@ struct FInventoryItemData
     bool bCanUse = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<UStaticMesh> StaticMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
     FInventoryItemData() {}

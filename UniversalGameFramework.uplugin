@@ -64,6 +64,11 @@
 			"Name": "InventorySystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "InteractionSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -71,6 +76,10 @@
 			"Name": "EnhancedInput",
 			"Enabled": true
 		},
+        {
+            "Name": "EnhancedInputBinder",
+            "Enabled": true
+        },
 		{
 			"Name": "StructUtils",
 			"Enabled": true
@@ -79,13 +88,13 @@
 			"Name": "EditorScriptingUtilities",
 			"Enabled": true
 		},
-        {
-            "Name": "CommonUI",
-            "Enabled": true
-        },
-        {
-            "Name": "UniversalUtilities",
-            "Enabled": true
-        }
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		},
+		{
+			"Name": "UniversalUtilities",
+			"Enabled": true
+		}
 	]
 }

@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class InventorySystem : ModuleRules
+public class InteractionSystem : ModuleRules
 {
-    public InventorySystem(ReadOnlyTargetRules Target) : base(Target)
+    public InteractionSystem(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,12 +10,8 @@ public class InventorySystem : ModuleRules
             new string[]
             {
                 "Core",
-                "GameplayTags",
-                "UMG",
-                "CommonUI",
-                "InputCore",
                 "UniversalUtilities",
-                "InteractionSystem"
+                "EnhancedInputBinder"
             }
         );
 
@@ -25,7 +21,8 @@ public class InventorySystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "EnhancedInput"
             }
         );
     }
