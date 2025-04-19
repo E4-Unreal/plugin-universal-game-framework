@@ -83,7 +83,7 @@ UStaticMesh* AItemActor::GetStaticMesh() const
 {
     if (InventoryItemList.Num() != 1) return DefaultStaticMesh;
 
-    auto StaticMesh = InventoryItemList[0].GetData().StaticMesh;
+    auto StaticMesh = InventoryItemList[0].GetData().StaticMesh.LoadSynchronous();
 
-    return StaticMesh.IsValid() ? StaticMesh.LoadSynchronous() : DefaultStaticMesh.Get();
+    return StaticMesh ? StaticMesh : DefaultStaticMesh.Get();
 }

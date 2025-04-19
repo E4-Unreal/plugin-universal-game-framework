@@ -41,6 +41,5 @@ void UInventorySlotWidgetBase::Clear()
 
 void UInventorySlotWidgetBase::SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture)
 {
-    if (ThumbnailTexture == nullptr) GetThumbnailImage()->SetBrushFromTexture(nullptr);
-    else GetThumbnailImage()->SetBrushFromSoftTexture(ThumbnailTexture);
+    GetThumbnailImage()->SetBrushFromTexture(ThumbnailTexture.LoadSynchronous());
 }
