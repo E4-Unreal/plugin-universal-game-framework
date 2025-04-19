@@ -69,6 +69,7 @@ void AInteractableActorBase::SetInteractionTimer(AActor* Interactor)
         FTimerHandle Timer;
         FTimerDelegate TimerDelegate;
         TimerDelegate.BindUObject(this, &ThisClass::OnInteract, Interactor);
+        TimerDelegate.BindUObject(this, &ThisClass::ClearInteractionTimer, Interactor);
         GetWorldTimerManager().SetTimer(Timer, TimerDelegate, InteractionTime, false);
 
         InteractionTimerMap.Emplace(Interactor, Timer);
