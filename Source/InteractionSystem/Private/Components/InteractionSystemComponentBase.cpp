@@ -37,7 +37,11 @@ void UInteractionSystemComponentBase::CancelInteract()
 
 void UInteractionSystemComponentBase::RefreshTarget()
 {
-    if (AvailableTargets.IsEmpty()) CurrentTarget = nullptr;
+    if (AvailableTargets.IsEmpty())
+    {
+        CurrentTarget = nullptr;
+        return;
+    }
 
     float MinDistance = MAX_flt;
     int32 MinIndex = 0;
