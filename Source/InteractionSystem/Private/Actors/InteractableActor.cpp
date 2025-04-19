@@ -11,6 +11,6 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
         .SetDefaultSubobjectClass<USphereComponent>(OverlapShapeName)
         )
 {
-    auto OverlapSphere = GetOverlapShape<USphereComponent>();
+    auto OverlapSphere = GetOverlapSphere();
     OverlapSphere->InitSphereRadius(128.0f);
 }

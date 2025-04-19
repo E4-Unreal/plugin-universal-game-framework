@@ -48,10 +48,11 @@ protected:
 
 public:
     FORCEINLINE UMeshComponent* GetDisplayMesh() const { return DisplayMesh.Get(); }
-    FORCEINLINE UShapeComponent* GetOverlapShape() const { return OverlapShape.Get(); }
 
     template<typename T = UMeshComponent>
     T* GetDisplayMesh() const { return Cast<T>(GetDisplayMesh()); }
+
+    FORCEINLINE UShapeComponent* GetOverlapShape() const { return OverlapShape.Get(); }
 
     template<typename T = UShapeComponent>
     T* GetOverlapShape() const { return Cast<T>(GetOverlapShape()); }
