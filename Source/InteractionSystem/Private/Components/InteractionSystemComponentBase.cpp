@@ -31,7 +31,7 @@ void UInteractionSystemComponentBase::CancelInteract()
 {
     if (CurrentTarget)
     {
-        IInteractableInterface::Execute_TryInteract(CurrentTarget.GetObject(), GetOwner());
+        IInteractableInterface::Execute_CancelInteract(CurrentTarget.GetObject(), GetOwner());
     }
 }
 
