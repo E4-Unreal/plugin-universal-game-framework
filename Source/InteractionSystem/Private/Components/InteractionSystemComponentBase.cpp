@@ -21,7 +21,7 @@ void UInteractionSystemComponentBase::RemoveTarget(const TScriptInterface<IInter
 
 void UInteractionSystemComponentBase::TryInteract()
 {
-    if (CurrentTarget)
+    if (CurrentTarget && IInteractableInterface::Execute_CanInteract(CurrentTarget.GetObject(), GetOwner()))
     {
         IInteractableInterface::Execute_TryInteract(CurrentTarget.GetObject(), GetOwner());
     }

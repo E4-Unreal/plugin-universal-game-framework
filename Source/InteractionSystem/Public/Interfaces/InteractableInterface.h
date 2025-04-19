@@ -23,6 +23,9 @@ class INTERACTIONSYSTEM_API IInteractableInterface
     // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool CanInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void TryInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
