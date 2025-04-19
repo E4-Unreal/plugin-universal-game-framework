@@ -25,15 +25,30 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UShapeComponent> OverlapShape;
 
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    float InteractionTime = -1.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TMap<TObjectPtr<AActor>, FTimerHandle> InteractionTimerMap;
+
 public:
     AInteractableActorBase(const FObjectInitializer& ObjectInitializer);
 
     virtual void BeginPlay() override;
+    virtual void Destroyed() override;
 
-    UFUNCTION(BlueprintPure)
-    virtual bool CanInteract() const { return !IsHidden(); }
+    /* InteractableInterface */
+
+    virtual bool CanInteract_Implementation(AActor* Interactor) override { return !IsHidden(); }
+    virtual void TryInteract_Implementation(AActor* Interactor) override;
+    virtual void CancelInteract_Implementation(AActor* Interactor) override;
 
 protected:
+    void SetInteractionTimer(AActor* Interactor);
+
+    void ClearInteractionTimer(AActor* Interactor);
+
     UFUNCTION()
     virtual void OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -45,6 +60,9 @@ protected:
 
     UFUNCTION(BlueprintNativeEvent)
     void OnInteractorEndOverlap(AActor* Interactor,UInteractionSystemComponentBase* InteractionSystem);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnInteract(AActor* Interactor);
 
 public:
     FORCEINLINE UMeshComponent* GetDisplayMesh() const { return DisplayMesh.Get(); }
