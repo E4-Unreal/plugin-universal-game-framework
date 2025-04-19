@@ -21,6 +21,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TObjectPtr<UStaticMesh> DefaultStaticMesh;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bAutoDestroy = true;
+
 public:
     AItemActor(const FObjectInitializer& ObjectInitializer);
 

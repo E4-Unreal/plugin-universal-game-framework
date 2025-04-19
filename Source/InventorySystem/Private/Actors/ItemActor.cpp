@@ -70,7 +70,7 @@ void AItemActor::OnInteract_Implementation(AActor* Interactor)
             if (InventoryItem.GetData().IsValid()) InventoryComponent->AddItem(InventoryItem.Item, InventoryItem.Quantity);
         }
 
-        Destroy();
+        if (bAutoDestroy) Destroy();
     }
 }
 
