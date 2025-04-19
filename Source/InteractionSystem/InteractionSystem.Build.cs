@@ -10,7 +10,8 @@ public class InteractionSystem : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "EnhancedInputBinder"
             }
         );
 
@@ -20,7 +21,8 @@ public class InteractionSystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "EnhancedInput"
             }
         );
     }
