@@ -27,7 +27,13 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
+    bool bCanInteractOnlyOnce = true;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
     float InteractionTime = -1.0f;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    bool bCanInteract = true;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<AActor>, FTimerHandle> InteractionTimerMap;
@@ -40,7 +46,7 @@ public:
 
     /* InteractableInterface */
 
-    virtual bool CanInteract_Implementation(AActor* Interactor) override { return !IsHidden(); }
+    virtual bool CanInteract_Implementation(AActor* Interactor) override { return bCanInteract && !IsHidden(); }
     virtual void TryInteract_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;
 
@@ -48,6 +54,8 @@ protected:
     void SetInteractionTimer(AActor* Interactor);
 
     void ClearInteractionTimer(AActor* Interactor);
+
+    void ClearAllInteractionTimers();
 
     UFUNCTION()
     virtual void OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -60,6 +68,8 @@ protected:
 
     UFUNCTION(BlueprintNativeEvent)
     void OnInteractorEndOverlap(AActor* Interactor,UInteractionSystemComponentBase* InteractionSystem);
+
+    virtual void Interact(AActor* Interactor);
 
     UFUNCTION(BlueprintNativeEvent)
     void OnInteract(AActor* Interactor);

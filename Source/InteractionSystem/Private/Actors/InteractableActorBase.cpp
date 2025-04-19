@@ -38,10 +38,7 @@ void AInteractableActorBase::BeginPlay()
 
 void AInteractableActorBase::Destroyed()
 {
-    for (const auto& [Interactor, Timer] : InteractionTimerMap)
-    {
-        ClearInteractionTimer(Interactor);
-    }
+    ClearAllInteractionTimers();
 
     Super::Destroyed();
 }
@@ -85,6 +82,14 @@ void AInteractableActorBase::ClearInteractionTimer(AActor* Interactor)
     }
 }
 
+void AInteractableActorBase::ClearAllInteractionTimers()
+{
+    for (const auto& [Interactor, Timer] : InteractionTimerMap)
+    {
+        ClearInteractionTimer(Interactor);
+    }
+}
+
 void AInteractableActorBase::OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -100,6 +105,19 @@ void AInteractableActorBase::OnOverlapShapeEndOverlap(UPrimitiveComponent* Overl
     if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponentBase>())
     {
         OnInteractorEndOverlap(OtherActor, InteractionSystem);
+    }
+}
+
+void AInteractableActorBase::Interact(AActor* Interactor)
+{
+    if (Execute_CanInteract(this, Interactor))
+    {
+        if (bCanInteractOnlyOnce)
+        {
+            bCanInteract = false;
+            ClearAllInteractionTimers();
+        }
+        OnInteract(Interactor);
     }
 }
 
