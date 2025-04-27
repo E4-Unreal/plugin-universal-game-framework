@@ -3,36 +3,28 @@
 
 #include "Input/InputConfig_Interact.h"
 
-#include "EnhancedInputComponent.h"
 #include "Components/InteractionSystemComponentBase.h"
 
-TArray<uint32> UInputConfig_Interact::OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent)
+void UInputConfig_Interact::OnStarted_Implementation(APlayerController* PlayerController,
+    const FInputActionInstance& InputActionInstance)
 {
-    TArray<uint32> InputBindingHandles;
-    auto OwningPawn = GetOwningPawn(EnhancedInputComponent);
-    if (OwningPawn == nullptr) return InputBindingHandles;
+    Super::OnStarted_Implementation(PlayerController, InputActionInstance);
 
-    FEnhancedInputActionEventBinding& TryInteractBinding = EnhancedInputComponent->BindAction(
-                InteractAction,
-                ETriggerEvent::Started,
-                this,
-                &ThisClass::TryInteract,
-                OwningPawn
-                );
+    if (PlayerController->GetPawn())
+    {
+        TryInteract(PlayerController->GetPawn());
+    }
+}
 
-    InputBindingHandles.Emplace(TryInteractBinding.GetHandle());
+void UInputConfig_Interact::OnCompleted_Implementation(APlayerController* PlayerController,
+    const FInputActionInstance& InputActionInstance)
+{
+    Super::OnCompleted_Implementation(PlayerController, InputActionInstance);
 
-    FEnhancedInputActionEventBinding& CancelInteractBinding = EnhancedInputComponent->BindAction(
-               InteractAction,
-               ETriggerEvent::Completed,
-               this,
-               &ThisClass::CancelInteract,
-               OwningPawn
-               );
-
-    InputBindingHandles.Emplace(CancelInteractBinding.GetHandle());
-
-    return InputBindingHandles;
+    if (PlayerController->GetPawn())
+    {
+        CancelInteract(PlayerController->GetPawn());
+    }
 }
 
 void UInputConfig_Interact::TryInteract(APawn* Pawn)

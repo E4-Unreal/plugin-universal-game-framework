@@ -28,12 +28,22 @@ void UInventoryPanelWidget::OnInventoryComponentChanged(UInventoryComponent* Old
     {
         NewInventoryComponent->InventoryUpdated.AddDynamic(this, &ThisClass::OnInventoryUpdated);
     }
+
+    CreateSlotWidgets();
 }
 
 void UInventoryPanelWidget::CreateSlotWidgets()
 {
-    if (bool bCanCreate = InventoryPanel && SlotWidgetClass && SlotWidgetMap.IsEmpty(); !bCanCreate) return;
+    // Destroy
+    for (int32 Index = 0; Index < SlotWidgetMap.Num(); ++Index)
+    {
+        auto SlotWidget = SlotWidgetMap[Index];
+        SlotWidget->RemoveFromParent();
+        InventoryPanel->RemoveChildAt(Index);
+    }
+    SlotWidgetMap.Reset();
 
+    // Create
     auto InventoryComponent = GetInventoryComponent();
     int32 MaxSlotNum = InventoryComponent ? InventoryComponent->GetMaxSlotNum() : PreviewSlotNum;
     for (int32 Index = 0; Index < MaxSlotNum; ++Index)

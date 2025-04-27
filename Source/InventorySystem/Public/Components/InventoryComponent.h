@@ -22,7 +22,7 @@ public:
     FUGFInventoryUpdatedSignature InventoryUpdated;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
+    UPROPERTY(EditAnywhere, BlueprintGetter = GetMaxSlotNum, BlueprintSetter = SetMaxSlotNum, Category = "Config", meta = (ClampMin = 0))
     int32 MaxSlotNum = 4;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
@@ -72,10 +72,15 @@ public:
     virtual int32 GetItemCapacity(const TScriptInterface<IInventoryItemDataInterface>& Item) const;
 
     UFUNCTION(BlueprintPure, Category = "UI")
+    virtual const FInventorySlot& GetInventorySlot(int32 Index) const;
+
+    /* Properties */
+
+    UFUNCTION(BlueprintGetter)
     FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
 
-    UFUNCTION(BlueprintPure, Category = "UI")
-    virtual const FInventorySlot& GetInventorySlot(int32 Index) const;
+    UFUNCTION(BlueprintSetter)
+    virtual void SetMaxSlotNum(int32 NewMaxSlotNum) { MaxSlotNum = NewMaxSlotNum; }
 
 protected:
     virtual void AddDefaultItems();

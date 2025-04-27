@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Input/InputConfig.h"
+#include "Input/InputConfig_PressAndRelease.h"
 #include "InputConfig_Interact.generated.h"
 
 class UInputAction;
@@ -12,16 +12,13 @@ class UInputAction;
  *
  */
 UCLASS()
-class INTERACTIONSYSTEM_API UInputConfig_Interact : public UInputConfig
+class INTERACTIONSYSTEM_API UInputConfig_Interact : public UInputConfig_PressAndRelease
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config")
-    TObjectPtr<UInputAction> InteractAction;
-
-protected:
-    virtual TArray<uint32> OnBindEnhancedInput(UEnhancedInputComponent* EnhancedInputComponent) override;
+    virtual void OnStarted_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance) override;
+    virtual void OnCompleted_Implementation(APlayerController* PlayerController, const FInputActionInstance& InputActionInstance) override;
 
     virtual void TryInteract(APawn* Pawn);
 
