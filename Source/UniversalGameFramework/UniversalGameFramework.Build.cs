@@ -11,6 +11,9 @@ public class UniversalGameFramework : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
+                "EnhancedInputBinder",
+                "InteractionSystem",
+                "InventorySystem"
             }
         );
 
