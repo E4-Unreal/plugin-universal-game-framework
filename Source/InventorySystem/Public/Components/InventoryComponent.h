@@ -28,6 +28,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TArray<FInventoryItem> DefaultItems;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemActorInterface"))
+    TSubclassOf<AActor> ItemActorClass;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_InventorySlots, Transient, Category = "State")
     TArray<FInventorySlot> InventorySlots;
 
@@ -60,6 +63,9 @@ public:
 
     UFUNCTION(BlueprintPure)
     virtual bool IsSlotEmpty(int32 SlotIndex) { return !InventorySlots.FindByKey(SlotIndex); }
+
+    UFUNCTION(BlueprintCallable)
+    virtual void DropItemFromSlot(int32 SlotIndex, int32 Quantity);
 
     /* Getter */
 

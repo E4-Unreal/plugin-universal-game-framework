@@ -3,6 +3,7 @@
 
 #include "Components/InventoryComponent.h"
 
+#include "InventorySystemFunctionLibrary.h"
 #include "Interfaces/InventoryItemDataInterface.h"
 #include "Net/UnrealNetwork.h"
 
@@ -187,6 +188,20 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
         SetInventorySlotQuantity(SourceIndex, SourceInventorySlot.Quantity - QuantityToMove);
         OtherInventoryComponent->SetInventorySlotQuantity(DestinationIndex, DestinationInventorySlot.Quantity + QuantityToMove);
     }
+}
+
+void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
+{
+    if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
+
+    const auto& InventorySlot = GetInventorySlot(SlotIndex);
+    if (InventorySlot.Quantity < Quantity) return;
+
+    TArray<FInventoryItem> InventoryItemsToDrop = { FInventoryItem{ InventorySlot.Item, Quantity } };
+    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop);
+    if (!SpawnedItemActor) return;
+
+    SetInventorySlotQuantity(SlotIndex, InventorySlot.Quantity - Quantity);
 }
 
 int32 UInventoryComponent::GetItemQuantity(const TScriptInterface<IInventoryItemDataInterface>& Item) const
