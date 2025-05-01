@@ -13,6 +13,13 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     DisplayStaticMesh->SetSimulatePhysics(true);
 }
 
+void AItemActor::SetInventoryItems_Implementation(const TArray<FInventoryItem>& NewInventoryItems)
+{
+    InventoryItems = NewInventoryItems;
+
+    Refresh();
+}
+
 void AItemActor::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
@@ -22,13 +29,13 @@ void AItemActor::PostInitializeComponents()
 
 void AItemActor::BeginPlay()
 {
-    if (InventoryItemList.IsEmpty())
+    if (InventoryItems.IsEmpty())
     {
         Destroy();
     }
     else
     {
-        for (const auto& InventoryItem : InventoryItemList)
+        for (const auto& InventoryItem : InventoryItems)
         {
             if (InventoryItem.GetData().IsNotValid())
             {
@@ -49,7 +56,7 @@ void AItemActor::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyCh
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
     if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DefaultStaticMesh) ||
-        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, InventoryItemList) ||
+        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, InventoryItems) ||
         PropertyName == GET_MEMBER_NAME_CHECKED(FInventoryItem, Item)
         )
     {
@@ -64,7 +71,7 @@ void AItemActor::OnInteractionTriggered_Implementation(AActor* Interactor)
 
     if (auto InventoryComponent = Interactor->GetComponentByClass<UInventoryComponent>())
     {
-        for (const auto& InventoryItem : InventoryItemList)
+        for (const auto& InventoryItem : InventoryItems)
         {
             if (InventoryItem.GetData().IsValid()) InventoryComponent->AddItem(InventoryItem.Item, InventoryItem.Quantity);
         }
@@ -80,9 +87,9 @@ void AItemActor::Refresh()
 
 UStaticMesh* AItemActor::GetStaticMesh() const
 {
-    if (InventoryItemList.Num() != 1) return DefaultStaticMesh;
+    if (InventoryItems.Num() != 1) return DefaultStaticMesh;
 
-    auto StaticMesh = InventoryItemList[0].GetData().StaticMesh.LoadSynchronous();
+    auto StaticMesh = InventoryItems[0].GetData().StaticMesh.LoadSynchronous();
 
     return StaticMesh ? StaticMesh : DefaultStaticMesh.Get();
 }
