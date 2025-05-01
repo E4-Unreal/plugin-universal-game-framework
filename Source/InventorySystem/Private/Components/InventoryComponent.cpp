@@ -198,7 +198,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     if (InventorySlot.Quantity < Quantity) return;
 
     TArray<FInventoryItem> InventoryItemsToDrop = { FInventoryItem{ InventorySlot.Item, Quantity } };
-    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop);
+    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
 
     SetInventorySlotQuantity(SlotIndex, InventorySlot.Quantity - Quantity);

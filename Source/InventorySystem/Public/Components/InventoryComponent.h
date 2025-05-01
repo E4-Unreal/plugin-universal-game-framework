@@ -31,6 +31,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemActorInterface"))
     TSubclassOf<AActor> ItemActorClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FVector DropItemOffset;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_InventorySlots, Transient, Category = "State")
     TArray<FInventorySlot> InventorySlots;
 
