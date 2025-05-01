@@ -16,32 +16,7 @@
 	"Installed": false,
 	"Modules": [
 		{
-			"Name": "UGFCore",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
 			"Name": "UniversalGameFramework",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "UGFInventorySystem",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "UGFItemSystem",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "UGFInputSystem",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "UGFWidgetSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		},
