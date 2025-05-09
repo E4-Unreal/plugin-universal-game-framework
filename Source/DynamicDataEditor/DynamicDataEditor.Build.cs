@@ -10,7 +10,9 @@ public class DynamicDataEditor : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "DynamicData",
+                "Blutility"
             }
         );
 
