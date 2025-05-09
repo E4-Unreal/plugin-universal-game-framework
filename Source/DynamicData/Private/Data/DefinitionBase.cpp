@@ -36,7 +36,7 @@ void UDefinitionBase::SetData(const FInstancedStruct& Value)
     const UScriptStruct* StructType = Value.GetScriptStruct();
     for (auto& Data : DataList)
     {
-        if (Data.GetScriptStruct()->IsChildOf(StructType) && Data != Value)
+        if (Data.GetScriptStruct()->IsChildOf(StructType))
         {
             Data = Value;
             return;
