@@ -10,7 +10,8 @@ public class DynamicData : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "StructUtils"
             }
         );
 
