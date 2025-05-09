@@ -22,7 +22,8 @@ public class DynamicDataEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "EditorScriptingUtilities"
             }
         );
     }
