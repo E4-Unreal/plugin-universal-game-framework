@@ -10,6 +10,7 @@ public class UniversalGameFramework : ModuleRules
             new string[]
             {
                 "Core",
+                "GameplayTags",
                 "UniversalUtilities",
                 "EnhancedInputBinder",
                 "InteractionSystem",

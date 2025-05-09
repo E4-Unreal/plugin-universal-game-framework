@@ -11,7 +11,6 @@ public class UniversalGameFrameworkEditor : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "UniversalGameFramework",
                 "DynamicDataEditor",
                 "Blutility"
             }
@@ -23,7 +22,12 @@ public class UniversalGameFrameworkEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "DynamicData",
+                "StructUtils",
+                "UniversalGameFramework",
+                "InventorySystem",
+                "GameplayTags",
             }
         );
     }
