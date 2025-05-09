@@ -11,34 +11,13 @@
 
 void UDefinitionGenerator::Update()
 {
-    if (!DefinitionClass || !DataTable) return;
-
-    // ID 추출
-    const TArray<FName> RowNames = DataTable->GetRowNames();
-    TArray<int32> IDList;
-    IDList.Reserve(RowNames.Num());
-    for (const auto& RowName : RowNames)
+    for (const auto& [DefinitionClass, DataTable] : DefinitionDataTableMap)
     {
-        FString RowString = RowName.ToString();
-        if (RowString.IsNumeric())
-        {
-            int32 ID = FCString::Atoi(*RowString);
-            if (ID >= 0)
-            {
-                IDList.Emplace(ID);
-            }
-        }
-    }
-
-    // 업데이트
-    for (int32 ID : IDList)
-    {
-        UDefinitionBase* Definition = GetOrCreateDefinition(ID);
-        UpdateDefinition(Definition, DataTable->FindRow<FTableRowBase>(FName(FString::FromInt(ID)), ""));
+        UpdateDefinitionFromDataTable(DefinitionClass, DataTable);
     }
 }
 
-UDefinitionBase* UDefinitionGenerator::GetOrCreateDefinition(int32 ID) const
+UDefinitionBase* UDefinitionGenerator::GetOrCreateDefinition(TSubclassOf<UDefinitionBase> DefinitionClass, int32 ID) const
 {
     if (auto DataSubsystem = GEngine->GetEngineSubsystem<UDynamicDataSubsystem>())
     {
@@ -49,8 +28,8 @@ UDefinitionBase* UDefinitionGenerator::GetOrCreateDefinition(int32 ID) const
     }
 
     // 패키지 생성
-    FString AssetName = GetPrefix() + FString::FromInt(ID);
-    FString PackageName = GetPath() + AssetName;
+    FString AssetName = GetPrefix(DefinitionClass) + FString::FromInt(ID);
+    FString PackageName = GetPath(DefinitionClass) + AssetName;
 
     UPackage* Package = CreatePackage(*PackageName);
     Package->FullyLoad();
@@ -75,6 +54,35 @@ UDefinitionBase* UDefinitionGenerator::GetOrCreateDefinition(int32 ID) const
     return Definition;
 }
 
+void UDefinitionGenerator::UpdateDefinitionFromDataTable(TSubclassOf<UDefinitionBase> DefinitionClass, UDataTable* DataTable)
+{
+    if (!DefinitionClass || !DataTable) return;
+
+    // ID 추출
+    const TArray<FName> RowNames = DataTable->GetRowNames();
+    TArray<int32> IDList;
+    IDList.Reserve(RowNames.Num());
+    for (const auto& RowName : RowNames)
+    {
+        FString RowString = RowName.ToString();
+        if (RowString.IsNumeric())
+        {
+            int32 ID = FCString::Atoi(*RowString);
+            if (ID >= 0)
+            {
+                IDList.Emplace(ID);
+            }
+        }
+    }
+
+    // 업데이트
+    for (int32 ID : IDList)
+    {
+        UDefinitionBase* Definition = GetOrCreateDefinition(DefinitionClass, ID);
+        UpdateDefinition(Definition, DataTable->FindRow<FTableRowBase>(FName(FString::FromInt(ID)), ""));
+    }
+}
+
 void UDefinitionGenerator::UpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row)
 {
     OnUpdateDefinition(Definition, Row);
@@ -83,13 +91,13 @@ void UDefinitionGenerator::UpdateDefinition(UDefinitionBase* Definition, FTableR
     UEditorAssetLibrary::SaveAsset(Definition->GetPathName());
 }
 
-FString UDefinitionGenerator::GetPath() const
+FString UDefinitionGenerator::GetPath(TSubclassOf<UDefinitionBase> DefinitionClass) const
 {
     FString SubDirectory = DefinitionClass ? DefinitionClass->GetName() : "Default";
     return Path + SubDirectory + "/";
 }
 
-FString UDefinitionGenerator::GetPrefix() const
+FString UDefinitionGenerator::GetPrefix(TSubclassOf<UDefinitionBase> DefinitionClass) const
 {
     FString SubPrefix = DefinitionClass ? DefinitionClass->GetName() : "Default";
     return Prefix + SubPrefix + "_";

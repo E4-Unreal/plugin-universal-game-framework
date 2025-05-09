@@ -23,22 +23,21 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
     FString Prefix = "DA_";
 
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    TSubclassOf<UDefinitionBase> DefinitionClass;
-
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    TObjectPtr<UDataTable> DataTable;
+    TMap<TSubclassOf<UDefinitionBase>, TObjectPtr<UDataTable>> DefinitionDataTableMap;
 
 protected:
     UFUNCTION(BlueprintCallable)
     void Update();
 
-    UDefinitionBase* GetOrCreateDefinition(int32 ID) const;
+    UDefinitionBase* GetOrCreateDefinition(TSubclassOf<UDefinitionBase> DefinitionClass, int32 ID) const;
+
+    void UpdateDefinitionFromDataTable(TSubclassOf<UDefinitionBase> DefinitionClass, UDataTable* DataTable);
 
     void UpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row);
 
     virtual void OnUpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row) {}
 
-    FString GetPath() const;
-    FString GetPrefix() const;
+    FString GetPath(TSubclassOf<UDefinitionBase> DefinitionClass) const;
+    FString GetPrefix(TSubclassOf<UDefinitionBase> DefinitionClass) const;
 };

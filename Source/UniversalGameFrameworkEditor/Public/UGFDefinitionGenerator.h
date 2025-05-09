@@ -4,18 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "DefinitionGenerator.h"
-#include "UGFItemDefinitionGenerator.generated.h"
+#include "UGFDefinitionGenerator.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORKEDITOR_API UUGFItemDefinitionGenerator : public UDefinitionGenerator
+class UNIVERSALGAMEFRAMEWORKEDITOR_API UUGFDefinitionGenerator : public UDefinitionGenerator
 {
     GENERATED_BODY()
-
-public:
-    UUGFItemDefinitionGenerator();
 
 protected:
     virtual void OnUpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row) override;
