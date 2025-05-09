@@ -40,7 +40,7 @@ public:
     bool HasData(const UScriptStruct* StructType) const;
 
     template<typename T = UScriptStruct>
-    bool HasData()
+    bool HasData() const
     {
         return HasData(T::StaticStruct());
     }
@@ -49,7 +49,7 @@ public:
     const FInstancedStruct& GetData(const UScriptStruct* StructType) const;
 
     template<typename T = UScriptStruct>
-    const T& GetData()
+    const T& GetData() const
     {
         return GetData(T::StaticStruct()).template Get<T>();
     }
