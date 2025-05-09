@@ -21,9 +21,6 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 0))
     int32 ID;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    FText DisplayText;
-
     UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (BaseStruct = "/Script/Engine.TableRowBase"))
     TArray<FInstancedStruct> DataList;
 
@@ -32,9 +29,6 @@ public:
 
     FORCEINLINE int32 GetID() const { return ID; }
     FORCEINLINE void SetID(int32 NewID) { ID = NewID; }
-
-    const FORCEINLINE FText& GetDisplayText() const { return DisplayText; }
-    FORCEINLINE void SetDisplayText(const FText& NewDisplayText) { DisplayText = NewDisplayText; }
 
     UFUNCTION(BlueprintPure)
     bool HasData(const UScriptStruct* StructType) const;

@@ -57,6 +57,7 @@ UDefinitionBase* UDefinitionGenerator::GetOrCreateDefinition(int32 ID) const
 
     // 에셋 생성
     UDefinitionBase* Definition = NewObject<UDefinitionBase>(Package, DefinitionClass, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+    Definition->SetID(ID);
 
     Package->MarkPackageDirty();
     FAssetRegistryModule::AssetCreated(Definition);
