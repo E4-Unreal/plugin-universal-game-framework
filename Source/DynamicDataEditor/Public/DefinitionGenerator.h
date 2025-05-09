@@ -23,7 +23,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
     FString Prefix = "DA_";
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Config")
     TSubclassOf<UDefinitionBase> DefinitionClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
