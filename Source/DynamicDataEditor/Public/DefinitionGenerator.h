@@ -7,7 +7,6 @@
 #include "DefinitionGenerator.generated.h"
 
 class UDefinitionBase;
-struct FDefinitionDataTableRow;
 
 /**
  *
@@ -36,9 +35,9 @@ protected:
 
     UDefinitionBase* GetOrCreateDefinition(int32 ID) const;
 
-    void UpdateDefinition(UDefinitionBase* Definition, FDefinitionDataTableRow* Row);
+    void UpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row);
 
-    virtual void OnUpdateDefinition(UDefinitionBase* Definition, FDefinitionDataTableRow* Row) {}
+    virtual void OnUpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row) {}
 
     FString GetPath() const;
     FString GetPrefix() const;

@@ -5,6 +5,7 @@
 
 #include "Data/DefinitionBase.h"
 #include "Data/UGFItemDefinition.h"
+#include "Types/InventoryItem.h"
 #include "Types/UGFItemDefinitionDataTableRow.h"
 
 UUGFItemDefinitionGenerator::UUGFItemDefinitionGenerator()
@@ -12,10 +13,12 @@ UUGFItemDefinitionGenerator::UUGFItemDefinitionGenerator()
     DefinitionClass = UUGFItemDefinition::StaticClass();
 }
 
-void UUGFItemDefinitionGenerator::OnUpdateDefinition(UDefinitionBase* Definition, FDefinitionDataTableRow* Row)
+void UUGFItemDefinitionGenerator::OnUpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row)
 {
     if (FUGFItemDefinitionDataTableRow* ItemDefinitionDataTableRow = static_cast<FUGFItemDefinitionDataTableRow*>(Row))
     {
+        FInventoryItemData NewInventoryItemData = ItemDefinitionDataTableRow->GetInventoryItemData();
         Definition->SetData(ItemDefinitionDataTableRow->GetInventoryItemData());
+        Definition->MarkPackageDirty();
     }
 }

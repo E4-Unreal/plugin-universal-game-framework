@@ -3,15 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "GameplayTagContainer.h"
-#include "Types/DefinitionDataTableRow.h"
 #include "Types/InventoryItemData.h"
 #include "UGFItemDefinitionDataTableRow.generated.h"
 
 USTRUCT(BlueprintType)
-struct FUGFItemDefinitionDataTableRow : public FDefinitionDataTableRow
+struct FUGFItemDefinitionDataTableRow : public FTableRowBase
 {
     GENERATED_BODY()
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FText DisplayText;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
     int32 MaxStack = 1;

@@ -7,7 +7,6 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/DefinitionBase.h"
 #include "Subsystems/DynamicDataSubsystem.h"
-#include "Types/DefinitionDataTableRow.h"
 #include "UObject/SavePackage.h"
 
 void UDefinitionGenerator::Update()
@@ -35,7 +34,7 @@ void UDefinitionGenerator::Update()
     for (int32 ID : IDList)
     {
         UDefinitionBase* Definition = GetOrCreateDefinition(ID);
-        UpdateDefinition(Definition, DataTable->FindRow<FDefinitionDataTableRow>(FName(FString::FromInt(ID)), ""));
+        UpdateDefinition(Definition, DataTable->FindRow<FTableRowBase>(FName(FString::FromInt(ID)), ""));
     }
 }
 
@@ -75,14 +74,8 @@ UDefinitionBase* UDefinitionGenerator::GetOrCreateDefinition(int32 ID) const
     return Definition;
 }
 
-void UDefinitionGenerator::UpdateDefinition(UDefinitionBase* Definition, FDefinitionDataTableRow* Row)
+void UDefinitionGenerator::UpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row)
 {
-    if (!Definition->GetDisplayText().IdenticalTo(Row->DisplayText))
-    {
-        Definition->SetDisplayText(Row->DisplayText);
-        Definition->MarkPackageDirty();
-    }
-
     OnUpdateDefinition(Definition, Row);
 
     UEditorAssetLibrary::SaveAsset(Definition->GetPathName());

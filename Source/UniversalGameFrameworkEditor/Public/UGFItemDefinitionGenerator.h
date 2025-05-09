@@ -18,5 +18,5 @@ public:
     UUGFItemDefinitionGenerator();
 
 protected:
-    virtual void OnUpdateDefinition(UDefinitionBase* Definition, FDefinitionDataTableRow* Row) override;
+    virtual void OnUpdateDefinition(UDefinitionBase* Definition, FTableRowBase* Row) override;
 };
