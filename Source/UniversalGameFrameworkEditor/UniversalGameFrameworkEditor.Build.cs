@@ -10,7 +10,10 @@ public class UniversalGameFrameworkEditor : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "UniversalGameFramework",
+                "DynamicDataEditor",
+                "Blutility"
             }
         );
 
