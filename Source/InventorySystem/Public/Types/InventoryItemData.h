@@ -45,7 +45,7 @@ struct FInventoryItemData
 
     FORCEINLINE bool operator==(const FInventoryItemData& Other) const
     {
-        return DisplayText.IdenticalTo(Other.DisplayText)
+        return DisplayText.EqualTo(Other.DisplayText)
         && MaxStack == Other.MaxStack
         && ItemTypes == Other.ItemTypes
         && bCanEquip == Other.bCanEquip

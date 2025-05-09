@@ -53,8 +53,12 @@ public:
     template<typename T = UScriptStruct>
     void SetData(const T& Value)
     {
-        FInstancedStruct InstancedStruct = FInstancedStruct::Make(Value);
-        SetData(InstancedStruct);
+        if (!HasData<T>() || GetData<T>() != Value)
+        {
+            FInstancedStruct InstancedStruct = FInstancedStruct::Make(Value);
+            SetData(InstancedStruct);
+            MarkPackageDirty();
+        }
     }
 
     void ResetData() { DataList.Reset(); }
