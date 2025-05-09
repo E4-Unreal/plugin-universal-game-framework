@@ -79,6 +79,7 @@ void UDefinitionGenerator::UpdateDefinition(UDefinitionBase* Definition, FTableR
 {
     OnUpdateDefinition(Definition, Row);
 
+    Definition->GetPackage()->FullyLoad();
     UEditorAssetLibrary::SaveAsset(Definition->GetPathName());
 }
 

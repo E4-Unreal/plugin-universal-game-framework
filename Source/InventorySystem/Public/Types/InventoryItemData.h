@@ -42,4 +42,15 @@ struct FInventoryItemData
 
     FORCEINLINE bool IsValid() const { return MaxStack > 0; }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
+
+    FORCEINLINE bool operator==(const FInventoryItemData& Other) const
+    {
+        return DisplayText.IdenticalTo(Other.DisplayText)
+        && MaxStack == Other.MaxStack
+        && ItemTypes == Other.ItemTypes
+        && bCanEquip == Other.bCanEquip
+        && bCanUse == Other.bCanUse
+        && StaticMesh == Other.StaticMesh
+        && ThumbnailTexture == Other.ThumbnailTexture;
+    }
 };

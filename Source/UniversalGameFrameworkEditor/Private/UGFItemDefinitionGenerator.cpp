@@ -18,7 +18,11 @@ void UUGFItemDefinitionGenerator::OnUpdateDefinition(UDefinitionBase* Definition
     if (FUGFItemDefinitionDataTableRow* ItemDefinitionDataTableRow = static_cast<FUGFItemDefinitionDataTableRow*>(Row))
     {
         FInventoryItemData NewInventoryItemData = ItemDefinitionDataTableRow->GetInventoryItemData();
-        Definition->SetData(ItemDefinitionDataTableRow->GetInventoryItemData());
-        Definition->MarkPackageDirty();
+
+        if (!Definition->HasData<FInventoryItemData>() || Definition->GetData<FInventoryItemData>() != NewInventoryItemData)
+        {
+            Definition->SetData(ItemDefinitionDataTableRow->GetInventoryItemData());
+            Definition->MarkPackageDirty();
+        }
     }
 }
