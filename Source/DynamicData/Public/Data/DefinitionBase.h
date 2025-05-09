@@ -21,7 +21,7 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 0))
     int32 ID;
 
-    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (BaseStruct = "/Script/Engine.TableRowBase"))
+    UPROPERTY(EditDefaultsOnly, Category = "Config")
     TArray<FInstancedStruct> DataList;
 
 public:
