@@ -46,16 +46,6 @@
 			"LoadingPhase": "Default"
 		},
 		{
-			"Name": "DynamicData",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "DynamicDataEditor",
-			"Type": "Editor",
-			"LoadingPhase": "Default"
-		},
-		{
 			"Name": "UniversalGameFrameworkEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
@@ -85,6 +75,10 @@
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "DynamicData",
+            "Enabled": true
+        }
 	]
 }
