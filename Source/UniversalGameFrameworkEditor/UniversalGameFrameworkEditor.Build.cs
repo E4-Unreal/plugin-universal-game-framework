@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class UniversalGameFramework : ModuleRules
+public class UniversalGameFrameworkEditor : ModuleRules
 {
-    public UniversalGameFramework(ReadOnlyTargetRules Target) : base(Target)
+    public UniversalGameFrameworkEditor(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,12 +10,9 @@ public class UniversalGameFramework : ModuleRules
             new string[]
             {
                 "Core",
-                "GameplayTags",
                 "UniversalUtilities",
-                "EnhancedInputBinder",
-                "InteractionSystem",
-                "InventorySystem",
-                "DynamicData"
+                "DynamicDataEditor",
+                "Blutility"
             }
         );
 
@@ -25,7 +22,12 @@ public class UniversalGameFramework : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "DynamicData",
+                "StructUtils",
+                "UniversalGameFramework",
+                "InventorySystem",
+                "GameplayTags",
             }
         );
     }

@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/DataTable.h"
 #include "GameplayTagContainer.h"
-#include "InventoryItemData.generated.h"
+#include "Types/InventoryItemData.h"
+#include "UGFItemDefinitionDataTableRow.generated.h"
 
-USTRUCT(Atomic, BlueprintType)
-struct FInventoryItemData
+USTRUCT(BlueprintType)
+struct FUGFItemDefinitionDataTableRow : public FTableRowBase
 {
     GENERATED_BODY()
-
-    static const FInventoryItemData Empty;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText DisplayText;
@@ -34,23 +34,17 @@ struct FInventoryItemData
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
-    FInventoryItemData() {}
-    FInventoryItemData(int32 InMaxStack)
+    FInventoryItemData GetInventoryItemData() const
     {
-        MaxStack = InMaxStack;
-    }
+        FInventoryItemData InventoryItemData;
+        InventoryItemData.DisplayText = DisplayText;
+        InventoryItemData.MaxStack = MaxStack;
+        InventoryItemData.ItemTypes = ItemTypes;
+        InventoryItemData.bCanEquip = bCanEquip;
+        InventoryItemData.bCanUse = bCanUse;
+        InventoryItemData.StaticMesh = StaticMesh;
+        InventoryItemData.ThumbnailTexture = ThumbnailTexture;
 
-    FORCEINLINE bool IsValid() const { return MaxStack > 0; }
-    FORCEINLINE bool IsNotValid() const { return !IsValid(); }
-
-    FORCEINLINE bool operator==(const FInventoryItemData& Other) const
-    {
-        return DisplayText.EqualTo(Other.DisplayText)
-        && MaxStack == Other.MaxStack
-        && ItemTypes == Other.ItemTypes
-        && bCanEquip == Other.bCanEquip
-        && bCanUse == Other.bCanUse
-        && StaticMesh == Other.StaticMesh
-        && ThumbnailTexture == Other.ThumbnailTexture;
+        return InventoryItemData;
     }
 };

@@ -44,6 +44,11 @@
 			"Name": "InteractionSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "UniversalGameFrameworkEditor",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -51,10 +56,10 @@
 			"Name": "EnhancedInput",
 			"Enabled": true
 		},
-        {
-            "Name": "EnhancedInputBinder",
-            "Enabled": true
-        },
+		{
+			"Name": "EnhancedInputBinder",
+			"Enabled": true
+		},
 		{
 			"Name": "StructUtils",
 			"Enabled": true
@@ -70,6 +75,10 @@
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "DynamicData",
+            "Enabled": true
+        }
 	]
 }
