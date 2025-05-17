@@ -10,7 +10,7 @@
 struct FInventoryItemData;
 
 USTRUCT(Atomic, BlueprintType)
-struct FInventorySlot
+struct INVENTORYSYSTEM_API FInventorySlot
 {
     GENERATED_BODY()
 
