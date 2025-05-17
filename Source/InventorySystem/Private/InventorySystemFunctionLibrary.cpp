@@ -14,7 +14,7 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
     if (!World) return nullptr;
 
     FTransform SpawnTransform = Owner->GetActorTransform();
-    SpawnTransform.SetLocation(SpawnTransform.GetLocation() + Offset);
+    SpawnTransform.SetLocation(SpawnTransform.GetLocation() + Owner->GetActorRotation().RotateVector(Offset));
     AActor* SpawnedItemActor = World->SpawnActorDeferred<AActor>(ItemActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
     IItemActorInterface::Execute_SetInventoryItems(SpawnedItemActor, InventoryItems);
     SpawnedItemActor->FinishSpawning(SpawnTransform);
