@@ -10,7 +10,8 @@ public class EquipmentManager : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "GameplayTags"
             }
         );
 
