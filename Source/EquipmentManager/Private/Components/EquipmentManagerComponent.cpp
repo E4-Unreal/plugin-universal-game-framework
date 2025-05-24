@@ -8,11 +8,12 @@
 
 UEquipmentManagerComponent::UEquipmentManagerComponent()
 {
+    bWantsInitializeComponent = true;
 }
 
-void UEquipmentManagerComponent::PostInitProperties()
+void UEquipmentManagerComponent::InitializeComponent()
 {
-    Super::PostInitProperties();
+    Super::InitializeComponent();
 
     CreateSlots();
 }
