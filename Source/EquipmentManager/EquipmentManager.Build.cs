@@ -11,7 +11,8 @@ public class EquipmentManager : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "GameplayTags"
+                "GameplayTags",
+                "SocketManager"
             }
         );
 
