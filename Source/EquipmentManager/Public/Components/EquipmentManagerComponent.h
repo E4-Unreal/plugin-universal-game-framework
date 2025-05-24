@@ -6,6 +6,7 @@
 #include "Components/SocketManagerComponent.h"
 #include "Types/EquipmentSlot.h"
 #include "Types/EquipmentSlotConfig.h"
+#include "Types/EquipmentSlotIndex.h"
 #include "EquipmentManagerComponent.generated.h"
 
 
@@ -31,19 +32,19 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    bool HasSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index = 0) const;
+    bool HasSlot(const FEquipmentSlotIndex& SlotIndex) const;
 
     UFUNCTION(BlueprintPure)
-    const FEquipmentSlot& GetSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index = 0) const;
+    const FEquipmentSlot& GetSlot(const FEquipmentSlotIndex& SlotIndex) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentTypeTag& EquipmentType, int32 Index);
+    virtual bool AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex);
 
     UFUNCTION(BlueprintCallable)
-    virtual TScriptInterface<IEquipmentInterface> RemoveEquipmentFromSlot(const FEquipmentTypeTag& EquipmentType, int32 Index);
+    virtual TScriptInterface<IEquipmentInterface> RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex);
 
 protected:
     void CreateSlots();
 
-    FEquipmentSlot& GetSlotRef(const FEquipmentTypeTag& EquipmentType, const int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
+    FEquipmentSlot& GetSlotRef(const FEquipmentSlotIndex& SlotIndex) const { return *const_cast<FEquipmentSlot*>(&GetSlot(SlotIndex)); }
 };

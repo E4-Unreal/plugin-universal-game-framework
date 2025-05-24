@@ -18,13 +18,13 @@ void UEquipmentManagerComponent::InitializeComponent()
     CreateSlots();
 }
 
-bool UEquipmentManagerComponent::HasSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index) const
+bool UEquipmentManagerComponent::HasSlot(const FEquipmentSlotIndex& SlotIndex) const
 {
-    if (bool bValidInput = EquipmentType.IsValid() && Index >= 0; !bValidInput) return false;
+    if (!SlotIndex.IsValid()) return false;
 
     for (const auto& Slot : Slots)
     {
-        if (EquipmentType == Slot.EquipmentType && Slot.Index == Index)
+        if (Slot.SlotIndex == SlotIndex)
         {
             return true;
         }
@@ -33,11 +33,11 @@ bool UEquipmentManagerComponent::HasSlot(const FEquipmentTypeTag& EquipmentType,
     return false;
 }
 
-const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index) const
+const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentSlotIndex& SlotIndex) const
 {
     for (const auto& Slot : Slots)
     {
-        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
+        if (Slot.SlotIndex == SlotIndex)
         {
             return Slot;
         }
@@ -46,13 +46,12 @@ const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentTypeTa
     return FEquipmentSlot::EmptySlot;
 }
 
-bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment,
-    const FEquipmentTypeTag& EquipmentType, int32 Index)
+bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex)
 {
     if (!NewEquipment) return false;
-    if (!HasSlot(EquipmentType, Index)) return false;
+    if (!HasSlot(SlotIndex)) return false;
 
-    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
+    FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
     if (Slot.IsValid() && Slot.IsEmpty())
     {
         Slot.Equipment = NewEquipment;
@@ -65,12 +64,11 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     return false;
 }
 
-TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(
-    const FEquipmentTypeTag& EquipmentType, int32 Index)
+TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex)
 {
-    if (!HasSlot(EquipmentType, Index)) return nullptr;
+    if (!HasSlot(SlotIndex)) return nullptr;
 
-    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
+    FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
         AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
@@ -92,8 +90,7 @@ void UEquipmentManagerComponent::CreateSlots()
         for (int32 Index = 0; Index < Sockets.Num(); ++Index)
         {
             FEquipmentSlot NewEquipmentSlot;
-            NewEquipmentSlot.EquipmentType = EquipmentType;
-            NewEquipmentSlot.Index = Index;
+            NewEquipmentSlot.SlotIndex = FEquipmentSlotIndex(EquipmentType, Index);
             NewEquipmentSlot.Socket = Sockets[Index];
 
             Slots.Emplace(NewEquipmentSlot);

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EquipmentTypeTag.h"
+#include "EquipmentSlotIndex.h"
 #include "EquipmentSlot.generated.h"
 
 class IEquipmentInterface;
@@ -16,10 +16,7 @@ struct EQUIPMENTMANAGER_API FEquipmentSlot
     const static FEquipmentSlot EmptySlot;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FEquipmentTypeTag EquipmentType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 Index = 0;
+    FEquipmentSlotIndex SlotIndex;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FGameplayTag Socket;
@@ -30,6 +27,6 @@ struct EQUIPMENTMANAGER_API FEquipmentSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bEquipped = false;
 
-    bool IsValid() const { return EquipmentType.IsValid() && Index >= 0; }
+    bool IsValid() const { return SlotIndex.EquipmentType.IsValid() && SlotIndex.Index >= 0; }
     bool IsEmpty() const { return Equipment.GetInterface() == nullptr; }
 };
