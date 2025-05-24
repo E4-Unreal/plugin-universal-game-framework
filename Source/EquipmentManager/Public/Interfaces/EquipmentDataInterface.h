@@ -22,8 +22,8 @@ class EQUIPMENTMANAGER_API IEquipmentDataInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<AActor> GetActorClass() const;
+    FGameplayTag GetEquipmentType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FGameplayTag GetEquipmentType() const;
+    TSubclassOf<AActor> GetActorClass() const;
 };
