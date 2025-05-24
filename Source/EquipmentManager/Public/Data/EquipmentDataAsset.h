@@ -17,7 +17,7 @@ class EQUIPMENTMANAGER_API UEquipmentDataAsset : public UPrimaryDataAsset, publi
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ShowOnlyInnerProperties))
     FEquipmentData Data;
 
 public:
