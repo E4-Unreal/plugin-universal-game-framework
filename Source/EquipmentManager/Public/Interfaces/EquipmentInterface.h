@@ -32,5 +32,5 @@ public:
     void Equip(AActor* Owner);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void UnEquip(AActor* Owner);
+    void UnEquip();
 };
