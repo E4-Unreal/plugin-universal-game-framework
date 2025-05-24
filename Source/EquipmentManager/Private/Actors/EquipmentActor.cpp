@@ -9,10 +9,10 @@ AEquipmentActor::AEquipmentActor(const FObjectInitializer& ObjectInitializer)
 {
 }
 
-void AEquipmentActor::Equip_Implementation(AActor* Owner)
+void AEquipmentActor::Equip_Implementation(AActor* NewOwner)
 {
-    LOG(Log, TEXT("%s equip %s"), *Owner->GetName(), *GetName())
-    SetOwner(Owner);
+    LOG(Log, TEXT("%s equip %s"), *NewOwner->GetName(), *GetName())
+    SetOwner(NewOwner);
 }
 
 void AEquipmentActor::UnEquip_Implementation()

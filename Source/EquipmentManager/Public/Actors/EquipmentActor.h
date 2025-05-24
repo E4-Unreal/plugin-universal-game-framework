@@ -23,6 +23,6 @@ public:
 
     virtual TScriptInterface<IEquipmentDataInterface> GetEquipmentDataInterface_Implementation() const override { return EquipmentData; }
     virtual void SetEquipmentDataInterface_Implementation(const TScriptInterface<IEquipmentDataInterface>& NewInterface) override { EquipmentData = NewInterface; }
-    virtual void Equip_Implementation(AActor* Owner) override;
+    virtual void Equip_Implementation(AActor* NewOwner) override;
     virtual void UnEquip_Implementation() override;
 };

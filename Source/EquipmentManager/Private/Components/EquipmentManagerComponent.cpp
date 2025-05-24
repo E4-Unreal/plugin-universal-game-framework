@@ -73,7 +73,7 @@ TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmen
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
         AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
-        Slot.Equipment->UnEquip(GetOwner());
+        Slot.Equipment->UnEquip();
         Slot.Equipment = nullptr;
 
         return OldEquipmentActor;

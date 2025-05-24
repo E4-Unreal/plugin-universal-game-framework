@@ -29,7 +29,7 @@ public:
     TScriptInterface<IEquipmentDataInterface> GetEquipmentDataInterface() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void Equip(AActor* Owner);
+    void Equip(AActor* NewOwner);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void UnEquip();
