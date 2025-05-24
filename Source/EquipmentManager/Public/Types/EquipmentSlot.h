@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTags.h"
+#include "EquipmentTypeTag.h"
 #include "EquipmentSlot.generated.h"
 
 class IEquipmentInterface;
@@ -16,7 +16,7 @@ struct EQUIPMENTMANAGER_API FEquipmentSlot
     const static FEquipmentSlot EmptySlot;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FGameplayTag EquipmentType;
+    FEquipmentTypeTag EquipmentType;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Index = 0;

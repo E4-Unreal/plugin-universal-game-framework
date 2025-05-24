@@ -18,7 +18,7 @@ void UEquipmentManagerComponent::InitializeComponent()
     CreateSlots();
 }
 
-bool UEquipmentManagerComponent::HasSlot(const FGameplayTag& EquipmentType, const int32 Index) const
+bool UEquipmentManagerComponent::HasSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index) const
 {
     if (bool bValidInput = EquipmentType.IsValid() && Index >= 0; !bValidInput) return false;
 
@@ -33,7 +33,7 @@ bool UEquipmentManagerComponent::HasSlot(const FGameplayTag& EquipmentType, cons
     return false;
 }
 
-const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FGameplayTag& EquipmentType, const int32 Index) const
+const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index) const
 {
     for (const auto& Slot : Slots)
     {
@@ -47,7 +47,7 @@ const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FGameplayTag& Eq
 }
 
 bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment,
-    const FGameplayTag& EquipmentType, int32 Index)
+    const FEquipmentTypeTag& EquipmentType, int32 Index)
 {
     if (!NewEquipment) return false;
     if (!HasSlot(EquipmentType, Index)) return false;
@@ -66,7 +66,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
 }
 
 TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(
-    const FGameplayTag& EquipmentType, int32 Index)
+    const FEquipmentTypeTag& EquipmentType, int32 Index)
 {
     if (!HasSlot(EquipmentType, Index)) return nullptr;
 

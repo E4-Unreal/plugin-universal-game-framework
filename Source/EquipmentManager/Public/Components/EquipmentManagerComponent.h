@@ -31,19 +31,19 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    bool HasSlot(const FGameplayTag& EquipmentType, const int32 Index = 0) const;
+    bool HasSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index = 0) const;
 
     UFUNCTION(BlueprintPure)
-    const FEquipmentSlot& GetSlot(const FGameplayTag& EquipmentType, const int32 Index = 0) const;
+    const FEquipmentSlot& GetSlot(const FEquipmentTypeTag& EquipmentType, const int32 Index = 0) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FGameplayTag& EquipmentType, int32 Index);
+    virtual bool AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentTypeTag& EquipmentType, int32 Index);
 
     UFUNCTION(BlueprintCallable)
-    virtual TScriptInterface<IEquipmentInterface> RemoveEquipmentFromSlot(const FGameplayTag& EquipmentType, int32 Index);
+    virtual TScriptInterface<IEquipmentInterface> RemoveEquipmentFromSlot(const FEquipmentTypeTag& EquipmentType, int32 Index);
 
 protected:
     void CreateSlots();
 
-    FEquipmentSlot& GetSlotRef(const FGameplayTag& EquipmentType, const int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
+    FEquipmentSlot& GetSlotRef(const FEquipmentTypeTag& EquipmentType, const int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
 };
