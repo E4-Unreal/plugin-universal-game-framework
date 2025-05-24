@@ -94,6 +94,7 @@ void UEquipmentManagerComponent::CreateSlots()
             FEquipmentSlot NewEquipmentSlot;
             NewEquipmentSlot.EquipmentType = EquipmentType;
             NewEquipmentSlot.Index = Index;
+            NewEquipmentSlot.Socket = Sockets[Index];
 
             Slots.Emplace(NewEquipmentSlot);
         }
