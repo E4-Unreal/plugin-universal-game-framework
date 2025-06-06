@@ -49,6 +49,11 @@
 			"Name": "UniversalGameFrameworkEditor",
 			"Type": "Editor",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "ShopSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -76,9 +81,9 @@
 			"Name": "UniversalUtilities",
 			"Enabled": true
 		},
-        {
-            "Name": "DynamicData",
-            "Enabled": true
-        }
+		{
+			"Name": "DynamicData",
+			"Enabled": true
+		}
 	]
 }
