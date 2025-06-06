@@ -10,6 +10,7 @@ public class ShopSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UniversalUtilities"
             }
         );
 
