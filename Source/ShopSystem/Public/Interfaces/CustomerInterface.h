@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "CurrencyInterface.generated.h"
+#include "CustomerInterface.generated.h"
 
 struct FGameplayTag;
+class IProductInterface;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UCurrencyInterface : public UInterface
+class UCustomerInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -17,7 +18,7 @@ class UCurrencyInterface : public UInterface
 /**
  *
  */
-class SHOPSYSTEM_API ICurrencyInterface
+class SHOPSYSTEM_API ICustomerInterface
 {
     GENERATED_BODY()
 
@@ -30,4 +31,10 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool RemoveCurrency(const FGameplayTag& CurrencyType, int32 Amount);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool AddProduct(const TScriptInterface<IProductInterface>& Product);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool RemoveProduct(const TScriptInterface<IProductInterface>& Product);
 };
