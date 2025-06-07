@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "ProductInterface.generated.h"
 
+struct FGameplayTag;
+
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UProductInterface : public UInterface
 {
@@ -20,6 +22,9 @@ class SHOPSYSTEM_API IProductInterface
     GENERATED_BODY()
 
 public:
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    const FGameplayTag GetCurrencyType() const;
+
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     int32 GetBuyPrice() const;
 
