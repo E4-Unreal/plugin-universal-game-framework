@@ -11,7 +11,8 @@ public class ShopSystem : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "GameplayTags"
+                "GameplayTags",
+                "UMG"
             }
         );
 
