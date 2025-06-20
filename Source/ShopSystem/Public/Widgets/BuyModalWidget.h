@@ -41,6 +41,8 @@ public:
 protected:
     virtual void NativeOnInitialized() override;
 
+    void ProcessPurchasing();
+
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void OnConfirmButtonClicked();
 

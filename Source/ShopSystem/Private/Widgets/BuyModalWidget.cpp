@@ -34,7 +34,7 @@ void UBuyModalWidget::NativeOnInitialized()
     }
 }
 
-void UBuyModalWidget::OnConfirmButtonClicked_Implementation()
+void UBuyModalWidget::ProcessPurchasing()
 {
     if (!(Customer && Product)) return;
 
@@ -52,6 +52,13 @@ void UBuyModalWidget::OnConfirmButtonClicked_Implementation()
     // 소지금으로부터 구매 금액 차감 후 상품 지급
     ICustomerInterface::Execute_RemoveCurrency(Customer.GetObject(), CurrencyType, TotalBuyPrice);
     ICustomerInterface::Execute_AddProduct(Customer.GetObject(), Product);
+}
+
+void UBuyModalWidget::OnConfirmButtonClicked_Implementation()
+{
+    ProcessPurchasing();
+
+    RemoveFromParent();
 }
 
 void UBuyModalWidget::OnCancelButtonClicked_Implementation()
