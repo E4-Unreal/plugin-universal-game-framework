@@ -5,28 +5,23 @@
 
 #include "Components/ListView.h"
 
+void UShopListViewPanelWidget::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    SetProducts(DefaultProducts);
+}
+
 void UShopListViewPanelWidget::SetProducts(const TArray<TScriptInterface<IProductInterface>>& NewProducts)
 {
     Products = NewProducts;
 
-    Refresh();
-}
-
-void UShopListViewPanelWidget::NativePreConstruct()
-{
-    Super::NativePreConstruct();
-
-    Refresh();
-}
-
-void UShopListViewPanelWidget::Refresh()
-{
     if (ShopListView && ShopListView->GetDefaultEntryClass())
     {
-        const auto& TargetProducts = Products.IsEmpty() ? PreviewProducts : Products;
-        for (const auto& TargetProduct : TargetProducts)
+        ShopListView->ClearListItems();
+        for (const auto& Product : Products)
         {
-            ShopListView->AddItem(TargetProduct.GetObject());
+            ShopListView->AddItem(Product.GetObject());
         }
     }
 }

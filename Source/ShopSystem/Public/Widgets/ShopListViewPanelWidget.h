@@ -22,7 +22,7 @@ protected:
     TObjectPtr<UListView> ShopListView;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    TArray<TScriptInterface<IProductInterface>> PreviewProducts;
+    TArray<TScriptInterface<IProductInterface>> DefaultProducts;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     TArray<TScriptInterface<IProductInterface>> Products;
@@ -32,8 +32,5 @@ public:
     virtual void SetProducts(const TArray<TScriptInterface<IProductInterface>>& NewProducts);
 
 protected:
-    virtual void NativePreConstruct() override;
-
-    UFUNCTION(BlueprintCallable)
-    virtual void Refresh();
+    virtual void NativeOnInitialized() override;
 };
