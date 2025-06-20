@@ -6,21 +6,6 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Interfaces/ProductInterface.h"
-#include "Widgets/BuyModalWidget.h"
-
-FReply UShopListViewEntryWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry,
-                                                                const FPointerEvent& InMouseEvent)
-{
-    // 구매 팝업 창 표시
-    if (BuyModalWidgetClass)
-    {
-        auto BuyModalWidget = CreateWidget<UBuyModalWidget>(this, BuyModalWidgetClass);
-        BuyModalWidget->SetProduct(Product);
-        BuyModalWidget->AddToViewport();
-    }
-
-    return Super::NativeOnMouseButtonDoubleClick(InGeometry, InMouseEvent);
-}
 
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {

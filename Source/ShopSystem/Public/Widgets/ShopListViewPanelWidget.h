@@ -8,6 +8,7 @@
 
 class IProductInterface;
 class UListView;
+class UBuyModalWidget;
 
 /**
  *
@@ -21,6 +22,9 @@ protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UListView> ShopListView;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UBuyModalWidget> BuyModalWidgetClass;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
     TArray<TScriptInterface<IProductInterface>> DefaultProducts;
 
@@ -33,4 +37,7 @@ public:
 
 protected:
     virtual void NativeOnInitialized() override;
+
+    UFUNCTION()
+    void OnItemDoubleClicked(UObject* Item);
 };

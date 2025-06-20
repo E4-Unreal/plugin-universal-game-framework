@@ -30,14 +30,8 @@ protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UTextBlock> BuyPriceTextBlock;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UBuyModalWidget> BuyModalWidgetClass;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     TScriptInterface<IProductInterface> Product;
-
-public:
-    virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
 protected:
     virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
