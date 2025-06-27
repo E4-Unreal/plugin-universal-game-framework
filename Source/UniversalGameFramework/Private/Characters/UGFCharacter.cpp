@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/CurrencyManagerComponent.h"
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponentBase.h"
 #include "Components/InventoryComponent.h"
@@ -15,6 +16,7 @@ const FName AUGFCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFCharacter::FollowCameraName(TEXT("FollowCamera"));
 const FName AUGFCharacter::InputBinderName(TEXT("InputBinder"));
 const FName AUGFCharacter::InteractionSystemName(TEXT("InteractionSystem"));
+const FName AUGFCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFCharacter::InventoryName(TEXT("Inventory"));
 
 AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
@@ -54,6 +56,9 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
 
     /* InteractionSystem */
     InteractionSystem = CreateDefaultSubobject<UInteractionSystemComponentBase>(InteractionSystemName);
+
+    /* CurrencyManager */
+    CurrencyManager = CreateDefaultSubobject<UCurrencyManagerComponent>(CurrencyManagerName);
 
     /* Inventory */
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);

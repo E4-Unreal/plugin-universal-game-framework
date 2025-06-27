@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "UGFCharacter.generated.h"
 
+class UCurrencyManagerComponent;
 class UInventoryComponent;
 class UInteractionSystemComponentBase;
 class UInputBinderComponent;
@@ -22,6 +23,7 @@ protected:
     const static FName FollowCameraName;
     const static FName InputBinderName;
     const static FName InteractionSystemName;
+    const static FName CurrencyManagerName;
     const static FName InventoryName;
 
 private:
@@ -38,6 +40,9 @@ private:
     TObjectPtr<UInteractionSystemComponentBase> InteractionSystem;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UCurrencyManagerComponent> CurrencyManager;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInventoryComponent> Inventory;
 
 public:
@@ -48,5 +53,6 @@ public:
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     FORCEINLINE UInputBinderComponent* GetInputBinder() const { return InputBinder; }
     FORCEINLINE UInteractionSystemComponentBase* GetInteractionSystem() const { return InteractionSystem; }
+    FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
     FORCEINLINE UInventoryComponent* GetInventory() const { return Inventory; }
 };
