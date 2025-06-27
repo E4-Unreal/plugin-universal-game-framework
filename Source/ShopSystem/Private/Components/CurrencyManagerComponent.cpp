@@ -3,19 +3,23 @@
 
 #include "Components/CurrencyManagerComponent.h"
 
+#include "ShopGameplayTags.h"
+
 
 UCurrencyManagerComponent::UCurrencyManagerComponent()
 {
     bWantsInitializeComponent = true;
+
+    DefaultCurrencies.Emplace(Currency::Default, 0);
 }
 
 void UCurrencyManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
-    for (const FGameplayTag& CurrencyType : CurrencyTypes)
+    for (const auto& [CurrencyType, Amount] : DefaultCurrencies)
     {
-        CurrencyMap.Emplace(CurrencyType, 0);
+        CurrencyMap.Emplace(CurrencyType, Amount);
     }
 }
 

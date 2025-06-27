@@ -15,7 +15,7 @@ class SHOPSYSTEM_API UCurrencyManagerComponent : public UActorComponent
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
-    FGameplayTagContainer CurrencyTypes;
+    TMap<FGameplayTag, int32> DefaultCurrencies;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<FGameplayTag, int32> CurrencyMap;
