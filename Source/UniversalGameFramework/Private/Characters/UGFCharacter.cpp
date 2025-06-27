@@ -70,22 +70,22 @@ int32 AUGFCharacter::GetCurrency_Implementation(const FGameplayTag& CurrencyType
     return GetCurrencyManager()->GetCurrency(CurrencyType);
 }
 
-bool AUGFCharacter::AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Amount)
+bool AUGFCharacter::AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity)
 {
-    return GetCurrencyManager()->AddCurrency(CurrencyType, Amount);
+    return GetCurrencyManager()->AddCurrency(CurrencyType, Quantity);
 }
 
-bool AUGFCharacter::RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Amount)
+bool AUGFCharacter::RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity)
 {
-    return GetCurrencyManager()->RemoveCurrency(CurrencyType, Amount);
+    return GetCurrencyManager()->RemoveCurrency(CurrencyType, Quantity);
 }
 
-bool AUGFCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product)
+bool AUGFCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    return GetInventory()->AddItem(Product.GetObject(), 1);
+    return GetInventory()->AddItem(Product.GetObject(), Quantity);
 }
 
-bool AUGFCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product)
+bool AUGFCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    return GetInventory()->RemoveItem(Product.GetObject(), 1);
+    return GetInventory()->RemoveItem(Product.GetObject(), Quantity);
 }

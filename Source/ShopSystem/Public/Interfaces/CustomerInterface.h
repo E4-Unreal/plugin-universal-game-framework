@@ -27,14 +27,14 @@ public:
     int32 GetCurrency(const FGameplayTag& CurrencyType) const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool AddCurrency(const FGameplayTag& CurrencyType, int32 Amount);
+    bool AddCurrency(const FGameplayTag& CurrencyType, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool RemoveCurrency(const FGameplayTag& CurrencyType, int32 Amount);
+    bool RemoveCurrency(const FGameplayTag& CurrencyType, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool AddProduct(const TScriptInterface<IProductInterface>& Product);
+    bool AddProduct(const TScriptInterface<IProductInterface>& Product, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool RemoveProduct(const TScriptInterface<IProductInterface>& Product);
+    bool RemoveProduct(const TScriptInterface<IProductInterface>& Product, int32 Quantity);
 };

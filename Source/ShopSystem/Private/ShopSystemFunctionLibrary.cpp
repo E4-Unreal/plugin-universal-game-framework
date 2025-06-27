@@ -7,12 +7,12 @@
 #include "Interfaces/ProductInterface.h"
 
 bool UShopSystemFunctionLibrary::PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer,
-                                                 const TScriptInterface<IProductInterface>& Product, int32 Amount)
+                                                 const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    if (Customer == nullptr || Product == nullptr || Amount <= 0) return false;
+    if (Customer == nullptr || Product == nullptr || Quantity <= 0) return false;
 
     // 구매 금액
-    int32 TotalBuyPrice = Amount * IProductInterface::Execute_GetBuyPrice(Product.GetObject());
+    int32 TotalBuyPrice = Quantity * IProductInterface::Execute_GetBuyPrice(Product.GetObject());
 
     // 소지금
     FGameplayTag CurrencyType = IProductInterface::Execute_GetCurrencyType(Product.GetObject());
@@ -23,7 +23,7 @@ bool UShopSystemFunctionLibrary::PurchaseProduct(const TScriptInterface<ICustome
 
     // 소지금으로부터 구매 금액 차감 후 상품 지급
     ICustomerInterface::Execute_RemoveCurrency(Customer.GetObject(), CurrencyType, TotalBuyPrice);
-    ICustomerInterface::Execute_AddProduct(Customer.GetObject(), Product);
+    ICustomerInterface::Execute_AddProduct(Customer.GetObject(), Product, Quantity);
 
     return true;
 }

@@ -18,5 +18,5 @@ class SHOPSYSTEM_API UShopSystemFunctionLibrary : public UBlueprintFunctionLibra
 
 public:
     UFUNCTION(BlueprintCallable)
-    static bool PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer, const TScriptInterface<IProductInterface>& Product, int32 Amount);
+    static bool PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer, const TScriptInterface<IProductInterface>& Product, int32 Quantity);
 };
