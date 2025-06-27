@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CustomerInterface.h"
 #include "UGFCharacter.generated.h"
 
 class UCurrencyManagerComponent;
@@ -14,7 +15,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API AUGFCharacter : public ACharacter
+class UNIVERSALGAMEFRAMEWORK_API AUGFCharacter : public ACharacter, public ICustomerInterface
 {
     GENERATED_BODY()
 
@@ -48,7 +49,16 @@ private:
 public:
     AUGFCharacter(const FObjectInitializer& ObjectInitializer);
 
-public:
+    /* CustomerInterface */
+
+    virtual int32 GetCurrency_Implementation(const FGameplayTag& CurrencyType) const override;
+    virtual bool AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Amount) override;
+    virtual bool RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Amount) override;
+    virtual bool AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product) override;
+    virtual bool RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product) override;
+
+    /* Getter */
+
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     FORCEINLINE UInputBinderComponent* GetInputBinder() const { return InputBinder; }

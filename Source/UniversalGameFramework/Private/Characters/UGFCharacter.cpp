@@ -64,3 +64,28 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);
     Inventory->SetMaxSlotNum(20);
 }
+
+int32 AUGFCharacter::GetCurrency_Implementation(const FGameplayTag& CurrencyType) const
+{
+    return GetCurrencyManager()->GetCurrency(CurrencyType);
+}
+
+bool AUGFCharacter::AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Amount)
+{
+    return GetCurrencyManager()->AddCurrency(CurrencyType, Amount);
+}
+
+bool AUGFCharacter::RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Amount)
+{
+    return GetCurrencyManager()->RemoveCurrency(CurrencyType, Amount);
+}
+
+bool AUGFCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product)
+{
+    return GetInventory()->AddItem(Product.GetObject(), 1);
+}
+
+bool AUGFCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product)
+{
+    return GetInventory()->RemoveItem(Product.GetObject(), 1);
+}
