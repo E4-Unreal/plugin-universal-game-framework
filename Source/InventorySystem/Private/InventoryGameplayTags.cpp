@@ -1,6 +1,6 @@
-﻿#include "ShopGameplayTags.h"
+﻿#include "InventoryGameplayTags.h"
 
-namespace ShopGameplayTags
+namespace InventoryGameplayTags
 {
     namespace Currency
     {

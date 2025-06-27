@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "ShopGameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "ProductInterface.generated.h"
-
-struct FGameplayTag;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UProductInterface : public UInterface
@@ -25,7 +23,6 @@ class SHOPSYSTEM_API IProductInterface
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     const FGameplayTag GetCurrencyType() const;
-    virtual const FGameplayTag GetCurrencyType_Implementation() const { return Currency::Default; }
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     int32 GetBuyPrice() const;

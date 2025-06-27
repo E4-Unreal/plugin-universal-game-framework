@@ -9,7 +9,7 @@
 
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class SHOPSYSTEM_API UCurrencyManagerComponent : public UActorComponent
+class INVENTORYSYSTEM_API UCurrencyManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 

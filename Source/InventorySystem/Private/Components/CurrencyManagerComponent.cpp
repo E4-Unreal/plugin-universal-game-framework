@@ -3,7 +3,7 @@
 
 #include "Components/CurrencyManagerComponent.h"
 
-#include "ShopGameplayTags.h"
+#include "InventoryGameplayTags.h"
 
 
 UCurrencyManagerComponent::UCurrencyManagerComponent()

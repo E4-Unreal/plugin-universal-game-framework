@@ -7,7 +7,7 @@
 #include "Interfaces/InventoryItemDataInterface.h"
 #include "Interfaces/ProductInterface.h"
 #include "Types/InventoryItemData.h"
-#include "ShopGameplayTags.h"
+#include "InventoryGameplayTags.h"
 #include "UGFItemDefinition.generated.h"
 
 /**
