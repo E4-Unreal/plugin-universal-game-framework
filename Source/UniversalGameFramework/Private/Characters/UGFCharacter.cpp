@@ -5,6 +5,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/CurrencyManagerComponent.h"
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponentBase.h"
 #include "Components/InventoryComponent.h"
@@ -15,6 +16,7 @@ const FName AUGFCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFCharacter::FollowCameraName(TEXT("FollowCamera"));
 const FName AUGFCharacter::InputBinderName(TEXT("InputBinder"));
 const FName AUGFCharacter::InteractionSystemName(TEXT("InteractionSystem"));
+const FName AUGFCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFCharacter::InventoryName(TEXT("Inventory"));
 
 AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
@@ -55,7 +57,35 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     /* InteractionSystem */
     InteractionSystem = CreateDefaultSubobject<UInteractionSystemComponentBase>(InteractionSystemName);
 
+    /* CurrencyManager */
+    CurrencyManager = CreateDefaultSubobject<UCurrencyManagerComponent>(CurrencyManagerName);
+
     /* Inventory */
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);
     Inventory->SetMaxSlotNum(20);
+}
+
+int32 AUGFCharacter::GetCurrency_Implementation(const FGameplayTag& CurrencyType) const
+{
+    return GetCurrencyManager()->GetCurrency(CurrencyType);
+}
+
+bool AUGFCharacter::AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity)
+{
+    return GetCurrencyManager()->AddCurrency(CurrencyType, Quantity);
+}
+
+bool AUGFCharacter::RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity)
+{
+    return GetCurrencyManager()->RemoveCurrency(CurrencyType, Quantity);
+}
+
+bool AUGFCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
+{
+    return GetInventory()->AddItem(Product.GetObject(), Quantity);
+}
+
+bool AUGFCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
+{
+    return GetInventory()->RemoveItem(Product.GetObject(), Quantity);
 }
