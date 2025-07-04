@@ -13,6 +13,13 @@ void AWidgetGameMode::BeginPlay()
     ShowWidgets();
 }
 
+void AWidgetGameMode::BeginDestroy()
+{
+    Super::BeginDestroy();
+
+    RemoveWidgets();
+}
+
 void AWidgetGameMode::CreateWidgets()
 {
     RemoveWidgets();

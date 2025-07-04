@@ -13,6 +13,13 @@ void AWidgetPlayerController::BeginPlay()
     ShowWidgets();
 }
 
+void AWidgetPlayerController::BeginDestroy()
+{
+    Super::BeginDestroy();
+
+    RemoveWidgets();
+}
+
 void AWidgetPlayerController::CreateWidgets()
 {
     RemoveWidgets();

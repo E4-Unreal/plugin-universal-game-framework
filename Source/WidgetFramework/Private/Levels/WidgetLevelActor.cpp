@@ -13,6 +13,13 @@ void AWidgetLevelActor::BeginPlay()
     ShowWidgets();
 }
 
+void AWidgetLevelActor::BeginDestroy()
+{
+    Super::BeginDestroy();
+
+    RemoveWidgets();
+}
+
 void AWidgetLevelActor::CreateWidgets()
 {
     RemoveWidgets();
