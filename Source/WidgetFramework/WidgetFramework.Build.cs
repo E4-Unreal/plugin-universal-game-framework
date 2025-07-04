@@ -10,7 +10,8 @@ public class WidgetFramework : ModuleRules
             new string[]
             {
                 "Core",
-                "UMG"
+                "UMG",
+                "CommonUI"
             }
         );
 
