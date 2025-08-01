@@ -50,8 +50,13 @@
 			"Type": "Editor",
 			"LoadingPhase": "Default"
 		},
-		{
+    {
 			"Name": "ShopSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "EquipmentManager",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

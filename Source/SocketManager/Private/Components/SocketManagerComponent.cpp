@@ -49,7 +49,7 @@ bool USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag,
     if (bool bCanAttach = Actor && IsSocketValid(SocketTag) && IsSocketEmpty(SocketTag); !bCanAttach) return false;
 
     // 액터 부착
-    Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true), GetSocketName(SocketTag));
+    Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true), GetSocketName(SocketTag));
 
     // 소켓 존재 여부에 따라 액터 표시 혹은 숨기기
     if (DoesSocketExist(SocketTag))
