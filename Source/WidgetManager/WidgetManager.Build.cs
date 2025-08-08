@@ -11,7 +11,8 @@ public class WidgetManager : ModuleRules
             {
                 "Core",
                 "UMG",
-                "CommonUI"
+                "CommonUI",
+                "EnhancedInput"
             }
         );
 
