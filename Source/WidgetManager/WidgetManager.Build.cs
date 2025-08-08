@@ -12,6 +12,7 @@ public class WidgetManager : ModuleRules
                 "Core",
                 "UMG",
                 "CommonUI",
+                "InputCore",
                 "EnhancedInput"
             }
         );
