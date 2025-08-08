@@ -40,18 +40,22 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
+    virtual void ShowWidget(UUserWidget* Widget);
+    virtual void HideWidget(UUserWidget* Widget);
+    virtual void ToggleWidget(UUserWidget* Widget);
+
+    /* StartupWidgets */
+
     void CreateStartupWidgets();
     void RemoveStartupWidgets();
     void ShowStartupWidgets();
     void HideStartupWidgets();
 
+    /* ToggleWidgets */
+
     void CreateToggleWidgets();
     void RemoveToggleWidgets();
     UUserWidget* GetWidgetByInputAction(UInputAction* InputAction) const;
-    void ToggleWidgetByInputAction(UInputAction* InputAction);
-    void ShowWidgetByInputAction(UInputAction* InputAction);
-    void HideWidgetByInputAction(UInputAction* InputAction);
-    void HideToggleWidgets();
     void SetupInput();
     void BindInput();
     void UnBindInput();

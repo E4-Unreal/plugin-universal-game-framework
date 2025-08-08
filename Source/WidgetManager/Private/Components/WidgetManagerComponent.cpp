@@ -16,26 +16,62 @@ void UWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    /* StartupWidgets */
+
     CreateStartupWidgets();
     ShowStartupWidgets();
 
-    CreateToggleWidgets();
+    /* ToggleWidgets */
 
+    CreateToggleWidgets();
     SetupInput();
     BindInput();
 }
 
 void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
+    /* StartupWidgets */
+
     HideStartupWidgets();
     RemoveStartupWidgets();
 
-    HideToggleWidgets();
-    RemoveToggleWidgets();
+    /* ToggleWidgets */
 
+    RemoveToggleWidgets();
     UnBindInput();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
+}
+
+void UWidgetManagerComponent::ShowWidget(UUserWidget* Widget)
+{
+    if (Widget && !Widget->IsInViewport())
+    {
+        Widget->AddToViewport();
+    }
+}
+
+void UWidgetManagerComponent::HideWidget(UUserWidget* Widget)
+{
+    if (Widget && Widget->IsInViewport())
+    {
+        Widget->RemoveFromParent();
+    }
+}
+
+void UWidgetManagerComponent::ToggleWidget(UUserWidget* Widget)
+{
+    if (Widget)
+    {
+        if (Widget->IsInViewport())
+        {
+            Widget->RemoveFromParent();
+        }
+        else
+        {
+            Widget->AddToViewport();
+        }
+    }
 }
 
 void UWidgetManagerComponent::CreateStartupWidgets()
@@ -62,10 +98,7 @@ void UWidgetManagerComponent::ShowStartupWidgets()
 {
     for (UUserWidget* StartupWidget : StartupWidgets)
     {
-        if (StartupWidget && !StartupWidget->IsInViewport())
-        {
-            StartupWidget->AddToViewport();
-        }
+        ShowWidget(StartupWidget);
     }
 }
 
@@ -73,10 +106,7 @@ void UWidgetManagerComponent::HideStartupWidgets()
 {
     for (UUserWidget* StartupWidget : StartupWidgets)
     {
-        if (StartupWidget && StartupWidget->IsInViewport())
-        {
-            StartupWidget->RemoveFromParent();
-        }
+        HideWidget(StartupWidget);
     }
 }
 
@@ -97,57 +127,17 @@ void UWidgetManagerComponent::CreateToggleWidgets()
 
 void UWidgetManagerComponent::RemoveToggleWidgets()
 {
+    for (const auto& [InputAction, ToggleWidget] : ToggleWidgetMap)
+    {
+        HideWidget(ToggleWidget);
+    }
+
     ToggleWidgetMap.Empty();
 }
 
 UUserWidget* UWidgetManagerComponent::GetWidgetByInputAction(UInputAction* InputAction) const
 {
     return ToggleWidgetMap.Contains(InputAction) ? ToggleWidgetMap[InputAction] : nullptr;
-}
-
-void UWidgetManagerComponent::ToggleWidgetByInputAction(UInputAction* InputAction)
-{
-    if (UUserWidget* ToggleWidget = GetWidgetByInputAction(InputAction))
-    {
-        if (ToggleWidget->IsInViewport())
-        {
-            ToggleWidget->RemoveFromParent();
-        }
-        else
-        {
-            ToggleWidget->AddToViewport();
-        }
-    }
-}
-
-void UWidgetManagerComponent::ShowWidgetByInputAction(UInputAction* InputAction)
-{
-    if (UUserWidget* ToggleWidget = GetWidgetByInputAction(InputAction))
-    {
-        if (!ToggleWidget->IsInViewport())
-        {
-            ToggleWidget->AddToViewport();
-        }
-    }
-}
-
-void UWidgetManagerComponent::HideWidgetByInputAction(UInputAction* InputAction)
-{
-    if (UUserWidget* ToggleWidget = GetWidgetByInputAction(InputAction))
-    {
-        if (ToggleWidget->IsInViewport())
-        {
-            ToggleWidget->RemoveFromParent();
-        }
-    }
-}
-
-void UWidgetManagerComponent::HideToggleWidgets()
-{
-    for (const auto& [InputAction, ToggleWidget] : ToggleWidgetMap)
-    {
-        HideWidgetByInputAction(InputAction);
-    }
 }
 
 void UWidgetManagerComponent::SetupInput()
@@ -166,8 +156,8 @@ void UWidgetManagerComponent::BindInput()
                 InputAction,
                 ETriggerEvent::Triggered,
                 this,
-                &ThisClass::ToggleWidgetByInputAction,
-                InputAction.Get()
+                &ThisClass::ToggleWidget,
+                ToggleWidget.Get()
                 );
 
             InputBindingHandleMap.Emplace(InputAction, EnhancedInputActionEventBinding.GetHandle());
