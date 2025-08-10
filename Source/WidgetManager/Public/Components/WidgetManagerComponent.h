@@ -15,14 +15,20 @@ class WIDGETMANAGER_API UWidgetManagerComponent : public UWidgetManagerComponent
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleWidgetClassMap;
+    TObjectPtr<UInputAction> EscapeAction;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleableWidgetClassMap;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleWidgetMap;
+    TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+    TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleableWidgetMap;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TArray<TObjectPtr<UUserWidget>> ToggleableWidgetStack;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, int32> InputBindingHandleMap;
@@ -34,10 +40,15 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
-    void CreateToggleWidgets();
-    void RemoveToggleWidgets();
-    UUserWidget* GetWidgetByInputAction(UInputAction* InputAction) const;
-    void SetupInput();
-    void BindInput();
-    void UnBindInput();
+    UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
+    virtual void ShowWidgetByAction(UInputAction* InputAction);
+    virtual void HideWidgetByAction(UInputAction* InputAction);
+    virtual void ToggleWidgetByAction(UInputAction* InputAction);
+    virtual void HideTopWidget();
+
+    virtual void CreateToggleableWidgets();
+    virtual void RemoveToggleableWidgets();
+    virtual void SetupInput();
+    virtual void BindInput();
+    virtual void UnBindInput();
 };
