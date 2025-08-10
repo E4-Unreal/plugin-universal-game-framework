@@ -16,13 +16,6 @@ void UWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    /* StartupWidgets */
-
-    CreateStartupWidgets();
-    ShowStartupWidgets();
-
-    /* ToggleWidgets */
-
     CreateToggleWidgets();
     SetupInput();
     BindInput();
@@ -30,84 +23,10 @@ void UWidgetManagerComponent::BeginPlay()
 
 void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
-    /* StartupWidgets */
-
-    HideStartupWidgets();
-    RemoveStartupWidgets();
-
-    /* ToggleWidgets */
-
     RemoveToggleWidgets();
     UnBindInput();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
-}
-
-void UWidgetManagerComponent::ShowWidget(UUserWidget* Widget)
-{
-    if (Widget && !Widget->IsInViewport())
-    {
-        Widget->AddToViewport();
-    }
-}
-
-void UWidgetManagerComponent::HideWidget(UUserWidget* Widget)
-{
-    if (Widget && Widget->IsInViewport())
-    {
-        Widget->RemoveFromParent();
-    }
-}
-
-void UWidgetManagerComponent::ToggleWidget(UUserWidget* Widget)
-{
-    if (Widget)
-    {
-        if (Widget->IsInViewport())
-        {
-            Widget->RemoveFromParent();
-        }
-        else
-        {
-            Widget->AddToViewport();
-        }
-    }
-}
-
-void UWidgetManagerComponent::CreateStartupWidgets()
-{
-    if (!StartupWidgets.IsEmpty()) return;
-
-    StartupWidgets.Reserve(StartupWidgetClasses.Num());
-    for (TSubclassOf<UUserWidget> StartupWidgetClass : StartupWidgetClasses)
-    {
-        if (StartupWidgetClass)
-        {
-            UUserWidget* StartupWidget = CreateWidget<UUserWidget>(GetWorld(), StartupWidgetClass);
-            StartupWidgets.Emplace(StartupWidget);
-        }
-    }
-}
-
-void UWidgetManagerComponent::RemoveStartupWidgets()
-{
-    StartupWidgets.Empty();
-}
-
-void UWidgetManagerComponent::ShowStartupWidgets()
-{
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        ShowWidget(StartupWidget);
-    }
-}
-
-void UWidgetManagerComponent::HideStartupWidgets()
-{
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        HideWidget(StartupWidget);
-    }
 }
 
 void UWidgetManagerComponent::CreateToggleWidgets()

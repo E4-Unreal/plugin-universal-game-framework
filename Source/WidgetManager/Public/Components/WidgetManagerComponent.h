@@ -3,27 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "WidgetManagerComponentBase.h"
 #include "WidgetManagerComponent.generated.h"
 
 class UInputAction;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class WIDGETMANAGER_API UWidgetManagerComponent : public UActorComponent
+class WIDGETMANAGER_API UWidgetManagerComponent : public UWidgetManagerComponentBase
 {
     GENERATED_BODY()
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSet<TSubclassOf<UUserWidget>> StartupWidgetClasses;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleWidgetClassMap;
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TArray<TObjectPtr<UUserWidget>> StartupWidgets;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleWidgetMap;
 
@@ -40,19 +34,6 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
-    virtual void ShowWidget(UUserWidget* Widget);
-    virtual void HideWidget(UUserWidget* Widget);
-    virtual void ToggleWidget(UUserWidget* Widget);
-
-    /* StartupWidgets */
-
-    void CreateStartupWidgets();
-    void RemoveStartupWidgets();
-    void ShowStartupWidgets();
-    void HideStartupWidgets();
-
-    /* ToggleWidgets */
-
     void CreateToggleWidgets();
     void RemoveToggleWidgets();
     UUserWidget* GetWidgetByInputAction(UInputAction* InputAction) const;
