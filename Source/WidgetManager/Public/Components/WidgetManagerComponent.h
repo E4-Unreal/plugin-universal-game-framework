@@ -3,32 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "WidgetManagerComponentBase.h"
 #include "WidgetManagerComponent.generated.h"
 
 class UInputAction;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class WIDGETMANAGER_API UWidgetManagerComponent : public UActorComponent
+class WIDGETMANAGER_API UWidgetManagerComponent : public UWidgetManagerComponentBase
 {
     GENERATED_BODY()
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSet<TSubclassOf<UUserWidget>> StartupWidgetClasses;
+    TObjectPtr<UInputAction> EscapeAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleWidgetClassMap;
+    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleableWidgetClassMap;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TArray<TObjectPtr<UUserWidget>> StartupWidgets;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleWidgetMap;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleableWidgetMap;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TArray<TObjectPtr<UUserWidget>> ToggleableWidgetStack;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, int32> InputBindingHandleMap;
@@ -40,23 +40,15 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
-    virtual void ShowWidget(UUserWidget* Widget);
-    virtual void HideWidget(UUserWidget* Widget);
-    virtual void ToggleWidget(UUserWidget* Widget);
+    UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
+    virtual void ShowWidgetByAction(UInputAction* InputAction);
+    virtual void HideWidgetByAction(UInputAction* InputAction);
+    virtual void ToggleWidgetByAction(UInputAction* InputAction);
+    virtual void HideTopWidget();
 
-    /* StartupWidgets */
-
-    void CreateStartupWidgets();
-    void RemoveStartupWidgets();
-    void ShowStartupWidgets();
-    void HideStartupWidgets();
-
-    /* ToggleWidgets */
-
-    void CreateToggleWidgets();
-    void RemoveToggleWidgets();
-    UUserWidget* GetWidgetByInputAction(UInputAction* InputAction) const;
-    void SetupInput();
-    void BindInput();
-    void UnBindInput();
+    virtual void CreateToggleableWidgets();
+    virtual void RemoveToggleableWidgets();
+    virtual void SetupInput();
+    virtual void BindInput();
+    virtual void UnBindInput();
 };

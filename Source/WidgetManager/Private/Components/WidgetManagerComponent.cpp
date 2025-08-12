@@ -16,128 +16,96 @@ void UWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    /* StartupWidgets */
-
-    CreateStartupWidgets();
-    ShowStartupWidgets();
-
-    /* ToggleWidgets */
-
-    CreateToggleWidgets();
+    CreateToggleableWidgets();
     SetupInput();
     BindInput();
 }
 
 void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
-    /* StartupWidgets */
-
-    HideStartupWidgets();
-    RemoveStartupWidgets();
-
-    /* ToggleWidgets */
-
-    RemoveToggleWidgets();
+    RemoveToggleableWidgets();
     UnBindInput();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-void UWidgetManagerComponent::ShowWidget(UUserWidget* Widget)
+UUserWidget* UWidgetManagerComponent::GetWidgetByAction(UInputAction* InputAction) const
 {
-    if (Widget && !Widget->IsInViewport())
-    {
-        Widget->AddToViewport();
-    }
+    return ToggleableWidgetMap.Contains(InputAction) ? ToggleableWidgetMap[InputAction] : nullptr;
 }
 
-void UWidgetManagerComponent::HideWidget(UUserWidget* Widget)
+void UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
 {
-    if (Widget && Widget->IsInViewport())
+    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
     {
-        Widget->RemoveFromParent();
-    }
-}
-
-void UWidgetManagerComponent::ToggleWidget(UUserWidget* Widget)
-{
-    if (Widget)
-    {
-        if (Widget->IsInViewport())
+        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
         {
-            Widget->RemoveFromParent();
+            ToggleableWidgetStack.Emplace(ToggleableWidget);
+            ShowWidget(ToggleableWidget);
+        }
+    }
+}
+
+void UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
+{
+    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
+    {
+        if (ToggleableWidgetStack.Contains(ToggleableWidget))
+        {
+            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
+            HideWidget(ToggleableWidget);
+        }
+    }
+}
+
+void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
+{
+    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
+    {
+        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
+        {
+            ToggleableWidgetStack.Emplace(ToggleableWidget);
+            ShowWidget(ToggleableWidget);
         }
         else
         {
-            Widget->AddToViewport();
+            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
+            HideWidget(ToggleableWidget);
         }
     }
 }
 
-void UWidgetManagerComponent::CreateStartupWidgets()
+void UWidgetManagerComponent::HideTopWidget()
 {
-    if (!StartupWidgets.IsEmpty()) return;
+    if (ToggleableWidgetStack.IsEmpty()) return;
 
-    StartupWidgets.Reserve(StartupWidgetClasses.Num());
-    for (TSubclassOf<UUserWidget> StartupWidgetClass : StartupWidgetClasses)
-    {
-        if (StartupWidgetClass)
-        {
-            UUserWidget* StartupWidget = CreateWidget<UUserWidget>(GetWorld(), StartupWidgetClass);
-            StartupWidgets.Emplace(StartupWidget);
-        }
-    }
+    UUserWidget* TopWidget = ToggleableWidgetStack.Pop();
+    HideWidget(TopWidget);
 }
 
-void UWidgetManagerComponent::RemoveStartupWidgets()
+void UWidgetManagerComponent::CreateToggleableWidgets()
 {
-    StartupWidgets.Empty();
-}
+    if (!ToggleableWidgetMap.IsEmpty()) return;
 
-void UWidgetManagerComponent::ShowStartupWidgets()
-{
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        ShowWidget(StartupWidget);
-    }
-}
-
-void UWidgetManagerComponent::HideStartupWidgets()
-{
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        HideWidget(StartupWidget);
-    }
-}
-
-void UWidgetManagerComponent::CreateToggleWidgets()
-{
-    if (!ToggleWidgetMap.IsEmpty()) return;
-
-    ToggleWidgetMap.Reserve(ToggleWidgetClassMap.Num());
-    for (const auto& [InputAction, ToggleWidgetClass] : ToggleWidgetClassMap)
+    ToggleableWidgetMap.Reserve(ToggleableWidgetClassMap.Num());
+    for (const auto& [InputAction, ToggleWidgetClass] : ToggleableWidgetClassMap)
     {
         if (InputAction && ToggleWidgetClass)
         {
             UUserWidget* ToggleWidget = CreateWidget<UUserWidget>(GetWorld(), ToggleWidgetClass);
-            ToggleWidgetMap.Emplace(InputAction, ToggleWidget);
+            ToggleableWidgetMap.Emplace(InputAction, ToggleWidget);
         }
     }
 }
 
-void UWidgetManagerComponent::RemoveToggleWidgets()
+void UWidgetManagerComponent::RemoveToggleableWidgets()
 {
-    for (const auto& [InputAction, ToggleWidget] : ToggleWidgetMap)
+    for (const auto& [InputAction, ToggleWidget] : ToggleableWidgetMap)
     {
-        HideWidget(ToggleWidget);
+        HideWidgetByAction(InputAction);
     }
 
-    ToggleWidgetMap.Empty();
-}
-
-UUserWidget* UWidgetManagerComponent::GetWidgetByInputAction(UInputAction* InputAction) const
-{
-    return ToggleWidgetMap.Contains(InputAction) ? ToggleWidgetMap[InputAction] : nullptr;
+    ToggleableWidgetMap.Empty();
 }
 
 void UWidgetManagerComponent::SetupInput()
@@ -149,19 +117,32 @@ void UWidgetManagerComponent::BindInput()
 {
     if (EnhancedInputComponent.IsValid())
     {
-        InputBindingHandleMap.Reserve(ToggleWidgetMap.Num());
-        for (const auto& [InputAction, ToggleWidget] : ToggleWidgetMap)
+        // Toggle
+
+        InputBindingHandleMap.Reserve(ToggleableWidgetMap.Num());
+        for (const auto& [InputAction, ToggleWidget] : ToggleableWidgetMap)
         {
-            FEnhancedInputActionEventBinding& EnhancedInputActionEventBinding = EnhancedInputComponent->BindAction(
+            FEnhancedInputActionEventBinding& ToggleActionEventBinding = EnhancedInputComponent->BindAction(
                 InputAction,
                 ETriggerEvent::Triggered,
                 this,
-                &ThisClass::ToggleWidget,
-                ToggleWidget.Get()
+                &ThisClass::ToggleWidgetByAction,
+                InputAction.Get()
                 );
 
-            InputBindingHandleMap.Emplace(InputAction, EnhancedInputActionEventBinding.GetHandle());
+            InputBindingHandleMap.Emplace(InputAction, ToggleActionEventBinding.GetHandle());
         }
+
+        // Escape
+
+        FEnhancedInputActionEventBinding& EscapeActionEventBinding = EnhancedInputComponent->BindAction(
+                EscapeAction,
+                ETriggerEvent::Triggered,
+                this,
+                &ThisClass::HideTopWidget
+                );
+
+        InputBindingHandleMap.Emplace(EscapeAction, EscapeActionEventBinding.GetHandle());
     }
 }
 
