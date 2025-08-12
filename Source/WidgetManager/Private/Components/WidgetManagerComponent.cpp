@@ -106,8 +106,10 @@ void UWidgetManagerComponent::CreateToggleableWidgets()
     {
         if (InputAction && ToggleWidgetClass)
         {
-            UUserWidget* ToggleWidget = CreateWidget<UUserWidget>(GetWorld(), ToggleWidgetClass);
-            ToggleableWidgetMap.Emplace(InputAction, ToggleWidget);
+            if (UUserWidget* ToggleWidget = CreateWidgetByClass(ToggleWidgetClass))
+            {
+                ToggleableWidgetMap.Emplace(InputAction, ToggleWidget);
+            }
         }
     }
 }
@@ -175,10 +177,8 @@ void UWidgetManagerComponent::UnBindInput()
 
 void UWidgetManagerComponent::CreateEscapeMenuWidget()
 {
-    if (EscapeMenuWidgetClass && !EscapeMenuWidget)
-    {
-        EscapeMenuWidget = CreateWidget<UUserWidget>(GetWorld(), EscapeMenuWidgetClass);
-    }
+    if (EscapeMenuWidget) return;
+    EscapeMenuWidget = CreateWidgetByClass(EscapeMenuWidgetClass);
 }
 
 void UWidgetManagerComponent::RemoveEscapeMenuWidget()

@@ -26,6 +26,33 @@ void UWidgetManagerComponentBase::OnComponentDestroyed(bool bDestroyingHierarchy
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+APlayerController* UWidgetManagerComponentBase::GetOwningPlayerController() const
+{
+    UClass* OwnerClass = GetOwner()->GetClass();
+    APlayerController* OwningPlayerController = nullptr;
+    if (OwnerClass->IsChildOf<APlayerController>())
+    {
+        OwningPlayerController = Cast<APlayerController>(GetOwner());
+    }
+    else if (OwnerClass->IsChildOf<APawn>())
+    {
+        APawn* OwningPawn = Cast<APawn>(GetOwner());
+        OwningPlayerController = Cast<APlayerController>(OwningPawn->GetController());
+    }
+
+    return OwningPlayerController;
+}
+
+UUserWidget* UWidgetManagerComponentBase::CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    if (!WidgetClass) return nullptr;
+
+    APlayerController* OwningPlayerController = GetOwningPlayerController();
+    if (!OwningPlayerController) return nullptr;
+
+    return CreateWidget<UUserWidget>(OwningPlayerController, WidgetClass);
+}
+
 void UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
 {
     if (Widget && !Widget->IsInViewport())
@@ -64,9 +91,8 @@ void UWidgetManagerComponentBase::CreateStartupWidgets()
     StartupWidgets.Reserve(StartupWidgetClasses.Num());
     for (TSubclassOf<UUserWidget> StartupWidgetClass : StartupWidgetClasses)
     {
-        if (StartupWidgetClass)
+        if (UUserWidget* StartupWidget = CreateWidgetByClass(StartupWidgetClass))
         {
-            UUserWidget* StartupWidget = CreateWidget<UUserWidget>(GetWorld(), StartupWidgetClass);
             StartupWidgets.Emplace(StartupWidget);
         }
     }

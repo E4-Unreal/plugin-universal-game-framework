@@ -27,6 +27,8 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
+    virtual APlayerController* GetOwningPlayerController() const;
+    virtual UUserWidget* CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual void ShowWidget(UUserWidget* Widget);
     virtual void HideWidget(UUserWidget* Widget);
     virtual void ToggleWidget(UUserWidget* Widget);
