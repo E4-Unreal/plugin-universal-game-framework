@@ -16,105 +16,35 @@ void UWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    CreateToggleableWidgets();
-    SetupInput();
     BindInput();
 }
 
 void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
-    RemoveToggleableWidgets();
     UnBindInput();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-UUserWidget* UWidgetManagerComponent::GetWidgetByAction(UInputAction* InputAction) const
+void UWidgetManagerComponent::CreateWidgets()
 {
-    return ToggleableWidgetMap.Contains(InputAction) ? ToggleableWidgetMap[InputAction] : nullptr;
+    Super::CreateWidgets();
+
+    CreateToggleableWidgets();
+    CreateEscapeMenuWidget();
 }
 
-void UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
+void UWidgetManagerComponent::DestroyWidgets()
 {
-    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
-    {
-        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
-        {
-            ToggleableWidgetStack.Emplace(ToggleableWidget);
-            ShowWidget(ToggleableWidget);
-        }
-    }
-}
+    Super::DestroyWidgets();
 
-void UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
-{
-    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
-    {
-        if (ToggleableWidgetStack.Contains(ToggleableWidget))
-        {
-            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
-            HideWidget(ToggleableWidget);
-        }
-    }
-}
-
-void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
-{
-    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
-    {
-        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
-        {
-            ToggleableWidgetStack.Emplace(ToggleableWidget);
-            ShowWidget(ToggleableWidget);
-        }
-        else
-        {
-            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
-            HideWidget(ToggleableWidget);
-        }
-    }
-}
-
-void UWidgetManagerComponent::HideTopWidget()
-{
-    if (ToggleableWidgetStack.IsEmpty()) return;
-
-    UUserWidget* TopWidget = ToggleableWidgetStack.Pop();
-    HideWidget(TopWidget);
-}
-
-void UWidgetManagerComponent::CreateToggleableWidgets()
-{
-    if (!ToggleableWidgetMap.IsEmpty()) return;
-
-    ToggleableWidgetMap.Reserve(ToggleableWidgetClassMap.Num());
-    for (const auto& [InputAction, ToggleWidgetClass] : ToggleableWidgetClassMap)
-    {
-        if (InputAction && ToggleWidgetClass)
-        {
-            UUserWidget* ToggleWidget = CreateWidget<UUserWidget>(GetWorld(), ToggleWidgetClass);
-            ToggleableWidgetMap.Emplace(InputAction, ToggleWidget);
-        }
-    }
-}
-
-void UWidgetManagerComponent::RemoveToggleableWidgets()
-{
-    for (const auto& [InputAction, ToggleWidget] : ToggleableWidgetMap)
-    {
-        HideWidgetByAction(InputAction);
-    }
-
-    ToggleableWidgetMap.Empty();
-}
-
-void UWidgetManagerComponent::SetupInput()
-{
-    EnhancedInputComponent = Cast<UEnhancedInputComponent>(GetOwner()->InputComponent);
+    DestroyToggleableWidgets();
+    DestroyEscapeMenuWidget();
 }
 
 void UWidgetManagerComponent::BindInput()
 {
+    EnhancedInputComponent = Cast<UEnhancedInputComponent>(GetOwner()->InputComponent);
     if (EnhancedInputComponent.IsValid())
     {
         // Toggle
@@ -139,7 +69,7 @@ void UWidgetManagerComponent::BindInput()
                 EscapeAction,
                 ETriggerEvent::Triggered,
                 this,
-                &ThisClass::HideTopWidget
+                &ThisClass::OnEscapeActionTriggered
                 );
 
         InputBindingHandleMap.Emplace(EscapeAction, EscapeActionEventBinding.GetHandle());
@@ -157,4 +87,146 @@ void UWidgetManagerComponent::UnBindInput()
     }
 
     InputBindingHandleMap.Empty();
+}
+
+void UWidgetManagerComponent::OnEscapeActionTriggered()
+{
+    if (ToggleableWidgetStack.IsEmpty())
+    {
+        ToggleEscapeMenu();
+    }
+    else
+    {
+        HideTopWidget();
+    }
+}
+
+void UWidgetManagerComponent::CreateToggleableWidgets()
+{
+    if (!ToggleableWidgetMap.IsEmpty()) return;
+
+    ToggleableWidgetMap.Reserve(ToggleableWidgetClassMap.Num());
+    for (const auto& [InputAction, ToggleWidgetClass] : ToggleableWidgetClassMap)
+    {
+        if (InputAction && ToggleWidgetClass)
+        {
+            if (UUserWidget* ToggleWidget = CreateWidgetByClass(ToggleWidgetClass))
+            {
+                ToggleableWidgetMap.Emplace(InputAction, ToggleWidget);
+            }
+        }
+    }
+}
+
+void UWidgetManagerComponent::DestroyToggleableWidgets()
+{
+    for (const auto& [InputAction, ToggleWidget] : ToggleableWidgetMap)
+    {
+        HideWidgetByAction(InputAction);
+    }
+
+    ToggleableWidgetMap.Empty();
+}
+
+UUserWidget* UWidgetManagerComponent::GetWidgetByAction(UInputAction* InputAction) const
+{
+    return ToggleableWidgetMap.Contains(InputAction) ? ToggleableWidgetMap[InputAction] : nullptr;
+}
+
+bool UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
+{
+    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
+    {
+        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
+        {
+            ToggleableWidgetStack.Emplace(ToggleableWidget);
+            ShowWidget(ToggleableWidget);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
+{
+    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
+    {
+        if (ToggleableWidgetStack.Contains(ToggleableWidget))
+        {
+            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
+            HideWidget(ToggleableWidget);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
+{
+    if (ShowWidgetByAction(InputAction)) return;
+
+    HideWidgetByAction(InputAction);
+}
+
+void UWidgetManagerComponent::HideTopWidget()
+{
+    if (ToggleableWidgetStack.IsEmpty()) return;
+
+    UUserWidget* TopWidget = ToggleableWidgetStack.Pop();
+    HideWidget(TopWidget);
+}
+
+void UWidgetManagerComponent::CreateEscapeMenuWidget()
+{
+    if (EscapeMenuWidget) return;
+    EscapeMenuWidget = CreateWidgetByClass(EscapeMenuWidgetClass);
+}
+
+void UWidgetManagerComponent::DestroyEscapeMenuWidget()
+{
+    HideWidget(EscapeMenuWidget);
+    EscapeMenuWidget = nullptr;
+}
+
+bool UWidgetManagerComponent::ShowEscapeMenu()
+{
+    if (ShowWidget(EscapeMenuWidget))
+    {
+        if (APlayerController* OwningPlayerController = GetOwningPlayerController())
+        {
+            OwningPlayerController->SetIgnoreMoveInput(true);
+            OwningPlayerController->SetIgnoreLookInput(true);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool UWidgetManagerComponent::HideEscapeMenu()
+{
+    if (HideWidget(EscapeMenuWidget))
+    {
+        if (APlayerController* OwningPlayerController = GetOwningPlayerController())
+        {
+            OwningPlayerController->SetIgnoreMoveInput(false);
+            OwningPlayerController->SetIgnoreLookInput(false);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+void UWidgetManagerComponent::ToggleEscapeMenu()
+{
+    if (ShowEscapeMenu()) return;
+
+    HideEscapeMenu();
 }

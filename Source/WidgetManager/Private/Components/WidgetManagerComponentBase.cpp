@@ -14,47 +14,81 @@ void UWidgetManagerComponentBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    CreateStartupWidgets();
+    CreateWidgets();
     ShowStartupWidgets();
 }
 
 void UWidgetManagerComponentBase::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
-    HideStartupWidgets();
-    RemoveStartupWidgets();
+    DestroyWidgets();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-void UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
+APlayerController* UWidgetManagerComponentBase::GetOwningPlayerController() const
+{
+    UClass* OwnerClass = GetOwner()->GetClass();
+    APlayerController* OwningPlayerController = nullptr;
+    if (OwnerClass->IsChildOf<APlayerController>())
+    {
+        OwningPlayerController = Cast<APlayerController>(GetOwner());
+    }
+    else if (OwnerClass->IsChildOf<APawn>())
+    {
+        APawn* OwningPawn = Cast<APawn>(GetOwner());
+        OwningPlayerController = Cast<APlayerController>(OwningPawn->GetController());
+    }
+
+    return OwningPlayerController;
+}
+
+UUserWidget* UWidgetManagerComponentBase::CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    if (!WidgetClass) return nullptr;
+
+    APlayerController* OwningPlayerController = GetOwningPlayerController();
+    if (!OwningPlayerController) return nullptr;
+
+    return CreateWidget<UUserWidget>(OwningPlayerController, WidgetClass);
+}
+
+bool UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
 {
     if (Widget && !Widget->IsInViewport())
     {
         Widget->AddToViewport();
+        return true;
     }
+
+    return false;
 }
 
-void UWidgetManagerComponentBase::HideWidget(UUserWidget* Widget)
+bool UWidgetManagerComponentBase::HideWidget(UUserWidget* Widget)
 {
     if (Widget && Widget->IsInViewport())
     {
         Widget->RemoveFromParent();
+        return true;
     }
+
+    return false;
 }
 
 void UWidgetManagerComponentBase::ToggleWidget(UUserWidget* Widget)
 {
-    if (Widget)
-    {
-        if (Widget->IsInViewport())
-        {
-            Widget->RemoveFromParent();
-        }
-        else
-        {
-            Widget->AddToViewport();
-        }
-    }
+    if (ShowWidget(Widget)) return;
+
+    HideWidget(Widget);
+}
+
+void UWidgetManagerComponentBase::CreateWidgets()
+{
+    CreateStartupWidgets();
+}
+
+void UWidgetManagerComponentBase::DestroyWidgets()
+{
+    DestroyStartupWidgets();
 }
 
 void UWidgetManagerComponentBase::CreateStartupWidgets()
@@ -64,16 +98,16 @@ void UWidgetManagerComponentBase::CreateStartupWidgets()
     StartupWidgets.Reserve(StartupWidgetClasses.Num());
     for (TSubclassOf<UUserWidget> StartupWidgetClass : StartupWidgetClasses)
     {
-        if (StartupWidgetClass)
+        if (UUserWidget* StartupWidget = CreateWidgetByClass(StartupWidgetClass))
         {
-            UUserWidget* StartupWidget = CreateWidget<UUserWidget>(GetWorld(), StartupWidgetClass);
             StartupWidgets.Emplace(StartupWidget);
         }
     }
 }
 
-void UWidgetManagerComponentBase::RemoveStartupWidgets()
+void UWidgetManagerComponentBase::DestroyStartupWidgets()
 {
+    HideStartupWidgets();
     StartupWidgets.Empty();
 }
 

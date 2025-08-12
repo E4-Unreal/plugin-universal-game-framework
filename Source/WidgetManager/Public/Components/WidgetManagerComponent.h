@@ -18,11 +18,17 @@ public:
     TObjectPtr<UInputAction> EscapeAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UUserWidget> EscapeMenuWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleableWidgetClassMap;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TObjectPtr<UUserWidget> EscapeMenuWidget;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleableWidgetMap;
@@ -40,15 +46,28 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
+    /* WidgetManagerComponentBase */
+
+    virtual void CreateWidgets() override;
+    virtual void DestroyWidgets() override;
+
+    /* API */
+
+    virtual void BindInput();
+    virtual void UnBindInput();
+    virtual void OnEscapeActionTriggered();
+
+    virtual void CreateToggleableWidgets();
+    virtual void DestroyToggleableWidgets();
     UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
-    virtual void ShowWidgetByAction(UInputAction* InputAction);
-    virtual void HideWidgetByAction(UInputAction* InputAction);
+    virtual bool ShowWidgetByAction(UInputAction* InputAction);
+    virtual bool HideWidgetByAction(UInputAction* InputAction);
     virtual void ToggleWidgetByAction(UInputAction* InputAction);
     virtual void HideTopWidget();
 
-    virtual void CreateToggleableWidgets();
-    virtual void RemoveToggleableWidgets();
-    virtual void SetupInput();
-    virtual void BindInput();
-    virtual void UnBindInput();
+    virtual void CreateEscapeMenuWidget();
+    virtual void DestroyEscapeMenuWidget();
+    virtual bool ShowEscapeMenu();
+    virtual bool HideEscapeMenu();
+    virtual void ToggleEscapeMenu();
 };
