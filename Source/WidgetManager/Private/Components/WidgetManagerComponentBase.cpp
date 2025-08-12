@@ -14,14 +14,13 @@ void UWidgetManagerComponentBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    CreateStartupWidgets();
+    CreateWidgets();
     ShowStartupWidgets();
 }
 
 void UWidgetManagerComponentBase::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
-    HideStartupWidgets();
-    RemoveStartupWidgets();
+    DestroyWidgets();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
@@ -84,6 +83,16 @@ void UWidgetManagerComponentBase::ToggleWidget(UUserWidget* Widget)
     }
 }
 
+void UWidgetManagerComponentBase::CreateWidgets()
+{
+    CreateStartupWidgets();
+}
+
+void UWidgetManagerComponentBase::DestroyWidgets()
+{
+    DestroyStartupWidgets();
+}
+
 void UWidgetManagerComponentBase::CreateStartupWidgets()
 {
     if (!StartupWidgets.IsEmpty()) return;
@@ -98,8 +107,9 @@ void UWidgetManagerComponentBase::CreateStartupWidgets()
     }
 }
 
-void UWidgetManagerComponentBase::RemoveStartupWidgets()
+void UWidgetManagerComponentBase::DestroyStartupWidgets()
 {
+    HideStartupWidgets();
     StartupWidgets.Empty();
 }
 

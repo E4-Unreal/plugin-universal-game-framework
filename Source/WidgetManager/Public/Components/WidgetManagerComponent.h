@@ -46,22 +46,27 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
+    /* WidgetManagerComponentBase */
+
+    virtual void CreateWidgets() override;
+    virtual void DestroyWidgets() override;
+
+    /* API */
+
+    virtual void BindInput();
+    virtual void UnBindInput();
     virtual void OnEscapeActionTriggered();
 
+    virtual void CreateToggleableWidgets();
+    virtual void DestroyToggleableWidgets();
     UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
     virtual void ShowWidgetByAction(UInputAction* InputAction);
     virtual void HideWidgetByAction(UInputAction* InputAction);
     virtual void ToggleWidgetByAction(UInputAction* InputAction);
     virtual void HideTopWidget();
 
-    virtual void CreateToggleableWidgets();
-    virtual void RemoveToggleableWidgets();
-    virtual void SetupInput();
-    virtual void BindInput();
-    virtual void UnBindInput();
-
     virtual void CreateEscapeMenuWidget();
-    virtual void RemoveEscapeMenuWidget();
+    virtual void DestroyEscapeMenuWidget();
     virtual void ShowEscapeMenu();
     virtual void HideEscapeMenu();
     virtual void ToggleEscapeMenu();

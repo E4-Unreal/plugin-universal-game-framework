@@ -33,8 +33,11 @@ protected:
     virtual void HideWidget(UUserWidget* Widget);
     virtual void ToggleWidget(UUserWidget* Widget);
 
+    virtual void CreateWidgets();
+    virtual void DestroyWidgets();
+
     virtual void CreateStartupWidgets();
-    virtual void RemoveStartupWidgets();
+    virtual void DestroyStartupWidgets();
     virtual void ShowStartupWidgets();
     virtual void HideStartupWidgets();
     virtual void ToggleStartupWidgets();
