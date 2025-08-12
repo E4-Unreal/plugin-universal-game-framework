@@ -18,11 +18,17 @@ public:
     TObjectPtr<UInputAction> EscapeAction;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UUserWidget> EscapeMenuWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleableWidgetClassMap;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TObjectPtr<UUserWidget> EscapeMenuWidget;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleableWidgetMap;
@@ -51,4 +57,9 @@ protected:
     virtual void SetupInput();
     virtual void BindInput();
     virtual void UnBindInput();
+
+    virtual void CreateEscapeMenuWidget();
+    virtual void RemoveEscapeMenuWidget();
+    virtual void ShowEscapeMenu();
+    virtual void HideEscapeMenu();
 };

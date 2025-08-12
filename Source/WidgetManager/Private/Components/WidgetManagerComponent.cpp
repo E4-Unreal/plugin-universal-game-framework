@@ -17,6 +17,7 @@ void UWidgetManagerComponent::BeginPlay()
     Super::BeginPlay();
 
     CreateToggleableWidgets();
+    CreateEscapeMenuWidget();
     SetupInput();
     BindInput();
 }
@@ -24,6 +25,7 @@ void UWidgetManagerComponent::BeginPlay()
 void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
     RemoveToggleableWidgets();
+    RemoveEscapeMenuWidget();
     UnBindInput();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
@@ -157,4 +159,28 @@ void UWidgetManagerComponent::UnBindInput()
     }
 
     InputBindingHandleMap.Empty();
+}
+
+void UWidgetManagerComponent::CreateEscapeMenuWidget()
+{
+    if (EscapeMenuWidgetClass && !EscapeMenuWidget)
+    {
+        EscapeMenuWidget = CreateWidget<UUserWidget>(GetWorld(), EscapeMenuWidgetClass);
+    }
+}
+
+void UWidgetManagerComponent::RemoveEscapeMenuWidget()
+{
+    HideWidget(EscapeMenuWidget);
+    EscapeMenuWidget = nullptr;
+}
+
+void UWidgetManagerComponent::ShowEscapeMenu()
+{
+    ShowWidget(EscapeMenuWidget);
+}
+
+void UWidgetManagerComponent::HideEscapeMenu()
+{
+    HideWidget(EscapeMenuWidget);
 }
