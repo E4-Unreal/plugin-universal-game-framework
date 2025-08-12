@@ -60,14 +60,14 @@ protected:
     virtual void CreateToggleableWidgets();
     virtual void DestroyToggleableWidgets();
     UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
-    virtual void ShowWidgetByAction(UInputAction* InputAction);
-    virtual void HideWidgetByAction(UInputAction* InputAction);
+    virtual bool ShowWidgetByAction(UInputAction* InputAction);
+    virtual bool HideWidgetByAction(UInputAction* InputAction);
     virtual void ToggleWidgetByAction(UInputAction* InputAction);
     virtual void HideTopWidget();
 
     virtual void CreateEscapeMenuWidget();
     virtual void DestroyEscapeMenuWidget();
-    virtual void ShowEscapeMenu();
-    virtual void HideEscapeMenu();
+    virtual bool ShowEscapeMenu();
+    virtual bool HideEscapeMenu();
     virtual void ToggleEscapeMenu();
 };

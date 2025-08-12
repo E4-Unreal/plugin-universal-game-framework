@@ -133,7 +133,7 @@ UUserWidget* UWidgetManagerComponent::GetWidgetByAction(UInputAction* InputActio
     return ToggleableWidgetMap.Contains(InputAction) ? ToggleableWidgetMap[InputAction] : nullptr;
 }
 
-void UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
+bool UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
 {
     if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
     {
@@ -141,11 +141,15 @@ void UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
         {
             ToggleableWidgetStack.Emplace(ToggleableWidget);
             ShowWidget(ToggleableWidget);
+
+            return true;
         }
     }
+
+    return false;
 }
 
-void UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
+bool UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
 {
     if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
     {
@@ -153,25 +157,19 @@ void UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
         {
             ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
             HideWidget(ToggleableWidget);
+
+            return true;
         }
     }
+
+    return false;
 }
 
 void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
 {
-    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
-    {
-        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
-        {
-            ToggleableWidgetStack.Emplace(ToggleableWidget);
-            ShowWidget(ToggleableWidget);
-        }
-        else
-        {
-            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
-            HideWidget(ToggleableWidget);
-        }
-    }
+    if (ShowWidgetByAction(InputAction)) return;
+
+    HideWidgetByAction(InputAction);
 }
 
 void UWidgetManagerComponent::HideTopWidget()
@@ -194,7 +192,7 @@ void UWidgetManagerComponent::DestroyEscapeMenuWidget()
     EscapeMenuWidget = nullptr;
 }
 
-void UWidgetManagerComponent::ShowEscapeMenu()
+bool UWidgetManagerComponent::ShowEscapeMenu()
 {
     if (ShowWidget(EscapeMenuWidget))
     {
@@ -203,10 +201,14 @@ void UWidgetManagerComponent::ShowEscapeMenu()
             OwningPlayerController->SetIgnoreMoveInput(true);
             OwningPlayerController->SetIgnoreLookInput(true);
         }
+
+        return true;
     }
+
+    return false;
 }
 
-void UWidgetManagerComponent::HideEscapeMenu()
+bool UWidgetManagerComponent::HideEscapeMenu()
 {
     if (HideWidget(EscapeMenuWidget))
     {
@@ -215,10 +217,16 @@ void UWidgetManagerComponent::HideEscapeMenu()
             OwningPlayerController->SetIgnoreMoveInput(false);
             OwningPlayerController->SetIgnoreLookInput(false);
         }
+
+        return true;
     }
+
+    return false;
 }
 
 void UWidgetManagerComponent::ToggleEscapeMenu()
 {
-    ToggleWidget(EscapeMenuWidget);
+    if (ShowEscapeMenu()) return;
+
+    HideEscapeMenu();
 }
