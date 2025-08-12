@@ -196,12 +196,26 @@ void UWidgetManagerComponent::DestroyEscapeMenuWidget()
 
 void UWidgetManagerComponent::ShowEscapeMenu()
 {
-    ShowWidget(EscapeMenuWidget);
+    if (ShowWidget(EscapeMenuWidget))
+    {
+        if (APlayerController* OwningPlayerController = GetOwningPlayerController())
+        {
+            OwningPlayerController->SetIgnoreMoveInput(true);
+            OwningPlayerController->SetIgnoreLookInput(true);
+        }
+    }
 }
 
 void UWidgetManagerComponent::HideEscapeMenu()
 {
-    HideWidget(EscapeMenuWidget);
+    if (HideWidget(EscapeMenuWidget))
+    {
+        if (APlayerController* OwningPlayerController = GetOwningPlayerController())
+        {
+            OwningPlayerController->SetIgnoreMoveInput(false);
+            OwningPlayerController->SetIgnoreLookInput(false);
+        }
+    }
 }
 
 void UWidgetManagerComponent::ToggleEscapeMenu()
