@@ -29,8 +29,8 @@ public:
 protected:
     virtual APlayerController* GetOwningPlayerController() const;
     virtual UUserWidget* CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
-    virtual void ShowWidget(UUserWidget* Widget);
-    virtual void HideWidget(UUserWidget* Widget);
+    virtual bool ShowWidget(UUserWidget* Widget);
+    virtual bool HideWidget(UUserWidget* Widget);
     virtual void ToggleWidget(UUserWidget* Widget);
 
     virtual void CreateWidgets();

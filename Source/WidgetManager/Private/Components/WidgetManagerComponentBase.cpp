@@ -52,35 +52,33 @@ UUserWidget* UWidgetManagerComponentBase::CreateWidgetByClass(TSubclassOf<UUserW
     return CreateWidget<UUserWidget>(OwningPlayerController, WidgetClass);
 }
 
-void UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
+bool UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
 {
     if (Widget && !Widget->IsInViewport())
     {
         Widget->AddToViewport();
+        return true;
     }
+
+    return false;
 }
 
-void UWidgetManagerComponentBase::HideWidget(UUserWidget* Widget)
+bool UWidgetManagerComponentBase::HideWidget(UUserWidget* Widget)
 {
     if (Widget && Widget->IsInViewport())
     {
         Widget->RemoveFromParent();
+        return true;
     }
+
+    return false;
 }
 
 void UWidgetManagerComponentBase::ToggleWidget(UUserWidget* Widget)
 {
-    if (Widget)
-    {
-        if (Widget->IsInViewport())
-        {
-            Widget->RemoveFromParent();
-        }
-        else
-        {
-            Widget->AddToViewport();
-        }
-    }
+    if (ShowWidget(Widget)) return;
+
+    HideWidget(Widget);
 }
 
 void UWidgetManagerComponentBase::CreateWidgets()
