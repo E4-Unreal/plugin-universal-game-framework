@@ -46,6 +46,8 @@ public:
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
 protected:
+    virtual void OnEscapeActionTriggered();
+
     UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
     virtual void ShowWidgetByAction(UInputAction* InputAction);
     virtual void HideWidgetByAction(UInputAction* InputAction);
@@ -62,4 +64,5 @@ protected:
     virtual void RemoveEscapeMenuWidget();
     virtual void ShowEscapeMenu();
     virtual void HideEscapeMenu();
+    virtual void ToggleEscapeMenu();
 };

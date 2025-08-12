@@ -31,6 +31,18 @@ void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+void UWidgetManagerComponent::OnEscapeActionTriggered()
+{
+    if (ToggleableWidgetStack.IsEmpty())
+    {
+        ToggleEscapeMenu();
+    }
+    else
+    {
+        HideTopWidget();
+    }
+}
+
 UUserWidget* UWidgetManagerComponent::GetWidgetByAction(UInputAction* InputAction) const
 {
     return ToggleableWidgetMap.Contains(InputAction) ? ToggleableWidgetMap[InputAction] : nullptr;
@@ -141,7 +153,7 @@ void UWidgetManagerComponent::BindInput()
                 EscapeAction,
                 ETriggerEvent::Triggered,
                 this,
-                &ThisClass::HideTopWidget
+                &ThisClass::OnEscapeActionTriggered
                 );
 
         InputBindingHandleMap.Emplace(EscapeAction, EscapeActionEventBinding.GetHandle());
@@ -183,4 +195,9 @@ void UWidgetManagerComponent::ShowEscapeMenu()
 void UWidgetManagerComponent::HideEscapeMenu()
 {
     HideWidget(EscapeMenuWidget);
+}
+
+void UWidgetManagerComponent::ToggleEscapeMenu()
+{
+    ToggleWidget(EscapeMenuWidget);
 }
