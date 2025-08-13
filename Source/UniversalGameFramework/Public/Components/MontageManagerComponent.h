@@ -12,6 +12,17 @@ class UNIVERSALGAMEFRAMEWORK_API UMontageManagerComponent : public UActorCompone
 {
     GENERATED_BODY()
 
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TWeakObjectPtr<USkeletalMeshComponent> Mesh;
+
 public:
     UMontageManagerComponent(const FObjectInitializer& ObjectInitializer);
+
+    virtual void InitializeComponent() override;
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    virtual void PlayMontage(UAnimMontage* Montage);
 };
