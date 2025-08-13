@@ -34,7 +34,7 @@ void UMontageManagerComponent::SetMesh(USkeletalMeshComponent* NewMesh)
     Mesh = NewMesh;
 }
 
-void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage) const
+void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage)
 {
     if (Montage && Mesh.IsValid())
     {
@@ -61,7 +61,7 @@ UAnimMontage* UMontageManagerComponent::GetMontageByTag(const FGameplayTag& Tag)
     return Montage;
 }
 
-void UMontageManagerComponent::PlayMontageByTag(const FGameplayTag& Tag) const
+void UMontageManagerComponent::PlayMontageByTag(const FGameplayTag& Tag)
 {
     PlayMontage(GetMontageByTag(Tag));
 }
