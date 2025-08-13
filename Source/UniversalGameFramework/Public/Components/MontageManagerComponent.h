@@ -32,11 +32,11 @@ public:
     virtual void SetMesh(USkeletalMeshComponent* NewMesh);
 
     UFUNCTION(BlueprintCallable)
-    virtual void PlayMontage(UAnimMontage* Montage) const;
+    virtual void PlayMontage(UAnimMontage* Montage);
 
     UFUNCTION(BlueprintPure)
     virtual UAnimMontage* GetMontageByTag(const FGameplayTag& Tag) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void PlayMontageByTag(const FGameplayTag& Tag) const;
+    virtual void PlayMontageByTag(const FGameplayTag& Tag);
 };
