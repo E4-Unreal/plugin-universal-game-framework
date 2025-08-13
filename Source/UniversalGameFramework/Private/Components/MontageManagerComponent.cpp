@@ -16,14 +16,22 @@ void UMontageManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
-    if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
+    if (!Mesh.IsValid())
     {
-        Mesh = OwningCharacter->GetMesh();
+        if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
+        {
+            Mesh = OwningCharacter->GetMesh();
+        }
+        else
+        {
+            Mesh = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
+        }
     }
-    else
-    {
-        Mesh = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
-    }
+}
+
+void UMontageManagerComponent::SetMesh(USkeletalMeshComponent* NewMesh)
+{
+    Mesh = NewMesh;
 }
 
 void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage) const

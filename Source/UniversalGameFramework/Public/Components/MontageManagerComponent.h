@@ -29,6 +29,9 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
+    virtual void SetMesh(USkeletalMeshComponent* NewMesh);
+
+    UFUNCTION(BlueprintCallable)
     virtual void PlayMontage(UAnimMontage* Montage) const;
 
     UFUNCTION(BlueprintPure)
