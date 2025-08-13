@@ -26,7 +26,7 @@ void UMontageManagerComponent::InitializeComponent()
     }
 }
 
-void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage)
+void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage) const
 {
     if (Montage && Mesh.IsValid())
     {
@@ -35,4 +35,25 @@ void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage)
             AnimInstance->Montage_Play(Montage);
         }
     }
+}
+
+UAnimMontage* UMontageManagerComponent::GetMontageByTag(const FGameplayTag& Tag) const
+{
+    UAnimMontage* Montage = nullptr;
+    FGameplayTagContainer TagContainer = Tag.GetGameplayTagParents();
+    for (const FGameplayTag& ParentTag : TagContainer)
+    {
+        if (MontageMap.Contains(ParentTag))
+        {
+            Montage = MontageMap[ParentTag];
+            break;
+        }
+    }
+
+    return Montage;
+}
+
+void UMontageManagerComponent::PlayMontageByTag(const FGameplayTag& Tag) const
+{
+    PlayMontage(GetMontageByTag(Tag));
 }
