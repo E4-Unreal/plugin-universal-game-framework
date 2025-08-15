@@ -31,19 +31,23 @@ public:
 
     /* API */
 
+    UFUNCTION(BlueprintPure)
+    virtual UUserWidget* GetWidgetByClass(TSubclassOf<UUserWidget> WidgetClass) const;
+
     UFUNCTION(BlueprintCallable)
-    UUserWidget* GetOrCreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
+    virtual UUserWidget* GetOrCreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
 
 protected:
     virtual APlayerController* GetOwningPlayerController() const;
-    virtual UUserWidget* CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual bool ShowWidget(UUserWidget* Widget);
     virtual bool HideWidget(UUserWidget* Widget);
     virtual void ToggleWidget(UUserWidget* Widget);
 
+    virtual UUserWidget* CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual bool ShowWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual bool HideWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual void ToggleWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
+    virtual void DestroyWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
 
     virtual void CreateWidgets();
     virtual void DestroyWidgets();
