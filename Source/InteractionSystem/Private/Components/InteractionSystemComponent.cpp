@@ -1,25 +1,25 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/InteractionSystemComponentBase.h"
+#include "Components/InteractionSystemComponent.h"
 
 #include "Interfaces/InteractableInterface.h"
 
-void UInteractionSystemComponentBase::AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget)
+void UInteractionSystemComponent::AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget)
 {
     AvailableTargets.AddUnique(NewTarget);
 
     RefreshTarget();
 }
 
-void UInteractionSystemComponentBase::RemoveTarget(const TScriptInterface<IInteractableInterface>& OldTarget)
+void UInteractionSystemComponent::RemoveTarget(const TScriptInterface<IInteractableInterface>& OldTarget)
 {
     AvailableTargets.RemoveSingleSwap(OldTarget);
 
     RefreshTarget();
 }
 
-void UInteractionSystemComponentBase::TryInteract()
+void UInteractionSystemComponent::TryInteract()
 {
     if (CurrentTarget && IInteractableInterface::Execute_CanInteract(CurrentTarget.GetObject(), GetOwner()))
     {
@@ -27,7 +27,7 @@ void UInteractionSystemComponentBase::TryInteract()
     }
 }
 
-void UInteractionSystemComponentBase::CancelInteract()
+void UInteractionSystemComponent::CancelInteract()
 {
     if (CurrentTarget)
     {
@@ -35,7 +35,7 @@ void UInteractionSystemComponentBase::CancelInteract()
     }
 }
 
-void UInteractionSystemComponentBase::RefreshTarget()
+void UInteractionSystemComponent::RefreshTarget()
 {
     if (AvailableTargets.IsEmpty())
     {
@@ -60,7 +60,7 @@ void UInteractionSystemComponentBase::RefreshTarget()
     CurrentTarget = AvailableTargets[MinIndex];
 }
 
-float UInteractionSystemComponentBase::CalculateTargetDistance(const TScriptInterface<IInteractableInterface>& Target) const
+float UInteractionSystemComponent::CalculateTargetDistance(const TScriptInterface<IInteractableInterface>& Target) const
 {
     if (AActor* TargetActor = Cast<AActor>(Target.GetObject()))
     {

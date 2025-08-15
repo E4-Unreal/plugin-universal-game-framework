@@ -10,7 +10,7 @@
 class UInteractableComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractionTriggeredSignature, AActor*, Interactor);
 
-class UInteractionSystemComponentBase;
+class UInteractionSystemComponent;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent, public IInteractableInterface
@@ -71,8 +71,8 @@ protected:
     virtual void OnOverlapShapeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     UFUNCTION(BlueprintNativeEvent)
-    void OnInteractorBeginOverlap(AActor* Interactor, UInteractionSystemComponentBase* InteractionSystem);
+    void OnInteractorBeginOverlap(AActor* Interactor, UInteractionSystemComponent* InteractionSystem);
 
     UFUNCTION(BlueprintNativeEvent)
-    void OnInteractorEndOverlap(AActor* Interactor,UInteractionSystemComponentBase* InteractionSystem);
+    void OnInteractorEndOverlap(AActor* Interactor,UInteractionSystemComponent* InteractionSystem);
 };

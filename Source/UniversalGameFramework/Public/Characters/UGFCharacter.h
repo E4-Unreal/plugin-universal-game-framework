@@ -9,7 +9,7 @@
 
 class UCurrencyManagerComponent;
 class UInventoryComponent;
-class UInteractionSystemComponentBase;
+class UInteractionSystemComponent;
 class UInputBinderComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -38,7 +38,7 @@ private:
     TObjectPtr<UInputBinderComponent> InputBinder;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInteractionSystemComponentBase> InteractionSystem;
+    TObjectPtr<UInteractionSystemComponent> InteractionSystem;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCurrencyManagerComponent> CurrencyManager;
@@ -62,7 +62,7 @@ public:
     FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
     FORCEINLINE UInputBinderComponent* GetInputBinder() const { return InputBinder; }
-    FORCEINLINE UInteractionSystemComponentBase* GetInteractionSystem() const { return InteractionSystem; }
+    FORCEINLINE UInteractionSystemComponent* GetInteractionSystem() const { return InteractionSystem; }
     FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
     FORCEINLINE UInventoryComponent* GetInventory() const { return Inventory; }
 };

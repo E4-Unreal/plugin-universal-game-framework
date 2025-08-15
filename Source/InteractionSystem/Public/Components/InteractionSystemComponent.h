@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "InteractionSystemComponentBase.generated.h"
+#include "InteractionSystemComponent.generated.h"
 
 class IInteractableInterface;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INTERACTIONSYSTEM_API UInteractionSystemComponentBase : public UActorComponent
+class INTERACTIONSYSTEM_API UInteractionSystemComponent : public UActorComponent
 {
     GENERATED_BODY()
 

@@ -7,7 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/CurrencyManagerComponent.h"
 #include "Components/InputBinderComponent.h"
-#include "Components/InteractionSystemComponentBase.h"
+#include "Components/InteractionSystemComponent.h"
 #include "Components/InventoryComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -55,7 +55,7 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     InputBinder = CreateDefaultSubobject<UInputBinderComponent>(InputBinderName);
 
     /* InteractionSystem */
-    InteractionSystem = CreateDefaultSubobject<UInteractionSystemComponentBase>(InteractionSystemName);
+    InteractionSystem = CreateDefaultSubobject<UInteractionSystemComponent>(InteractionSystemName);
 
     /* CurrencyManager */
     CurrencyManager = CreateDefaultSubobject<UCurrencyManagerComponent>(CurrencyManagerName);
