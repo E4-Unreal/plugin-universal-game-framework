@@ -18,6 +18,7 @@ public class UniversalGameFramework : ModuleRules
                 "EnhancedInputBinder",
                 "InteractionSystem",
                 "InventorySystem",
+                "EquipmentManager",
                 "DynamicData",
                 "ShopSystem",
                 "WidgetManager"
