@@ -67,6 +67,7 @@ protected:
 
     virtual void CreatePanelWidgets();
     virtual void DestroyPanelWidgets();
+    virtual void DestroyPanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass);
     TSubclassOf<UUserWidget> GetWidgetClassByAction(UInputAction* InputAction) const;
     virtual bool ShowWidgetByAction(UInputAction* InputAction);
     virtual bool HideWidgetByAction(UInputAction* InputAction);

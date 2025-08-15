@@ -43,7 +43,7 @@ bool UWidgetManagerComponent::HidePanelWidget(TSubclassOf<UUserWidget> PanelWidg
 {
     if (HideWidgetByClass(PanelWidgetClass))
     {
-        UUserWidget* PanelWidget = GetOrCreateWidgetByClass(PanelWidgetClass);
+        UUserWidget* PanelWidget = GetWidgetByClass(PanelWidgetClass);
         PanelWidgets.RemoveSingle(PanelWidget);
 
         return true;
@@ -146,8 +146,19 @@ void UWidgetManagerComponent::DestroyPanelWidgets()
 {
     for (const auto& [InputAction, PanelWidgetClass] : PanelWidgetClassMap)
     {
-        DestroyWidgetByClass(PanelWidgetClass);
+        DestroyPanelWidget(PanelWidgetClass);
     }
+
+    for (const auto& PanelWidget : PanelWidgets)
+    {
+        DestroyPanelWidget(PanelWidget->GetClass());
+    }
+}
+
+void UWidgetManagerComponent::DestroyPanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    HidePanelWidget(PanelWidgetClass);
+    DestroyWidgetByClass(PanelWidgetClass);
 }
 
 TSubclassOf<UUserWidget> UWidgetManagerComponent::GetWidgetClassByAction(UInputAction* InputAction) const
