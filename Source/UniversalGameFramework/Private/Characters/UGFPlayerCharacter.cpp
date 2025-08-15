@@ -5,6 +5,7 @@
 
 
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/CurrencyManagerComponent.h"
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponent.h"
@@ -15,6 +16,7 @@
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
+const FName AUGFPlayerCharacter::OverlapSphereName(TEXT("OverlapSphere"));
 const FName AUGFPlayerCharacter::InputBinderName(TEXT("InputBinder"));
 const FName AUGFPlayerCharacter::InteractionSystemName(TEXT("InteractionSystem"));
 const FName AUGFPlayerCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
@@ -37,6 +39,11 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(FollowCameraName);
     GetFollowCamera()->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     GetFollowCamera()->bUsePawnControlRotation = false;
+
+    /* OverlapSphere */
+
+    OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
+    GetOverlapSphere()->SetupAttachment(GetCapsuleComponent());
 
     /* InputBinder */
 
