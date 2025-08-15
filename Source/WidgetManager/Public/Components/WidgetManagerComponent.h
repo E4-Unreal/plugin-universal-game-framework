@@ -31,7 +31,7 @@ protected:
     TObjectPtr<UUserWidget> EscapeMenuWidget;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TArray<TObjectPtr<UUserWidget>> PanelWidgets;
+    TArray<TObjectPtr<UUserWidget>> ActivatedPanelWidgets;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, int32> InputBindingHandleMap;

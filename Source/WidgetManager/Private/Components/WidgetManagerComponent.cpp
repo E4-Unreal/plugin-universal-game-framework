@@ -31,7 +31,7 @@ bool UWidgetManagerComponent::ShowPanelWidget(TSubclassOf<UUserWidget> PanelWidg
     if (ShowWidgetByClass(PanelWidgetClass))
     {
         UUserWidget* PanelWidget = GetOrCreateWidgetByClass(PanelWidgetClass);
-        PanelWidgets.Emplace(PanelWidget);
+        ActivatedPanelWidgets.Emplace(PanelWidget);
 
         return true;
     }
@@ -44,7 +44,7 @@ bool UWidgetManagerComponent::HidePanelWidget(TSubclassOf<UUserWidget> PanelWidg
     if (HideWidgetByClass(PanelWidgetClass))
     {
         UUserWidget* PanelWidget = GetWidgetByClass(PanelWidgetClass);
-        PanelWidgets.RemoveSingle(PanelWidget);
+        ActivatedPanelWidgets.RemoveSingle(PanelWidget);
 
         return true;
     }
@@ -124,7 +124,7 @@ void UWidgetManagerComponent::UnBindInput()
 
 void UWidgetManagerComponent::OnEscapeActionTriggered()
 {
-    if (PanelWidgets.IsEmpty())
+    if (ActivatedPanelWidgets.IsEmpty())
     {
         ToggleEscapeMenu();
     }
@@ -149,7 +149,7 @@ void UWidgetManagerComponent::DestroyPanelWidgets()
         DestroyPanelWidget(PanelWidgetClass);
     }
 
-    for (const auto& PanelWidget : PanelWidgets)
+    for (const auto& PanelWidget : ActivatedPanelWidgets)
     {
         DestroyPanelWidget(PanelWidget->GetClass());
     }
@@ -189,9 +189,9 @@ void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
 
 void UWidgetManagerComponent::HideTopWidget()
 {
-    if (PanelWidgets.IsEmpty()) return;
+    if (ActivatedPanelWidgets.IsEmpty()) return;
 
-    UUserWidget* TopWidget = PanelWidgets.Pop();
+    UUserWidget* TopWidget = ActivatedPanelWidgets.Pop();
     HideWidget(TopWidget);
 }
 
