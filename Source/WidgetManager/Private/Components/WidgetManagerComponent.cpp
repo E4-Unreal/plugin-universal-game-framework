@@ -26,11 +26,44 @@ void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+bool UWidgetManagerComponent::ShowPanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    if (ShowWidgetByClass(PanelWidgetClass))
+    {
+        UUserWidget* PanelWidget = GetOrCreateWidgetByClass(PanelWidgetClass);
+        ActivatedPanelWidgets.Emplace(PanelWidget);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool UWidgetManagerComponent::HidePanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    if (HideWidgetByClass(PanelWidgetClass))
+    {
+        UUserWidget* PanelWidget = GetWidgetByClass(PanelWidgetClass);
+        ActivatedPanelWidgets.RemoveSingle(PanelWidget);
+
+        return true;
+    }
+
+    return false;
+}
+
+void UWidgetManagerComponent::TogglePanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    if (ShowPanelWidget(PanelWidgetClass)) return;
+
+    HidePanelWidget(PanelWidgetClass);
+}
+
 void UWidgetManagerComponent::CreateWidgets()
 {
     Super::CreateWidgets();
 
-    CreateToggleableWidgets();
+    CreatePanelWidgets();
     CreateEscapeMenuWidget();
 }
 
@@ -38,7 +71,7 @@ void UWidgetManagerComponent::DestroyWidgets()
 {
     Super::DestroyWidgets();
 
-    DestroyToggleableWidgets();
+    DestroyPanelWidgets();
     DestroyEscapeMenuWidget();
 }
 
@@ -49,8 +82,8 @@ void UWidgetManagerComponent::BindInput()
     {
         // Toggle
 
-        InputBindingHandleMap.Reserve(ToggleableWidgetMap.Num());
-        for (const auto& [InputAction, ToggleWidget] : ToggleableWidgetMap)
+        InputBindingHandleMap.Reserve(PanelWidgetClassMap.Num());
+        for (const auto& [InputAction, PanelWidgetClass] : PanelWidgetClassMap)
         {
             FEnhancedInputActionEventBinding& ToggleActionEventBinding = EnhancedInputComponent->BindAction(
                 InputAction,
@@ -91,7 +124,7 @@ void UWidgetManagerComponent::UnBindInput()
 
 void UWidgetManagerComponent::OnEscapeActionTriggered()
 {
-    if (ToggleableWidgetStack.IsEmpty())
+    if (ActivatedPanelWidgets.IsEmpty())
     {
         ToggleEscapeMenu();
     }
@@ -101,68 +134,50 @@ void UWidgetManagerComponent::OnEscapeActionTriggered()
     }
 }
 
-void UWidgetManagerComponent::CreateToggleableWidgets()
+void UWidgetManagerComponent::CreatePanelWidgets()
 {
-    if (!ToggleableWidgetMap.IsEmpty()) return;
-
-    ToggleableWidgetMap.Reserve(ToggleableWidgetClassMap.Num());
-    for (const auto& [InputAction, ToggleWidgetClass] : ToggleableWidgetClassMap)
+    for (const auto& [InputAction, PanelWidgetClass] : PanelWidgetClassMap)
     {
-        if (InputAction && ToggleWidgetClass)
-        {
-            if (UUserWidget* ToggleWidget = CreateWidgetByClass(ToggleWidgetClass))
-            {
-                ToggleableWidgetMap.Emplace(InputAction, ToggleWidget);
-            }
-        }
+        UUserWidget* PanelWidget = GetOrCreateWidgetByClass(PanelWidgetClass);
     }
 }
 
-void UWidgetManagerComponent::DestroyToggleableWidgets()
+void UWidgetManagerComponent::DestroyPanelWidgets()
 {
-    for (const auto& [InputAction, ToggleWidget] : ToggleableWidgetMap)
+    for (const auto& [InputAction, PanelWidgetClass] : PanelWidgetClassMap)
     {
-        HideWidgetByAction(InputAction);
+        DestroyPanelWidget(PanelWidgetClass);
     }
 
-    ToggleableWidgetMap.Empty();
+    for (const auto& PanelWidget : ActivatedPanelWidgets)
+    {
+        DestroyPanelWidget(PanelWidget->GetClass());
+    }
 }
 
-UUserWidget* UWidgetManagerComponent::GetWidgetByAction(UInputAction* InputAction) const
+void UWidgetManagerComponent::DestroyPanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
 {
-    return ToggleableWidgetMap.Contains(InputAction) ? ToggleableWidgetMap[InputAction] : nullptr;
+    HidePanelWidget(PanelWidgetClass);
+    DestroyWidgetByClass(PanelWidgetClass);
+}
+
+TSubclassOf<UUserWidget> UWidgetManagerComponent::GetWidgetClassByAction(UInputAction* InputAction) const
+{
+    return PanelWidgetClassMap.Contains(InputAction) ? PanelWidgetClassMap[InputAction] : nullptr;
 }
 
 bool UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
 {
-    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
-    {
-        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
-        {
-            ToggleableWidgetStack.Emplace(ToggleableWidget);
-            ShowWidget(ToggleableWidget);
+    TSubclassOf<UUserWidget> PanelWidgetClass = GetWidgetClassByAction(InputAction);
 
-            return true;
-        }
-    }
-
-    return false;
+    return ShowPanelWidget(PanelWidgetClass);
 }
 
 bool UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
 {
-    if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
-    {
-        if (ToggleableWidgetStack.Contains(ToggleableWidget))
-        {
-            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
-            HideWidget(ToggleableWidget);
+    TSubclassOf<UUserWidget> PanelWidgetClass = GetWidgetClassByAction(InputAction);
 
-            return true;
-        }
-    }
-
-    return false;
+    return HidePanelWidget(PanelWidgetClass);
 }
 
 void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
@@ -174,9 +189,9 @@ void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
 
 void UWidgetManagerComponent::HideTopWidget()
 {
-    if (ToggleableWidgetStack.IsEmpty()) return;
+    if (ActivatedPanelWidgets.IsEmpty()) return;
 
-    UUserWidget* TopWidget = ToggleableWidgetStack.Pop();
+    UUserWidget* TopWidget = ActivatedPanelWidgets.Pop();
     HideWidget(TopWidget);
 }
 

@@ -3,10 +3,10 @@
 
 #include "Input/InputConfig_Interact.h"
 
-#include "Components/InteractionSystemComponentBase.h"
+#include "Components/InteractionSystemComponent.h"
 
 void UInputConfig_Interact::OnStarted_Implementation(APlayerController* PlayerController,
-    const FInputActionInstance& InputActionInstance)
+                                                     const FInputActionInstance& InputActionInstance)
 {
     Super::OnStarted_Implementation(PlayerController, InputActionInstance);
 
@@ -29,7 +29,7 @@ void UInputConfig_Interact::OnCompleted_Implementation(APlayerController* Player
 
 void UInputConfig_Interact::TryInteract(APawn* Pawn)
 {
-    if (auto InteractionSystem = Pawn->FindComponentByClass<UInteractionSystemComponentBase>())
+    if (auto InteractionSystem = Pawn->FindComponentByClass<UInteractionSystemComponent>())
     {
         InteractionSystem->TryInteract();
     }
@@ -37,7 +37,7 @@ void UInputConfig_Interact::TryInteract(APawn* Pawn)
 
 void UInputConfig_Interact::CancelInteract(APawn* Pawn)
 {
-    if (auto InteractionSystem = Pawn->FindComponentByClass<UInteractionSystemComponentBase>())
+    if (auto InteractionSystem = Pawn->FindComponentByClass<UInteractionSystemComponent>())
     {
         InteractionSystem->CancelInteract();
     }

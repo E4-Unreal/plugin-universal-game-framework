@@ -38,9 +38,9 @@ bool AInteractableActorBase::CanInteract_Implementation(AActor* Interactor)
     return Execute_CanInteract(InteractableComponent, Interactor);
 }
 
-void AInteractableActorBase::TryInteract_Implementation(AActor* Interactor)
+void AInteractableActorBase::Interact_Implementation(AActor* Interactor)
 {
-    Execute_TryInteract(InteractableComponent, Interactor);
+    Execute_Interact(InteractableComponent, Interactor);
 }
 
 void AInteractableActorBase::CancelInteract_Implementation(AActor* Interactor)

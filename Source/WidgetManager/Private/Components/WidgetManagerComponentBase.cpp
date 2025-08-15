@@ -25,6 +25,18 @@ void UWidgetManagerComponentBase::OnComponentDestroyed(bool bDestroyingHierarchy
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+UUserWidget* UWidgetManagerComponentBase::GetWidgetByClass(TSubclassOf<UUserWidget> WidgetClass) const
+{
+    return WidgetMap.Contains(WidgetClass) ? WidgetMap[WidgetClass].Get() : nullptr;
+}
+
+UUserWidget* UWidgetManagerComponentBase::GetOrCreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    UUserWidget* Widget = GetWidgetByClass(WidgetClass);
+
+    return Widget ? Widget : CreateWidgetByClass(WidgetClass);
+}
+
 APlayerController* UWidgetManagerComponentBase::GetOwningPlayerController() const
 {
     UClass* OwnerClass = GetOwner()->GetClass();
@@ -40,16 +52,6 @@ APlayerController* UWidgetManagerComponentBase::GetOwningPlayerController() cons
     }
 
     return OwningPlayerController;
-}
-
-UUserWidget* UWidgetManagerComponentBase::CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
-{
-    if (!WidgetClass) return nullptr;
-
-    APlayerController* OwningPlayerController = GetOwningPlayerController();
-    if (!OwningPlayerController) return nullptr;
-
-    return CreateWidget<UUserWidget>(OwningPlayerController, WidgetClass);
 }
 
 bool UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
@@ -79,6 +81,46 @@ void UWidgetManagerComponentBase::ToggleWidget(UUserWidget* Widget)
     if (ShowWidget(Widget)) return;
 
     HideWidget(Widget);
+}
+
+UUserWidget* UWidgetManagerComponentBase::CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    if (!WidgetClass) return nullptr;
+
+    APlayerController* OwningPlayerController = GetOwningPlayerController();
+    if (!OwningPlayerController) return nullptr;
+
+    UUserWidget* Widget = CreateWidget<UUserWidget>(OwningPlayerController, WidgetClass);
+    WidgetMap.Emplace(WidgetClass, Widget);
+
+    return Widget;
+}
+
+bool UWidgetManagerComponentBase::ShowWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    UUserWidget* Widget = GetOrCreateWidgetByClass(WidgetClass);
+
+    return ShowWidget(Widget);
+}
+
+bool UWidgetManagerComponentBase::HideWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    UUserWidget* Widget = GetWidgetByClass(WidgetClass);
+
+    return HideWidget(Widget);
+}
+
+void UWidgetManagerComponentBase::ToggleWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    UUserWidget* Widget = GetOrCreateWidgetByClass(WidgetClass);
+
+    ToggleWidget(Widget);
+}
+
+void UWidgetManagerComponentBase::DestroyWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
+{
+    HideWidgetByClass(WidgetClass);
+    WidgetMap.Remove(WidgetClass);
 }
 
 void UWidgetManagerComponentBase::CreateWidgets()

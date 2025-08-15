@@ -37,7 +37,7 @@ public:
     /* InteractableInterface */
 
     virtual bool CanInteract_Implementation(AActor* Interactor) override;
-    virtual void TryInteract_Implementation(AActor* Interactor) override;
+    virtual void Interact_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;
 
 protected:
