@@ -9,6 +9,7 @@
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponent.h"
 #include "Components/InventoryComponent.h"
+#include "Components/WidgetManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
@@ -17,33 +18,44 @@ const FName AUGFPlayerCharacter::InputBinderName(TEXT("InputBinder"));
 const FName AUGFPlayerCharacter::InteractionSystemName(TEXT("InteractionSystem"));
 const FName AUGFPlayerCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFPlayerCharacter::InventoryName(TEXT("Inventory"));
+const FName AUGFPlayerCharacter::WidgetManagerName(TEXT("WidgetManager"));
 
 AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     /* CameraBoom */
+
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(CameraBoomName);
     GetCameraBoom()->SetupAttachment(RootComponent);
     GetCameraBoom()->TargetArmLength = 400.0f;
     GetCameraBoom()->bUsePawnControlRotation = true;
 
     /* FollowCamera */
+
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(FollowCameraName);
     GetFollowCamera()->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     GetFollowCamera()->bUsePawnControlRotation = false;
 
     /* InputBinder */
+
     InputBinder = CreateDefaultSubobject<UInputBinderComponent>(InputBinderName);
 
     /* InteractionSystem */
+
     InteractionSystem = CreateDefaultSubobject<UInteractionSystemComponent>(InteractionSystemName);
 
     /* CurrencyManager */
+
     CurrencyManager = CreateDefaultSubobject<UCurrencyManagerComponent>(CurrencyManagerName);
 
     /* Inventory */
+
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);
     GetInventory()->SetMaxSlotNum(20);
+
+    /* WidgetManager */
+
+    WidgetManager = CreateDefaultSubobject<UWidgetManagerComponent>(WidgetManagerName);
 }
 
 int32 AUGFPlayerCharacter::GetCurrency_Implementation(const FGameplayTag& CurrencyType) const

@@ -7,6 +7,7 @@
 #include "Interfaces/CustomerInterface.h"
 #include "UGFPlayerCharacter.generated.h"
 
+class UWidgetManagerComponent;
 class UCurrencyManagerComponent;
 class UInventoryComponent;
 class UInteractionSystemComponent;
@@ -29,6 +30,7 @@ protected:
     const static FName InteractionSystemName;
     const static FName CurrencyManagerName;
     const static FName InventoryName;
+    const static FName WidgetManagerName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -52,6 +54,9 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCurrencyManagerComponent> CurrencyManager;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UWidgetManagerComponent> WidgetManager;
+
 public:
     AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
@@ -72,4 +77,5 @@ public:
     FORCEINLINE UInteractionSystemComponent* GetInteractionSystem() const { return InteractionSystem; }
     FORCEINLINE UInventoryComponent* GetInventory() const { return Inventory; }
     FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
+    FORCEINLINE UWidgetManagerComponent* GetWidgetManager() const { return WidgetManager; }
 };
