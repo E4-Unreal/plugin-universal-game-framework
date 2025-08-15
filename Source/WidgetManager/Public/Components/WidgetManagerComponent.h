@@ -21,7 +21,7 @@ public:
     TSubclassOf<UUserWidget> EscapeMenuWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleableWidgetClassMap;
+    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> PanelWidgetClassMap;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
@@ -29,9 +29,6 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TObjectPtr<UUserWidget> EscapeMenuWidget;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleableWidgetMap;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<TObjectPtr<UUserWidget>> PanelWidgets;
@@ -68,9 +65,9 @@ protected:
     virtual void UnBindInput();
     virtual void OnEscapeActionTriggered();
 
-    virtual void CreateToggleableWidgets();
-    virtual void DestroyToggleableWidgets();
-    UUserWidget* GetWidgetByAction(UInputAction* InputAction) const;
+    virtual void CreatePanelWidgets();
+    virtual void DestroyPanelWidgets();
+    TSubclassOf<UUserWidget> GetWidgetClassByAction(UInputAction* InputAction) const;
     virtual bool ShowWidgetByAction(UInputAction* InputAction);
     virtual bool HideWidgetByAction(UInputAction* InputAction);
     virtual void ToggleWidgetByAction(UInputAction* InputAction);
