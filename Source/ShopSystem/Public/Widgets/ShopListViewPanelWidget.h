@@ -25,7 +25,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UBuyModalWidget> BuyModalWidgetClass;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
     TArray<TScriptInterface<IProductInterface>> DefaultProducts;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
