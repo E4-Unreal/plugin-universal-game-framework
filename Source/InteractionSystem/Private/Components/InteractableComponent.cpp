@@ -29,7 +29,7 @@ void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-void UInteractableComponent::TryInteract_Implementation(AActor* Interactor)
+void UInteractableComponent::Interact_Implementation(AActor* Interactor)
 {
     if (!Execute_CanInteract(this, Interactor)) return;
 

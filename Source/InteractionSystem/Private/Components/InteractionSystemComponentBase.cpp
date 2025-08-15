@@ -23,7 +23,7 @@ void UInteractionSystemComponentBase::TryInteract()
 {
     if (CurrentTarget && IInteractableInterface::Execute_CanInteract(CurrentTarget.GetObject(), GetOwner()))
     {
-        IInteractableInterface::Execute_TryInteract(CurrentTarget.GetObject(), GetOwner());
+        IInteractableInterface::Execute_Interact(CurrentTarget.GetObject(), GetOwner());
     }
 }
 

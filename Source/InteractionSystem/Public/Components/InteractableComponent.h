@@ -40,7 +40,7 @@ public:
     /* InteractableInterface */
 
     virtual bool CanInteract_Implementation(AActor* Interactor) override { return bCanInteract && Interactor && !GetOwner()->IsHidden() && !IsInteracting(Interactor); }
-    virtual void TryInteract_Implementation(AActor* Interactor) override;
+    virtual void Interact_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;
 
     /* ActorComponent */

@@ -26,7 +26,7 @@ public:
     bool CanInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void TryInteract(AActor* Interactor);
+    void Interact(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void CancelInteract(AActor* Interactor);
