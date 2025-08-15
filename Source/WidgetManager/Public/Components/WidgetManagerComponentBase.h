@@ -20,11 +20,19 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<TObjectPtr<UUserWidget>> StartupWidgets;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TMap<TSubclassOf<UUserWidget>, TObjectPtr<UUserWidget>> WidgetMap;
+
 public:
     UWidgetManagerComponentBase(const FObjectInitializer& ObjectInitializer);
 
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    UUserWidget* GetOrCreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
 
 protected:
     virtual APlayerController* GetOwningPlayerController() const;
@@ -32,6 +40,10 @@ protected:
     virtual bool ShowWidget(UUserWidget* Widget);
     virtual bool HideWidget(UUserWidget* Widget);
     virtual void ToggleWidget(UUserWidget* Widget);
+
+    virtual bool ShowWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
+    virtual bool HideWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
+    virtual void ToggleWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
 
     virtual void CreateWidgets();
     virtual void DestroyWidgets();
