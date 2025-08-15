@@ -11,12 +11,16 @@ public class UniversalGameFramework : ModuleRules
             {
                 "Core",
                 "GameplayTags",
+                "UMG",
+                "CommonUI",
+
                 "UniversalUtilities",
                 "EnhancedInputBinder",
                 "InteractionSystem",
                 "InventorySystem",
                 "DynamicData",
-                "ShopSystem"
+                "ShopSystem",
+                "WidgetManager"
             }
         );
 
