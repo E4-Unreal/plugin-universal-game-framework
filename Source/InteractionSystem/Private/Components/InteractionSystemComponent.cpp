@@ -5,6 +5,27 @@
 
 #include "Interfaces/InteractableInterface.h"
 
+UInteractionSystemComponent::UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    bWantsInitializeComponent = true;
+}
+
+void UInteractionSystemComponent::InitializeComponent()
+{
+    Super::InitializeComponent();
+
+    if (!OverlapSphere.IsValid())
+    {
+        OverlapSphere = GetOwner()->GetComponentByClass<USphereComponent>();
+    }
+}
+
+void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapSphere)
+{
+    OverlapSphere = NewOverlapSphere;
+}
+
 void UInteractionSystemComponent::AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget)
 {
     AvailableTargets.AddUnique(NewTarget);

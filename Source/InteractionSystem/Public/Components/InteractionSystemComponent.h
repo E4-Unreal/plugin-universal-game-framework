@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/SphereComponent.h"
 #include "InteractionSystemComponent.generated.h"
 
 class IInteractableInterface;
@@ -14,6 +15,9 @@ class INTERACTIONSYSTEM_API UInteractionSystemComponent : public UActorComponent
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    TWeakObjectPtr<USphereComponent> OverlapSphere;
+
     UPROPERTY(VisibleAnywhere, Transient, Category = "State")
     TArray<TScriptInterface<IInteractableInterface>> AvailableTargets;
 
@@ -21,6 +25,15 @@ protected:
     TScriptInterface<IInteractableInterface> CurrentTarget;
 
 public:
+    UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer);
+
+    virtual void InitializeComponent() override;
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetOverlapSphere(USphereComponent* NewOverlapSphere);
+
     UFUNCTION(BlueprintCallable)
     virtual void AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget);
 
