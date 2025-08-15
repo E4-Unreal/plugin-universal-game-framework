@@ -7,12 +7,16 @@
 #include "Actors/SocketSkeletalMeshActor.h"
 #include "Actors/SocketStaticMeshActor.h"
 #include "GameFramework/Character.h"
+#include "GameplayTags/SocketGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 
 USocketManagerComponent::USocketManagerComponent()
 {
+    bWantsInitializeComponent = true;
+
     SetIsReplicatedByDefault(true);
     OverrideBodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+    SocketNameMap.Emplace(Socket::Character::RightHand, FName("hand_r"));
 }
 
 void USocketManagerComponent::PostInitProperties()
@@ -22,9 +26,9 @@ void USocketManagerComponent::PostInitProperties()
     Refresh();
 }
 
-void USocketManagerComponent::BeginPlay()
+void USocketManagerComponent::InitializeComponent()
 {
-    Super::BeginPlay();
+    Super::InitializeComponent();
 
     FindTargetMesh();
 }
@@ -38,8 +42,6 @@ void USocketManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 
 void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
 {
-    if (TargetMesh.IsValid()) return;
-
     TargetMesh = InTargetMesh;
 }
 
@@ -156,9 +158,11 @@ void USocketManagerComponent::ClearSocket(const FGameplayTag& SourceTag)
 
 void USocketManagerComponent::FindTargetMesh()
 {
-    if (auto OwnerCharacter = Cast<ACharacter>(GetOwner()))
+    if (TargetMesh.IsValid()) return;
+
+    if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
     {
-        SetTargetMesh(OwnerCharacter->GetMesh());
+        SetTargetMesh(OwningCharacter->GetMesh());
     }
     else
     {

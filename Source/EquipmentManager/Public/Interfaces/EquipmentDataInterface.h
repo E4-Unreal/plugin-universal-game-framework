@@ -25,5 +25,8 @@ public:
     FGameplayTag GetEquipmentType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FGameplayTag GetSocketTag() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSubclassOf<AActor> GetActorClass() const;
 };
