@@ -11,7 +11,7 @@
 #include "Components/InteractionSystemComponent.h"
 #include "Components/InventoryComponent.h"
 #include "Components/WidgetManagerComponent.h"
-#include "EquipmentManager/Public/Components/EquipmentManagerComponent.h"
+#include "Components/EquipmentManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
