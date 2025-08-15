@@ -44,6 +44,7 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
 
     OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
     GetOverlapSphere()->SetupAttachment(GetCapsuleComponent());
+    GetOverlapSphere()->InitSphereRadius(128.0f);
 
     /* InputBinder */
 
