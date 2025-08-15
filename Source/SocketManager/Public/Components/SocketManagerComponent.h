@@ -13,9 +13,6 @@ class SOCKETMANAGER_API USocketManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 
-private:
-    TWeakObjectPtr<UMeshComponent> TargetMesh;
-
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<FGameplayTag, FName> SocketNameMap;
@@ -24,6 +21,9 @@ public:
     FBodyInstance OverrideBodyInstance;
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    TWeakObjectPtr<UMeshComponent> TargetMesh;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_SocketActorSlots, Transient, Category = "State")
     TArray<FSocketActorSlot> SocketActorSlots;
 
@@ -34,7 +34,7 @@ public:
     USocketManagerComponent();
 
     virtual void PostInitProperties() override;
-    virtual void BeginPlay() override;
+    virtual void InitializeComponent() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UFUNCTION(BlueprintCallable)
@@ -104,9 +104,6 @@ protected:
 
     UFUNCTION(BlueprintPure)
     FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.FindRef(SocketTag); }
-
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE UMeshComponent* GetTargetMesh() const { return TargetMesh.Get(); }
 
     /* Replicate */
 
