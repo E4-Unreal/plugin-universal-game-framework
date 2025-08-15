@@ -91,7 +91,7 @@ void UWidgetManagerComponent::UnBindInput()
 
 void UWidgetManagerComponent::OnEscapeActionTriggered()
 {
-    if (ToggleableWidgetStack.IsEmpty())
+    if (PanelWidgets.IsEmpty())
     {
         ToggleEscapeMenu();
     }
@@ -137,9 +137,9 @@ bool UWidgetManagerComponent::ShowWidgetByAction(UInputAction* InputAction)
 {
     if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
     {
-        if (!ToggleableWidgetStack.Contains(ToggleableWidget))
+        if (!PanelWidgets.Contains(ToggleableWidget))
         {
-            ToggleableWidgetStack.Emplace(ToggleableWidget);
+            PanelWidgets.Emplace(ToggleableWidget);
             ShowWidget(ToggleableWidget);
 
             return true;
@@ -153,9 +153,9 @@ bool UWidgetManagerComponent::HideWidgetByAction(UInputAction* InputAction)
 {
     if (UUserWidget* ToggleableWidget = GetWidgetByAction(InputAction))
     {
-        if (ToggleableWidgetStack.Contains(ToggleableWidget))
+        if (PanelWidgets.Contains(ToggleableWidget))
         {
-            ToggleableWidgetStack.RemoveSingle(ToggleableWidget);
+            PanelWidgets.RemoveSingle(ToggleableWidget);
             HideWidget(ToggleableWidget);
 
             return true;
@@ -174,9 +174,9 @@ void UWidgetManagerComponent::ToggleWidgetByAction(UInputAction* InputAction)
 
 void UWidgetManagerComponent::HideTopWidget()
 {
-    if (ToggleableWidgetStack.IsEmpty()) return;
+    if (PanelWidgets.IsEmpty()) return;
 
-    UUserWidget* TopWidget = ToggleableWidgetStack.Pop();
+    UUserWidget* TopWidget = PanelWidgets.Pop();
     HideWidget(TopWidget);
 }
 

@@ -34,7 +34,7 @@ protected:
     TMap<TObjectPtr<UInputAction>, TObjectPtr<UUserWidget>> ToggleableWidgetMap;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TArray<TObjectPtr<UUserWidget>> ToggleableWidgetStack;
+    TArray<TObjectPtr<UUserWidget>> PanelWidgets;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<TObjectPtr<UInputAction>, int32> InputBindingHandleMap;
