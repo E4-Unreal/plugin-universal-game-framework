@@ -10,6 +10,7 @@
 #include "Components/InteractionSystemComponent.h"
 #include "Components/InventoryComponent.h"
 #include "Components/WidgetManagerComponent.h"
+#include "EquipmentManager/Public/Components/EquipmentManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
@@ -18,6 +19,7 @@ const FName AUGFPlayerCharacter::InputBinderName(TEXT("InputBinder"));
 const FName AUGFPlayerCharacter::InteractionSystemName(TEXT("InteractionSystem"));
 const FName AUGFPlayerCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFPlayerCharacter::InventoryName(TEXT("Inventory"));
+const FName AUGFPlayerCharacter::EquipmentManagerName(TEXT("EquipmentManager"));
 const FName AUGFPlayerCharacter::WidgetManagerName(TEXT("WidgetManager"));
 
 AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -44,14 +46,18 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
 
     InteractionSystem = CreateDefaultSubobject<UInteractionSystemComponent>(InteractionSystemName);
 
-    /* CurrencyManager */
-
-    CurrencyManager = CreateDefaultSubobject<UCurrencyManagerComponent>(CurrencyManagerName);
-
     /* Inventory */
 
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);
     GetInventory()->SetMaxSlotNum(20);
+
+    /* CurrencyManager */
+
+    CurrencyManager = CreateDefaultSubobject<UCurrencyManagerComponent>(CurrencyManagerName);
+
+    /* EquipmentManager */
+
+    EquipmentManager = CreateOptionalDefaultSubobject<UEquipmentManagerComponent>(EquipmentManagerName);
 
     /* WidgetManager */
 
