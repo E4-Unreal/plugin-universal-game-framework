@@ -7,12 +7,14 @@
 #include "Actors/SocketSkeletalMeshActor.h"
 #include "Actors/SocketStaticMeshActor.h"
 #include "GameFramework/Character.h"
+#include "GameplayTags/SocketGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 
 USocketManagerComponent::USocketManagerComponent()
 {
     SetIsReplicatedByDefault(true);
     OverrideBodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+    SocketNameMap.Emplace(Socket::Character::RightHand, FName("hand_r"));
 }
 
 void USocketManagerComponent::PostInitProperties()
