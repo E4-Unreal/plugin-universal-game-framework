@@ -16,13 +16,14 @@ class SOCKETMANAGER_API USocketManagerComponent : public UActorComponent
 private:
     TWeakObjectPtr<UMeshComponent> TargetMesh;
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<FGameplayTag, FName> SocketNameMap;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ShowOnlyInnerProperties, SkipUCSModifiedProperties))
     FBodyInstance OverrideBodyInstance;
 
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_SocketActorSlots, Transient, Category = "State")
     TArray<FSocketActorSlot> SocketActorSlots;
 
