@@ -21,6 +21,28 @@ void UInteractionSystemComponent::InitializeComponent()
     }
 }
 
+void UInteractionSystemComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (OverlapSphere.IsValid())
+    {
+        OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
+        OverlapSphere->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
+    }
+}
+
+void UInteractionSystemComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
+{
+    Super::OnComponentDestroyed(bDestroyingHierarchy);
+
+    if (OverlapSphere.IsValid())
+    {
+        OverlapSphere->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
+        OverlapSphere->OnComponentEndOverlap.RemoveDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
+    }
+}
+
 void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapSphere)
 {
     OverlapSphere = NewOverlapSphere;
@@ -28,6 +50,8 @@ void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapS
 
 void UInteractionSystemComponent::AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget)
 {
+    if (!NewTarget.GetInterface()) return;
+
     AvailableTargets.AddUnique(NewTarget);
 
     RefreshTarget();
@@ -35,6 +59,8 @@ void UInteractionSystemComponent::AddTarget(const TScriptInterface<IInteractable
 
 void UInteractionSystemComponent::RemoveTarget(const TScriptInterface<IInteractableInterface>& OldTarget)
 {
+    if (!OldTarget.GetInterface()) return;
+
     AvailableTargets.RemoveSingleSwap(OldTarget);
 
     RefreshTarget();
@@ -54,6 +80,19 @@ void UInteractionSystemComponent::CancelInteract()
     {
         IInteractableInterface::Execute_CancelInteract(CurrentTarget.GetObject(), GetOwner());
     }
+}
+
+void UInteractionSystemComponent::OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+    const FHitResult& SweepResult)
+{
+    AddTarget(OtherActor);
+}
+
+void UInteractionSystemComponent::OnOverlapSphereEndOverlap(UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    RemoveTarget(OtherActor);
 }
 
 void UInteractionSystemComponent::RefreshTarget()

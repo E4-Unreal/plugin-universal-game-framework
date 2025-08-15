@@ -28,6 +28,8 @@ public:
     UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer);
 
     virtual void InitializeComponent() override;
+    virtual void BeginPlay() override;
+    virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
     /* API */
 
@@ -47,6 +49,12 @@ public:
     virtual void CancelInteract();
 
 protected:
+    UFUNCTION()
+    virtual void OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    virtual void OnOverlapSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
     virtual void RefreshTarget();
 
     float CalculateTargetDistance(const TScriptInterface<IInteractableInterface>& Target) const;
