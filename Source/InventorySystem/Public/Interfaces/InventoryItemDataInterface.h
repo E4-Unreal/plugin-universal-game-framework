@@ -8,6 +8,8 @@
 
 struct FInventoryItemData;
 
+// TODO ItemDataInterface로 대체 예정
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType, Blueprintable)
 class UInventoryItemDataInterface : public UInterface
