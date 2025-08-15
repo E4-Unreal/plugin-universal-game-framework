@@ -13,10 +13,11 @@ class INVENTORYSYSTEM_API UCurrencyManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
-    TMap<FGameplayTag, int32> DefaultCurrencies;
+    TMap<FGameplayTag, int32> StartupCurrencyMap;
 
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<FGameplayTag, int32> CurrencyMap;
 

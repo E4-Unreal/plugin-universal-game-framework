@@ -3,21 +3,21 @@
 
 #include "Components/CurrencyManagerComponent.h"
 
-#include "InventoryGameplayTags.h"
+#include "GameplayTags/InventoryGameplayTags.h"
 
 
 UCurrencyManagerComponent::UCurrencyManagerComponent()
 {
     bWantsInitializeComponent = true;
 
-    DefaultCurrencies.Emplace(Currency::Default, 0);
+    StartupCurrencyMap.Emplace(Currency::Default, 0);
 }
 
 void UCurrencyManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
-    for (const auto& [CurrencyType, Amount] : DefaultCurrencies)
+    for (const auto& [CurrencyType, Amount] : StartupCurrencyMap)
     {
         CurrencyMap.Emplace(CurrencyType, Amount);
     }

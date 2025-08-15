@@ -1,4 +1,4 @@
-﻿#include "InventoryGameplayTags.h"
+﻿#include "GameplayTags/InventoryGameplayTags.h"
 
 namespace InventoryGameplayTags
 {

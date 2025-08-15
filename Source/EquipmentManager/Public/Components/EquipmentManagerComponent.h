@@ -15,10 +15,11 @@ class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public USocketManagerCom
 {
     GENERATED_BODY()
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TArray<FEquipmentSlotConfig> SlotConfigs;
 
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<FEquipmentSlot> Slots;
 

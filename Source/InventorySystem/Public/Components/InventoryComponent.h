@@ -18,10 +18,6 @@ class INVENTORYSYSTEM_API UInventoryComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UPROPERTY(BlueprintAssignable, Category = "UI")
-    FUGFInventoryUpdatedSignature InventoryUpdated;
-
-protected:
     UPROPERTY(EditAnywhere, BlueprintGetter = GetMaxSlotNum, BlueprintSetter = SetMaxSlotNum, Category = "Config", meta = (ClampMin = 0))
     int32 MaxSlotNum = 4;
 
@@ -34,6 +30,10 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FVector DropItemOffset;
 
+    UPROPERTY(BlueprintAssignable, Category = "UI")
+    FUGFInventoryUpdatedSignature InventoryUpdated;
+
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_InventorySlots, Transient, Category = "State")
     TArray<FInventorySlot> InventorySlots;
 
