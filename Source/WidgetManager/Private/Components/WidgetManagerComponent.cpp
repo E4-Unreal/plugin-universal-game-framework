@@ -26,6 +26,39 @@ void UWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+bool UWidgetManagerComponent::ShowPanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    if (ShowWidgetByClass(PanelWidgetClass))
+    {
+        UUserWidget* PanelWidget = GetOrCreateWidgetByClass(PanelWidgetClass);
+        PanelWidgets.Emplace(PanelWidget);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool UWidgetManagerComponent::HidePanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    if (HideWidgetByClass(PanelWidgetClass))
+    {
+        UUserWidget* PanelWidget = GetOrCreateWidgetByClass(PanelWidgetClass);
+        PanelWidgets.RemoveSingle(PanelWidget);
+
+        return true;
+    }
+
+    return false;
+}
+
+void UWidgetManagerComponent::TogglePanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass)
+{
+    if (ShowPanelWidget(PanelWidgetClass)) return;
+
+    HidePanelWidget(PanelWidgetClass);
+}
+
 void UWidgetManagerComponent::CreateWidgets()
 {
     Super::CreateWidgets();

@@ -45,6 +45,17 @@ public:
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool ShowPanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool HidePanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void TogglePanelWidget(TSubclassOf<UUserWidget> PanelWidgetClass);
+
 protected:
     /* WidgetManagerComponentBase */
 
