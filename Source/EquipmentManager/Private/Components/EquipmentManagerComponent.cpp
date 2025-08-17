@@ -88,6 +88,9 @@ void UEquipmentManagerComponent::CreateSlots()
 
     for (const auto& [EquipmentType, Sockets] : SlotConfigs)
     {
+        if (SlotNumMap.Contains(EquipmentType)) continue;
+        SlotNumMap.Emplace(EquipmentType, Sockets.Num());
+
         for (int32 Index = 0; Index < Sockets.Num(); ++Index)
         {
             FEquipmentSlot NewEquipmentSlot;

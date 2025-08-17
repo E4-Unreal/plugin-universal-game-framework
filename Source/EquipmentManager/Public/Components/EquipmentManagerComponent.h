@@ -21,6 +21,9 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TMap<FEquipmentTypeTag, int32> SlotNumMap;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<FEquipmentSlot> Slots;
 
 public:
