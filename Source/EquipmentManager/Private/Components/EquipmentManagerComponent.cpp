@@ -3,7 +3,7 @@
 
 #include "Components/EquipmentManagerComponent.h"
 
-#include "Interfaces/EquipmentInterface.h"
+#include "Interfaces/EquipmentActorInterface.h"
 
 
 UEquipmentManagerComponent::UEquipmentManagerComponent()
@@ -46,7 +46,7 @@ const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentSlotIn
     return FEquipmentSlot::EmptySlot;
 }
 
-bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex)
+bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentActorInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex)
 {
     if (!NewEquipment) return false;
     if (!HasSlot(SlotIndex)) return false;
@@ -55,7 +55,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     if (Slot.IsValid() && Slot.IsEmpty())
     {
         Slot.Equipment = NewEquipment;
-        IEquipmentInterface::Execute_Equip(Slot.Equipment.GetObject(), GetOwner());
+        IEquipmentActorInterface::Execute_Equip(Slot.Equipment.GetObject(), GetOwner());
         AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
 
         return true;
@@ -64,7 +64,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     return false;
 }
 
-TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex)
+TScriptInterface<IEquipmentActorInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex)
 {
     if (!HasSlot(SlotIndex)) return nullptr;
 
@@ -72,7 +72,7 @@ TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmen
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
         AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
-        IEquipmentInterface::Execute_UnEquip(Slot.Equipment.GetObject());
+        IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment.GetObject());
         Slot.Equipment = nullptr;
 
         return OldEquipmentActor;

@@ -39,10 +39,10 @@ public:
     const FEquipmentSlot& GetSlot(const FEquipmentSlotIndex& SlotIndex) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex);
+    virtual bool AddEquipmentToSlot(const TScriptInterface<IEquipmentActorInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex);
 
     UFUNCTION(BlueprintCallable)
-    virtual TScriptInterface<IEquipmentInterface> RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex);
+    virtual TScriptInterface<IEquipmentActorInterface> RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex);
 
 protected:
     void CreateSlots();

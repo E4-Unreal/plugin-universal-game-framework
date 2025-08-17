@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interfaces/EquipmentInterface.h"
+#include "Interfaces/EquipmentActorInterface.h"
 #include "EquipmentActor.generated.h"
 
 UCLASS()
-class EQUIPMENTMANAGER_API AEquipmentActor : public AActor, public IEquipmentInterface
+class EQUIPMENTMANAGER_API AEquipmentActor : public AActor, public IEquipmentActorInterface
 {
     GENERATED_BODY()
 

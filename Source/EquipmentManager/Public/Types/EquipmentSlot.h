@@ -6,7 +6,7 @@
 #include "EquipmentSlotIndex.h"
 #include "EquipmentSlot.generated.h"
 
-class IEquipmentInterface;
+class IEquipmentActorInterface;
 
 USTRUCT(BlueprintType)
 struct EQUIPMENTMANAGER_API FEquipmentSlot
@@ -22,7 +22,7 @@ struct EQUIPMENTMANAGER_API FEquipmentSlot
     FGameplayTag Socket;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TScriptInterface<IEquipmentInterface> Equipment;
+    TScriptInterface<IEquipmentActorInterface> Equipment;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bEquipped = false;
