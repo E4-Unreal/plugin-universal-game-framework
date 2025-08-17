@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SocketManagerComponent.h"
+#include "Components/ActorComponent.h"
 #include "Types/EquipmentSlot.h"
 #include "Types/EquipmentSlotConfig.h"
 #include "Types/EquipmentSlotIndex.h"
@@ -11,7 +11,7 @@
 
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public USocketManagerComponent
+class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 

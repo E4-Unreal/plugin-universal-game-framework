@@ -56,7 +56,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     {
         Slot.Equipment = NewEquipment;
         IEquipmentActorInterface::Execute_Equip(Slot.Equipment.GetObject(), GetOwner());
-        AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
+        // AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
 
         return true;
     }
@@ -71,7 +71,7 @@ TScriptInterface<IEquipmentActorInterface> UEquipmentManagerComponent::RemoveEqu
     FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
-        AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
+        AActor* OldEquipmentActor = nullptr; //DetachActorFromSocket(Slot.Socket);
         IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment.GetObject());
         Slot.Equipment = nullptr;
 
