@@ -6,8 +6,6 @@
 #include "UObject/Interface.h"
 #include "EquipmentActorInterface.generated.h"
 
-class IEquipmentDataInterface;
-
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UEquipmentActorInterface : public UInterface
 {
@@ -23,10 +21,10 @@ class EQUIPMENTMANAGER_API IEquipmentActorInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetEquipmentDataInterface(const TScriptInterface<IEquipmentDataInterface>& NewInterface);
+    void SetEquipmentData(UDataAsset* NewEquipmentData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TScriptInterface<IEquipmentDataInterface> GetEquipmentDataInterface() const;
+    UDataAsset* GetEquipmentData() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Equip(AActor* NewOwner);

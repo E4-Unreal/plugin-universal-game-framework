@@ -9,6 +9,11 @@ AEquipmentActor::AEquipmentActor(const FObjectInitializer& ObjectInitializer)
 {
 }
 
+void AEquipmentActor::SetEquipmentData_Implementation(UDataAsset* NewEquipmentData)
+{
+    EquipmentData = NewEquipmentData;
+}
+
 void AEquipmentActor::Equip_Implementation(AActor* NewOwner)
 {
     LOG(Log, TEXT("%s equip %s"), *NewOwner->GetName(), *GetName())
