@@ -11,7 +11,7 @@ struct EQUIPMENTMANAGER_API FEquipmentSlotConfig
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Equipment"))
     FEquipmentTypeTag EquipmentType;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)

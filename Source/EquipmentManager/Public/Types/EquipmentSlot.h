@@ -18,7 +18,7 @@ struct EQUIPMENTMANAGER_API FEquipmentSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FEquipmentSlotIndex SlotIndex;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Socket"))
     FGameplayTag Socket;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
