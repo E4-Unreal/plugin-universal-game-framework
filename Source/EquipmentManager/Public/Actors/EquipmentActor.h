@@ -7,6 +7,8 @@
 #include "Interfaces/EquipmentActorInterface.h"
 #include "EquipmentActor.generated.h"
 
+class IEquipmentDataInterface;
+
 UCLASS()
 class EQUIPMENTMANAGER_API AEquipmentActor : public AActor, public IEquipmentActorInterface
 {
@@ -29,7 +31,7 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TObjectPtr<UDataAsset> EquipmentData;
+    TScriptInterface<IEquipmentDataInterface> EquipmentData;
 
 public:
     AEquipmentActor(const FObjectInitializer& ObjectInitializer);
@@ -42,8 +44,8 @@ public:
 
     /* EquipmentInterface */
 
-    virtual UDataAsset* GetEquipmentData_Implementation() const override { return EquipmentData; }
-    virtual void SetEquipmentData_Implementation(UDataAsset* NewEquipmentData) override;
+    virtual TScriptInterface<IEquipmentDataInterface> GetEquipmentData_Implementation() const override { return EquipmentData; }
+    virtual void SetEquipmentData_Implementation(const TScriptInterface<IEquipmentDataInterface>& NewEquipmentData) override;
     virtual void Equip_Implementation(AActor* NewOwner) override;
     virtual void UnEquip_Implementation() override;
 

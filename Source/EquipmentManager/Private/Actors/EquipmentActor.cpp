@@ -50,7 +50,7 @@ void AEquipmentActor::PostEditChangeProperty(struct FPropertyChangedEvent& Prope
 #endif
 
 
-void AEquipmentActor::SetEquipmentData_Implementation(UDataAsset* NewEquipmentData)
+void AEquipmentActor::SetEquipmentData_Implementation(const TScriptInterface<IEquipmentDataInterface>& NewEquipmentData)
 {
     EquipmentData = NewEquipmentData;
     InitializeByData();
@@ -70,13 +70,14 @@ void AEquipmentActor::UnEquip_Implementation()
 
 void AEquipmentActor::InitializeByData()
 {
+    UObject* EquipmentDataObject = EquipmentData.GetObject();
     USkeletalMesh* NewSkeletalMesh = nullptr;
     UStaticMesh* NewStaticMesh = nullptr;
 
-    if (EquipmentData && EquipmentData->Implements<UEquipmentDataInterface>())
+    if (EquipmentDataObject && EquipmentDataObject->Implements<UEquipmentDataInterface>())
     {
-        TSoftObjectPtr<USkeletalMesh> SkeletalMeshToLoad = IEquipmentDataInterface::Execute_GetSkeletalMesh(EquipmentData);
-        TSoftObjectPtr<UStaticMesh> StaticMeshToLoad = IEquipmentDataInterface::Execute_GetStaticMesh(EquipmentData);
+        TSoftObjectPtr<USkeletalMesh> SkeletalMeshToLoad = IEquipmentDataInterface::Execute_GetSkeletalMesh(EquipmentDataObject);
+        TSoftObjectPtr<UStaticMesh> StaticMeshToLoad = IEquipmentDataInterface::Execute_GetStaticMesh(EquipmentDataObject);
 
         if (!SkeletalMeshToLoad.IsNull())
         {
