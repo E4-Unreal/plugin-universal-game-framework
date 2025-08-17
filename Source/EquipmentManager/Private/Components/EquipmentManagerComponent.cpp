@@ -5,6 +5,7 @@
 
 #include "Interfaces/EquipmentActorInterface.h"
 #include "Interfaces/EquipmentDataInterface.h"
+#include "GameplayTags/EquipmentTypeTags.h"
 
 
 UEquipmentManagerComponent::UEquipmentManagerComponent()
@@ -19,13 +20,20 @@ void UEquipmentManagerComponent::InitializeComponent()
     CreateSlots();
 }
 
-bool UEquipmentManagerComponent::HasSlot(const FEquipmentSlotIndex& SlotIndex) const
+void UEquipmentManagerComponent::SelectWeapon(int32 Index)
 {
-    if (!SlotIndex.IsValid()) return false;
+    FEquipmentTypeTag WeaponTypeTag = FEquipmentTypeTag(Equipment::Weapon::Root);
+    int32 WeaponSlotNum = GetSlotNum(WeaponTypeTag);
+    if (Index < 0 || Index > WeaponSlotNum - 1) return;
 
+    SelectedWeapon = GetSlot(WeaponTypeTag, Index).Equipment;
+}
+
+bool UEquipmentManagerComponent::HasSlot(FEquipmentTypeTag EquipmentType, int32 Index) const
+{
     for (const auto& Slot : Slots)
     {
-        if (Slot.SlotIndex == SlotIndex)
+        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
         {
             return true;
         }
@@ -34,11 +42,11 @@ bool UEquipmentManagerComponent::HasSlot(const FEquipmentSlotIndex& SlotIndex) c
     return false;
 }
 
-const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentSlotIndex& SlotIndex) const
+const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FEquipmentTypeTag EquipmentType, int32 Index) const
 {
-    for (const auto& Slot : Slots)
+    for (const FEquipmentSlot& Slot : Slots)
     {
-        if (Slot.SlotIndex == SlotIndex)
+        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
         {
             return Slot;
         }
@@ -47,17 +55,17 @@ const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentSlotIn
     return FEquipmentSlot::EmptySlot;
 }
 
-bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentActorInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex)
+bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FEquipmentTypeTag EquipmentType, int32 Index)
 {
     if (!NewEquipment) return false;
-    if (!HasSlot(SlotIndex)) return false;
+    if (!HasSlot(EquipmentType, Index)) return false;
 
-    FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
+    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
     if (Slot.IsValid() && Slot.IsEmpty())
     {
         Slot.Equipment = NewEquipment;
-        IEquipmentActorInterface::Execute_Equip(Slot.Equipment.GetObject(), GetOwner());
-        AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
+        IEquipmentActorInterface::Execute_Equip(Slot.Equipment, GetOwner());
+        AttachActorToSocket(Slot.Socket, NewEquipment);
 
         return true;
     }
@@ -65,15 +73,15 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     return false;
 }
 
-TScriptInterface<IEquipmentActorInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex)
+AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FEquipmentTypeTag EquipmentType, int32 Index)
 {
-    if (!HasSlot(SlotIndex)) return nullptr;
+    if (!HasSlot(EquipmentType, Index)) return nullptr;
 
-    FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
+    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
         AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
-        IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment.GetObject());
+        IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment);
         Slot.Equipment = nullptr;
 
         return OldEquipmentActor;
@@ -94,7 +102,8 @@ void UEquipmentManagerComponent::CreateSlots()
         for (int32 Index = 0; Index < Sockets.Num(); ++Index)
         {
             FEquipmentSlot NewEquipmentSlot;
-            NewEquipmentSlot.SlotIndex = FEquipmentSlotIndex(EquipmentType, Index);
+            NewEquipmentSlot.EquipmentType = EquipmentType;
+            NewEquipmentSlot.Index = Index;
             NewEquipmentSlot.Socket = Sockets[Index];
 
             Slots.Emplace(NewEquipmentSlot);
