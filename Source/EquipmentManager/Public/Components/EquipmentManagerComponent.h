@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/SocketManagerComponent.h"
 #include "Types/EquipmentSlot.h"
 #include "Types/EquipmentSlotConfig.h"
 #include "Types/EquipmentSlotIndex.h"
@@ -11,7 +11,7 @@
 
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public UActorComponent
+class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public USocketManagerComponent
 {
     GENERATED_BODY()
 
@@ -51,7 +51,6 @@ protected:
     void CreateSlots();
 
     virtual AActor* SpawnActorByData(UDataAsset* Data);
-    virtual AActor* SpawnActorByClass(TSubclassOf<AActor> ActorClass) const;
 
     FEquipmentSlot& GetSlotRef(const FEquipmentSlotIndex& SlotIndex) const { return *const_cast<FEquipmentSlot*>(&GetSlot(SlotIndex)); }
 };

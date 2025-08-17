@@ -57,7 +57,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     {
         Slot.Equipment = NewEquipment;
         IEquipmentActorInterface::Execute_Equip(Slot.Equipment.GetObject(), GetOwner());
-        // AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
+        AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
 
         return true;
     }
@@ -72,7 +72,7 @@ TScriptInterface<IEquipmentActorInterface> UEquipmentManagerComponent::RemoveEqu
     FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
-        AActor* OldEquipmentActor = nullptr; //DetachActorFromSocket(Slot.Socket);
+        AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
         IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment.GetObject());
         Slot.Equipment = nullptr;
 
@@ -111,36 +111,13 @@ AActor* UEquipmentManagerComponent::SpawnActorByData(UDataAsset* Data)
         TSubclassOf<AActor> ActorClass = IEquipmentDataInterface::Execute_GetActorClass(Data);
         if (ActorClass && ActorClass->ImplementsInterface(UEquipmentActorInterface::StaticClass()))
         {
-            SpawnedActor = SpawnActorByClass(ActorClass);
+            SpawnedActor = SpawnActor(ActorClass);
             if (SpawnedActor)
             {
                 IEquipmentActorInterface::Execute_SetEquipmentData(SpawnedActor, Data);
             }
         }
     }
-
-    return SpawnedActor;
-}
-
-AActor* UEquipmentManagerComponent::SpawnActorByClass(TSubclassOf<AActor> ActorClass) const
-{
-    // 입력 유효성 검사
-    if (ActorClass == nullptr) return nullptr;
-
-    // 유효성 검사
-    UWorld* World = GetWorld();
-    AActor* Owner = GetOwner();
-    if (World == nullptr || Owner == nullptr) return nullptr;
-
-    // ActorSpawnParameters 설정
-    FActorSpawnParameters ActorSpawnParameters;
-    ActorSpawnParameters.Owner = Owner;
-    ActorSpawnParameters.Instigator = Owner->GetInstigator();
-    ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-    // 액터 스폰
-    const FVector SpawnLocation = Owner->GetActorLocation();
-    AActor* SpawnedActor = World->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
 
     return SpawnedActor;
 }
