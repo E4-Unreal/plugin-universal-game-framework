@@ -18,4 +18,6 @@ struct EQUIPMENTMANAGER_API FEquipmentTypeTag
 
     bool operator==(const FEquipmentTypeTag& Other) const { return Tag == Other.Tag; }
     bool operator!=(const FEquipmentTypeTag& Other) const { return !(*this == Other); }
+
+    friend uint32 GetTypeHash(const FEquipmentTypeTag& EquipmentType) { return FCrc::MemCrc32(&EquipmentType, sizeof(FEquipmentTypeTag)); }
 };
