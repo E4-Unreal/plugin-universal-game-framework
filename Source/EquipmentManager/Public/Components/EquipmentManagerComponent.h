@@ -20,7 +20,7 @@ public:
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<FEquipmentTypeTag, int32> SlotNumMap;
+    TMap<FGameplayTag, int32> SlotNumMap;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<FEquipmentSlot> Slots;
@@ -38,7 +38,7 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE int32 GetSlotNum(FEquipmentTypeTag EquipmentType) { return SlotNumMap.Contains(EquipmentType) ? SlotNumMap[EquipmentType] : 0; }
+    FORCEINLINE int32 GetSlotNum(FGameplayTag EquipmentType) { return SlotNumMap.Contains(EquipmentType) ? SlotNumMap[EquipmentType] : 0; }
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE AActor* GetSelectedWeapon() const { return SelectedWeapon; }
@@ -47,21 +47,21 @@ public:
     virtual void SelectWeapon(int32 Index = 0);
 
     UFUNCTION(BlueprintPure)
-    bool HasSlot(FEquipmentTypeTag EquipmentType, int32 Index = 0) const;
+    bool HasSlot(FGameplayTag EquipmentType, int32 Index = 0) const;
 
     UFUNCTION(BlueprintPure)
-    const FEquipmentSlot& GetSlot(FEquipmentTypeTag EquipmentType, int32 Index = 0) const;
+    const FEquipmentSlot& GetSlot(FGameplayTag EquipmentType, int32 Index = 0) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddEquipmentToSlot(AActor* NewEquipment, FEquipmentTypeTag EquipmentType, int32 Index = 0);
+    virtual bool AddEquipmentToSlot(AActor* NewEquipment, FGameplayTag EquipmentType, int32 Index = 0);
 
     UFUNCTION(BlueprintCallable)
-    virtual AActor* RemoveEquipmentFromSlot(FEquipmentTypeTag EquipmentType, int32 Index = 0);
+    virtual AActor* RemoveEquipmentFromSlot(FGameplayTag EquipmentType, int32 Index = 0);
 
 protected:
     void CreateSlots();
 
     virtual AActor* SpawnActorByData(UDataAsset* Data);
 
-    FEquipmentSlot& GetSlotRef(FEquipmentTypeTag EquipmentType, int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
+    FEquipmentSlot& GetSlotRef(FGameplayTag EquipmentType, int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
 };

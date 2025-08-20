@@ -22,14 +22,14 @@ void UEquipmentManagerComponent::InitializeComponent()
 
 void UEquipmentManagerComponent::SelectWeapon(int32 Index)
 {
-    FEquipmentTypeTag WeaponTypeTag = FEquipmentTypeTag(Equipment::Weapon::Root);
+    FGameplayTag WeaponTypeTag = Equipment::Weapon::Root;
     int32 WeaponSlotNum = GetSlotNum(WeaponTypeTag);
     if (Index < 0 || Index > WeaponSlotNum - 1) return;
 
     SelectedWeapon = GetSlot(WeaponTypeTag, Index).Equipment;
 }
 
-bool UEquipmentManagerComponent::HasSlot(FEquipmentTypeTag EquipmentType, int32 Index) const
+bool UEquipmentManagerComponent::HasSlot(FGameplayTag EquipmentType, int32 Index) const
 {
     for (const auto& Slot : Slots)
     {
@@ -42,7 +42,7 @@ bool UEquipmentManagerComponent::HasSlot(FEquipmentTypeTag EquipmentType, int32 
     return false;
 }
 
-const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FEquipmentTypeTag EquipmentType, int32 Index) const
+const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FGameplayTag EquipmentType, int32 Index) const
 {
     for (const FEquipmentSlot& Slot : Slots)
     {
@@ -55,7 +55,7 @@ const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FEquipmentTypeTag Equi
     return FEquipmentSlot::EmptySlot;
 }
 
-bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FEquipmentTypeTag EquipmentType, int32 Index)
+bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FGameplayTag EquipmentType, int32 Index)
 {
     if (!NewEquipment) return false;
     if (!HasSlot(EquipmentType, Index)) return false;
@@ -73,7 +73,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FEquip
     return false;
 }
 
-AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FEquipmentTypeTag EquipmentType, int32 Index)
+AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FGameplayTag EquipmentType, int32 Index)
 {
     if (!HasSlot(EquipmentType, Index)) return nullptr;
 
