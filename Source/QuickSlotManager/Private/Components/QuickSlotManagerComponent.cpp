@@ -4,6 +4,7 @@
 #include "Components/QuickSlotManagerComponent.h"
 
 #include "Components/SocketManagerComponent.h"
+#include "Interfaces/QuickSlotActorInterface.h"
 
 
 UQuickSlotManagerComponent::UQuickSlotManagerComponent(const FObjectInitializer& ObjectInitializer)
@@ -31,23 +32,30 @@ void UQuickSlotManagerComponent::SetSlotIndex(int32 NewSlotIndex)
     OnSlotIndexChanged(OldSlotIndex);
 }
 
-void UQuickSlotManagerComponent::SetSlot(int32 InSlotIndex, FQuickSlot NewSlot)
+void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
+    const TScriptInterface<IQuickSlotDataInterface> NewData)
 {
     FQuickSlot& Slot = const_cast<FQuickSlot&>(GetSlot(InSlotIndex));
-    if (Slot == NewSlot) return;
+    if (Slot.Data == NewData) return;
 
     if (Slot.IsValid())
     {
-        SocketManager->DetachActorFromSocket(Slot.SocketTag);
-        Slot.Actor->Destroy();
+        SocketManager->DestroyActorFromSocket(Slot.GetSocketTag());
+        Slot = FQuickSlot::EmptySlot;
     }
 
-    Slot = NewSlot;
+    Slot.Data = NewData;
 
     if (Slot.IsValid())
     {
-        // TODO SpawnActor
-        SocketManager->AttachActorToSocket(Slot.SocketTag, Slot.Actor);
+        if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
+        {
+            Slot.Actor = SpawnedActor;
+            if (Slot.Actor->Implements<UQuickSlotActorInterface>())
+            {
+                IQuickSlotActorInterface::Execute_SetQuickSlotData(SpawnedActor, Slot.Data);
+            }
+        }
     }
 }
 

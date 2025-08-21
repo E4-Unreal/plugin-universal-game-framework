@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Interfaces/QuickSlotDataInterface.h"
 #include "QuickSlot.generated.h"
+
 
 USTRUCT(BlueprintType)
 struct QUICKSLOTMANAGER_API FQuickSlot
@@ -14,13 +16,16 @@ struct QUICKSLOTMANAGER_API FQuickSlot
     static const FQuickSlot EmptySlot;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FGameplayTag SocketTag;
+    TScriptInterface<IQuickSlotDataInterface> Data;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;
 
-    FORCEINLINE bool operator==(const FQuickSlot& Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
+    TSubclassOf<AActor> GetActorClass() const { return IQuickSlotDataInterface::Execute_GetActorClass(Data.GetObject()); }
+    FGameplayTag GetSocketTag() const { return IQuickSlotDataInterface::Execute_GetSocketTag(Data.GetObject()); }
+
+    FORCEINLINE bool operator==(const FQuickSlot& Other) const { return Data == Other.Data && Actor == Other.Actor; }
     FORCEINLINE bool operator!=(const FQuickSlot& Other) const { return !(*this == Other); }
 
-    bool IsValid() const { return SocketTag.IsValid() && Actor; }
+    bool IsValid() const { return Data.GetObject() && GetActorClass() && GetSocketTag().IsValid(); }
 };
