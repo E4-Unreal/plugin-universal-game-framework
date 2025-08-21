@@ -24,6 +24,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FGameplayTag SocketTag;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UTexture2D> ThumbnailTexture;
+
 public:
     UQuickSlotData(const FObjectInitializer& ObjectInitializer);
 
@@ -31,4 +34,5 @@ public:
 
     virtual TSubclassOf<AActor> GetActorClass_Implementation() const override { return ActorClass; }
     virtual FGameplayTag GetSocketTag_Implementation() const override { return SocketTag; }
+    virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
 };

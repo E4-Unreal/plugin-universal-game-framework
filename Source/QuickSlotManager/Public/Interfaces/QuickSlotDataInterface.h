@@ -30,6 +30,9 @@ public:
     FGameplayTag GetSocketTag() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<UTexture2D> GetThumbnailTexture() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool IsValid() const;
     bool IsValid_Implementation() const
     {

@@ -22,7 +22,8 @@ public class UniversalGameFramework : ModuleRules
                 "DynamicData",
                 "ShopSystem",
                 "WidgetManager",
-                "SocketManager"
+                "SocketManager",
+                "QuickSlotManager"
             }
         );
 
