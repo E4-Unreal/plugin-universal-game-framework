@@ -11,6 +11,8 @@ public class QuickSlotManager : ModuleRules
             {
                 "Core",
                 "GameplayTags",
+                "UMG",
+                "CommonUI",
 
                 "UniversalUtilities",
                 "SocketManager"
