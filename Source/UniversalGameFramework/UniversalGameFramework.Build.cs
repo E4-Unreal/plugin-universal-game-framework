@@ -21,7 +21,8 @@ public class UniversalGameFramework : ModuleRules
                 "EquipmentManager",
                 "DynamicData",
                 "ShopSystem",
-                "WidgetManager"
+                "WidgetManager",
+                "SocketManager"
             }
         );
 

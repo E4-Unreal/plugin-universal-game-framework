@@ -5,8 +5,10 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/MontageManagerComponent.h"
+#include "Components/SocketManagerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+const FName AUGFCharacter::SocketManagerName(TEXT("SocketManager"));
 const FName AUGFCharacter::MontageManagerName(TEXT("MontageManager"));
 
 AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
@@ -32,6 +34,10 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
     GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
     GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+
+    /* SocketManager */
+
+    SocketManager = CreateDefaultSubobject<USocketManagerComponent>(SocketManagerName);
 
     /* MontageManager */
 
