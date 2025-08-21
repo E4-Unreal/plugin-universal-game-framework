@@ -7,6 +7,8 @@
 #include "Types/QuickSlot.h"
 #include "QuickSlotManagerComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuickSlotUpdatedSignature, int32, SlotIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FQuickSlotIndexChangedSignature, int32, OldSlotIndex, int32, NewSlotIndex);
 
 class USocketManagerComponent;
 
@@ -18,6 +20,12 @@ class QUICKSLOTMANAGER_API UQuickSlotManagerComponent : public UActorComponent
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 SlotNum;
+
+    UPROPERTY(BlueprintAssignable)
+    FQuickSlotIndexChangedSignature SlotIndexChangedDelegate;
+
+    UPROPERTY(BlueprintAssignable)
+    FQuickSlotUpdatedSignature SlotUpdatedDelegate;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)

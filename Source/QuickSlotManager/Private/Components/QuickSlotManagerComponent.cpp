@@ -60,6 +60,8 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
             SpawnedActor->SetActorEnableCollision(true);
         }
     }
+
+    SlotUpdatedDelegate.Broadcast(InSlotIndex);
 }
 
 void UQuickSlotManagerComponent::CreateSlots()
@@ -94,4 +96,6 @@ void UQuickSlotManagerComponent::OnSlotIndexChanged(int32 OldSlotIndex)
         NewSlot.Actor->SetActorHiddenInGame(false);
         NewSlot.Actor->SetActorEnableCollision(true);
     }
+
+    SlotIndexChangedDelegate.Broadcast(OldSlotIndex, SlotIndex);
 }
