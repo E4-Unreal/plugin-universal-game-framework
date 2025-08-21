@@ -47,7 +47,10 @@ public:
     virtual AActor* DetachActorFromSocket(const FGameplayTag& SocketTag);
 
     UFUNCTION(BlueprintCallable)
-    virtual bool SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
+    virtual void DestroyActorFromSocket(FGameplayTag SocketTag);
+
+    UFUNCTION(BlueprintCallable)
+    virtual AActor* SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
 
     UFUNCTION(BlueprintCallable)
     virtual bool SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh);
