@@ -49,7 +49,7 @@ public:
     virtual void SetSlotIndex(int32 NewSlotIndex);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetSlotByData(int32 InSlotIndex, const TScriptInterface<IQuickSlotDataInterface> NewData);
+    virtual void SetSlotByData(int32 InSlotIndex, const TScriptInterface<IQuickSlotDataInterface>& NewData);
 
 protected:
     virtual void CreateSlots();

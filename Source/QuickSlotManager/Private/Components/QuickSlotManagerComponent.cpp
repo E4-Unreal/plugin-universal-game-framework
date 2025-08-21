@@ -33,7 +33,7 @@ void UQuickSlotManagerComponent::SetSlotIndex(int32 NewSlotIndex)
 }
 
 void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
-    const TScriptInterface<IQuickSlotDataInterface> NewData)
+    const TScriptInterface<IQuickSlotDataInterface>& NewData)
 {
     FQuickSlot& Slot = const_cast<FQuickSlot&>(GetSlot(InSlotIndex));
     if (Slot.Data == NewData) return;
