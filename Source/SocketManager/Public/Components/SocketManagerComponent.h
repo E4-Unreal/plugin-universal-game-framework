@@ -27,13 +27,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_Slots, Transient, Category = "State")
     TArray<FSocketSlot> Slots;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
-    TMap<FGameplayTag, TObjectPtr<AActor>> SocketActorMap;
-
 public:
     USocketManagerComponent();
 
-    virtual void PostInitProperties() override;
     virtual void InitializeComponent() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -70,15 +66,25 @@ public:
     /* Query */
 
     UFUNCTION(BlueprintPure)
-    bool IsSocketEmpty(const FGameplayTag& SocketTag) const { return !SocketActorMap.Contains(SocketTag); }
+    FORCEINLINE FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.FindRef(SocketTag); }
 
     UFUNCTION(BlueprintPure)
-    AActor* GetActorByTag(const FGameplayTag& SocketTag) const { return SocketActorMap.FindRef(SocketTag); }
+    FORCEINLINE bool DoesSocketExist(const FGameplayTag& SocketTag) const { return TargetMesh.IsValid() && TargetMesh->DoesSocketExist(GetSocketName(SocketTag)); }
+
+    UFUNCTION(BlueprintPure)
+    const FSocketSlot& GetSlotBySocketTag(FGameplayTag SocketTag) const;
+
+    UFUNCTION(BlueprintPure)
+    const FSocketSlot& GetSlotByActor(AActor* Actor) const;
+
+    UFUNCTION(BlueprintPure)
+    AActor* GetActorBySocketTag(const FGameplayTag& SocketTag) const;
+
+    UFUNCTION(BlueprintPure)
+    FGameplayTag GetSocketTagByActor(AActor* Actor) const;
 
 protected:
     virtual void FindTargetMesh();
-
-    virtual void Refresh();
 
     virtual void RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor);
 
@@ -98,15 +104,6 @@ protected:
     /* Query */
 
     FORCEINLINE bool ShouldReplicate() const { return GetOwner()->GetIsReplicated(); }
-
-    UFUNCTION(BlueprintPure)
-    bool IsSocketValid(const FGameplayTag& SocketTag) const { return SocketNameMap.Contains(SocketTag); }
-
-    UFUNCTION(BlueprintPure)
-    bool DoesSocketExist(const FGameplayTag& SocketTag) const { return TargetMesh.IsValid() && TargetMesh->DoesSocketExist(GetSocketName(SocketTag)); }
-
-    UFUNCTION(BlueprintPure)
-    FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.FindRef(SocketTag); }
 
     /* Replicate */
 
