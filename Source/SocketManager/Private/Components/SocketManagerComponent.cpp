@@ -37,7 +37,7 @@ void USocketManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ThisClass, SocketActorSlots);
+    DOREPLIFETIME(ThisClass, Slots);
 }
 
 void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
@@ -182,7 +182,7 @@ void USocketManagerComponent::FindTargetMesh()
 void USocketManagerComponent::Refresh()
 {
     SocketActorMap.Empty(SocketNameMap.Num());
-    for (const auto& [SocketTag, Actor] : SocketActorSlots)
+    for (const auto& [SocketTag, Actor] : Slots)
     {
         SocketActorMap.Emplace(SocketTag, Actor);
     }
@@ -194,7 +194,7 @@ void USocketManagerComponent::RegisterSocketActor(const FGameplayTag& SocketTag,
     if (bool bCanRegister = Actor && IsSocketValid(SocketTag) && IsSocketEmpty(SocketTag); !bCanRegister) return;
 
     // 배열에 등록
-    SocketActorSlots.Emplace(FSocketActorSlot(SocketTag, Actor));
+    Slots.Emplace(FSocketSlot(SocketTag, Actor));
 
     // 맵에 등록
     SocketActorMap.Emplace(SocketTag, Actor);
@@ -206,11 +206,11 @@ void USocketManagerComponent::UnRegisterSocketActor(const FGameplayTag& SocketTa
     if (bool bCanUnRegister = IsSocketValid(SocketTag) && !IsSocketEmpty(SocketTag); !bCanUnRegister) return;
 
     // 배열로부터 등록 해제
-    for (int32 Index = SocketActorSlots.Num() - 1; Index >= 0; --Index)
+    for (int32 Index = Slots.Num() - 1; Index >= 0; --Index)
     {
-        if (SocketActorSlots[Index].SocketTag == SocketTag)
+        if (Slots[Index].SocketTag == SocketTag)
         {
-            SocketActorSlots.RemoveAt(Index);
+            Slots.RemoveAt(Index);
             break;
         }
     }
@@ -261,7 +261,7 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
     return SpawnedActor;
 }
 
-void USocketManagerComponent::OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots)
+void USocketManagerComponent::OnRep_Slots(const TArray<FSocketSlot>& OldSlots)
 {
     Refresh();
 }

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameplayTagContainer.h"
-#include "Types/SocketActorSlot.h"
+#include "Types/SocketSlot.h"
 #include "SocketManagerComponent.generated.h"
 
 UCLASS(meta = (BlueprintSpawnableComponent))
@@ -24,8 +24,8 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<UMeshComponent> TargetMesh;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_SocketActorSlots, Transient, Category = "State")
-    TArray<FSocketActorSlot> SocketActorSlots;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_Slots, Transient, Category = "State")
+    TArray<FSocketSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
     TMap<FGameplayTag, TObjectPtr<AActor>> SocketActorMap;
@@ -111,5 +111,5 @@ protected:
     /* Replicate */
 
     UFUNCTION()
-    virtual void OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots);
+    virtual void OnRep_Slots(const TArray<FSocketSlot>& OldSlots);
 };
