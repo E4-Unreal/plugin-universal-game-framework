@@ -34,8 +34,15 @@ protected:
     TMap<int32, TObjectPtr<UQuickSlotWidget>> SlotWidgetMap;
 
 protected:
+    virtual void NativeOnInitialized() override;
     virtual void NativePreConstruct() override;
 
     virtual void ClearSlotWidgets();
     virtual void CreateSlotWidgets();
+
+    UFUNCTION()
+    virtual void OnSlotIndexChanged(int32 OldSlotIndex, int32 NewSlotIndex);
+
+    UFUNCTION()
+    virtual void OnSlotUpdated(int32 SlotIndex);
 };

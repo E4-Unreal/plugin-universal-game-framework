@@ -7,6 +7,17 @@
 #include "Components/UniformGridPanel.h"
 #include "Widgets/QuickSlotWidget.h"
 
+void UQuickSlotPanelWidget::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    if (QuickSlotManager.IsValid())
+    {
+        QuickSlotManager->SlotIndexChangedDelegate.AddDynamic(this, &ThisClass::OnSlotIndexChanged);
+        QuickSlotManager->SlotUpdatedDelegate.AddDynamic(this, &ThisClass::OnSlotUpdated);
+    }
+}
+
 void UQuickSlotPanelWidget::NativePreConstruct()
 {
     Super::NativePreConstruct();
@@ -40,5 +51,18 @@ void UQuickSlotPanelWidget::CreateSlotWidgets()
         QuickSlotPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
 
         SlotWidgetMap.Emplace(Index, SlotWidget);
+    }
+}
+
+void UQuickSlotPanelWidget::OnSlotIndexChanged(int32 OldSlotIndex, int32 NewSlotIndex)
+{
+    // TODO 현재 선택된 퀵슬롯 표시
+}
+
+void UQuickSlotPanelWidget::OnSlotUpdated(int32 SlotIndex)
+{
+    if (UQuickSlotWidget* SlotWidget = SlotWidgetMap.FindRef(SlotIndex))
+    {
+        SlotWidget->Refresh();
     }
 }
