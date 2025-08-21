@@ -27,5 +27,5 @@ struct QUICKSLOTMANAGER_API FQuickSlot
     FORCEINLINE bool operator==(const FQuickSlot& Other) const { return Data == Other.Data && Actor == Other.Actor; }
     FORCEINLINE bool operator!=(const FQuickSlot& Other) const { return !(*this == Other); }
 
-    bool IsValid() const { return Data.GetObject() && GetActorClass() && GetSocketTag().IsValid(); }
+    bool IsValid() const { return Data.GetObject() && IQuickSlotDataInterface::Execute_IsValid(Data.GetObject()) && Actor; }
 };

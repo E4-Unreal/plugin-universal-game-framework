@@ -46,21 +46,18 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
 
     Slot.Data = NewData;
 
-    if (Slot.IsValid())
+    if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
     {
-        if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
+        Slot.Actor = SpawnedActor;
+        if (Slot.Actor->Implements<UQuickSlotActorInterface>())
         {
-            Slot.Actor = SpawnedActor;
-            if (Slot.Actor->Implements<UQuickSlotActorInterface>())
-            {
-                IQuickSlotActorInterface::Execute_SetQuickSlotData(SpawnedActor, Slot.Data);
-            }
+            IQuickSlotActorInterface::Execute_SetQuickSlotData(SpawnedActor, Slot.Data);
+        }
 
-            if (InSlotIndex != SlotIndex)
-            {
-                SpawnedActor->SetActorHiddenInGame(false);
-                SpawnedActor->SetActorEnableCollision(true);
-            }
+        if (InSlotIndex != SlotIndex)
+        {
+            SpawnedActor->SetActorHiddenInGame(false);
+            SpawnedActor->SetActorEnableCollision(true);
         }
     }
 }
