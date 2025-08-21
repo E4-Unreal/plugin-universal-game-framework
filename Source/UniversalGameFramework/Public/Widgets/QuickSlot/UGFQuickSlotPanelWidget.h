@@ -36,5 +36,6 @@ protected:
 protected:
     virtual void NativePreConstruct() override;
 
+    virtual void ClearSlotWidgets();
     virtual void CreateSlotWidgets();
 };

@@ -14,9 +14,8 @@ void UUGFQuickSlotPanelWidget::NativePreConstruct()
     CreateSlotWidgets();
 }
 
-void UUGFQuickSlotPanelWidget::CreateSlotWidgets()
+void UUGFQuickSlotPanelWidget::ClearSlotWidgets()
 {
-    // Destroy
     for (int32 Index = 0; Index < SlotWidgetMap.Num(); ++Index)
     {
         UUGFQuickSlotWidget* SlotWidget = SlotWidgetMap[Index];
@@ -24,8 +23,12 @@ void UUGFQuickSlotPanelWidget::CreateSlotWidgets()
         QuickSlotPanel->RemoveChildAt(Index);
     }
     SlotWidgetMap.Reset();
+}
 
-    // Create
+void UUGFQuickSlotPanelWidget::CreateSlotWidgets()
+{
+    ClearSlotWidgets();
+    
     int32 SlotNum = QuickSlotManager.IsValid() ? QuickSlotManager->SlotNum : PreviewSlotNum;
     for (int32 Index = 0; Index < SlotNum; ++Index)
     {
