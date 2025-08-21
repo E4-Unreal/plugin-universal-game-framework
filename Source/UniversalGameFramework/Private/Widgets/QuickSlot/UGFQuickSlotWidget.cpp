@@ -46,7 +46,7 @@ void UUGFQuickSlotWidget::NativePreConstruct()
 
 void UUGFQuickSlotWidget::ApplyData(const TScriptInterface<IQuickSlotDataInterface>& InData)
 {
-    if (UObject* DataObject = PreviewData.GetObject())
+    if (UObject* DataObject = InData.GetObject())
     {
         ThumbnailImage->SetBrushFromSoftTexture(IQuickSlotDataInterface::Execute_GetThumbnailTexture(DataObject));
     }
