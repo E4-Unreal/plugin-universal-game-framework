@@ -3,14 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/SocketManagerComponent.h"
+#include "Components/ActorComponent.h"
 #include "Types/EquipmentSlot.h"
 #include "Types/EquipmentSlotConfig.h"
 #include "EquipmentManagerComponent.generated.h"
 
 
+class USocketManagerComponent;
+
 UCLASS(meta = (BlueprintSpawnableComponent))
-class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public USocketManagerComponent
+class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -19,6 +21,9 @@ public:
     TArray<FEquipmentSlotConfig> SlotConfigs;
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TWeakObjectPtr<USocketManagerComponent> SocketManager;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<FGameplayTag, int32> SlotNumMap;
 
@@ -60,8 +65,7 @@ public:
 
 protected:
     void CreateSlots();
-
-    virtual AActor* SpawnActorByData(UDataAsset* Data);
+    void FindSocketManager();
 
     FEquipmentSlot& GetSlotRef(FGameplayTag EquipmentType, int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
 };

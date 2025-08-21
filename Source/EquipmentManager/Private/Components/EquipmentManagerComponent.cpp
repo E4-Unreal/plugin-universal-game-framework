@@ -3,6 +3,7 @@
 
 #include "Components/EquipmentManagerComponent.h"
 
+#include "Components/SocketManagerComponent.h"
 #include "Interfaces/EquipmentActorInterface.h"
 #include "Interfaces/EquipmentDataInterface.h"
 #include "GameplayTags/EquipmentTypeTags.h"
@@ -18,6 +19,7 @@ void UEquipmentManagerComponent::InitializeComponent()
     Super::InitializeComponent();
 
     CreateSlots();
+    FindSocketManager();
 }
 
 void UEquipmentManagerComponent::SelectWeapon(int32 Index)
@@ -65,7 +67,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FGamep
     {
         Slot.Equipment = NewEquipment;
         IEquipmentActorInterface::Execute_Equip(Slot.Equipment, GetOwner());
-        AttachActorToSocket(Slot.Socket, NewEquipment);
+        SocketManager->AttachActorToSocket(Slot.Socket, NewEquipment);
 
         return true;
     }
@@ -80,7 +82,7 @@ AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FGameplayTag Equipme
     FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
-        AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
+        AActor* OldEquipmentActor = SocketManager->DetachActorFromSocket(Slot.Socket);
         IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment);
         Slot.Equipment = nullptr;
 
@@ -111,22 +113,9 @@ void UEquipmentManagerComponent::CreateSlots()
     }
 }
 
-AActor* UEquipmentManagerComponent::SpawnActorByData(UDataAsset* Data)
+void UEquipmentManagerComponent::FindSocketManager()
 {
-    AActor* SpawnedActor = nullptr;
+    if (SocketManager.IsValid()) return;
 
-    if (Data && Data->Implements<UEquipmentDataInterface>())
-    {
-        TSubclassOf<AActor> ActorClass = IEquipmentDataInterface::Execute_GetActorClass(Data);
-        if (ActorClass && ActorClass->ImplementsInterface(UEquipmentActorInterface::StaticClass()))
-        {
-            SpawnedActor = SpawnActor(ActorClass);
-            if (SpawnedActor)
-            {
-                IEquipmentActorInterface::Execute_SetEquipmentData(SpawnedActor, Data);
-            }
-        }
-    }
-
-    return SpawnedActor;
+    SocketManager = GetOwner()->FindComponentByClass<USocketManagerComponent>();
 }
