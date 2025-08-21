@@ -40,17 +40,20 @@ void UQuickSlotPanelWidget::CreateSlotWidgets()
 {
     ClearSlotWidgets();
 
-    int32 SlotNum = QuickSlotManager.IsValid() ? QuickSlotManager->SlotNum : PreviewSlotNum;
-    for (int32 Index = 0; Index < SlotNum; ++Index)
+    if (SlotWidgetClass)
     {
-        UQuickSlotWidget* SlotWidget = CreateWidget<UQuickSlotWidget>(this, SlotWidgetClass);
-        SlotWidget->SetSlotIndex(Index);
+        int32 SlotNum = QuickSlotManager.IsValid() ? QuickSlotManager->SlotNum : PreviewSlotNum;
+        for (int32 Index = 0; Index < SlotNum; ++Index)
+        {
+            UQuickSlotWidget* SlotWidget = CreateWidget<UQuickSlotWidget>(this, SlotWidgetClass);
+            SlotWidget->SetSlotIndex(Index);
 
-        int32 SlotColumn = Index % MaxSlotColumn;
-        int32 SlotRow = Index / MaxSlotColumn;
-        QuickSlotPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
+            int32 SlotColumn = Index % MaxSlotColumn;
+            int32 SlotRow = Index / MaxSlotColumn;
+            QuickSlotPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
 
-        SlotWidgetMap.Emplace(Index, SlotWidget);
+            SlotWidgetMap.Emplace(Index, SlotWidget);
+        }
     }
 }
 
