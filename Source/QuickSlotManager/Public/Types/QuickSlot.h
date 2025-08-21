@@ -21,8 +21,8 @@ struct QUICKSLOTMANAGER_API FQuickSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;
 
-    TSubclassOf<AActor> GetActorClass() const { return IQuickSlotDataInterface::Execute_GetActorClass(Data.GetObject()); }
-    FGameplayTag GetSocketTag() const { return IQuickSlotDataInterface::Execute_GetSocketTag(Data.GetObject()); }
+    TSubclassOf<AActor> GetActorClass() const { return Data.GetObject() ? IQuickSlotDataInterface::Execute_GetActorClass(Data.GetObject()) : nullptr; }
+    FGameplayTag GetSocketTag() const { return Data.GetObject() ? IQuickSlotDataInterface::Execute_GetSocketTag(Data.GetObject()) : FGameplayTag::EmptyTag; }
 
     FORCEINLINE bool operator==(const FQuickSlot& Other) const { return Data == Other.Data && Actor == Other.Actor; }
     FORCEINLINE bool operator!=(const FQuickSlot& Other) const { return !(*this == Other); }

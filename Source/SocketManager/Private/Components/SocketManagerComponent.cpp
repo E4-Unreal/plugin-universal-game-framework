@@ -87,7 +87,7 @@ void USocketManagerComponent::DestroyActorFromSocket(FGameplayTag SocketTag)
 AActor* USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
 {
     AActor* SpawnedActor = SpawnActor(ActorClass);
-    if (!AttachActorToSocket(SocketTag, SpawnedActor))
+    if (SpawnedActor && !AttachActorToSocket(SocketTag, SpawnedActor))
     {
         SpawnedActor->Destroy();
         SpawnedActor = nullptr;
