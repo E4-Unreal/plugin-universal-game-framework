@@ -28,7 +28,7 @@ void UUGFQuickSlotWidget::Refresh()
     }
     else
     {
-        Clear();
+        ApplyData(PreviewData);
     }
 }
 
@@ -41,7 +41,7 @@ void UUGFQuickSlotWidget::NativePreConstruct()
 {
     Super::NativePreConstruct();
 
-    ApplyData(PreviewData);
+    Refresh();
 }
 
 void UUGFQuickSlotWidget::ApplyData(const TScriptInterface<IQuickSlotDataInterface>& InData)
