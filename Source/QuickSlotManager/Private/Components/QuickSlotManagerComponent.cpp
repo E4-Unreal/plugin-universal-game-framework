@@ -55,6 +55,12 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
             {
                 IQuickSlotActorInterface::Execute_SetQuickSlotData(SpawnedActor, Slot.Data);
             }
+
+            if (InSlotIndex != SlotIndex)
+            {
+                SpawnedActor->SetActorHiddenInGame(false);
+                SpawnedActor->SetActorEnableCollision(true);
+            }
         }
     }
 }
