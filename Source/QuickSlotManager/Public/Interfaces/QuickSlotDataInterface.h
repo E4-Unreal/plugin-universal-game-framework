@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Interfaces/SlotDataInterface.h"
 #include "UObject/Interface.h"
 #include "QuickSlotDataInterface.generated.h"
 
 struct FGameplayTag;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UQuickSlotDataInterface : public UInterface
+class UQuickSlotDataInterface : public USlotDataInterface
 {
     GENERATED_BODY()
 };
@@ -18,7 +19,7 @@ class UQuickSlotDataInterface : public UInterface
 /**
  *
  */
-class QUICKSLOTMANAGER_API IQuickSlotDataInterface
+class QUICKSLOTMANAGER_API IQuickSlotDataInterface : public ISlotDataInterface
 {
     GENERATED_BODY()
 
@@ -28,9 +29,6 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FGameplayTag GetSocketTag() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSoftObjectPtr<UTexture2D> GetThumbnailTexture() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool IsValid() const;

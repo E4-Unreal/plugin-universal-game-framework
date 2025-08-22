@@ -20,10 +20,10 @@ public:
     int32 SlotNum;
 
     UPROPERTY(BlueprintAssignable)
-    FQuickSlotIndexChangedDelegate SlotIndexChangedDelegate;
+    FSlotIndexChangedDelegate SlotIndexChangedDelegate;
 
     UPROPERTY(BlueprintAssignable)
-    FQuickSlotUpdatedDelegate SlotUpdatedDelegate;
+    FSlotUpdatedDelegate SlotUpdatedDelegate;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
@@ -43,11 +43,11 @@ public:
     /* QuickSlotManagerInterface */
 
     virtual int32 GetSlotNum_Implementation() const override { return SlotNum; }
-    virtual TScriptInterface<IQuickSlotDataInterface> GetSlotData_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).Data; }
-    virtual void BindSlotIndexChangedHandler_Implementation(const FQuickSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Add(Handler); }
-    virtual void UnBindSlotIndexChangedHandler_Implementation(const FQuickSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Remove(Handler); }
-    virtual void BindSlotUpdatedHandler_Implementation(const FQuickSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Add(Handler); }
-    virtual void UnBindSlotUpdatedHandler_Implementation(const FQuickSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Remove(Handler); }
+    virtual TScriptInterface<ISlotDataInterface> GetSlotData_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).Data; }
+    virtual void BindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Add(Handler); }
+    virtual void UnBindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Remove(Handler); }
+    virtual void BindSlotUpdatedHandler_Implementation(const FSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Add(Handler); }
+    virtual void UnBindSlotUpdatedHandler_Implementation(const FSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Remove(Handler); }
 
     /* API */
 
