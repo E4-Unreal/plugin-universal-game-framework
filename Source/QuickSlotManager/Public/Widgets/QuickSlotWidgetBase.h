@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonUserWidget.h"
-#include "QuickSlotManagerWidgetBase.generated.h"
+#include "QuickSlotWidgetBase.generated.h"
 
 class UQuickSlotManagerComponent;
 
@@ -12,7 +12,7 @@ class UQuickSlotManagerComponent;
  *
  */
 UCLASS(Abstract)
-class QUICKSLOTMANAGER_API UQuickSlotManagerWidgetBase : public UCommonUserWidget
+class QUICKSLOTMANAGER_API UQuickSlotWidgetBase : public UCommonUserWidget
 {
     GENERATED_BODY()
 

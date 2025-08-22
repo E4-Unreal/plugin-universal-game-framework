@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widgets/QuickSlotManagerWidgetBase.h"
+#include "Widgets/QuickSlotWidgetBase.h"
 
-void UQuickSlotManagerWidgetBase::NativeOnInitialized()
+void UQuickSlotWidgetBase::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 

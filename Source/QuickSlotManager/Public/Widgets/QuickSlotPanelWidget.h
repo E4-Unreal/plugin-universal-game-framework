@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/QuickSlotManagerWidgetBase.h"
+#include "Widgets/QuickSlotWidgetBase.h"
 #include "QuickSlotPanelWidget.generated.h"
 
 class UQuickSlotWidget;
@@ -13,7 +13,7 @@ class UUniformGridPanel;
  *
  */
 UCLASS()
-class QUICKSLOTMANAGER_API UQuickSlotPanelWidget : public UQuickSlotManagerWidgetBase
+class QUICKSLOTMANAGER_API UQuickSlotPanelWidget : public UQuickSlotWidgetBase
 {
     GENERATED_BODY()
 
