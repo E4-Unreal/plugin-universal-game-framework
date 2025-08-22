@@ -1,0 +1,44 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "Interfaces/SlotWidgetInterface.h"
+#include "SlotWidgetBase.generated.h"
+
+class UImage;
+
+/**
+ *
+ */
+UCLASS(Abstract)
+class WIDGETMANAGER_API USlotWidgetBase : public UUserWidget, public ISlotWidgetInterface
+{
+    GENERATED_BODY()
+
+protected:
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<UImage> ThumbnailImage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TScriptInterface<ISlotDataInterface> PreviewData;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    TWeakObjectPtr<UObject> SlotManager;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    int32 SlotIndex;
+
+public:
+    /* SlotWidgetInterface */
+
+    virtual void SetSlotManager_Implementation(const TScriptInterface<ISlotManagerInterface>& NewSlotManager) override;
+    virtual void SetSlotIndex_Implementation(int32 NewSlotIndex) override;
+    virtual void ApplyData_Implementation(const TScriptInterface<ISlotDataInterface>& NewData) override;
+    virtual void Refresh_Implementation() override;
+    virtual void Clear_Implementation() override;
+
+protected:
+    virtual void NativePreConstruct() override;
+};
