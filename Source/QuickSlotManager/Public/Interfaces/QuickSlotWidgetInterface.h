@@ -23,5 +23,5 @@ class QUICKSLOTMANAGER_API IQuickSlotWidgetInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetQuickSlotManager(const TScriptInterface<IQuickSlotManagerInterface>& QuickSlotManager);
+    void SetQuickSlotManager(const TScriptInterface<IQuickSlotManagerInterface>& NewQuickSlotManager);
 };
