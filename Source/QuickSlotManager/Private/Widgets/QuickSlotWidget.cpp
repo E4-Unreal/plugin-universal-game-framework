@@ -16,10 +16,9 @@ void UQuickSlotWidget::Refresh()
 {
     if (QuickSlotManager.IsValid())
     {
-        const FQuickSlot& QuickSlot = QuickSlotManager->GetSlot(SlotIndex);
-        if (QuickSlot.IsValid())
+        if (TScriptInterface<IQuickSlotDataInterface> Data = IQuickSlotManagerInterface::Execute_GetSlotData(QuickSlotManager.Get(), SlotIndex))
         {
-            ApplyData(QuickSlot.Data);
+            ApplyData(Data);
         }
         else
         {

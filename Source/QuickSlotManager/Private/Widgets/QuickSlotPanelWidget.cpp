@@ -13,8 +13,18 @@ void UQuickSlotPanelWidget::NativeOnInitialized()
 
     if (QuickSlotManager.IsValid())
     {
-        QuickSlotManager->SlotIndexChangedDelegate.AddDynamic(this, &ThisClass::OnSlotIndexChanged);
-        QuickSlotManager->SlotUpdatedDelegate.AddDynamic(this, &ThisClass::OnSlotUpdated);
+        FQuickSlotUpdatedHandler SlotUpdatedHandler;
+        SlotUpdatedHandler.BindDynamic(this, &ThisClass::OnSlotUpdated);
+
+        IQuickSlotManagerInterface::Execute_BindSlotUpdatedHandler(QuickSlotManager.Get(), SlotUpdatedHandler);
+
+        FQuickSlotIndexChangedHandler SlotIndexChangedHandler;
+        SlotIndexChangedHandler.BindDynamic(this, &ThisClass::OnSlotIndexChanged);
+
+        IQuickSlotManagerInterface::Execute_BindSlotIndexChangedHandler(QuickSlotManager.Get(), SlotIndexChangedHandler);
+
+        /*QuickSlotManager->SlotIndexChangedDelegate.AddDynamic(this, &ThisClass::OnSlotIndexChanged);
+        QuickSlotManager->SlotUpdatedDelegate.AddDynamic(this, &ThisClass::OnSlotUpdated);*/
     }
 }
 
@@ -42,7 +52,7 @@ void UQuickSlotPanelWidget::CreateSlotWidgets()
 
     if (SlotWidgetClass)
     {
-        int32 SlotNum = QuickSlotManager.IsValid() ? QuickSlotManager->SlotNum : PreviewSlotNum;
+        int32 SlotNum = QuickSlotManager.IsValid() ? IQuickSlotManagerInterface::Execute_GetSlotNum(QuickSlotManager.Get()) : PreviewSlotNum;
         for (int32 Index = 0; Index < SlotNum; ++Index)
         {
             UQuickSlotWidget* SlotWidget = CreateWidget<UQuickSlotWidget>(this, SlotWidgetClass);

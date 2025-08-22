@@ -5,15 +5,13 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Types/QuickSlot.h"
+#include "Interfaces/QuickSlotManagerInterface.h"
 #include "QuickSlotManagerComponent.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FQuickSlotUpdatedSignature, int32, SlotIndex);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FQuickSlotIndexChangedSignature, int32, OldSlotIndex, int32, NewSlotIndex);
 
 class USocketManagerComponent;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class QUICKSLOTMANAGER_API UQuickSlotManagerComponent : public UActorComponent
+class QUICKSLOTMANAGER_API UQuickSlotManagerComponent : public UActorComponent, public IQuickSlotManagerInterface
 {
     GENERATED_BODY()
 
@@ -22,10 +20,10 @@ public:
     int32 SlotNum;
 
     UPROPERTY(BlueprintAssignable)
-    FQuickSlotIndexChangedSignature SlotIndexChangedDelegate;
+    FQuickSlotIndexChangedDelegate SlotIndexChangedDelegate;
 
     UPROPERTY(BlueprintAssignable)
-    FQuickSlotUpdatedSignature SlotUpdatedDelegate;
+    FQuickSlotUpdatedDelegate SlotUpdatedDelegate;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
@@ -41,6 +39,15 @@ public:
     UQuickSlotManagerComponent(const FObjectInitializer& ObjectInitializer);
 
     virtual void InitializeComponent() override;
+
+    /* QuickSlotManagerInterface */
+
+    virtual int32 GetSlotNum_Implementation() const override { return SlotNum; }
+    virtual TScriptInterface<IQuickSlotDataInterface> GetSlotData_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).Data; }
+    virtual void BindSlotIndexChangedHandler_Implementation(const FQuickSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Add(Handler); }
+    virtual void UnBindSlotIndexChangedHandler_Implementation(const FQuickSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Remove(Handler); }
+    virtual void BindSlotUpdatedHandler_Implementation(const FQuickSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Add(Handler); }
+    virtual void UnBindSlotUpdatedHandler_Implementation(const FQuickSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Remove(Handler); }
 
     /* API */
 
