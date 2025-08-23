@@ -46,5 +46,6 @@ protected:
 
     /* DraggableWidgetBase */
 
+    virtual bool CanDrag() const override;
     virtual void OnDraggedWidgetCreated(UUserWidget* DraggedWidget) override;
 };

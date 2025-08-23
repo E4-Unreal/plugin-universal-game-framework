@@ -31,6 +31,9 @@ public:
     int32 GetSlotNum() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool IsSlotEmpty(int32 InSlotIndex) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TScriptInterface<ISlotDataInterface> GetSlotData(int32 InSlotIndex) const;
 
     /* SlotUpdatedDelegate */

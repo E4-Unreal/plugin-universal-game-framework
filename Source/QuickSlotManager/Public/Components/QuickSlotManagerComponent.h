@@ -43,6 +43,7 @@ public:
     /* QuickSlotManagerInterface */
 
     virtual int32 GetSlotNum_Implementation() const override { return SlotNum; }
+    virtual bool IsSlotEmpty_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).IsValid(); }
     virtual TScriptInterface<ISlotDataInterface> GetSlotData_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).Data; }
     virtual void BindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Add(Handler); }
     virtual void UnBindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Remove(Handler); }
