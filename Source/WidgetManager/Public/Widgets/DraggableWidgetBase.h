@@ -24,8 +24,10 @@ protected:
 protected:
     virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
     virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
+    virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 
     virtual bool CanDrag() const;
     UUserWidget* CreateDraggedWidget();
     virtual void OnDraggedWidgetCreated(UUserWidget* DraggedWidget);
+    virtual void OnWidgetDrop(UUserWidget* DropWidget);
 };

@@ -32,6 +32,20 @@ void UDraggableWidgetBase::NativeOnDragDetected(const FGeometry& InGeometry, con
     }
 }
 
+bool UDraggableWidgetBase::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+    UDragDropOperation* InOperation)
+{
+    if (InOperation && InOperation->DefaultDragVisual)
+    {
+        if (UUserWidget* DraggedWidget = Cast<UUserWidget>(InOperation->DefaultDragVisual))
+        {
+            OnWidgetDrop(DraggedWidget);
+        }
+    }
+
+    return Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
+}
+
 bool UDraggableWidgetBase::CanDrag() const
 {
     return bCanDrag && DraggedWidgetClass;
@@ -53,4 +67,9 @@ UUserWidget* UDraggableWidgetBase::CreateDraggedWidget()
 void UDraggableWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)
 {
     // DraggedWidget 초기화 및 설정
+}
+
+void UDraggableWidgetBase::OnWidgetDrop(UUserWidget* DropWidget)
+{
+    // DropWidget 클래스에 따라 이벤트 처리
 }
