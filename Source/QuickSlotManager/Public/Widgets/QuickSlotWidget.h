@@ -13,4 +13,7 @@ UCLASS(Abstract)
 class QUICKSLOTMANAGER_API UQuickSlotWidget : public USlotWidgetBase
 {
     GENERATED_BODY()
+
+public:
+    UQuickSlotWidget(const FObjectInitializer& ObjectInitializer);
 };

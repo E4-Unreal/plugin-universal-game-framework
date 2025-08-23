@@ -2,3 +2,8 @@
 
 
 #include "Widgets/QuickSlotWidget.h"
+
+UQuickSlotWidget::UQuickSlotWidget(const FObjectInitializer& ObjectInitializer)
+{
+    DraggedWidgetClass = GetClass();
+}

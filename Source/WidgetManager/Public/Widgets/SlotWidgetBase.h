@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "DraggableWidgetBase.h"
 #include "Interfaces/SlotWidgetInterface.h"
 #include "SlotWidgetBase.generated.h"
 
@@ -13,7 +13,7 @@ class UImage;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API USlotWidgetBase : public UUserWidget, public ISlotWidgetInterface
+class WIDGETMANAGER_API USlotWidgetBase : public UDraggableWidgetBase, public ISlotWidgetInterface
 {
     GENERATED_BODY()
 
@@ -40,5 +40,11 @@ public:
     virtual void Clear_Implementation() override;
 
 protected:
+    /* UserWidget */
+
     virtual void NativePreConstruct() override;
+
+    /* DraggableWidgetBase */
+
+    virtual void OnDraggedWidgetCreated(UUserWidget* DraggedWidget) override;
 };

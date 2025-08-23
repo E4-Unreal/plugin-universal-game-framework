@@ -56,3 +56,14 @@ void USlotWidgetBase::NativePreConstruct()
 
     Execute_Refresh(this);
 }
+
+void USlotWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)
+{
+    Super::OnDraggedWidgetCreated(DraggedWidget);
+
+    if (DraggedWidget->Implements<USlotWidgetInterface>())
+    {
+        Execute_SetSlotManager(DraggedWidget, SlotManager.Get());
+        Execute_SetSlotIndex(DraggedWidget, SlotIndex);
+    }
+}
