@@ -67,6 +67,9 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SetSlotByData(int32 InSlotIndex, const TScriptInterface<IQuickSlotDataInterface>& NewData);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void SwapSlots(int32 SourceIndex, int32 DestinationIndex);
+
 protected:
     virtual void CreateSlots();
     virtual void FindSocketManager();

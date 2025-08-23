@@ -67,6 +67,18 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
     SlotUpdatedDelegate.Broadcast(InSlotIndex);
 }
 
+void UQuickSlotManagerComponent::SwapSlots(int32 SourceIndex, int32 DestinationIndex)
+{
+    const FQuickSlot& SourceSlot = GetSlot(SourceIndex);
+    const FQuickSlot& DestinationSlot = GetSlot(DestinationIndex);
+
+    FQuickSlot OldSourceSlot = SourceSlot;
+    FQuickSlot OldDestinationSlot = DestinationSlot;
+
+    const_cast<FQuickSlot&>(SourceSlot) = OldDestinationSlot;
+    const_cast<FQuickSlot&>(DestinationSlot) = OldSourceSlot;
+}
+
 void UQuickSlotManagerComponent::CreateSlots()
 {
     Slots.Reserve(SlotNum);
