@@ -38,7 +38,7 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
     FQuickSlot& Slot = const_cast<FQuickSlot&>(GetSlot(InSlotIndex));
     if (Slot.Data == NewData) return;
 
-    if (Slot.IsValid())
+    if (!Slot.IsEmpty())
     {
         SocketManager->DestroyActorFromSocket(Slot.GetSocketTag());
         Slot = FQuickSlot::EmptySlot;
@@ -46,18 +46,21 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
 
     Slot.Data = NewData;
 
-    if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
+    if (!Slot.IsEmpty())
     {
-        Slot.Actor = SpawnedActor;
-        if (Slot.Actor->Implements<UQuickSlotActorInterface>())
+        if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
         {
-            IQuickSlotActorInterface::Execute_SetQuickSlotData(SpawnedActor, Slot.Data);
-        }
+            Slot.Actor = SpawnedActor;
+            if (Slot.Actor->Implements<UQuickSlotActorInterface>())
+            {
+                IQuickSlotActorInterface::Execute_SetQuickSlotData(SpawnedActor, Slot.Data);
+            }
 
-        if (InSlotIndex != SlotIndex)
-        {
-            SpawnedActor->SetActorHiddenInGame(false);
-            SpawnedActor->SetActorEnableCollision(true);
+            if (InSlotIndex != SlotIndex)
+            {
+                SpawnedActor->SetActorHiddenInGame(false);
+                SpawnedActor->SetActorEnableCollision(true);
+            }
         }
     }
 
@@ -84,14 +87,14 @@ void UQuickSlotManagerComponent::FindSocketManager()
 void UQuickSlotManagerComponent::OnSlotIndexChanged(int32 OldSlotIndex)
 {
     const FQuickSlot& OldSlot = GetSlot(OldSlotIndex);
-    if (OldSlot.IsValid())
+    if (!OldSlot.IsEmpty() && OldSlot.Actor)
     {
         OldSlot.Actor->SetActorHiddenInGame(true);
         OldSlot.Actor->SetActorEnableCollision(false);
     }
 
     const FQuickSlot& NewSlot = GetCurrentSlot();
-    if (NewSlot.IsValid())
+    if (!OldSlot.IsEmpty() && NewSlot.Actor)
     {
         NewSlot.Actor->SetActorHiddenInGame(false);
         NewSlot.Actor->SetActorEnableCollision(true);
