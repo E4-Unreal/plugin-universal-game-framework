@@ -19,7 +19,7 @@ protected:
     TSubclassOf<UUserWidget> DraggedWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bCanDrag;
+    bool bCanDrag = true;
 
 protected:
     virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
