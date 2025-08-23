@@ -24,7 +24,13 @@ class WIDGETMANAGER_API ISlotWidgetInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TScriptInterface<ISlotManagerInterface> GetSlotManager() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void SetSlotManager(const TScriptInterface<ISlotManagerInterface>& NewSlotManager);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    int32 GetSlotIndex() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void SetSlotIndex(int32 NewSlotIndex);

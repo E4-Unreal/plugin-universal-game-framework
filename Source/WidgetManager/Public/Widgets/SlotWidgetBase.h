@@ -33,7 +33,9 @@ protected:
 public:
     /* SlotWidgetInterface */
 
+    virtual TScriptInterface<ISlotManagerInterface> GetSlotManager_Implementation() const override { return SlotManager.Get(); }
     virtual void SetSlotManager_Implementation(const TScriptInterface<ISlotManagerInterface>& NewSlotManager) override;
+    virtual int32 GetSlotIndex_Implementation() const override { return SlotIndex; }
     virtual void SetSlotIndex_Implementation(int32 NewSlotIndex) override;
     virtual void ApplyData_Implementation(const TScriptInterface<ISlotDataInterface>& NewData) override;
     virtual void Refresh_Implementation() override;
