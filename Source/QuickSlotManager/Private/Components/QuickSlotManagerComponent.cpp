@@ -23,6 +23,21 @@ void UQuickSlotManagerComponent::InitializeComponent()
     FindSocketManager();
 }
 
+void UQuickSlotManagerComponent::SwapSlots_Implementation(int32 SourceIndex, int32 DestinationIndex)
+{
+    const FQuickSlot& SourceSlot = GetSlot(SourceIndex);
+    const FQuickSlot& DestinationSlot = GetSlot(DestinationIndex);
+
+    FQuickSlot OldSourceSlot = SourceSlot;
+    FQuickSlot OldDestinationSlot = DestinationSlot;
+
+    const_cast<FQuickSlot&>(SourceSlot) = OldDestinationSlot;
+    const_cast<FQuickSlot&>(DestinationSlot) = OldSourceSlot;
+
+    SlotUpdatedDelegate.Broadcast(SourceIndex);
+    SlotUpdatedDelegate.Broadcast(DestinationIndex);
+}
+
 void UQuickSlotManagerComponent::SetSlotIndex(int32 NewSlotIndex)
 {
     if (NewSlotIndex == SlotIndex || NewSlotIndex < 0 || NewSlotIndex >= SlotNum) return;
@@ -65,18 +80,6 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
     }
 
     SlotUpdatedDelegate.Broadcast(InSlotIndex);
-}
-
-void UQuickSlotManagerComponent::SwapSlots(int32 SourceIndex, int32 DestinationIndex)
-{
-    const FQuickSlot& SourceSlot = GetSlot(SourceIndex);
-    const FQuickSlot& DestinationSlot = GetSlot(DestinationIndex);
-
-    FQuickSlot OldSourceSlot = SourceSlot;
-    FQuickSlot OldDestinationSlot = DestinationSlot;
-
-    const_cast<FQuickSlot&>(SourceSlot) = OldDestinationSlot;
-    const_cast<FQuickSlot&>(DestinationSlot) = OldSourceSlot;
 }
 
 void UQuickSlotManagerComponent::CreateSlots()

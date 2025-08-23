@@ -50,4 +50,5 @@ protected:
 
     virtual bool CanDrag() const override;
     virtual void OnDraggedWidgetCreated(UUserWidget* DraggedWidget) override;
+    virtual void OnWidgetDrop(UUserWidget* DropWidget) override;
 };

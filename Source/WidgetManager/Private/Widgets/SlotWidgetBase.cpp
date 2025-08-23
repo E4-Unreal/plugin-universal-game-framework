@@ -72,3 +72,20 @@ void USlotWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)
         Execute_SetSlotIndex(DraggedWidget, SlotIndex);
     }
 }
+
+void USlotWidgetBase::OnWidgetDrop(UUserWidget* DropWidget)
+{
+    Super::OnWidgetDrop(DropWidget);
+
+    if (DropWidget->Implements<USlotWidgetInterface>())
+    {
+        TScriptInterface<ISlotManagerInterface> OtherSlotManager = Execute_GetSlotManager(DropWidget);
+        int32 OtherSlotIndex = Execute_GetSlotIndex(DropWidget);
+
+        // TODO 서로 다른 SlotManager 일 경우를 대비하여 Swap 대신 Set으로 대체 필요
+        if (SlotManager.Get() == OtherSlotManager.GetObject())
+        {
+            ISlotManagerInterface::Execute_SwapSlots(SlotManager.Get(), OtherSlotIndex, SlotIndex);
+        }
+    }
+}

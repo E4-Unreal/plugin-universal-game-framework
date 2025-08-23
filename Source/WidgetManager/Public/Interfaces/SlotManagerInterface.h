@@ -36,6 +36,9 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TScriptInterface<ISlotDataInterface> GetSlotData(int32 InSlotIndex) const;
 
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SwapSlots(int32 SourceIndex, int32 DestinationIndex);
+
     /* SlotUpdatedDelegate */
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)

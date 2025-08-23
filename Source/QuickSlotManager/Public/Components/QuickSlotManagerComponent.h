@@ -45,6 +45,7 @@ public:
     virtual int32 GetSlotNum_Implementation() const override { return SlotNum; }
     virtual bool IsSlotEmpty_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).IsEmpty(); }
     virtual TScriptInterface<ISlotDataInterface> GetSlotData_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).Data; }
+    virtual void SwapSlots_Implementation(int32 SourceIndex, int32 DestinationIndex) override;
     virtual void BindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Add(Handler); }
     virtual void UnBindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Remove(Handler); }
     virtual void BindSlotUpdatedHandler_Implementation(const FSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Add(Handler); }
@@ -66,9 +67,6 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void SetSlotByData(int32 InSlotIndex, const TScriptInterface<IQuickSlotDataInterface>& NewData);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SwapSlots(int32 SourceIndex, int32 DestinationIndex);
 
 protected:
     virtual void CreateSlots();
