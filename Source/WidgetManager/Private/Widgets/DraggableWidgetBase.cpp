@@ -34,7 +34,7 @@ void UDraggableWidgetBase::NativeOnDragDetected(const FGeometry& InGeometry, con
 
 bool UDraggableWidgetBase::CanDrag() const
 {
-    return DraggedWidgetClass != nullptr;
+    return bCanDrag && DraggedWidgetClass;
 }
 
 UUserWidget* UDraggableWidgetBase::CreateDraggedWidget()
