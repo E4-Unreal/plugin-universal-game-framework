@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class UniversalGameFramework : ModuleRules
+public class QuickSlotManager : ModuleRules
 {
-    public UniversalGameFramework(ReadOnlyTargetRules Target) : base(Target)
+    public QuickSlotManager(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -15,15 +15,8 @@ public class UniversalGameFramework : ModuleRules
                 "CommonUI",
 
                 "UniversalUtilities",
-                "EnhancedInputBinder",
-                "InteractionSystem",
-                "InventorySystem",
-                "EquipmentManager",
-                "DynamicData",
-                "ShopSystem",
-                "WidgetManager",
                 "SocketManager",
-                "QuickSlotManager"
+                "WidgetManager",
             }
         );
 

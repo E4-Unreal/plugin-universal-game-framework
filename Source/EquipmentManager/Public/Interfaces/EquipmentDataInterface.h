@@ -29,4 +29,10 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSubclassOf<AActor> GetActorClass() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
 };

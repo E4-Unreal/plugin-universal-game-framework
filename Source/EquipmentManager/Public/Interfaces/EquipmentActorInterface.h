@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "EquipmentInterface.generated.h"
+#include "EquipmentActorInterface.generated.h"
 
 class IEquipmentDataInterface;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UEquipmentInterface : public UInterface
+class UEquipmentActorInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -17,16 +17,16 @@ class UEquipmentInterface : public UInterface
 /**
  * 장비 전용 인터페이스로 Actor에서 구현되어야 합니다.
  */
-class EQUIPMENTMANAGER_API IEquipmentInterface
+class EQUIPMENTMANAGER_API IEquipmentActorInterface
 {
     GENERATED_BODY()
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetEquipmentDataInterface(const TScriptInterface<IEquipmentDataInterface>& NewInterface);
+    void SetEquipmentData(const TScriptInterface<IEquipmentDataInterface>& NewEquipmentData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TScriptInterface<IEquipmentDataInterface> GetEquipmentDataInterface() const;
+    TScriptInterface<IEquipmentDataInterface> GetEquipmentData() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Equip(AActor* NewOwner);

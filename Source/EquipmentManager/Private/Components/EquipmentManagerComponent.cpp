@@ -3,7 +3,10 @@
 
 #include "Components/EquipmentManagerComponent.h"
 
-#include "Interfaces/EquipmentInterface.h"
+#include "Components/SocketManagerComponent.h"
+#include "Interfaces/EquipmentActorInterface.h"
+#include "Interfaces/EquipmentDataInterface.h"
+#include "GameplayTags/EquipmentTypeTags.h"
 
 
 UEquipmentManagerComponent::UEquipmentManagerComponent()
@@ -16,15 +19,23 @@ void UEquipmentManagerComponent::InitializeComponent()
     Super::InitializeComponent();
 
     CreateSlots();
+    FindSocketManager();
 }
 
-bool UEquipmentManagerComponent::HasSlot(const FEquipmentSlotIndex& SlotIndex) const
+void UEquipmentManagerComponent::SelectWeapon(int32 Index)
 {
-    if (!SlotIndex.IsValid()) return false;
+    FGameplayTag WeaponTypeTag = Equipment::Weapon::Root;
+    int32 WeaponSlotNum = GetSlotNum(WeaponTypeTag);
+    if (Index < 0 || Index > WeaponSlotNum - 1) return;
 
+    SelectedWeapon = GetSlot(WeaponTypeTag, Index).Equipment;
+}
+
+bool UEquipmentManagerComponent::HasSlot(FGameplayTag EquipmentType, int32 Index) const
+{
     for (const auto& Slot : Slots)
     {
-        if (Slot.SlotIndex == SlotIndex)
+        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
         {
             return true;
         }
@@ -33,11 +44,11 @@ bool UEquipmentManagerComponent::HasSlot(const FEquipmentSlotIndex& SlotIndex) c
     return false;
 }
 
-const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentSlotIndex& SlotIndex) const
+const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FGameplayTag EquipmentType, int32 Index) const
 {
-    for (const auto& Slot : Slots)
+    for (const FEquipmentSlot& Slot : Slots)
     {
-        if (Slot.SlotIndex == SlotIndex)
+        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
         {
             return Slot;
         }
@@ -46,17 +57,17 @@ const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(const FEquipmentSlotIn
     return FEquipmentSlot::EmptySlot;
 }
 
-bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEquipmentInterface>& NewEquipment, const FEquipmentSlotIndex& SlotIndex)
+bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FGameplayTag EquipmentType, int32 Index)
 {
     if (!NewEquipment) return false;
-    if (!HasSlot(SlotIndex)) return false;
+    if (!HasSlot(EquipmentType, Index)) return false;
 
-    FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
+    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
     if (Slot.IsValid() && Slot.IsEmpty())
     {
         Slot.Equipment = NewEquipment;
-        IEquipmentInterface::Execute_Equip(Slot.Equipment.GetObject(), GetOwner());
-        AttachActorToSocket(Slot.Socket, CastChecked<AActor>(NewEquipment.GetObject()));
+        IEquipmentActorInterface::Execute_Equip(Slot.Equipment, GetOwner());
+        SocketManager->AttachActorToSocket(Slot.Socket, NewEquipment);
 
         return true;
     }
@@ -64,15 +75,15 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(const TScriptInterface<IEqui
     return false;
 }
 
-TScriptInterface<IEquipmentInterface> UEquipmentManagerComponent::RemoveEquipmentFromSlot(const FEquipmentSlotIndex& SlotIndex)
+AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FGameplayTag EquipmentType, int32 Index)
 {
-    if (!HasSlot(SlotIndex)) return nullptr;
+    if (!HasSlot(EquipmentType, Index)) return nullptr;
 
-    FEquipmentSlot& Slot = GetSlotRef(SlotIndex);
+    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
-        AActor* OldEquipmentActor = DetachActorFromSocket(Slot.Socket);
-        IEquipmentInterface::Execute_UnEquip(Slot.Equipment.GetObject());
+        AActor* OldEquipmentActor = SocketManager->DetachActorFromSocket(Slot.Socket);
+        IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment);
         Slot.Equipment = nullptr;
 
         return OldEquipmentActor;
@@ -87,13 +98,24 @@ void UEquipmentManagerComponent::CreateSlots()
 
     for (const auto& [EquipmentType, Sockets] : SlotConfigs)
     {
+        if (SlotNumMap.Contains(EquipmentType)) continue;
+        SlotNumMap.Emplace(EquipmentType, Sockets.Num());
+
         for (int32 Index = 0; Index < Sockets.Num(); ++Index)
         {
             FEquipmentSlot NewEquipmentSlot;
-            NewEquipmentSlot.SlotIndex = FEquipmentSlotIndex(EquipmentType, Index);
+            NewEquipmentSlot.EquipmentType = EquipmentType;
+            NewEquipmentSlot.Index = Index;
             NewEquipmentSlot.Socket = Sockets[Index];
 
             Slots.Emplace(NewEquipmentSlot);
         }
     }
+}
+
+void UEquipmentManagerComponent::FindSocketManager()
+{
+    if (SocketManager.IsValid()) return;
+
+    SocketManager = GetOwner()->FindComponentByClass<USocketManagerComponent>();
 }

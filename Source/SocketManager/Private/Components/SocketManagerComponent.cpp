@@ -19,13 +19,6 @@ USocketManagerComponent::USocketManagerComponent()
     SocketNameMap.Emplace(Socket::Character::RightHand, FName("hand_r"));
 }
 
-void USocketManagerComponent::PostInitProperties()
-{
-    Super::PostInitProperties();
-
-    Refresh();
-}
-
 void USocketManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
@@ -37,7 +30,7 @@ void USocketManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ThisClass, SocketActorSlots);
+    DOREPLIFETIME(ThisClass, Slots);
 }
 
 void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
@@ -47,8 +40,7 @@ void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
 
 bool USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor)
 {
-    // 실행 가능 여부 확인
-    if (bool bCanAttach = Actor && IsSocketValid(SocketTag) && IsSocketEmpty(SocketTag); !bCanAttach) return false;
+    if (!Actor || !SocketTag.IsValid()) return false;
 
     // 액터 부착
     Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true), GetSocketName(SocketTag));
@@ -72,7 +64,7 @@ bool USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag,
 AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& SocketTag)
 {
     // 실행 가능 여부 확인
-    auto SocketActor = GetActorByTag(SocketTag);
+    auto SocketActor = GetActorBySocketTag(SocketTag);
     if (SocketActor == nullptr) return nullptr;
 
     // 액터 탈착
@@ -84,20 +76,24 @@ AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& Socke
     return SocketActor;
 }
 
-bool USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
+void USocketManagerComponent::DestroyActorFromSocket(FGameplayTag SocketTag)
 {
-    // 실행 가능 여부 확인
-    if (bool bCanSpawn = ActorClass && IsSocketValid(SocketTag); !bCanSpawn) return false;
+    if (AActor* DetachedActor = DetachActorFromSocket(SocketTag))
+    {
+        DetachedActor->Destroy();
+    }
+}
 
-    // 액터 스폰
+AActor* USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
+{
     AActor* SpawnedActor = SpawnActor(ActorClass);
-    if (SpawnedActor == nullptr) return false;
+    if (SpawnedActor && !AttachActorToSocket(SocketTag, SpawnedActor))
+    {
+        SpawnedActor->Destroy();
+        SpawnedActor = nullptr;
+    }
 
-    // 액터 부착
-    bool bSucceed = AttachActorToSocket(SocketTag, SpawnedActor);
-    if (!bSucceed) SpawnedActor->Destroy();
-
-    return bSucceed;
+    return SpawnedActor;
 }
 
 bool USocketManagerComponent::SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh)
@@ -112,8 +108,7 @@ bool USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& Socket
 
 bool USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
 {
-    // 실행 가능 여부 확인
-    if (bool bCanSpawn = Mesh && IsSocketValid(SocketTag); !bCanSpawn) return false;
+    if (!Mesh || !SocketTag.IsValid()) return false;
 
     // 액터 스폰
     TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
@@ -156,6 +151,50 @@ void USocketManagerComponent::ClearSocket(const FGameplayTag& SourceTag)
     if (SocketActor) SocketActor->Destroy();
 }
 
+const FSocketSlot& USocketManagerComponent::GetSlotBySocketTag(FGameplayTag SocketTag) const
+{
+    if (!SocketTag.IsValid()) return FSocketSlot::EmptySlot;
+
+    for (const FSocketSlot& Slot : Slots)
+    {
+        if (Slot.SocketTag == SocketTag)
+        {
+            return Slot;
+        }
+    }
+
+    return FSocketSlot::EmptySlot;
+}
+
+const FSocketSlot& USocketManagerComponent::GetSlotByActor(AActor* Actor) const
+{
+    if (!Actor) return FSocketSlot::EmptySlot;
+
+    for (const FSocketSlot& Slot : Slots)
+    {
+        if (Slot.Actor == Actor)
+        {
+            return Slot;
+        }
+    }
+
+    return FSocketSlot::EmptySlot;
+}
+
+AActor* USocketManagerComponent::GetActorBySocketTag(const FGameplayTag& SocketTag) const
+{
+    const FSocketSlot& Slot = GetSlotBySocketTag(SocketTag);
+
+    return Slot.Actor;
+}
+
+FGameplayTag USocketManagerComponent::GetSocketTagByActor(AActor* Actor) const
+{
+    const FSocketSlot& Slot = GetSlotByActor(Actor);
+
+    return Slot.SocketTag;
+}
+
 void USocketManagerComponent::FindTargetMesh()
 {
     if (TargetMesh.IsValid()) return;
@@ -170,44 +209,27 @@ void USocketManagerComponent::FindTargetMesh()
     }
 }
 
-void USocketManagerComponent::Refresh()
-{
-    SocketActorMap.Empty(SocketNameMap.Num());
-    for (const auto& [SocketTag, Actor] : SocketActorSlots)
-    {
-        SocketActorMap.Emplace(SocketTag, Actor);
-    }
-}
-
 void USocketManagerComponent::RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor)
 {
-    // 실행 가능 여부 확인
-    if (bool bCanRegister = Actor && IsSocketValid(SocketTag) && IsSocketEmpty(SocketTag); !bCanRegister) return;
-
-    // 배열에 등록
-    SocketActorSlots.Emplace(FSocketActorSlot(SocketTag, Actor));
-
-    // 맵에 등록
-    SocketActorMap.Emplace(SocketTag, Actor);
+    if (Actor && DoesSocketExist(SocketTag))
+    {
+        Slots.Emplace(FSocketSlot(SocketTag, Actor));
+    }
 }
 
 void USocketManagerComponent::UnRegisterSocketActor(const FGameplayTag& SocketTag)
 {
-    // 실행 가능 여부 확인
-    if (bool bCanUnRegister = IsSocketValid(SocketTag) && !IsSocketEmpty(SocketTag); !bCanUnRegister) return;
+    if (!SocketTag.IsValid()) return;
 
     // 배열로부터 등록 해제
-    for (int32 Index = SocketActorSlots.Num() - 1; Index >= 0; --Index)
+    for (int32 Index = Slots.Num() - 1; Index >= 0; --Index)
     {
-        if (SocketActorSlots[Index].SocketTag == SocketTag)
+        if (Slots[Index].SocketTag == SocketTag)
         {
-            SocketActorSlots.RemoveAt(Index);
+            Slots.RemoveAt(Index);
             break;
         }
     }
-
-    // 맵으로부터 등록 해제
-    SocketActorMap.Remove(SocketTag);
 }
 
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
@@ -252,7 +274,7 @@ AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorCla
     return SpawnedActor;
 }
 
-void USocketManagerComponent::OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots)
+void USocketManagerComponent::OnRep_Slots(const TArray<FSocketSlot>& OldSlots)
 {
-    Refresh();
+
 }

@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "SocketActorSlot.generated.h"
+#include "SocketSlot.generated.h"
 
 USTRUCT(Atomic, BlueprintType)
-struct FSocketActorSlot
+struct FSocketSlot
 {
     GENERATED_BODY()
+
+    static const FSocketSlot EmptySlot;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FGameplayTag SocketTag;
@@ -17,6 +19,8 @@ struct FSocketActorSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;
 
-    bool operator==(const FSocketActorSlot& Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
-    bool operator!=(const FSocketActorSlot& Other) const { return !(*this == Other); }
+    bool operator==(const FSocketSlot& Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
+    bool operator!=(const FSocketSlot& Other) const { return !(*this == Other); }
+
+    bool IsValid() const { return SocketTag.IsValid() && Actor; }
 };

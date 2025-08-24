@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "GameplayTagContainer.h"
-#include "Types/SocketActorSlot.h"
+#include "Types/SocketSlot.h"
 #include "SocketManagerComponent.generated.h"
 
 UCLASS(meta = (BlueprintSpawnableComponent))
@@ -24,16 +24,12 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<UMeshComponent> TargetMesh;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_SocketActorSlots, Transient, Category = "State")
-    TArray<FSocketActorSlot> SocketActorSlots;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Transient, Category = "State")
-    TMap<FGameplayTag, TObjectPtr<AActor>> SocketActorMap;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_Slots, Transient, Category = "State")
+    TArray<FSocketSlot> Slots;
 
 public:
     USocketManagerComponent();
 
-    virtual void PostInitProperties() override;
     virtual void InitializeComponent() override;
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -47,7 +43,10 @@ public:
     virtual AActor* DetachActorFromSocket(const FGameplayTag& SocketTag);
 
     UFUNCTION(BlueprintCallable)
-    virtual bool SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
+    virtual void DestroyActorFromSocket(FGameplayTag SocketTag);
+
+    UFUNCTION(BlueprintCallable)
+    virtual AActor* SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass);
 
     UFUNCTION(BlueprintCallable)
     virtual bool SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh);
@@ -67,15 +66,25 @@ public:
     /* Query */
 
     UFUNCTION(BlueprintPure)
-    bool IsSocketEmpty(const FGameplayTag& SocketTag) const { return !SocketActorMap.Contains(SocketTag); }
+    FORCEINLINE FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.FindRef(SocketTag); }
 
     UFUNCTION(BlueprintPure)
-    AActor* GetActorByTag(const FGameplayTag& SocketTag) const { return SocketActorMap.FindRef(SocketTag); }
+    FORCEINLINE bool DoesSocketExist(const FGameplayTag& SocketTag) const { return TargetMesh.IsValid() && TargetMesh->DoesSocketExist(GetSocketName(SocketTag)); }
+
+    UFUNCTION(BlueprintPure)
+    const FSocketSlot& GetSlotBySocketTag(FGameplayTag SocketTag) const;
+
+    UFUNCTION(BlueprintPure)
+    const FSocketSlot& GetSlotByActor(AActor* Actor) const;
+
+    UFUNCTION(BlueprintPure)
+    AActor* GetActorBySocketTag(const FGameplayTag& SocketTag) const;
+
+    UFUNCTION(BlueprintPure)
+    FGameplayTag GetSocketTagByActor(AActor* Actor) const;
 
 protected:
     virtual void FindTargetMesh();
-
-    virtual void Refresh();
 
     virtual void RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor);
 
@@ -96,17 +105,8 @@ protected:
 
     FORCEINLINE bool ShouldReplicate() const { return GetOwner()->GetIsReplicated(); }
 
-    UFUNCTION(BlueprintPure)
-    bool IsSocketValid(const FGameplayTag& SocketTag) const { return SocketNameMap.Contains(SocketTag); }
-
-    UFUNCTION(BlueprintPure)
-    bool DoesSocketExist(const FGameplayTag& SocketTag) const { return TargetMesh.IsValid() && TargetMesh->DoesSocketExist(GetSocketName(SocketTag)); }
-
-    UFUNCTION(BlueprintPure)
-    FName GetSocketName(const FGameplayTag& SocketTag) const { return SocketNameMap.FindRef(SocketTag); }
-
     /* Replicate */
 
     UFUNCTION()
-    virtual void OnRep_SocketActorSlots(const TArray<FSocketActorSlot>& OldSocketActorSlots);
+    virtual void OnRep_Slots(const TArray<FSocketSlot>& OldSlots);
 };
