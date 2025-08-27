@@ -3,89 +3,22 @@
 
 #include "Games/WidgetOnlyGameModeBase.h"
 
-#include "Blueprint/UserWidget.h"
+#include "Components/WidgetManagerComponentBase.h"
+#include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
+
+const FName AWidgetOnlyGameModeBase::WidgetManagerName(TEXT("WidgetManager"));
 
 AWidgetOnlyGameModeBase::AWidgetOnlyGameModeBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    DefaultPawnClass = nullptr;
-    SpectatorClass = nullptr;
-}
+    /* WidgetManager */
 
-void AWidgetOnlyGameModeBase::Destroyed()
-{
-    DestroyWidgets();
-
-    Super::Destroyed();
+    WidgetManager = CreateDefaultSubobject<UWidgetManagerComponentBase>(WidgetManagerName);
 }
 
 void AWidgetOnlyGameModeBase::BeginPlay()
 {
     Super::BeginPlay();
 
-    CreateWidgets();
-    ShowWidgets();
-    SetPlayerUIMode();
+    UWidgetManagerFunctionLibrary::SetPlayerUIMode(GetWorld()->GetFirstPlayerController());
 }
-
-void AWidgetOnlyGameModeBase::CreateWidgets()
-{
-    Widgets.Reset(WidgetClasses.Num());
-    for (TSubclassOf<UUserWidget> WidgetClass : WidgetClasses)
-    {
-        if (WidgetClass == nullptr) continue;
-
-        UUserWidget* Widget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
-        Widgets.Emplace(Widget);
-    }
-}
-
-void AWidgetOnlyGameModeBase::DestroyWidgets()
-{
-    for (UUserWidget* Widget : Widgets)
-    {
-        if (Widget->IsInViewport())
-        {
-            Widget->RemoveFromParent();
-        }
-    }
-    Widgets.Empty();
-}
-
-void AWidgetOnlyGameModeBase::ShowWidgets()
-{
-    for (UUserWidget* Widget : Widgets)
-    {
-        if (!Widget->IsInViewport())
-        {
-            Widget->AddToViewport();
-        }
-
-        if (!Widget->IsVisible())
-        {
-            Widget->SetVisibility(ESlateVisibility::Visible);
-        }
-    }
-}
-
-void AWidgetOnlyGameModeBase::HideWidgets()
-{
-    for (UUserWidget* Widget : Widgets)
-    {
-        if (Widget->IsVisible())
-        {
-            Widget->SetVisibility(ESlateVisibility::Collapsed);
-        }
-    }
-}
-
-void AWidgetOnlyGameModeBase::SetPlayerUIMode()
-{
-    if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
-    {
-        PlayerController->SetShowMouseCursor(true);
-        PlayerController->SetIgnoreMoveInput(true);
-        PlayerController->SetIgnoreLookInput(true);
-    }
-}
-

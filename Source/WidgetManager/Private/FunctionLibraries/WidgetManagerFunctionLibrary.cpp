@@ -169,3 +169,17 @@ void UWidgetManagerFunctionLibrary::ToggleWidgets(const TArray<UUserWidget*>& Wi
         ToggleWidget(Widget);
     }
 }
+
+void UWidgetManagerFunctionLibrary::SetPlayerUIMode(APlayerController* PlayerController)
+{
+    if (PlayerController)
+    {
+        PlayerController->SetIgnoreMoveInput(true);
+        PlayerController->SetIgnoreLookInput(true);
+
+        if (PlayerController->IsLocalController())
+        {
+            PlayerController->SetShowMouseCursor(true);
+        }
+    }
+}

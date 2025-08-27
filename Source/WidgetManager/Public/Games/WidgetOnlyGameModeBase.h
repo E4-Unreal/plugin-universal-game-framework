@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "WidgetOnlyGameModeBase.generated.h"
 
+class UWidgetManagerComponentBase;
+
 /**
  *
  */
@@ -15,24 +17,18 @@ class WIDGETMANAGER_API AWidgetOnlyGameModeBase : public AGameModeBase
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TArray<TSubclassOf<UUserWidget>> WidgetClasses;
+    const static FName WidgetManagerName;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TArray<TObjectPtr<UUserWidget>> Widgets;
+private:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UWidgetManagerComponentBase> WidgetManager;
 
 public:
-    virtual void Destroyed() override;
-
-protected:
     AWidgetOnlyGameModeBase(const FObjectInitializer& ObjectInitializer);
 
+protected:
     virtual void BeginPlay() override;
 
-    virtual void CreateWidgets();
-    virtual void DestroyWidgets();
-    virtual void ShowWidgets();
-    virtual void HideWidgets();
-
-    virtual void SetPlayerUIMode();
+public:
+    FORCEINLINE UWidgetManagerComponentBase* GetWidgetManager() const { return WidgetManager; }
 };

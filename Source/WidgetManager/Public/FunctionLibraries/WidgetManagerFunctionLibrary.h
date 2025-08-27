@@ -56,4 +56,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     static void ToggleWidgets(const TArray<UUserWidget*>& Widgets);
+
+    UFUNCTION(BlueprintCallable)
+    static void SetPlayerUIMode(APlayerController* PlayerController);
 };
