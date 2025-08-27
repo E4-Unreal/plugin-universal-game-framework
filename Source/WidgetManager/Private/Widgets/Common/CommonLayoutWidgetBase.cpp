@@ -4,6 +4,7 @@
 #include "Widgets/Common/CommonLayoutWidgetBase.h"
 
 #include "Widgets/CommonActivatableWidgetContainer.h"
+#include "Widgets/Common/CommonLayerWidgetBase.h"
 
 
 UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer)
@@ -36,6 +37,18 @@ void UCommonLayoutWidgetBase::RemoveWidget(FGameplayTag LayerTag, UCommonActivat
             Layer->RemoveWidget(*Widget);
         }
     }
+}
+
+UCommonActivatableWidget* UCommonLayoutWidgetBase::AddLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+{
+    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
+    return AddWidget(LayerWidget->GetLayerTag(), WidgetClass);
+}
+
+void UCommonLayoutWidgetBase::RemoveLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+{
+    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
+    RemoveWidget(LayerWidget->GetLayerTag(), LayerWidget);
 }
 
 void UCommonLayoutWidgetBase::SetLayer(FGameplayTag LayerTag, UCommonActivatableWidgetStack* LayerWidget)

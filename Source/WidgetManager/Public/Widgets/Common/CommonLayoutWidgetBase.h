@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "CommonLayoutWidgetBase.generated.h"
 
+class UCommonLayerWidgetBase;
 class UCommonActivatableWidget;
 class UCommonActivatableWidgetStack;
 
@@ -33,6 +34,12 @@ public:
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Widget.Layer"))
     virtual void RemoveWidget(FGameplayTag LayerTag, UCommonActivatableWidget* Widget);
+
+    UFUNCTION(BlueprintCallable)
+    virtual UCommonActivatableWidget* AddLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void RemoveLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
 
 protected:
     UFUNCTION(BlueprintCallable, meta = (Categories = "Widget.Layer"))
