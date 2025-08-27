@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "Interfaces/SlotManagerInterface.h"
 #include "SlotPanelWidgetBase.generated.h"
 
@@ -13,7 +13,7 @@ class UUniformGridPanel;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API USlotPanelWidgetBase : public UCommonUserWidget
+class WIDGETMANAGER_API USlotPanelWidgetBase : public UUserWidget
 {
     GENERATED_BODY()
 
