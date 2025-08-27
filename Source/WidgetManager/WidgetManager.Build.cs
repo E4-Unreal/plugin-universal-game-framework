@@ -13,7 +13,8 @@ public class WidgetManager : ModuleRules
                 "UMG",
                 "CommonUI",
                 "InputCore",
-                "EnhancedInput"
+                "EnhancedInput",
+                "GameplayTags"
             }
         );
 
