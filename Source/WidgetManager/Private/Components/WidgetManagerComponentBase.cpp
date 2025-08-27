@@ -50,6 +50,12 @@ APlayerController* UWidgetManagerComponentBase::GetOwningPlayerController() cons
         APawn* OwningPawn = Cast<APawn>(GetOwner());
         OwningPlayerController = Cast<APlayerController>(OwningPawn->GetController());
     }
+    else if (OwnerClass->IsChildOf<AGameModeBase>())
+    {
+        OwningPlayerController = GetWorld()->GetFirstPlayerController();
+    }
+
+    if (!OwningPlayerController->IsLocalController()) OwningPlayerController = nullptr;
 
     return OwningPlayerController;
 }
