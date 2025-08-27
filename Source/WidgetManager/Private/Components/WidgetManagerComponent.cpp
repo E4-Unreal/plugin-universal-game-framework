@@ -192,7 +192,7 @@ void UWidgetManagerComponent::HideTopWidget()
     if (ActivatedPanelWidgets.IsEmpty()) return;
 
     UUserWidget* TopWidget = ActivatedPanelWidgets.Pop();
-    HideWidget(TopWidget);
+    HideWidgetByClass(TopWidget->GetClass());
 }
 
 void UWidgetManagerComponent::CreateEscapeMenuWidget()
@@ -203,13 +203,13 @@ void UWidgetManagerComponent::CreateEscapeMenuWidget()
 
 void UWidgetManagerComponent::DestroyEscapeMenuWidget()
 {
-    HideWidget(EscapeMenuWidget);
+    HideWidgetByClass(EscapeMenuWidgetClass);
     EscapeMenuWidget = nullptr;
 }
 
 bool UWidgetManagerComponent::ShowEscapeMenu()
 {
-    if (ShowWidget(EscapeMenuWidget))
+    if (ShowWidgetByClass(EscapeMenuWidgetClass))
     {
         if (APlayerController* OwningPlayerController = GetOwningPlayerController())
         {
@@ -225,7 +225,7 @@ bool UWidgetManagerComponent::ShowEscapeMenu()
 
 bool UWidgetManagerComponent::HideEscapeMenu()
 {
-    if (HideWidget(EscapeMenuWidget))
+    if (HideWidgetByClass(EscapeMenuWidgetClass))
     {
         if (APlayerController* OwningPlayerController = GetOwningPlayerController())
         {

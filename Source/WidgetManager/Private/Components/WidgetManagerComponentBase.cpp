@@ -4,6 +4,7 @@
 #include "Components/WidgetManagerComponentBase.h"
 
 #include "Blueprint/UserWidget.h"
+#include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
 
 UWidgetManagerComponentBase::UWidgetManagerComponentBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -27,7 +28,7 @@ void UWidgetManagerComponentBase::OnComponentDestroyed(bool bDestroyingHierarchy
 
 UUserWidget* UWidgetManagerComponentBase::GetWidgetByClass(TSubclassOf<UUserWidget> WidgetClass) const
 {
-    return WidgetMap.Contains(WidgetClass) ? WidgetMap[WidgetClass].Get() : nullptr;
+    return WidgetMap.FindRef(WidgetClass).Get();
 }
 
 UUserWidget* UWidgetManagerComponentBase::GetOrCreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
@@ -60,73 +61,42 @@ APlayerController* UWidgetManagerComponentBase::GetOwningPlayerController() cons
     return OwningPlayerController;
 }
 
-bool UWidgetManagerComponentBase::ShowWidget(UUserWidget* Widget)
-{
-    if (Widget && !Widget->IsInViewport())
-    {
-        Widget->AddToViewport();
-        return true;
-    }
-
-    return false;
-}
-
-bool UWidgetManagerComponentBase::HideWidget(UUserWidget* Widget)
-{
-    if (Widget && Widget->IsInViewport())
-    {
-        Widget->RemoveFromParent();
-        return true;
-    }
-
-    return false;
-}
-
-void UWidgetManagerComponentBase::ToggleWidget(UUserWidget* Widget)
-{
-    if (ShowWidget(Widget)) return;
-
-    HideWidget(Widget);
-}
-
 UUserWidget* UWidgetManagerComponentBase::CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (!WidgetClass) return nullptr;
+    if (UUserWidget* Widget = UWidgetManagerFunctionLibrary::CreateWidgetByClass(GetOwningPlayerController(), WidgetClass))
+    {
+        WidgetMap.Emplace(WidgetClass, Widget);
 
-    APlayerController* OwningPlayerController = GetOwningPlayerController();
-    if (!OwningPlayerController) return nullptr;
+        return Widget;
+    }
 
-    UUserWidget* Widget = CreateWidget<UUserWidget>(OwningPlayerController, WidgetClass);
-    WidgetMap.Emplace(WidgetClass, Widget);
-
-    return Widget;
+    return nullptr;
 }
 
 bool UWidgetManagerComponentBase::ShowWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
     UUserWidget* Widget = GetOrCreateWidgetByClass(WidgetClass);
 
-    return ShowWidget(Widget);
+    return UWidgetManagerFunctionLibrary::ShowWidget(Widget);
 }
 
 bool UWidgetManagerComponentBase::HideWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
     UUserWidget* Widget = GetWidgetByClass(WidgetClass);
 
-    return HideWidget(Widget);
+    return UWidgetManagerFunctionLibrary::HideWidget(Widget);
 }
 
 void UWidgetManagerComponentBase::ToggleWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
     UUserWidget* Widget = GetOrCreateWidgetByClass(WidgetClass);
 
-    ToggleWidget(Widget);
+    UWidgetManagerFunctionLibrary::ToggleWidget(Widget);
 }
 
 void UWidgetManagerComponentBase::DestroyWidgetByClass(TSubclassOf<UUserWidget> WidgetClass)
 {
-    HideWidgetByClass(WidgetClass);
-    WidgetMap.Remove(WidgetClass);
+    UWidgetManagerFunctionLibrary::DestroyWidgetByClass(WidgetMap, WidgetClass);
 }
 
 void UWidgetManagerComponentBase::CreateWidgets()
@@ -143,42 +113,25 @@ void UWidgetManagerComponentBase::CreateStartupWidgets()
 {
     if (!StartupWidgets.IsEmpty()) return;
 
-    StartupWidgets.Reserve(StartupWidgetClasses.Num());
-    for (TSubclassOf<UUserWidget> StartupWidgetClass : StartupWidgetClasses)
-    {
-        if (UUserWidget* StartupWidget = CreateWidgetByClass(StartupWidgetClass))
-        {
-            StartupWidgets.Emplace(StartupWidget);
-        }
-    }
+    StartupWidgets = UWidgetManagerFunctionLibrary::CreateWidgetsByClasses(GetOwningPlayerController(), StartupWidgetClasses.Array());
 }
 
 void UWidgetManagerComponentBase::DestroyStartupWidgets()
 {
-    HideStartupWidgets();
-    StartupWidgets.Empty();
+    UWidgetManagerFunctionLibrary::DestroyWidgets(StartupWidgets);
 }
 
 void UWidgetManagerComponentBase::ShowStartupWidgets()
 {
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        ShowWidget(StartupWidget);
-    }
+    UWidgetManagerFunctionLibrary::ShowWidgets(StartupWidgets);
 }
 
 void UWidgetManagerComponentBase::HideStartupWidgets()
 {
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        HideWidget(StartupWidget);
-    }
+    UWidgetManagerFunctionLibrary::HideWidgets(StartupWidgets);
 }
 
 void UWidgetManagerComponentBase::ToggleStartupWidgets()
 {
-    for (UUserWidget* StartupWidget : StartupWidgets)
-    {
-        ToggleWidget(StartupWidget);
-    }
+    UWidgetManagerFunctionLibrary::ToggleWidgets(StartupWidgets);
 }

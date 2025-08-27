@@ -39,10 +39,6 @@ public:
 
 protected:
     virtual APlayerController* GetOwningPlayerController() const;
-    virtual bool ShowWidget(UUserWidget* Widget);
-    virtual bool HideWidget(UUserWidget* Widget);
-    virtual void ToggleWidget(UUserWidget* Widget);
-
     virtual UUserWidget* CreateWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual bool ShowWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
     virtual bool HideWidgetByClass(TSubclassOf<UUserWidget> WidgetClass);
