@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widgets/Common/CommonTextButtonBase.h"
+#include "Widgets/CommonTextButtonBase.h"
 
 #include "CommonTextBlock.h"
 #include "Blueprint/WidgetTree.h"

@@ -10,6 +10,9 @@ public class CommonWidgetManager : ModuleRules
             new string[]
             {
                 "Core",
+                "UMG",
+                "CommonUI",
+                "GameplayTags"
             }
         );
 

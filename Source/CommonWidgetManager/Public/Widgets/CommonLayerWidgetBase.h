@@ -11,12 +11,12 @@
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatableWidget
+class COMMONWIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatableWidget
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Widget.Layer"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "UI.Layer"))
     FGameplayTag LayerTag;
 
 public:

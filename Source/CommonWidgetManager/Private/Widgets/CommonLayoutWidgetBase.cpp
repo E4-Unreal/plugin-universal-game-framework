@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widgets/Common/CommonLayoutWidgetBase.h"
+#include "Widgets/CommonLayoutWidgetBase.h"
 
 #include "Widgets/CommonActivatableWidgetContainer.h"
-#include "Widgets/Common/CommonLayerWidgetBase.h"
+#include "Widgets/CommonLayerWidgetBase.h"
 
 
 UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer)

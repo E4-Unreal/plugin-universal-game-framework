@@ -15,7 +15,7 @@ class UCommonActivatableWidgetStack;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatableWidget
+class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatableWidget
 {
     GENERATED_BODY()
 
@@ -26,13 +26,13 @@ protected:
 public:
     UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer);
 
-    UFUNCTION(BlueprintPure, meta = (Categories = "Widget.Layer"))
+    UFUNCTION(BlueprintPure, meta = (Categories = "UI.Layer"))
     FORCEINLINE UCommonActivatableWidgetStack* GetLayer(FGameplayTag LayerTag) const { return LayerMap.FindRef(LayerTag); }
 
-    UFUNCTION(BlueprintCallable, meta = (Categories = "Widget.Layer"))
+    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
     virtual UCommonActivatableWidget* AddWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
 
-    UFUNCTION(BlueprintCallable, meta = (Categories = "Widget.Layer"))
+    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
     virtual void RemoveWidget(FGameplayTag LayerTag, UCommonActivatableWidget* Widget);
 
     UFUNCTION(BlueprintCallable)
@@ -42,6 +42,6 @@ public:
     virtual void RemoveLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
 
 protected:
-    UFUNCTION(BlueprintCallable, meta = (Categories = "Widget.Layer"))
+    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
     virtual void SetLayer(FGameplayTag LayerTag, UCommonActivatableWidgetStack* LayerWidget);
 };

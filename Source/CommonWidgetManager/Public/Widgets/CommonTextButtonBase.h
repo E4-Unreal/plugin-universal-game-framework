@@ -14,7 +14,7 @@ class UCommonTextStyle;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UCommonTextButtonBase : public UCommonButtonBase
+class COMMONWIDGETMANAGER_API UCommonTextButtonBase : public UCommonButtonBase
 {
     GENERATED_BODY()
 

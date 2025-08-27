@@ -12,7 +12,7 @@ class UCommonActivatableWidget;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UCommonLayoutWidget : public UCommonLayoutWidgetBase
+class COMMONWIDGETMANAGER_API UCommonLayoutWidget : public UCommonLayoutWidgetBase
 {
     GENERATED_BODY()
 
