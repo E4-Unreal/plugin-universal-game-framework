@@ -27,10 +27,55 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FVector2D Size;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText Text;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_WidthOverride"))
+	float WidthOverride;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_HeightOverride"))
+	float HeightOverride;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MinDesiredWidth"))
+	float MinDesiredWidth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MinDesiredHeight"))
+	float MinDesiredHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MaxDesiredWidth"))
+	float MaxDesiredWidth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MaxDesiredHeight"))
+	float MaxDesiredHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MinAspectRatio"))
+	float MinAspectRatio;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MaxAspectRatio" ))
+	float MaxAspectRatio;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_WidthOverride : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_HeightOverride : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_MinDesiredWidth : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_MinDesiredHeight : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_MaxDesiredWidth : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_MaxDesiredHeight : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_MinAspectRatio : 1;
+
+	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	uint8 bOverride_MaxAspectRatio : 1;
 
 public:
     UFUNCTION(BlueprintPure)
