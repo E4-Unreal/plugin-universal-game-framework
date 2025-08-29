@@ -30,6 +30,9 @@ protected:
 public:
     UCommonButtonStyleAssetAction();
 
+    UFUNCTION(CallInEditor)
+    void CopyBrushToHoveredAndPressed();
+
     // Base TintColor를 기준으로 Hovered, Pressed 시의 TintColor 명도를 조정합니다.
     UFUNCTION(CallInEditor)
     void UpdateValueForHoveredAndPressed();

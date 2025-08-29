@@ -33,6 +33,9 @@ protected:
     static bool SetRadius(FSlateBrush& SlateBrush, const FVector4& Radius);
     static void ApplyValueOffset(FLinearColor& LinearColor, const float ValueOffset);
 
+    static bool SetBrush(FSlateBrush& OldBrush, const FSlateBrush& NewBrush);
+    static bool SetSlateColor(FSlateColor& OldColor, const FSlateColor& NewColor);
+
     virtual void OnGenerateInstance(const FAssetData& SelectedAsset);
 
     FString GetNewAssetName(const FAssetData& SelectedAsset) const;

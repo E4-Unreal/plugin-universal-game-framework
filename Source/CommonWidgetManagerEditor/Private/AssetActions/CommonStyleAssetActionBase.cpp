@@ -90,6 +90,28 @@ void UCommonStyleAssetActionBase::ApplyValueOffset(FLinearColor& LinearColor, co
     LinearColor = LinearColor.HSVToLinearRGB();
 }
 
+bool UCommonStyleAssetActionBase::SetBrush(FSlateBrush& OldBrush, const FSlateBrush& NewBrush)
+{
+    if (OldBrush != NewBrush)
+    {
+        OldBrush = NewBrush;
+        return true;
+    }
+
+    return false;
+}
+
+bool UCommonStyleAssetActionBase::SetSlateColor(FSlateColor& OldColor, const FSlateColor& NewColor)
+{
+    if (OldColor != NewColor)
+    {
+        OldColor = NewColor;
+        return true;
+    }
+
+    return false;
+}
+
 void UCommonStyleAssetActionBase::OnGenerateInstance(const FAssetData& SelectedAsset)
 {
 

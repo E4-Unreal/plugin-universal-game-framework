@@ -21,6 +21,28 @@ UCommonButtonStyleAssetAction::UCommonButtonStyleAssetAction()
     PressedValueOffset = -0.2f;
 }
 
+void UCommonButtonStyleAssetAction::CopyBrushToHoveredAndPressed()
+{
+    TArray<FAssetData> SelectedAssets;
+    AssetSelectionUtils::GetSelectedAssets(SelectedAssets);
+    for (const auto& SelectedAsset : SelectedAssets)
+    {
+        if (UObject* Style = GetStyleObject(SelectedAsset.PackageName.ToString()))
+        {
+            if (UCommonButtonStyle* ButtonStyle = Cast<UCommonButtonStyle>(Style))
+            {
+                bool bDirty = false;
+                bDirty = SetBrush(ButtonStyle->NormalHovered, ButtonStyle->NormalBase) || bDirty;
+                bDirty = SetBrush(ButtonStyle->NormalPressed, ButtonStyle->NormalBase) || bDirty;
+                bDirty = SetBrush(ButtonStyle->SelectedHovered, ButtonStyle->SelectedBase) || bDirty;
+                bDirty = SetBrush(ButtonStyle->SelectedPressed, ButtonStyle->SelectedBase) || bDirty;
+
+                if (bDirty) ButtonStyle->GetPackage()->MarkPackageDirty();
+            }
+        }
+    }
+}
+
 void UCommonButtonStyleAssetAction::UpdateValueForHoveredAndPressed()
 {
     TArray<FAssetData> SelectedAssets;
