@@ -10,6 +10,7 @@ public class CommonWidgetManagerEditor : ModuleRules
             new string[]
             {
                 "Core",
+                "Blutility"
             }
         );
 
@@ -19,7 +20,10 @@ public class CommonWidgetManagerEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "CommonUI",
+                "UnrealEd",
+                "EditorScriptingUtilities"
             }
         );
     }
