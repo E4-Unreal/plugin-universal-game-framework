@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(Abstract)
 class COMMONWIDGETMANAGEREDITOR_API UCommonTextStyleAssetAction : public UCommonStyleAssetActionBase
 {
     GENERATED_BODY()
