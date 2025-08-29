@@ -83,6 +83,13 @@ bool UCommonStyleAssetActionBase::SetRadius(FSlateBrush& SlateBrush, const FVect
     return bDirty;
 }
 
+void UCommonStyleAssetActionBase::ApplyValueOffset(FLinearColor& LinearColor, const float ValueOffset)
+{
+    LinearColor = LinearColor.LinearRGBToHSV();
+    LinearColor.B += ValueOffset;
+    LinearColor = LinearColor.HSVToLinearRGB();
+}
+
 void UCommonStyleAssetActionBase::OnGenerateInstance(const FAssetData& SelectedAsset)
 {
 

@@ -21,8 +21,18 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<FName, FVector4> RadiusMap;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    float HoveredValueOffset;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    float PressedValueOffset;
+
 public:
     UCommonButtonStyleAssetAction();
+
+    // Base TintColor를 기준으로 Hovered, Pressed 시의 TintColor 명도를 조정합니다.
+    UFUNCTION(CallInEditor)
+    void UpdateValueForHoveredAndPressed();
 
 protected:
     virtual void OnGenerateInstance(const FAssetData& SelectedAsset) override;
