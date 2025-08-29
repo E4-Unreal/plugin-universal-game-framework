@@ -111,10 +111,10 @@ UObject* UCommonStyleAssetActionBase::GetOrCreateStyleInstance(const FAssetData&
     const FString NewAssetName = GetNewAssetName(SelectedAsset) + "_" + Suffix;
     const FString NewPackageName = NewAssetPath + "/" + NewAssetName;
 
-    return UEditorAssetLibrary::DoesAssetExist(NewPackageName) ? GetStyleInstance(NewPackageName) : CreateStyleInstance(SelectedAsset.PackageName.ToString(), NewAssetPath, NewAssetName);
+    return UEditorAssetLibrary::DoesAssetExist(NewPackageName) ? GetStyleObject(NewPackageName) : CreateStyleInstance(SelectedAsset.PackageName.ToString(), NewAssetPath, NewAssetName);
 }
 
-UObject* UCommonStyleAssetActionBase::GetStyleInstance(FString NewPackageName) const
+UObject* UCommonStyleAssetActionBase::GetStyleObject(FString NewPackageName) const
 {
     UClass* InstanceClass = UEditorAssetLibrary::LoadBlueprintClass(NewPackageName);
 

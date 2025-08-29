@@ -38,6 +38,6 @@ protected:
     FString GetNewAssetPath(const FAssetData& SelectedAsset) const;
 
     UObject* GetOrCreateStyleInstance(const FAssetData& SelectedAsset, FString Suffix);
-    UObject* GetStyleInstance(FString NewPackageName) const;
+    UObject* GetStyleObject(FString NewPackageName) const;
     UObject* CreateStyleInstance(FString AssetPackageName, FString NewAssetPath, FString NewAssetName);
 };
