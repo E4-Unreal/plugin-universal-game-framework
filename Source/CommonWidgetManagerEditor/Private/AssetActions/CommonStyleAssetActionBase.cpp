@@ -61,7 +61,6 @@ bool UCommonStyleAssetActionBase::SetRadius(FSlateBrush& SlateBrush, const FVect
 
     if (SlateBrush.OutlineSettings.CornerRadii != Radius)
     {
-        SlateBrush.DrawAs = Radius == FVector4::Zero() ? ESlateBrushDrawType::Box : ESlateBrushDrawType::RoundedBox;
         SlateBrush.OutlineSettings.CornerRadii = Radius;
 
         bDirty = true;
@@ -76,6 +75,7 @@ bool UCommonStyleAssetActionBase::SetRadius(FSlateBrush& SlateBrush, const FVect
     else if (Radius != FVector4::Zero() && SlateBrush.DrawAs != ESlateBrushDrawType::RoundedBox)
     {
         SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+        SlateBrush.OutlineSettings.RoundingType = ESlateBrushRoundingType::Type::FixedRadius;
 
         bDirty = true;
     }
