@@ -29,6 +29,8 @@ public:
 
 protected:
     static bool IsChildOfStyle(UClass* Class);
+    static bool SetHalfHeightRadius(FSlateBrush& SlateBrush);
+    static bool SetRadius(FSlateBrush& SlateBrush, const FVector4& Radius);
 
     virtual void OnGenerateInstance(const FAssetData& SelectedAsset);
 

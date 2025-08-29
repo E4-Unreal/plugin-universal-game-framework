@@ -36,6 +36,53 @@ bool UCommonStyleAssetActionBase::IsChildOfStyle(UClass* Class)
     return Class->IsChildOf(UCommonBorderStyle::StaticClass()) || Class->IsChildOf(UCommonTextStyle::StaticClass()) || Class->IsChildOf(UCommonButtonStyle::StaticClass());
 }
 
+bool UCommonStyleAssetActionBase::SetHalfHeightRadius(FSlateBrush& SlateBrush)
+{
+    bool bDirty = false;
+
+    if (SlateBrush.DrawAs != ESlateBrushDrawType::RoundedBox)
+    {
+        SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+        bDirty = true;
+    }
+
+    if (SlateBrush.OutlineSettings.RoundingType != ESlateBrushRoundingType::HalfHeightRadius)
+    {
+        SlateBrush.OutlineSettings.RoundingType = ESlateBrushRoundingType::HalfHeightRadius;
+        bDirty = true;
+    }
+
+    return bDirty;
+}
+
+bool UCommonStyleAssetActionBase::SetRadius(FSlateBrush& SlateBrush, const FVector4& Radius)
+{
+    bool bDirty = false;
+
+    if (SlateBrush.OutlineSettings.CornerRadii != Radius)
+    {
+        SlateBrush.DrawAs = Radius == FVector4::Zero() ? ESlateBrushDrawType::Box : ESlateBrushDrawType::RoundedBox;
+        SlateBrush.OutlineSettings.CornerRadii = Radius;
+
+        bDirty = true;
+    }
+
+    if (Radius == FVector4::Zero() && SlateBrush.DrawAs != ESlateBrushDrawType::Box)
+    {
+        SlateBrush.DrawAs = ESlateBrushDrawType::Box;
+
+        bDirty = true;
+    }
+    else if (Radius != FVector4::Zero() && SlateBrush.DrawAs != ESlateBrushDrawType::RoundedBox)
+    {
+        SlateBrush.DrawAs = ESlateBrushDrawType::RoundedBox;
+
+        bDirty = true;
+    }
+
+    return bDirty;
+}
+
 void UCommonStyleAssetActionBase::OnGenerateInstance(const FAssetData& SelectedAsset)
 {
 
