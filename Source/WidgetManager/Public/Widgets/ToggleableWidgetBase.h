@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonUserWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "ToggleableWidgetBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UToggleableWidgetBase : public UCommonUserWidget
+class WIDGETMANAGER_API UToggleableWidgetBase : public UUserWidget
 {
     GENERATED_BODY()
 

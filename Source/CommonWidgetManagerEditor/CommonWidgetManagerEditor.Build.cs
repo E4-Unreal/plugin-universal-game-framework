@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class WidgetManager : ModuleRules
+public class CommonWidgetManagerEditor : ModuleRules
 {
-    public WidgetManager(ReadOnlyTargetRules Target) : base(Target)
+    public CommonWidgetManagerEditor(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,10 +10,7 @@ public class WidgetManager : ModuleRules
             new string[]
             {
                 "Core",
-                "UMG",
-                "InputCore",
-                "EnhancedInput",
-                "GameplayTags"
+                "Blutility"
             }
         );
 
@@ -23,7 +20,10 @@ public class WidgetManager : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "CommonUI",
+                "UnrealEd",
+                "EditorScriptingUtilities"
             }
         );
     }

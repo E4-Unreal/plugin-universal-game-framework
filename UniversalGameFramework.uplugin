@@ -69,6 +69,16 @@
 			"Name": "QuickSlotManager",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "CommonWidgetManager",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "CommonWidgetManagerEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault"
 		}
 	],
 	"Plugins": [

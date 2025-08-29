@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class WidgetManager : ModuleRules
+public class CommonWidgetManager : ModuleRules
 {
-    public WidgetManager(ReadOnlyTargetRules Target) : base(Target)
+    public CommonWidgetManager(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -11,8 +11,7 @@ public class WidgetManager : ModuleRules
             {
                 "Core",
                 "UMG",
-                "InputCore",
-                "EnhancedInput",
+                "CommonUI",
                 "GameplayTags"
             }
         );
