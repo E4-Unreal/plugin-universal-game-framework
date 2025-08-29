@@ -53,43 +53,16 @@ void UCommonButtonStyleAssetAction::UpdateValueForHoveredAndPressed()
         {
             if (UCommonButtonStyle* ButtonStyle = Cast<UCommonButtonStyle>(Style))
             {
-                FLinearColor NewNormalHoveredColor = ButtonStyle->NormalBase.TintColor.GetSpecifiedColor();
-                ApplyValueOffset(NewNormalHoveredColor, HoveredValueOffset);
-
-                FLinearColor NewNormalPressedColor = ButtonStyle->NormalBase.TintColor.GetSpecifiedColor();
-                ApplyValueOffset(NewNormalPressedColor, PressedValueOffset);
-
-                FLinearColor NewSelectedHoveredColor = ButtonStyle->SelectedBase.TintColor.GetSpecifiedColor();
-                ApplyValueOffset(NewSelectedHoveredColor, HoveredValueOffset);
-
-                FLinearColor NewSelectedPressedColor = ButtonStyle->SelectedBase.TintColor.GetSpecifiedColor();
-                ApplyValueOffset(NewSelectedPressedColor, PressedValueOffset);
+                FSlateColor NewNormalHoveredColor = ApplyValueOffset(ButtonStyle->NormalBase.TintColor, HoveredValueOffset);
+                FSlateColor NewNormalPressedColor = ApplyValueOffset(ButtonStyle->NormalBase.TintColor, PressedValueOffset);
+                FSlateColor NewSelectedHoveredColor = ApplyValueOffset(ButtonStyle->SelectedBase.TintColor, HoveredValueOffset);
+                FSlateColor NewSelectedPressedColor = ApplyValueOffset(ButtonStyle->SelectedBase.TintColor, PressedValueOffset);
 
                 bool bDirty = false;
-
-                if (ButtonStyle->NormalHovered.TintColor != NewNormalHoveredColor)
-                {
-                    ButtonStyle->NormalHovered.TintColor = NewNormalHoveredColor;
-                    bDirty = true;
-                }
-
-                if (ButtonStyle->NormalPressed.TintColor != NewNormalPressedColor)
-                {
-                    ButtonStyle->NormalPressed.TintColor = NewNormalPressedColor;
-                    bDirty = true;
-                }
-
-                if (ButtonStyle->SelectedHovered.TintColor != NewSelectedHoveredColor)
-                {
-                    ButtonStyle->SelectedHovered.TintColor = NewSelectedHoveredColor;
-                    bDirty = true;
-                }
-
-                if (ButtonStyle->SelectedPressed.TintColor != NewSelectedPressedColor)
-                {
-                    ButtonStyle->SelectedPressed.TintColor = NewSelectedPressedColor;
-                    bDirty = true;
-                }
+                bDirty = SetSlateColor(ButtonStyle->NormalHovered.TintColor, NewNormalHoveredColor) || bDirty;
+                bDirty = SetSlateColor(ButtonStyle->NormalPressed.TintColor, NewNormalPressedColor) || bDirty;
+                bDirty = SetSlateColor(ButtonStyle->SelectedHovered.TintColor, NewSelectedHoveredColor) || bDirty;
+                bDirty = SetSlateColor(ButtonStyle->SelectedPressed.TintColor, NewSelectedPressedColor) || bDirty;
 
                 if (bDirty) ButtonStyle->GetPackage()->MarkPackageDirty();
             }

@@ -83,11 +83,14 @@ bool UCommonStyleAssetActionBase::SetRadius(FSlateBrush& SlateBrush, const FVect
     return bDirty;
 }
 
-void UCommonStyleAssetActionBase::ApplyValueOffset(FLinearColor& LinearColor, const float ValueOffset)
+FSlateColor UCommonStyleAssetActionBase::ApplyValueOffset(const FSlateColor& SlateColor, const float ValueOffset)
 {
-    LinearColor = LinearColor.LinearRGBToHSV();
-    LinearColor.B += ValueOffset;
-    LinearColor = LinearColor.HSVToLinearRGB();
+    FLinearColor NewLinearColor = SlateColor.GetSpecifiedColor();
+    NewLinearColor = NewLinearColor.LinearRGBToHSV();
+    NewLinearColor.B += ValueOffset;
+    NewLinearColor = NewLinearColor.HSVToLinearRGB();
+
+    return NewLinearColor;
 }
 
 bool UCommonStyleAssetActionBase::SetBrush(FSlateBrush& OldBrush, const FSlateBrush& NewBrush)

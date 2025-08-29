@@ -31,7 +31,7 @@ protected:
     static bool IsChildOfStyle(UClass* Class);
     static bool SetHalfHeightRadius(FSlateBrush& SlateBrush);
     static bool SetRadius(FSlateBrush& SlateBrush, const FVector4& Radius);
-    static void ApplyValueOffset(FLinearColor& LinearColor, const float ValueOffset);
+    static FSlateColor ApplyValueOffset(const FSlateColor& SlateColor, const float ValueOffset);
 
     static bool SetBrush(FSlateBrush& OldBrush, const FSlateBrush& NewBrush);
     static bool SetSlateColor(FSlateColor& OldColor, const FSlateColor& NewColor);
