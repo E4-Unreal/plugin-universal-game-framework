@@ -79,6 +79,11 @@
 			"Name": "CommonWidgetManagerEditor",
 			"Type": "Editor",
 			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "CurrencyManager",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
