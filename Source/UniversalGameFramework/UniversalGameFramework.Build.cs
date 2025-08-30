@@ -23,7 +23,8 @@ public class UniversalGameFramework : ModuleRules
                 "ShopSystem",
                 "WidgetManager",
                 "SocketManager",
-                "QuickSlotManager"
+                "QuickSlotManager",
+                "CurrencyManager"
             }
         );
 

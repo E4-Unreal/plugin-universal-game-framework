@@ -10,6 +10,7 @@ public class CurrencyManager : ModuleRules
             new string[]
             {
                 "Core",
+                "GameplayTags"
             }
         );
 
