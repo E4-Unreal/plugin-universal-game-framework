@@ -29,6 +29,12 @@ public:
 
     virtual void InitializeComponent() override;
 
+    UFUNCTION(BlueprintCallable)
+    void SetCurrencyMap(const TMap<FGameplayTag, int64>& NewCurrencyMap) { CurrencyMap = NewCurrencyMap; }
+
+    UFUNCTION(BlueprintPure)
+    const TMap<FGameplayTag, int64>& GetCurrencyMap() const { return CurrencyMap; }
+
     UFUNCTION(BlueprintPure)
     FORCEINLINE int64 GetCurrency() const { return GetCurrencyByType(DefaultCurrencyType); }
 
