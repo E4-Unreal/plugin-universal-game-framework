@@ -74,17 +74,17 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
 
 int32 AUGFPlayerCharacter::GetCurrency_Implementation(const FGameplayTag& CurrencyType) const
 {
-    return GetCurrencyManager()->GetCurrency(CurrencyType);
+    return GetCurrencyManager()->GetCurrencyByType(CurrencyType);
 }
 
 bool AUGFPlayerCharacter::AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity)
 {
-    return GetCurrencyManager()->AddCurrency(CurrencyType, Quantity);
+    return GetCurrencyManager()->AddCurrencyByType(CurrencyType, Quantity);
 }
 
 bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity)
 {
-    return GetCurrencyManager()->RemoveCurrency(CurrencyType, Quantity);
+    return GetCurrencyManager()->RemoveCurrencyByType(CurrencyType, Quantity);
 }
 
 bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)

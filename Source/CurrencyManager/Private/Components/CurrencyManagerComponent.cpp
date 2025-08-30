@@ -10,12 +10,14 @@ UCurrencyManagerComponent::UCurrencyManagerComponent()
 {
     bWantsInitializeComponent = true;
 
-    StartupCurrencyMap.Emplace(Currency::Default, 0);
+    DefaultCurrencyType = Currency::Default;
 }
 
 void UCurrencyManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
+
+    CurrencyMap.Emplace(DefaultCurrencyType, 0);
 
     for (const auto& [CurrencyType, Amount] : StartupCurrencyMap)
     {
@@ -23,26 +25,37 @@ void UCurrencyManagerComponent::InitializeComponent()
     }
 }
 
-int32 UCurrencyManagerComponent::GetCurrency(const FGameplayTag& CurrencyType) const
+int64 UCurrencyManagerComponent::GetCurrencyByType(FGameplayTag CurrencyType) const
 {
-    const int32* CurrencyPtr = CurrencyMap.Find(CurrencyType);
+    CheckCurrencyType(CurrencyType);
+
+    const int64* CurrencyPtr = CurrencyMap.Find(CurrencyType);
     return CurrencyPtr ? *CurrencyPtr : 0;
 }
 
-bool UCurrencyManagerComponent::AddCurrency(const FGameplayTag& CurrencyType, int32 Amount)
+bool UCurrencyManagerComponent::AddCurrencyByType(FGameplayTag CurrencyType, int64 Amount)
 {
+    CheckCurrencyType(CurrencyType);
+
     if (bool bCanAdd = Amount > 0 && CurrencyMap.Contains(CurrencyType); !bCanAdd) return false;
 
-    CurrencyMap.Emplace(CurrencyType, GetCurrency(CurrencyType) + Amount);
+    CurrencyMap.Emplace(CurrencyType, GetCurrencyByType(CurrencyType) + Amount);
 
     return true;
 }
 
-bool UCurrencyManagerComponent::RemoveCurrency(const FGameplayTag& CurrencyType, int32 Amount)
+bool UCurrencyManagerComponent::RemoveCurrencyByType(FGameplayTag CurrencyType, int64 Amount)
 {
-    if (bool bCanRemove = Amount > 0 && GetCurrency(CurrencyType) > Amount; !bCanRemove) return false;
+    CheckCurrencyType(CurrencyType);
 
-    CurrencyMap.Emplace(CurrencyType, GetCurrency(CurrencyType) - Amount);
+    if (bool bCanRemove = Amount > 0 && GetCurrencyByType(CurrencyType) > Amount; !bCanRemove) return false;
+
+    CurrencyMap.Emplace(CurrencyType, GetCurrencyByType(CurrencyType) - Amount);
 
     return true;
+}
+
+void UCurrencyManagerComponent::CheckCurrencyType(FGameplayTag& CurrencyType) const
+{
+    if (CurrencyType == Currency::Default) CurrencyType = DefaultCurrencyType;
 }

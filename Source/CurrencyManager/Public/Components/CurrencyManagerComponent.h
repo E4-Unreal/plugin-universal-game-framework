@@ -15,11 +15,14 @@ class CURRENCYMANAGER_API UCurrencyManagerComponent : public UActorComponent
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
-    TMap<FGameplayTag, int32> StartupCurrencyMap;
+    FGameplayTag DefaultCurrencyType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
+    TMap<FGameplayTag, int64> StartupCurrencyMap;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<FGameplayTag, int32> CurrencyMap;
+    TMap<FGameplayTag, int64> CurrencyMap;
 
 public:
     UCurrencyManagerComponent();
@@ -27,14 +30,29 @@ public:
     virtual void InitializeComponent() override;
 
     UFUNCTION(BlueprintPure)
-    virtual int32 GetCurrency(const FGameplayTag& CurrencyType) const;
+    FORCEINLINE int64 GetCurrency() const { return GetCurrencyByType(DefaultCurrencyType); }
 
     UFUNCTION(BlueprintPure)
-    virtual bool HasCurrency(const FGameplayTag& CurrencyType, int32 Amount) const { return GetCurrency(CurrencyType) >= Amount; }
+    virtual int64 GetCurrencyByType(FGameplayTag CurrencyType) const;
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool HasCurrency(int64 Amount) const { return HasCurrencyByType(DefaultCurrencyType, Amount); }
+
+    UFUNCTION(BlueprintPure)
+    virtual FORCEINLINE bool HasCurrencyByType(FGameplayTag CurrencyType, int64 Amount) const { return GetCurrencyByType(CurrencyType) >= Amount; }
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddCurrency(const FGameplayTag& CurrencyType, int32 Amount);
+    FORCEINLINE bool AddCurrency(int64 Amount) { return AddCurrencyByType(DefaultCurrencyType, Amount); }
 
     UFUNCTION(BlueprintCallable)
-    virtual bool RemoveCurrency(const FGameplayTag& CurrencyType, int32 Amount);
+    virtual bool AddCurrencyByType(FGameplayTag CurrencyType, int64 Amount);
+
+    UFUNCTION(BlueprintCallable)
+    FORCEINLINE bool RemoveCurrency(int64 Amount) { return RemoveCurrencyByType(DefaultCurrencyType, Amount); }
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool RemoveCurrencyByType(FGameplayTag CurrencyType, int64 Amount);
+
+protected:
+    void CheckCurrencyType(FGameplayTag& CurrencyType) const;
 };
