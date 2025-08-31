@@ -25,6 +25,16 @@ void UCurrencyManagerComponent::InitializeComponent()
     }
 }
 
+void UCurrencyManagerComponent::SetCurrencyMap(const TMap<FGameplayTag, int64>& NewCurrencyMap)
+{
+    CurrencyMap = NewCurrencyMap;
+
+    for (const auto& [CurrencyType, Amount] : StartupCurrencyMap)
+    {
+        OnUpdate.Broadcast(CurrencyType, Amount);
+    }
+}
+
 int64 UCurrencyManagerComponent::GetCurrencyByType(FGameplayTag CurrencyType) const
 {
     CheckCurrencyType(CurrencyType);
@@ -39,7 +49,7 @@ bool UCurrencyManagerComponent::AddCurrencyByType(FGameplayTag CurrencyType, int
 
     if (bool bCanAdd = Amount > 0 && CurrencyMap.Contains(CurrencyType); !bCanAdd) return false;
 
-    CurrencyMap.Emplace(CurrencyType, GetCurrencyByType(CurrencyType) + Amount);
+    SetCurrency(CurrencyType, GetCurrencyByType(CurrencyType) + Amount);
 
     return true;
 }
@@ -50,9 +60,15 @@ bool UCurrencyManagerComponent::RemoveCurrencyByType(FGameplayTag CurrencyType, 
 
     if (bool bCanRemove = Amount > 0 && GetCurrencyByType(CurrencyType) > Amount; !bCanRemove) return false;
 
-    CurrencyMap.Emplace(CurrencyType, GetCurrencyByType(CurrencyType) - Amount);
+    SetCurrency(CurrencyType, GetCurrencyByType(CurrencyType) - Amount);
 
     return true;
+}
+
+void UCurrencyManagerComponent::SetCurrency(FGameplayTag CurrencyType, int64 Amount)
+{
+    CurrencyMap.Emplace(CurrencyType, Amount);
+    OnUpdate.Broadcast(CurrencyType, Amount);
 }
 
 void UCurrencyManagerComponent::CheckCurrencyType(FGameplayTag& CurrencyType) const

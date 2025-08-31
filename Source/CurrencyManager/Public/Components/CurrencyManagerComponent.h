@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "CurrencyManagerComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FCurrencyUpdateDelegate, const FGameplayTag&, CurrencyType, int64, Amount);
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class CURRENCYMANAGER_API UCurrencyManagerComponent : public UActorComponent
@@ -14,6 +15,9 @@ class CURRENCYMANAGER_API UCurrencyManagerComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FCurrencyUpdateDelegate OnUpdate;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
     FGameplayTag DefaultCurrencyType;
 
@@ -30,7 +34,7 @@ public:
     virtual void InitializeComponent() override;
 
     UFUNCTION(BlueprintCallable)
-    void SetCurrencyMap(const TMap<FGameplayTag, int64>& NewCurrencyMap) { CurrencyMap = NewCurrencyMap; }
+    void SetCurrencyMap(const TMap<FGameplayTag, int64>& NewCurrencyMap);
 
     UFUNCTION(BlueprintPure)
     const TMap<FGameplayTag, int64>& GetCurrencyMap() const { return CurrencyMap; }
@@ -60,5 +64,7 @@ public:
     virtual bool RemoveCurrencyByType(FGameplayTag CurrencyType, int64 Amount);
 
 protected:
+    virtual void SetCurrency(FGameplayTag CurrencyType, int64 Amount);
+
     void CheckCurrencyType(FGameplayTag& CurrencyType) const;
 };
