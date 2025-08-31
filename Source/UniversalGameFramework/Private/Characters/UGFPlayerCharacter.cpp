@@ -13,6 +13,8 @@
 #include "Components/WidgetManagerComponent.h"
 #include "Components/EquipmentManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Games/UGFSaveGame.h"
+#include "Subsystems/DataManagerSubsystem.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -72,6 +74,19 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
     WidgetManager = CreateDefaultSubobject<UWidgetManagerComponent>(WidgetManagerName);
 }
 
+void AUGFPlayerCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (UDataManagerSubsystem* DataManagerSubsystem = GetGameInstance()->GetSubsystem<UDataManagerSubsystem>())
+    {
+        DataManagerSubsystem->OnSaveDataDelegate.AddDynamic(this, &ThisClass::OnSaveData);
+        DataManagerSubsystem->OnLoadDataDelegate.AddDynamic(this, &ThisClass::OnLoadData);
+
+        OnLoadData(DataManagerSubsystem->GetSaveGame());
+    }
+}
+
 int32 AUGFPlayerCharacter::GetCurrency_Implementation(const FGameplayTag& CurrencyType) const
 {
     return GetCurrencyManager()->GetCurrencyByType(CurrencyType);
@@ -95,4 +110,24 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
 bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
     return GetInventory()->RemoveItem(Product.GetObject(), Quantity);
+}
+
+void AUGFPlayerCharacter::OnSaveData_Implementation(USaveGame* SaveGame)
+{
+    if (!IsPlayerControlled()) return;
+
+    if (UUGFSaveGame* CastedSaveGame = Cast<UUGFSaveGame>(SaveGame))
+    {
+        CastedSaveGame->CurrencyMap = GetCurrencyManager()->GetCurrencyMap();
+    }
+}
+
+void AUGFPlayerCharacter::OnLoadData_Implementation(USaveGame* SaveGame)
+{
+    if (!IsPlayerControlled()) return;
+
+    if (UUGFSaveGame* CastedSaveGame = Cast<UUGFSaveGame>(SaveGame))
+    {
+        GetCurrencyManager()->SetCurrencyMap(CastedSaveGame->CurrencyMap);
+    }
 }

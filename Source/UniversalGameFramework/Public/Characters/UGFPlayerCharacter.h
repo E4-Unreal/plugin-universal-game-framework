@@ -7,6 +7,7 @@
 #include "Interfaces/CustomerInterface.h"
 #include "UGFPlayerCharacter.generated.h"
 
+class USaveGame;
 class UWidgetManagerComponent;
 class UEquipmentManagerComponent;
 class UCurrencyManagerComponent;
@@ -65,6 +66,8 @@ private:
 public:
     AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
+    virtual void BeginPlay() override;
+
     /* CustomerInterface */
 
     virtual int32 GetCurrency_Implementation(const FGameplayTag& CurrencyType) const override;
@@ -84,4 +87,11 @@ public:
     FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
     FORCEINLINE UEquipmentManagerComponent* GetEquipmentManager() const { return EquipmentManager; }
     FORCEINLINE UWidgetManagerComponent* GetWidgetManager() const { return WidgetManager; }
+
+protected:
+    UFUNCTION(BlueprintNativeEvent)
+    void OnSaveData(USaveGame* SaveGame);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnLoadData(USaveGame* SaveGame);
 };
