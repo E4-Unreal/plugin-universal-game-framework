@@ -13,12 +13,10 @@ UDataManagerSubsystem::UDataManagerSubsystem()
 
 bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
-    if(GetClass()->IsInBlueprint() && Super::ShouldCreateSubsystem(Outer))
-    {
-        return true;
-    }
+    TArray<UClass*> ChildClasses;
+    GetDerivedClasses(GetClass(), ChildClasses, false);
 
-    return false;
+    return ChildClasses.Num() == 0;
 }
 
 void UDataManagerSubsystem::SaveDataToSlot(FString SlotName, int32 SlotIndex)
