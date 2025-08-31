@@ -40,6 +40,9 @@ public:
 
     virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE USaveGame* GetSaveGame() const { return SaveGame; }
+
     UFUNCTION(BlueprintCallable)
     virtual void SaveData() { SaveDataToSlot(DefaultSlotName, 0); }
 
