@@ -8,6 +8,7 @@
 #include "Widgets/CommonLayoutWidgetBase.h"
 #include "Widgets/Popup/CommonAlertWidgetBase.h"
 #include "Widgets/Popup/CommonConfirmWidgetBase.h"
+#include "Widgets/Popup/CommonPromptWidgetBase.h"
 
 UCommonWidgetManagerComponent::UCommonWidgetManagerComponent()
 {
@@ -84,6 +85,23 @@ void UCommonWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, co
             ConfirmWidget->SetTitleText(TitleText);
             ConfirmWidget->SetMessageText(MessageText);
             ConfirmWidget->SetConfirmButtonClickedDelegate(ConfirmButtonClickedDelegate);
+        }
+    }
+}
+
+void UCommonWidgetManagerComponent::ShowPromptWidget(const FText& TitleText, const FText& MessageText,
+    const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric, int64 MinNum, int64 MaxNum)
+{
+    if (GetLayoutWidget() && PromptWidgetClass)
+    {
+        if (UCommonPromptWidgetBase* PromptWidget = Cast<UCommonPromptWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, PromptWidgetClass)))
+        {
+            PromptWidget->SetTitleText(TitleText);
+            PromptWidget->SetMessageText(MessageText);
+            PromptWidget->SetConfirmButtonClickedDelegate(ConfirmButtonClickedDelegate);
+            PromptWidget->bShouldNumeric = bShouldNumeric;
+            PromptWidget->MinNum = MinNum;
+            PromptWidget->MaxNum = MaxNum;
         }
     }
 }

@@ -8,11 +8,12 @@
 #include "CommonWidgetManagerComponent.generated.h"
 
 
-class FButtonClickedDelegate;
 class UCommonLayoutWidgetBase;
-class UCommonPopupWidgetBase;
 class UCommonAlertWidgetBase;
 class UCommonConfirmWidgetBase;
+class FButtonClickedDelegate;
+class UCommonPromptWidgetBase;
+class FPromptSubmittedDelegate;
 
 /**
  * PlayerController 전용 액터 컴포넌트
@@ -26,14 +27,17 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonLayoutWidgetBase> LayoutWidgetClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup", meta = (Categories = "UI.Layer"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "UI.Layer"))
     FGameplayTag PopupLayerTag;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonAlertWidgetBase> AlertWidgetClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonConfirmWidgetBase> ConfirmWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UCommonPromptWidgetBase> PromptWidgetClass;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
@@ -53,6 +57,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void ShowConfirmWidget(const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowPromptWidget(const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
 
     UFUNCTION(BlueprintPure)
     UCommonLayoutWidgetBase* GetLayoutWidget() const { return LayoutWidget; }

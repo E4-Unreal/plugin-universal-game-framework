@@ -37,3 +37,15 @@ void UCommonWidgetManagerSubsystem::ShowConfirmWidget(APlayerController* PlayerC
         }
     }
 }
+
+void UCommonWidgetManagerSubsystem::ShowPromptWidget(APlayerController* PlayerController, const FText& TitleText,
+    const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric, int64 MinNum, int64 MaxNum)
+{
+    if (PlayerController && PlayerController->IsLocalController())
+    {
+        if (UCommonWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonWidgetManagerComponent>())
+        {
+            CommonWidgetManager->ShowPromptWidget(TitleText, MessageText, ConfirmButtonClickedDelegate, bShouldNumeric, MinNum, MaxNum);
+        }
+    }
+}

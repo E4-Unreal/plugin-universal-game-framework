@@ -7,6 +7,7 @@
 #include "CommonWidgetManagerSubsystem.generated.h"
 
 class FButtonClickedDelegate;
+class FPromptSubmittedDelegate;
 
 /**
  *
@@ -24,4 +25,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void ShowConfirmWidget(APlayerController* PlayerController, const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowPromptWidget(APlayerController* PlayerController, const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
 };
