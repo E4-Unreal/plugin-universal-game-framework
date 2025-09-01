@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "CommonWidgetManagerComponent.generated.h"
 
 
+class FButtonClickedDelegate;
 class UCommonLayoutWidgetBase;
-class UCommonActivatableWidget;
+class UCommonPopupWidgetBase;
 
 /**
  * PlayerController 전용 액터 컴포넌트
@@ -22,16 +24,33 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonLayoutWidgetBase> LayoutWidgetClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup", meta = (Categories = "UI.Layer"))
+    FGameplayTag PopupLayerTag;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
+    TSubclassOf<UCommonPopupWidgetBase> AlertWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
+    TSubclassOf<UCommonPopupWidgetBase> ConfirmWidgetClass;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TObjectPtr<UCommonLayoutWidgetBase> LayoutWidget;
 
 public:
+    UCommonWidgetManagerComponent();
+
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
     UFUNCTION(BlueprintPure)
     virtual APlayerController* GetOwningPlayerController() const;
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowAlertWidget(const FText& TitleText, const FText& MessageText);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowConfirmWidget(const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
 
     UFUNCTION(BlueprintPure)
     UCommonLayoutWidgetBase* GetLayoutWidget() const { return LayoutWidget; }

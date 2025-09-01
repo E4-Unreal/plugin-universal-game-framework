@@ -4,7 +4,14 @@
 #include "Components/CommonWidgetManagerComponent.h"
 
 #include "Blueprint/UserWidget.h"
+#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
 #include "Widgets/CommonLayoutWidgetBase.h"
+#include "Widgets/CommonPopupWidgetBase.h"
+
+UCommonWidgetManagerComponent::UCommonWidgetManagerComponent()
+{
+    PopupLayerTag = CommonWidgetManager::UI::Layer::System::Popup;
+}
 
 void UCommonWidgetManagerComponent::BeginPlay()
 {
@@ -52,4 +59,30 @@ APlayerController* UCommonWidgetManagerComponent::GetOwningPlayerController() co
     }
 
     return OwningPlayerController;
+}
+
+void UCommonWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, const FText& MessageText)
+{
+    if (GetLayoutWidget() && AlertWidgetClass)
+    {
+        if (UCommonPopupWidgetBase* AlertWidget = Cast<UCommonPopupWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, AlertWidgetClass)))
+        {
+            AlertWidget->SetTitleText(TitleText);
+            AlertWidget->SetMessageText(MessageText);
+        }
+    }
+}
+
+void UCommonWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, const FText& MessageText,
+    const FButtonClickedDelegate& ConfirmButtonClickedDelegate)
+{
+    if (GetLayoutWidget() && ConfirmWidgetClass)
+    {
+        if (UCommonPopupWidgetBase* ConfirmWidget = Cast<UCommonPopupWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, ConfirmWidgetClass)))
+        {
+            ConfirmWidget->SetTitleText(TitleText);
+            ConfirmWidget->SetMessageText(MessageText);
+            ConfirmWidget->SetConfirmButtonClickedDelegate(ConfirmButtonClickedDelegate);
+        }
+    }
 }
