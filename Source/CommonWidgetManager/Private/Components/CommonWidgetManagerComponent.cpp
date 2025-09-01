@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameplayTags/CommonWidgetManagerGameplayTags.h"
 #include "Widgets/CommonLayoutWidgetBase.h"
+#include "Widgets/Popup/CommonAlertWidgetBase.h"
 #include "Widgets/Popup/CommonConfirmWidgetBase.h"
 
 UCommonWidgetManagerComponent::UCommonWidgetManagerComponent()
@@ -65,7 +66,7 @@ void UCommonWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, cons
 {
     if (GetLayoutWidget() && AlertWidgetClass)
     {
-        if (UCommonPopupWidgetBase* AlertWidget = Cast<UCommonPopupWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, AlertWidgetClass)))
+        if (UCommonAlertWidgetBase* AlertWidget = Cast<UCommonAlertWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, AlertWidgetClass)))
         {
             AlertWidget->SetTitleText(TitleText);
             AlertWidget->SetMessageText(MessageText);

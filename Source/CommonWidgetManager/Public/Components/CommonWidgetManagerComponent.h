@@ -11,6 +11,7 @@
 class FButtonClickedDelegate;
 class UCommonLayoutWidgetBase;
 class UCommonPopupWidgetBase;
+class UCommonAlertWidgetBase;
 class UCommonConfirmWidgetBase;
 
 /**
@@ -29,7 +30,7 @@ public:
     FGameplayTag PopupLayerTag;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
-    TSubclassOf<UCommonPopupWidgetBase> AlertWidgetClass;
+    TSubclassOf<UCommonAlertWidgetBase> AlertWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
     TSubclassOf<UCommonConfirmWidgetBase> ConfirmWidgetClass;
