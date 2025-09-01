@@ -11,6 +11,7 @@
 class FButtonClickedDelegate;
 class UCommonLayoutWidgetBase;
 class UCommonPopupWidgetBase;
+class UCommonConfirmWidgetBase;
 
 /**
  * PlayerController 전용 액터 컴포넌트
@@ -31,7 +32,7 @@ public:
     TSubclassOf<UCommonPopupWidgetBase> AlertWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Popup")
-    TSubclassOf<UCommonPopupWidgetBase> ConfirmWidgetClass;
+    TSubclassOf<UCommonConfirmWidgetBase> ConfirmWidgetClass;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)

@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameplayTags/CommonWidgetManagerGameplayTags.h"
 #include "Widgets/CommonLayoutWidgetBase.h"
-#include "Widgets/Popup/CommonPopupWidgetBase.h"
+#include "Widgets/Popup/CommonConfirmWidgetBase.h"
 
 UCommonWidgetManagerComponent::UCommonWidgetManagerComponent()
 {
@@ -78,7 +78,7 @@ void UCommonWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, co
 {
     if (GetLayoutWidget() && ConfirmWidgetClass)
     {
-        if (UCommonPopupWidgetBase* ConfirmWidget = Cast<UCommonPopupWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, ConfirmWidgetClass)))
+        if (UCommonConfirmWidgetBase* ConfirmWidget = Cast<UCommonConfirmWidgetBase>(GetLayoutWidget()->AddWidget(PopupLayerTag, ConfirmWidgetClass)))
         {
             ConfirmWidget->SetTitleText(TitleText);
             ConfirmWidget->SetMessageText(MessageText);
