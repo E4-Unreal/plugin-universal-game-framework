@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameplayTags/CommonWidgetManagerGameplayTags.h"
 #include "Widgets/CommonLayoutWidgetBase.h"
-#include "Widgets/CommonPopupWidgetBase.h"
+#include "Widgets/Popup/CommonPopupWidgetBase.h"
 
 UCommonWidgetManagerComponent::UCommonWidgetManagerComponent()
 {
