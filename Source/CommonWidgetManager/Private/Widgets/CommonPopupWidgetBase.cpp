@@ -39,6 +39,8 @@ void UCommonPopupWidgetBase::NativeOnInitialized()
 
 void UCommonPopupWidgetBase::OnConfirmButtonClicked_Implementation()
 {
+    DeactivateWidget();
+
     if (ConfirmButtonClickedDelegate.IsBound())
     {
         ConfirmButtonClickedDelegate.Execute();
@@ -46,12 +48,12 @@ void UCommonPopupWidgetBase::OnConfirmButtonClicked_Implementation()
     }
 
     ConfirmButtonClickedEvent.Broadcast();
-
-    DeactivateWidget();
 }
 
 void UCommonPopupWidgetBase::OnCancelButtonClicked_Implementation()
 {
+    DeactivateWidget();
+
     if (CancelButtonClickedDelegate.IsBound())
     {
         CancelButtonClickedDelegate.Execute();
@@ -59,6 +61,4 @@ void UCommonPopupWidgetBase::OnCancelButtonClicked_Implementation()
     }
 
     CancelButtonClickedEvent.Broadcast();
-
-    DeactivateWidget();
 }
