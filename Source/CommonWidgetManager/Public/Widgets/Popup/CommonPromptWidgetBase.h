@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonPopupWidgetBase.h"
+#include "Components/Button.h"
 #include "CommonPromptWidgetBase.generated.h"
 
 class UEditableTextBox;
@@ -48,7 +49,7 @@ protected:
     FButtonClickedDelegate CancelButtonClickedDelegate;
 
 public:
-    UCommonPromptWidgetBase();
+    UCommonPromptWidgetBase(const FObjectInitializer& ObjectInitializer);
 
     UFUNCTION(BlueprintCallable)
     FORCEINLINE void SetConfirmButtonClickedDelegate(const FPromptSubmittedDelegate& NewDelegate) { ConfirmButtonClickedDelegate = NewDelegate; }

@@ -4,6 +4,13 @@
 #include "Widgets/Popup/CommonPopupWidgetBase.h"
 
 #include "CommonTextBlock.h"
+#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
+
+UCommonPopupWidgetBase::UCommonPopupWidgetBase(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    LayerTag = CommonWidgetManager::UI::Layer::System::Popup;
+}
 
 void UCommonPopupWidgetBase::SetTitleText_Implementation(const FText& TitleText)
 {

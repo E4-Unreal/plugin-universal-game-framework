@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonPopupWidgetBase.h"
+#include "Components/Button.h"
 #include "CommonConfirmWidgetBase.generated.h"
 
 /**

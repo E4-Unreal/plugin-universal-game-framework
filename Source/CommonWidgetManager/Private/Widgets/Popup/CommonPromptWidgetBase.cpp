@@ -7,7 +7,8 @@
 #include "Components/EditableTextBox.h"
 #include "Kismet/KismetStringLibrary.h"
 
-UCommonPromptWidgetBase::UCommonPromptWidgetBase()
+UCommonPromptWidgetBase::UCommonPromptWidgetBase(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
     bShouldNumeric = false;
     MinNum = 0;

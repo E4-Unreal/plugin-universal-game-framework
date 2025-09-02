@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CommonActivatableWidget.h"
-#include "Components/Button.h"
+#include "Widgets/CommonLayerWidgetBase.h"
 #include "CommonPopupWidgetBase.generated.h"
 
 class UCommonTextBlock;
@@ -16,7 +15,7 @@ DECLARE_DYNAMIC_DELEGATE(FButtonClickedDelegate);
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonPopupWidgetBase : public UCommonActivatableWidget
+class COMMONWIDGETMANAGER_API UCommonPopupWidgetBase : public UCommonLayerWidgetBase
 {
     GENERATED_BODY()
 
@@ -28,6 +27,8 @@ private:
     TObjectPtr<UCommonTextBlock> MessageTextBlock;
 
 public:
+    UCommonPopupWidgetBase(const FObjectInitializer& ObjectInitializer);
+
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void SetTitleText(const FText& TitleText);
 
