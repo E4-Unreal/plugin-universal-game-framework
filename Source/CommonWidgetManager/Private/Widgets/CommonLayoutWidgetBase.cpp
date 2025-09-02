@@ -54,7 +54,25 @@ UCommonActivatableWidget* UCommonLayoutWidgetBase::AddWidget(FGameplayTag LayerT
     {
         if (WidgetClass)
         {
-            Widget = Layer->AddWidget(WidgetClass);
+            UCommonActivatableWidget* ActiveWidget = Layer->GetActiveWidget();
+            if (ActiveWidget && ActiveWidget->IsA(WidgetClass))
+            {
+                Widget = ActiveWidget;
+            }
+            else
+            {
+                const TArray<UCommonActivatableWidget*>& AddedWidgets = Layer->GetWidgetList();
+                for (UCommonActivatableWidget* AddedWidget : AddedWidgets)
+                {
+                    if (AddedWidget->IsA(WidgetClass))
+                    {
+                        Layer->RemoveWidget(*AddedWidget);
+                        break;
+                    }
+                }
+
+                Widget = Layer->AddWidget(WidgetClass);
+            }
         }
     }
 
