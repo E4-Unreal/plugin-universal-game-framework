@@ -32,9 +32,6 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<TObjectPtr<UCommonActivatableWidgetStack>> OverlayStack;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<TSubclassOf<UCommonActivatableWidget>, TObjectPtr<UCommonActivatableWidget>> ActivatedWidgetMap;
-
 public:
     UFUNCTION(BlueprintPure)
     FORCEINLINE bool IsOverlay() const { return Stack == nullptr; }
@@ -59,4 +56,7 @@ protected:
     virtual UCommonActivatableWidget* AddWidgetToOverlayStack(TSubclassOf<UCommonActivatableWidget> WidgetClass);
     virtual void SortOverlayStack();
     virtual UCommonActivatableWidgetStack* AddStackInstance();
+
+    virtual bool HideWidgetFromStack(TSubclassOf<UCommonActivatableWidget> WidgetClass);
+    virtual bool HideWidgetFromOverlayStack(TSubclassOf<UCommonActivatableWidget> WidgetClass);
 };

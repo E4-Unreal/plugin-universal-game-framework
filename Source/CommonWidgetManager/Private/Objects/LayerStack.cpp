@@ -26,35 +26,12 @@ void ULayerStack::InitializeAsOverlayStack(UUserWidget* NewParentWidget, UOverla
 
 UCommonActivatableWidget* ULayerStack::ShowWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass)
 {
-    UCommonActivatableWidget* Widget = nullptr;
-
-    if (WidgetClass)
-    {
-        if (ActivatedWidgetMap.Contains(WidgetClass))
-        {
-            Widget = ActivatedWidgetMap[WidgetClass];
-        }
-        else
-        {
-            Widget = IsOverlay() ? AddWidgetToOverlayStack(WidgetClass) : Stack->AddWidget(WidgetClass);
-            if (Widget) ActivatedWidgetMap.Emplace(WidgetClass, Widget);
-        }
-    }
-
-    return Widget;
+    return IsOverlay() ? AddWidgetToOverlayStack(WidgetClass) : AddWidgetToStack(WidgetClass);
 }
 
 bool ULayerStack::HideWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass)
 {
-    if (WidgetClass && ActivatedWidgetMap.Contains(WidgetClass))
-    {
-        ActivatedWidgetMap[WidgetClass]->DeactivateWidget();
-        ActivatedWidgetMap.Remove(WidgetClass);
-
-        return true;
-    }
-
-    return false;
+    return IsOverlay() ? HideWidgetFromOverlayStack(WidgetClass) : HideWidgetFromStack(WidgetClass);
 }
 
 void ULayerStack::ToggleWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass)
@@ -161,4 +138,37 @@ UCommonActivatableWidgetStack* ULayerStack::AddStackInstance()
     }
 
     return nullptr;
+}
+
+bool ULayerStack::HideWidgetFromStack(TSubclassOf<UCommonActivatableWidget> WidgetClass)
+{
+    if (WidgetClass)
+    {
+        UCommonActivatableWidget* ActiveWidget = Stack->GetActiveWidget();
+        if (ActiveWidget && ActiveWidget->IsA(WidgetClass))
+        {
+            ActiveWidget->DeactivateWidget();
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ULayerStack::HideWidgetFromOverlayStack(TSubclassOf<UCommonActivatableWidget> WidgetClass)
+{
+    if (WidgetClass)
+    {
+        for (TObjectPtr<UCommonActivatableWidgetStack> StackInstance : OverlayStack)
+        {
+            UCommonActivatableWidget* ActiveWidget = StackInstance->GetActiveWidget();
+            if (ActiveWidget && ActiveWidget->IsA(WidgetClass))
+            {
+                ActiveWidget->DeactivateWidget();
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
