@@ -27,9 +27,6 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonLayoutWidgetBase> LayoutWidgetClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "UI.Layer"))
-    FGameplayTag PopupLayerTag;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonAlertWidgetBase> AlertWidgetClass;
 
