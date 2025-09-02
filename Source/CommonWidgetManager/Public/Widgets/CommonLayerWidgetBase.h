@@ -16,11 +16,18 @@ class COMMONWIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatable
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FUIInputConfig UIInputConfig;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "UI.Layer"))
     FGameplayTag LayerTag;
 
 public:
     UCommonLayerWidgetBase(const FObjectInitializer& ObjectInitializer);
+
+    /* CommonActivatableWidget */
+
+    virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
     /* API */
 

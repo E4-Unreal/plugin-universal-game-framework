@@ -21,6 +21,9 @@ class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatabl
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FUIInputConfig UIInputConfig;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonLayerWidgetBase> EscapeMenuWidgetClass;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
@@ -32,6 +35,7 @@ public:
     /* CommonActivatableWidget */
 
     virtual bool NativeOnHandleBackAction() override;
+    virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
     /* API */
 
