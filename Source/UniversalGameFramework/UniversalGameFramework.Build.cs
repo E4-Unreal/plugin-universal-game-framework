@@ -26,6 +26,7 @@ public class UniversalGameFramework : ModuleRules
                 "QuickSlotManager",
                 "CurrencyManager",
                 "DataManager",
+                "CommonWidgetManager"
             }
         );
 

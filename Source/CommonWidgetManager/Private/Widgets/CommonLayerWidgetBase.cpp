@@ -7,4 +7,18 @@ UCommonLayerWidgetBase::UCommonLayerWidgetBase(const FObjectInitializer& ObjectI
     : Super(ObjectInitializer)
 {
     bIsBackHandler = true;
+
+    UIInputConfig = FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
+    UIInputConfig.bIgnoreLookInput = false;
+    UIInputConfig.bIgnoreMoveInput = false;
+}
+
+TOptional<FUIInputConfig> UCommonLayerWidgetBase::GetDesiredInputConfig() const
+{
+    if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(ThisClass, BP_GetDesiredInputConfig)))
+    {
+        return BP_GetDesiredInputConfig();
+    }
+
+    return UIInputConfig;
 }

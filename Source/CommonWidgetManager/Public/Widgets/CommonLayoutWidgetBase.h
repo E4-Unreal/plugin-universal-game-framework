@@ -20,11 +20,24 @@ class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatabl
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FUIInputConfig UIInputConfig;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UCommonLayerWidgetBase> EscapeMenuWidgetClass;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<FGameplayTag, TObjectPtr<UCommonActivatableWidgetStack>> LayerMap;
 
 public:
     UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer);
+
+    /* CommonActivatableWidget */
+
+    virtual bool NativeOnHandleBackAction() override;
+    virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
+
+    /* API */
 
     UFUNCTION(BlueprintPure, meta = (Categories = "UI.Layer"))
     FORCEINLINE UCommonActivatableWidgetStack* GetLayer(FGameplayTag LayerTag) const { return LayerMap.FindRef(LayerTag); }

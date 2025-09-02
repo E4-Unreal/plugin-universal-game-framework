@@ -11,6 +11,39 @@ UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& Objec
     : Super(ObjectInitializer)
 {
     bAutoActivate = true;
+    bIsBackHandler = true;
+
+    UIInputConfig = FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
+    UIInputConfig.bIgnoreLookInput = false;
+    UIInputConfig.bIgnoreMoveInput = false;
+}
+
+bool UCommonLayoutWidgetBase::NativeOnHandleBackAction()
+{
+    if (bIsBackHandler)
+    {
+        if (!BP_OnHandleBackAction())
+        {
+            if (EscapeMenuWidgetClass)
+            {
+                AddLayerWidget(EscapeMenuWidgetClass);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+TOptional<FUIInputConfig> UCommonLayoutWidgetBase::GetDesiredInputConfig() const
+{
+    if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(ThisClass, BP_GetDesiredInputConfig)))
+    {
+        return BP_GetDesiredInputConfig();
+    }
+
+    return UIInputConfig;
 }
 
 UCommonActivatableWidget* UCommonLayoutWidgetBase::AddWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
@@ -21,7 +54,25 @@ UCommonActivatableWidget* UCommonLayoutWidgetBase::AddWidget(FGameplayTag LayerT
     {
         if (WidgetClass)
         {
-            Widget = Layer->AddWidget(WidgetClass);
+            UCommonActivatableWidget* ActiveWidget = Layer->GetActiveWidget();
+            if (ActiveWidget && ActiveWidget->IsA(WidgetClass))
+            {
+                Widget = ActiveWidget;
+            }
+            else
+            {
+                const TArray<UCommonActivatableWidget*>& AddedWidgets = Layer->GetWidgetList();
+                for (UCommonActivatableWidget* AddedWidget : AddedWidgets)
+                {
+                    if (AddedWidget->IsA(WidgetClass))
+                    {
+                        Layer->RemoveWidget(*AddedWidget);
+                        break;
+                    }
+                }
+
+                Widget = Layer->AddWidget(WidgetClass);
+            }
         }
     }
 
