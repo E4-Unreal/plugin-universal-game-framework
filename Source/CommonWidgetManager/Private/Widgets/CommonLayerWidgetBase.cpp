@@ -8,3 +8,13 @@ UCommonLayerWidgetBase::UCommonLayerWidgetBase(const FObjectInitializer& ObjectI
 {
     bIsBackHandler = true;
 }
+
+bool UCommonLayerWidgetBase::NativeOnHandleBackAction()
+{
+    if (Super::NativeOnHandleBackAction())
+    {
+        DeactivateWidget();
+    }
+
+    return false;
+}
