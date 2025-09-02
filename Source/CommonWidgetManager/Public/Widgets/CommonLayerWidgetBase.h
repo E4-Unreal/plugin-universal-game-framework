@@ -22,10 +22,6 @@ protected:
 public:
     UCommonLayerWidgetBase(const FObjectInitializer& ObjectInitializer);
 
-    /* CommonActivatableWidget */
-
-    virtual bool NativeOnHandleBackAction() override;
-
     /* API */
 
     UFUNCTION(BlueprintPure)
