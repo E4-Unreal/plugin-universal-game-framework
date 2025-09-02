@@ -5,26 +5,11 @@
 
 #include "GameplayTags/CommonWidgetManagerGameplayTags.h"
 
-void UCommonLayoutWidget::NativeOnInitialized()
+UCommonLayoutWidget::UCommonLayoutWidget(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
-    Super::NativeOnInitialized();
-
-    SetLayers();
-}
-
-void UCommonLayoutWidget::NativePreConstruct()
-{
-#if WITH_EDITOR
-    SetLayers();
-#endif
-
-    Super::NativePreConstruct();
-}
-
-void UCommonLayoutWidget::SetLayers()
-{
-    SetLayer(CommonWidgetManager::UI::Layer::Game::Overlay, GetGameOverlayLayer());
-    SetLayer(CommonWidgetManager::UI::Layer::Game::Menu, GetGameMenuLayer());
-    SetLayer(CommonWidgetManager::UI::Layer::System::Popup, GetSystemPopupLayer());
-    SetLayer(CommonWidgetManager::UI::Layer::System::Menu, GetSystemMenuLayer());
+    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::Game::Overlay, true);
+    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::Game::Menu, true);
+    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::System::Menu, false);
+    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::System::Popup, false);
 }

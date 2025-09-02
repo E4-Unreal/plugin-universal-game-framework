@@ -67,7 +67,7 @@ void UCommonWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, cons
 {
     if (GetLayoutWidget() && AlertWidgetClass)
     {
-        if (UCommonAlertWidgetBase* AlertWidget = Cast<UCommonAlertWidgetBase>(GetLayoutWidget()->AddLayerWidget(AlertWidgetClass)))
+        if (UCommonAlertWidgetBase* AlertWidget = Cast<UCommonAlertWidgetBase>(GetLayoutWidget()->ShowLayerWidget(AlertWidgetClass)))
         {
             AlertWidget->SetTitleText(TitleText);
             AlertWidget->SetMessageText(MessageText);
@@ -80,7 +80,7 @@ void UCommonWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, co
 {
     if (GetLayoutWidget() && ConfirmWidgetClass)
     {
-        if (UCommonConfirmWidgetBase* ConfirmWidget = Cast<UCommonConfirmWidgetBase>(GetLayoutWidget()->AddLayerWidget(ConfirmWidgetClass)))
+        if (UCommonConfirmWidgetBase* ConfirmWidget = Cast<UCommonConfirmWidgetBase>(GetLayoutWidget()->ShowLayerWidget(ConfirmWidgetClass)))
         {
             ConfirmWidget->SetTitleText(TitleText);
             ConfirmWidget->SetMessageText(MessageText);
@@ -94,7 +94,7 @@ void UCommonWidgetManagerComponent::ShowPromptWidget(const FText& TitleText, con
 {
     if (GetLayoutWidget() && PromptWidgetClass)
     {
-        if (UCommonPromptWidgetBase* PromptWidget = Cast<UCommonPromptWidgetBase>(GetLayoutWidget()->AddLayerWidget(PromptWidgetClass)))
+        if (UCommonPromptWidgetBase* PromptWidget = Cast<UCommonPromptWidgetBase>(GetLayoutWidget()->ShowLayerWidget(PromptWidgetClass)))
         {
             PromptWidget->SetTitleText(TitleText);
             PromptWidget->SetMessageText(MessageText);
