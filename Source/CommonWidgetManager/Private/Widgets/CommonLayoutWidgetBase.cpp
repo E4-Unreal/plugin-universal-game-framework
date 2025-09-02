@@ -11,6 +11,25 @@ UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& Objec
     : Super(ObjectInitializer)
 {
     bAutoActivate = true;
+    bIsBackHandler = true;
+}
+
+bool UCommonLayoutWidgetBase::NativeOnHandleBackAction()
+{
+    if (bIsBackHandler)
+    {
+        if (!BP_OnHandleBackAction())
+        {
+            if (EscapeMenuWidgetClass)
+            {
+                AddLayerWidget(EscapeMenuWidgetClass);
+            }
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 UCommonActivatableWidget* UCommonLayoutWidgetBase::AddWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
