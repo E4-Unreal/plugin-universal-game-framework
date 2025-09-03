@@ -12,6 +12,8 @@ const FName AWeaponActor::SkeletalMeshName(TEXT("SkeletalMesh"));
 AWeaponActor::AWeaponActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    bReplicates = true;
+
     /* RootScene */
 
     RootScene = CreateDefaultSubobject<USceneComponent>(RootSceneName);
@@ -21,11 +23,13 @@ AWeaponActor::AWeaponActor(const FObjectInitializer& ObjectInitializer)
 
     SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(SkeletalMeshName);
     GetSkeletalMesh()->SetupAttachment(GetRootScene());
+    GetSkeletalMesh()->SetCollisionProfileName("NoCollision");
 
     /* StaticMesh */
 
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(StaticMeshName);
     GetStaticMesh()->SetupAttachment(GetRootScene());
+    GetStaticMesh()->SetCollisionProfileName("NoCollision");
 }
 
 void AWeaponActor::PostInitializeComponents()
