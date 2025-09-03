@@ -10,6 +10,6 @@ void UUGFDefinitionGenerator::OnUpdateDefinition(UDefinitionBase* Definition, FT
 {
     if (FUGFItemDefinitionDataTableRow* ItemDefinitionDataTableRow = static_cast<FUGFItemDefinitionDataTableRow*>(Row))
     {
-        Definition->SetData(ItemDefinitionDataTableRow->GetInventoryItemData());
+        // Definition->SetData(ItemDefinitionDataTableRow->GetInventoryItemData());
     }
 }

@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "Interfaces/ItemDataInterface.h"
-#include "Types/InventoryItemData.h"
 #include "InventoryItemDataAsset.generated.h"
 
 /**

@@ -6,7 +6,6 @@
 #include "DynamicData/Public/Data/DefinitionBase.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/ProductInterface.h"
-#include "Types/InventoryItemData.h"
 #include "GameplayTags/CurrencyGameplayTags.h"
 #include "UGFItemDefinition.generated.h"
 

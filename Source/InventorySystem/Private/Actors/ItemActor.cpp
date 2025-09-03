@@ -4,7 +4,6 @@
 #include "Actors/ItemActor.h"
 
 #include "Components/InventoryComponent.h"
-#include "Types/InventoryItemData.h"
 
 AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
