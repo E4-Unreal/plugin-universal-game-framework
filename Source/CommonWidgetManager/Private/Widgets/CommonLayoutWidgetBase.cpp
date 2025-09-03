@@ -46,7 +46,7 @@ bool UCommonLayoutWidgetBase::NativeOnHandleBackAction()
         {
             if (EscapeMenuWidgetClass)
             {
-                ShowLayerWidget(EscapeMenuWidgetClass);
+                ToggleLayerWidget(EscapeMenuWidgetClass);
             }
         }
 
