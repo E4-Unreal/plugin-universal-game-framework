@@ -20,7 +20,7 @@ public:
     TArray<FItemInstance> InventoryItems;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TObjectPtr<UStaticMesh> DefaultStaticMesh;
+    TSoftObjectPtr<UStaticMesh> DefaultStaticMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bAutoDestroy = true;
