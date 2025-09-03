@@ -19,6 +19,7 @@ void UWeaponManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
+    FindMesh();
     CreateSlots();
 }
 
@@ -112,6 +113,14 @@ void UWeaponManagerComponent::CreateSlots()
         {
             Slots.Emplace(FWeaponSlot(SlotType, Index));
         }
+    }
+}
+
+void UWeaponManagerComponent::FindMesh()
+{
+    if (!Mesh.IsValid())
+    {
+        Mesh = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
     }
 }
 
