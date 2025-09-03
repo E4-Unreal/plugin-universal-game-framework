@@ -31,7 +31,7 @@ void UInventorySlotWidgetBase::Refresh()
 
 void UInventorySlotWidgetBase::UpdateInventorySlot(const FInventorySlot& InventorySlot)
 {
-    SetThumbnailImage(InventorySlot.GetInventoryItemData().ThumbnailTexture);
+    SetThumbnailImage(IItemDataInterface::Execute_GetThumbnailTexture(InventorySlot.Item.Data.GetObject()));
 }
 
 void UInventorySlotWidgetBase::Clear()

@@ -7,6 +7,8 @@
 #include "Interfaces/InteractableInterface.h"
 #include "UGFNonPlayerCharacter.generated.h"
 
+class UCommonLayerWidgetBase;
+
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API AUGFNonPlayerCharacter : public AUGFCharacter,
     public IInteractableInterface
@@ -15,7 +17,7 @@ class UNIVERSALGAMEFRAMEWORK_API AUGFNonPlayerCharacter : public AUGFCharacter,
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UUserWidget> PanelWidgetClass;
+    TSubclassOf<UCommonLayerWidgetBase> MenuWidgetClass;
 
 public:
     AUGFNonPlayerCharacter(const FObjectInitializer& ObjectInitializer);

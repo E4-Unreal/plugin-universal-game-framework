@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventoryItemData.h"
-#include "Interfaces/InventoryItemDataInterface.h"
+#include "ItemInstance.h"
+#include "Interfaces/ItemDataInterface.h"
 #include "InventorySlot.generated.h"
 
 struct FInventoryItemData;
@@ -19,16 +19,23 @@ struct INVENTORYSYSTEM_API FInventorySlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Index;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TScriptInterface<IInventoryItemDataInterface> Item;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ShowOnlyInnerProperties))
+    FItemInstance Item;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 Quantity;
+    FInventorySlot() {}
+    FInventorySlot(int32 InIndex, const TScriptInterface<IItemDataInterface>& InData, int32 InQuantity)
+    {
+        Index = InIndex;
+        Item = FItemInstance(InData, InQuantity);
+    }
 
-    const FInventoryItemData GetInventoryItemData() const;
-    int32 GetCapacity() const;
+    const int32 GetMaxStack() const;
+    const int32 GetCapacity() const;
+    FGameplayTag GetItemType() const;
+    int32 GetQuantity() const;
+    void SetQuantity(int32 NewQuantity);
 
-    FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && GetInventoryItemData().IsValid(); }
+    FORCEINLINE bool IsValid() const { return Index >= 0 && Item.IsValid(); }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 
     bool operator==(const FInventorySlot& Other) const { return Index == Other.Index; }
@@ -38,4 +45,10 @@ struct INVENTORYSYSTEM_API FInventorySlot
 
     bool operator==(int32 OtherIndex) const { return Index == OtherIndex; }
     bool operator!=(int32 OtherIndex) const { return !(*this == OtherIndex); }
+
+    bool operator==(const FItemInstance& Other) const { return Item == Other; }
+    bool operator!=(const FItemInstance& Other) const { return !(*this == Other); }
+
+    bool operator==(const TScriptInterface<IItemDataInterface>& Other) const { return Item.Data == Other; }
+    bool operator!=(const TScriptInterface<IItemDataInterface>& Other) const { return !(*this == Other); }
 };

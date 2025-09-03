@@ -22,5 +22,20 @@ class INVENTORYSYSTEM_API IItemDataInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    int32 GetMaxStack() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FGameplayTag GetItemType() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "UI")
+    FText GetDisplayNameText() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "UI")
+    TSoftObjectPtr<UTexture2D> GetThumbnailTexture() const;
 };

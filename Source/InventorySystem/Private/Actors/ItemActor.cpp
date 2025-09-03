@@ -4,7 +4,6 @@
 #include "Actors/ItemActor.h"
 
 #include "Components/InventoryComponent.h"
-#include "Types/InventoryItemData.h"
 
 AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -13,7 +12,7 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     DisplayStaticMesh->SetSimulatePhysics(true);
 }
 
-void AItemActor::SetInventoryItems_Implementation(const TArray<FInventoryItem>& NewInventoryItems)
+void AItemActor::SetInventoryItems_Implementation(const TArray<FItemInstance>& NewInventoryItems)
 {
     InventoryItems = NewInventoryItems;
 
@@ -37,7 +36,7 @@ void AItemActor::BeginPlay()
     {
         for (const auto& InventoryItem : InventoryItems)
         {
-            if (InventoryItem.GetData().IsNotValid())
+            if (!InventoryItem.IsValid())
             {
                 Destroy();
                 break;
@@ -57,7 +56,7 @@ void AItemActor::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyCh
 
     if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DefaultStaticMesh) ||
         PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, InventoryItems) ||
-        PropertyName == GET_MEMBER_NAME_CHECKED(FInventoryItem, Item)
+        PropertyName == GET_MEMBER_NAME_CHECKED(FItemInstance, Data)
         )
     {
         Refresh();
@@ -73,7 +72,7 @@ void AItemActor::OnInteractionTriggered_Implementation(AActor* Interactor)
     {
         for (const auto& InventoryItem : InventoryItems)
         {
-            if (InventoryItem.GetData().IsValid()) InventoryComponent->AddItem(InventoryItem.Item, InventoryItem.Quantity);
+            if (InventoryItem.IsValid()) InventoryComponent->AddItem(InventoryItem);
         }
 
         if (bAutoDestroy) Destroy();
@@ -87,9 +86,12 @@ void AItemActor::Refresh()
 
 UStaticMesh* AItemActor::GetStaticMesh() const
 {
-    if (InventoryItems.Num() != 1) return DefaultStaticMesh;
+    UStaticMesh* StaticMesh = nullptr;
 
-    auto StaticMesh = InventoryItems[0].GetData().StaticMesh.LoadSynchronous();
+    if (InventoryItems.Num() == 1 && InventoryItems[0].Data)
+    {
+        StaticMesh = IItemDataInterface::Execute_GetStaticMesh(InventoryItems[0].Data.GetObject()).LoadSynchronous();
+    }
 
-    return StaticMesh ? StaticMesh : DefaultStaticMesh.Get();
+    return StaticMesh ? StaticMesh : DefaultStaticMesh.LoadSynchronous();
 }

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Actors/InteractableActor.h"
 #include "Interfaces/ItemActorInterface.h"
-#include "Types/InventoryItem.h"
+#include "Types/ItemInstance.h"
 #include "ItemActor.generated.h"
 
 struct FInventoryItemData;
@@ -17,10 +17,10 @@ class INVENTORYSYSTEM_API AItemActor : public AInteractableActor, public IItemAc
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ShowOnlyInnerProperties))
-    TArray<FInventoryItem> InventoryItems;
+    TArray<FItemInstance> InventoryItems;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TObjectPtr<UStaticMesh> DefaultStaticMesh;
+    TSoftObjectPtr<UStaticMesh> DefaultStaticMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bAutoDestroy = true;
@@ -30,7 +30,7 @@ public:
 
     /* IItemActorInterface */
 
-    virtual void SetInventoryItems_Implementation(const TArray<FInventoryItem>& NewInventoryItems) override;
+    virtual void SetInventoryItems_Implementation(const TArray<FItemInstance>& NewInventoryItems) override;
 
     /* Actor */
 

@@ -4,7 +4,7 @@
 #include "Components/InventoryComponent.h"
 
 #include "InventorySystemFunctionLibrary.h"
-#include "Interfaces/InventoryItemDataInterface.h"
+#include "Interfaces/ItemDataInterface.h"
 #include "Net/UnrealNetwork.h"
 
 UInventoryComponent::UInventoryComponent()
@@ -26,30 +26,37 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
     DOREPLIFETIME(ThisClass, InventorySlots)
 }
 
-bool UInventoryComponent::HasItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity) const
+bool UInventoryComponent::HasItem(const FItemInstance& NewItem) const
 {
-    if(!IsValidItem(Item, Quantity)) return false;
+    if(!NewItem.IsValid()) return false;
 
-    int32 ItemQuantity = GetItemQuantity(Item);
-    return ItemQuantity >= Quantity;
+    int32 ItemQuantity = GetItemQuantity(NewItem.Data);
+    return ItemQuantity >= NewItem.Quantity;
 }
 
-bool UInventoryComponent::AddItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)
+bool UInventoryComponent::AddItem(const FItemInstance& NewItem)
 {
     // 실행 가능 여부 확인
-    if (!IsValidItem(Item, Quantity)) return false;
+    if (!NewItem.IsValid()) return false;
+
+    int32 Quantity = NewItem.Quantity;
+    const int32 MaxStack = NewItem.GetMaxStack();
 
     // 기존 인벤토리 슬롯 채우기
     TSet<int32> ExistingIndices;
     ExistingIndices.Reserve(InventorySlots.Num());
     for (const auto& InventorySlot : InventorySlots)
     {
-        ExistingIndices.Emplace(InventorySlot.Index);
-        if (InventorySlot.Item != Item) continue;
+        const int32 SlotIndex = InventorySlot.Index;
+        const int32 SlotQuantity = InventorySlot.GetQuantity();
+        const int32 SlotCapacity = InventorySlot.GetCapacity();
 
-        int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
+        ExistingIndices.Emplace(SlotIndex);
+        if (InventorySlot != NewItem.Data) continue;
+
+        int32 QuantityToAdd = FMath::Min(Quantity, SlotCapacity);
         Quantity -= QuantityToAdd;
-        SetInventorySlotQuantity(InventorySlot.Index, InventorySlot.Quantity + QuantityToAdd);
+        SetInventorySlotQuantity(SlotIndex, SlotQuantity + QuantityToAdd);
 
         if (Quantity <= 0) return true;
     }
@@ -59,15 +66,10 @@ bool UInventoryComponent::AddItem(const TScriptInterface<IInventoryItemDataInter
     {
         if (ExistingIndices.Contains(Index)) continue;
 
-        int32 QuantityToAdd = FMath::Min(Quantity, GetInventoryItemData(Item).MaxStack);
+        int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        FInventorySlot NewInventorySlot;
-        NewInventorySlot.Index = Index;
-        NewInventorySlot.Item = Item;
-        NewInventorySlot.Quantity = QuantityToAdd;
-
-        SetInventorySlot(NewInventorySlot);
+        SetInventorySlot(FInventorySlot(Index, NewItem.Data, QuantityToAdd));
 
         if (Quantity <= 0) return true;
     }
@@ -76,28 +78,32 @@ bool UInventoryComponent::AddItem(const TScriptInterface<IInventoryItemDataInter
     return true;
 }
 
-bool UInventoryComponent::RemoveItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)
+bool UInventoryComponent::RemoveItem(const FItemInstance& NewItem)
 {
     // 실행 가능 여부 확인
-    if (!HasItem(Item, Quantity)) return false;
+    if (!HasItem(NewItem)) return false;
+
+    int32 Quantity = NewItem.Quantity;
 
     // 역순으로 인벤토리 조회 및 아이템 제거
     for (int32 Index = InventorySlots.Num() - 1; Index >= 0; --Index)
     {
         const auto& InventorySlot = InventorySlots[Index];
-        if (InventorySlot.Item != Item) continue;
+        const int32 SlotQuantity = InventorySlot.GetQuantity();
 
-        int32 QuantityToRemove = FMath::Min(Quantity, InventorySlot.Quantity);
+        if (InventorySlot.Item != NewItem.Data) continue;
+
+        int32 QuantityToRemove = FMath::Min(Quantity, SlotQuantity);
         Quantity -= QuantityToRemove;
 
-        if (InventorySlot.Quantity == QuantityToRemove)
+        if (SlotQuantity == QuantityToRemove)
         {
             RemoveInventorySlot(Index);
         }
         else
         {
             FInventorySlot NewInventorySlot = InventorySlot;
-            NewInventorySlot.Quantity -= QuantityToRemove;
+            NewInventorySlot.SetQuantity(NewInventorySlot.GetQuantity() - QuantityToRemove);
             SetInventorySlot(NewInventorySlot);
         }
 
@@ -111,7 +117,7 @@ bool UInventoryComponent::RemoveItem(const TScriptInterface<IInventoryItemDataIn
 bool UInventoryComponent::SetInventorySlotQuantity(int32 SlotIndex, int32 NewQuantity)
 {
     auto InventorySlot = InventorySlots.FindByKey(SlotIndex);
-    if (bool bCanSet = InventorySlot && InventorySlot->GetInventoryItemData().MaxStack >= NewQuantity; !bCanSet) return false;
+    if (bool bCanSet = InventorySlot && InventorySlot->GetMaxStack() >= NewQuantity; !bCanSet) return false;
 
     if (NewQuantity <= 0)
     {
@@ -119,7 +125,7 @@ bool UInventoryComponent::SetInventorySlotQuantity(int32 SlotIndex, int32 NewQua
     }
     else
     {
-        InventorySlot->Quantity = NewQuantity;
+        InventorySlot->SetQuantity(NewQuantity);
     }
 
     InventoryUpdated.Broadcast(SlotIndex);
@@ -184,9 +190,11 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
     // Fill
     else
     {
-        int32 QuantityToMove = FMath::Min(SourceInventorySlot.Quantity, DestinationInventorySlot.GetCapacity());
-        SetInventorySlotQuantity(SourceIndex, SourceInventorySlot.Quantity - QuantityToMove);
-        OtherInventoryComponent->SetInventorySlotQuantity(DestinationIndex, DestinationInventorySlot.Quantity + QuantityToMove);
+        int32 SourceSlotQuantity = SourceInventorySlot.GetQuantity();
+        int32 DestinationSlotQuantity = DestinationInventorySlot.GetQuantity();
+        int32 QuantityToMove = FMath::Min(SourceSlotQuantity, DestinationInventorySlot.GetCapacity());
+        SetInventorySlotQuantity(SourceIndex, SourceSlotQuantity - QuantityToMove);
+        OtherInventoryComponent->SetInventorySlotQuantity(DestinationIndex, DestinationSlotQuantity + QuantityToMove);
     }
 }
 
@@ -195,43 +203,47 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
     const auto& InventorySlot = GetInventorySlot(SlotIndex);
-    if (InventorySlot.Quantity < Quantity) return;
+    int32 SlotQuantity = InventorySlot.GetQuantity();
 
-    TArray<FInventoryItem> InventoryItemsToDrop = { FInventoryItem{ InventorySlot.Item, Quantity } };
+    if (SlotQuantity < Quantity) return;
+
+    TArray<FItemInstance> InventoryItemsToDrop = { InventorySlot.Item };
     AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
 
-    SetInventorySlotQuantity(SlotIndex, InventorySlot.Quantity - Quantity);
+    SetInventorySlotQuantity(SlotIndex, SlotQuantity - Quantity);
 }
 
-int32 UInventoryComponent::GetItemQuantity(const TScriptInterface<IInventoryItemDataInterface>& Item) const
+int32 UInventoryComponent::GetItemQuantity(const TScriptInterface<IItemDataInterface>& Item) const
 {
     if (!Item) return 0;
 
     int32 Quantity = 0;
     for (const auto& InventorySlot : InventorySlots)
     {
-        if (Item == InventorySlot.Item.GetObject())
+        if (InventorySlot == Item)
         {
-            Quantity += InventorySlot.Quantity;
+            Quantity += InventorySlot.GetQuantity();
         }
     }
 
     return Quantity;
 }
 
-int32 UInventoryComponent::GetItemCapacity(const TScriptInterface<IInventoryItemDataInterface>& Item) const
+int32 UInventoryComponent::GetItemCapacity(const TScriptInterface<IItemDataInterface>& Item) const
 {
-    const FInventoryItemData InventoryItemData = GetInventoryItemData(Item);
-    if (InventoryItemData.IsNotValid()) return 0;
+    int32 Capacity = 0;
 
-    int32 EmptySlotNum = MaxSlotNum - InventorySlots.Num();
-    int32 Capacity = EmptySlotNum * InventoryItemData.MaxStack;
-    for (const auto& InventorySlot : InventorySlots)
+    if (Item)
     {
-        if (Item == InventorySlot.Item)
+        int32 EmptySlotNum = MaxSlotNum - InventorySlots.Num();
+        Capacity = EmptySlotNum * IItemDataInterface::Execute_GetMaxStack(Item.GetObject());
+        for (const auto& InventorySlot : InventorySlots)
         {
-            Capacity += InventorySlot.GetCapacity();
+            if (InventorySlot == Item)
+            {
+                Capacity += InventorySlot.GetCapacity();
+            }
         }
     }
 
@@ -247,22 +259,10 @@ const FInventorySlot& UInventoryComponent::GetInventorySlot(int32 Index) const
 
 void UInventoryComponent::AddDefaultItems()
 {
-    for (const auto& DefaultItem : DefaultItems)
+    for (const auto& DefaultItem : StartupItems)
     {
-        AddItem(DefaultItem.Item, DefaultItem.Quantity);
+        AddItem(FItemInstance(DefaultItem.Data, DefaultItem.Quantity));
     }
-}
-
-bool UInventoryComponent::IsValidItem(const TScriptInterface<IInventoryItemDataInterface>& Item, int32 Quantity)
-{
-    const auto& InventoryItemData = GetInventoryItemData(Item);
-    UE_LOG(LogTemp, Error, TEXT("%d"), InventoryItemData.MaxStack)
-    return InventoryItemData.IsValid() && Quantity > 0;
-}
-
-const FInventoryItemData UInventoryComponent::GetInventoryItemData(const TScriptInterface<IInventoryItemDataInterface>& Item)
-{
-    return Item.GetObject() ? IInventoryItemDataInterface::Execute_GetInventoryItemData(Item.GetObject()) : FInventoryItemData::Empty;
 }
 
 void UInventoryComponent::OnRep_InventorySlots(const TArray<FInventorySlot>& OldInventorySlots)

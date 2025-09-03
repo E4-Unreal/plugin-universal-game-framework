@@ -3,19 +3,34 @@
 
 #include "Types/InventorySlot.h"
 
-#include "Interfaces/InventoryItemDataInterface.h"
-#include "Types/InventoryItemData.h"
+#include "Interfaces/ItemDataInterface.h"
 
 const FInventorySlot FInventorySlot::EmptySlot{ -1, nullptr, -1 };
 
-const FInventoryItemData FInventorySlot::GetInventoryItemData() const
+const int32 FInventorySlot::GetMaxStack() const
 {
-    return Item ? IInventoryItemDataInterface::Execute_GetInventoryItemData(Item.GetObject()) : FInventoryItemData::Empty;
+    return IsValid() ? Item.GetMaxStack() : 0;
 }
 
-int32 FInventorySlot::GetCapacity() const
+const int32 FInventorySlot::GetCapacity() const
 {
-    const auto& InventoryItemData = GetInventoryItemData();
+    return IsValid() ? GetMaxStack() - GetQuantity() : 0;
+}
 
-    return InventoryItemData.IsValid() ? InventoryItemData.MaxStack - Quantity : 0;
+FGameplayTag FInventorySlot::GetItemType() const
+{
+    return IsValid() ? Item.GetItemType() : FGameplayTag::EmptyTag;
+}
+
+int32 FInventorySlot::GetQuantity() const
+{
+    return IsValid() ? Item.Quantity : 0;
+}
+
+void FInventorySlot::SetQuantity(int32 NewQuantity)
+{
+    if (IsValid())
+    {
+        Item.Quantity = NewQuantity;
+    }
 }
