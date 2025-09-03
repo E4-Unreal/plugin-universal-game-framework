@@ -60,7 +60,7 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
     /* Inventory */
 
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);
-    GetInventory()->SetMaxSlotNum(20);
+    GetInventory()->MaxSlotNum = 20;
 
     /* CurrencyManager */
 
@@ -105,12 +105,14 @@ bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& Curr
 
 bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    return GetInventory()->AddItem(Product.GetObject(), Quantity);
+    FItemInstance NewItem = FItemInstance(Product.GetObject(), Quantity);
+    return GetInventory()->AddItem(NewItem);
 }
 
 bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    return GetInventory()->RemoveItem(Product.GetObject(), Quantity);
+    FItemInstance NewItem = FItemInstance(Product.GetObject(), Quantity);
+    return GetInventory()->RemoveItem(NewItem);
 }
 
 void AUGFPlayerCharacter::OnSaveData_Implementation(USaveGame* SaveGame)

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Types/InventoryItem.h"
+#include "Types/ItemInstance.h"
 #include "Types/InventorySlot.h"
 #include "InventoryComponent.generated.h"
 
@@ -18,11 +18,11 @@ class INVENTORYSYSTEM_API UInventoryComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintGetter = GetMaxSlotNum, BlueprintSetter = SetMaxSlotNum, Category = "Config", meta = (ClampMin = 0))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))
     int32 MaxSlotNum = 4;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TArray<FInventoryItem> DefaultItems;
+    TArray<FItemInstance> StartupItems;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemActorInterface"))
     TSubclassOf<AActor> ItemActorClass;
@@ -44,13 +44,13 @@ public:
     virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
     UFUNCTION(BlueprintPure)
-    bool HasItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity = 1) const;
+    bool HasItem(const FItemInstance& NewItem) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity);
+    virtual bool AddItem(const FItemInstance& NewItem);
 
     UFUNCTION(BlueprintCallable)
-    virtual bool RemoveItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity);
+    virtual bool RemoveItem(const FItemInstance& NewItem);
 
     UFUNCTION(BlueprintCallable)
     virtual bool SetInventorySlotQuantity(int32 SlotIndex, int32 NewQuantity);
@@ -83,18 +83,8 @@ public:
     UFUNCTION(BlueprintPure, Category = "UI")
     virtual const FInventorySlot& GetInventorySlot(int32 Index) const;
 
-    /* Properties */
-
-    UFUNCTION(BlueprintGetter)
-    FORCEINLINE int32 GetMaxSlotNum() const { return MaxSlotNum; }
-
-    UFUNCTION(BlueprintSetter)
-    virtual void SetMaxSlotNum(int32 NewMaxSlotNum) { MaxSlotNum = NewMaxSlotNum; }
-
 protected:
     virtual void AddDefaultItems();
-
-    static bool IsValidItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity);
 
     UFUNCTION()
     virtual void OnRep_InventorySlots(const TArray<FInventorySlot>& OldInventorySlots);

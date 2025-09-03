@@ -26,18 +26,21 @@ void UInventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePrope
     DOREPLIFETIME(ThisClass, InventorySlots)
 }
 
-bool UInventoryComponent::HasItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity) const
+bool UInventoryComponent::HasItem(const FItemInstance& NewItem) const
 {
-    if(!IsValidItem(Item, Quantity)) return false;
+    if(!NewItem.IsValid()) return false;
 
-    int32 ItemQuantity = GetItemQuantity(Item);
-    return ItemQuantity >= Quantity;
+    int32 ItemQuantity = GetItemQuantity(NewItem.Data);
+    return ItemQuantity >= NewItem.Quantity;
 }
 
-bool UInventoryComponent::AddItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity)
+bool UInventoryComponent::AddItem(const FItemInstance& NewItem)
 {
     // 실행 가능 여부 확인
-    if (!IsValidItem(Item, Quantity)) return false;
+    if (!NewItem.IsValid()) return false;
+
+    int32 Quantity = NewItem.Quantity;
+    const int32 MaxStack = NewItem.GetMaxStack();
 
     // 기존 인벤토리 슬롯 채우기
     TSet<int32> ExistingIndices;
@@ -45,7 +48,7 @@ bool UInventoryComponent::AddItem(const TScriptInterface<IItemDataInterface>& It
     for (const auto& InventorySlot : InventorySlots)
     {
         ExistingIndices.Emplace(InventorySlot.Index);
-        if (InventorySlot.Item != Item) continue;
+        if (InventorySlot.Item != NewItem.Data) continue;
 
         int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
         Quantity -= QuantityToAdd;
@@ -59,12 +62,12 @@ bool UInventoryComponent::AddItem(const TScriptInterface<IItemDataInterface>& It
     {
         if (ExistingIndices.Contains(Index)) continue;
 
-        int32 QuantityToAdd = FMath::Min(Quantity, IItemDataInterface::Execute_GetMaxStack(Item.GetObject()));
+        int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
         FInventorySlot NewInventorySlot;
         NewInventorySlot.Index = Index;
-        NewInventorySlot.Item = Item;
+        NewInventorySlot.Item = NewItem.Data;
         NewInventorySlot.Quantity = QuantityToAdd;
 
         SetInventorySlot(NewInventorySlot);
@@ -76,16 +79,18 @@ bool UInventoryComponent::AddItem(const TScriptInterface<IItemDataInterface>& It
     return true;
 }
 
-bool UInventoryComponent::RemoveItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity)
+bool UInventoryComponent::RemoveItem(const FItemInstance& NewItem)
 {
     // 실행 가능 여부 확인
-    if (!HasItem(Item, Quantity)) return false;
+    if (!HasItem(NewItem)) return false;
+
+    int32 Quantity = NewItem.Quantity;
 
     // 역순으로 인벤토리 조회 및 아이템 제거
     for (int32 Index = InventorySlots.Num() - 1; Index >= 0; --Index)
     {
         const auto& InventorySlot = InventorySlots[Index];
-        if (InventorySlot.Item != Item) continue;
+        if (InventorySlot.Item != NewItem.Data) continue;
 
         int32 QuantityToRemove = FMath::Min(Quantity, InventorySlot.Quantity);
         Quantity -= QuantityToRemove;
@@ -197,7 +202,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     const auto& InventorySlot = GetInventorySlot(SlotIndex);
     if (InventorySlot.Quantity < Quantity) return;
 
-    TArray<FInventoryItem> InventoryItemsToDrop = { FInventoryItem{ InventorySlot.Item, Quantity } };
+    TArray<FItemInstance> InventoryItemsToDrop = { FItemInstance{ InventorySlot.Item, Quantity } };
     AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
 
@@ -249,15 +254,10 @@ const FInventorySlot& UInventoryComponent::GetInventorySlot(int32 Index) const
 
 void UInventoryComponent::AddDefaultItems()
 {
-    for (const auto& DefaultItem : DefaultItems)
+    for (const auto& DefaultItem : StartupItems)
     {
-        AddItem(DefaultItem.Item, DefaultItem.Quantity);
+        AddItem(FItemInstance(DefaultItem.Data, DefaultItem.Quantity));
     }
-}
-
-bool UInventoryComponent::IsValidItem(const TScriptInterface<IItemDataInterface>& Item, int32 Quantity)
-{
-    return Item && Quantity > 0;
 }
 
 void UInventoryComponent::OnRep_InventorySlots(const TArray<FInventorySlot>& OldInventorySlots)

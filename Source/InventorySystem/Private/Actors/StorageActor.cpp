@@ -12,5 +12,5 @@ AStorageActor::AStorageActor(const FObjectInitializer& ObjectInitializer)
 {
     /* Inventory */
     Inventory = CreateDefaultSubobject<UInventoryComponent>(InventoryName);
-    Inventory->SetMaxSlotNum(10);
+    Inventory->MaxSlotNum = 10;
 }

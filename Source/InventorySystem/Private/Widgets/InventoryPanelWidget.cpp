@@ -45,7 +45,7 @@ void UInventoryPanelWidget::CreateSlotWidgets()
 
     // Create
     auto InventoryComponent = GetInventoryComponent();
-    int32 MaxSlotNum = InventoryComponent ? InventoryComponent->GetMaxSlotNum() : PreviewSlotNum;
+    int32 MaxSlotNum = InventoryComponent ? InventoryComponent->MaxSlotNum : PreviewSlotNum;
     for (int32 Index = 0; Index < MaxSlotNum; ++Index)
     {
         auto SlotWidget = CreateWidget<UInventorySlotWidget>(this, SlotWidgetClass);

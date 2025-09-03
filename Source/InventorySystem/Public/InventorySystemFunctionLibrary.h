@@ -7,7 +7,7 @@
 #include "InventorySystemFunctionLibrary.generated.h"
 
 class IItemActorInterface;
-struct FInventoryItem;
+struct FItemInstance;
 
 UCLASS()
 class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFunctionLibrary
@@ -16,5 +16,5 @@ class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFun
 
 public:
     UFUNCTION(BlueprintCallable)
-    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<FInventoryItem>& InventoryItems, const FVector& Offset = FVector::ZeroVector);
+    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<FItemInstance>& InventoryItems, const FVector& Offset = FVector::ZeroVector);
 };
