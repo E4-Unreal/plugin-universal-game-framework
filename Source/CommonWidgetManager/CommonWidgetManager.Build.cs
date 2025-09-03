@@ -12,7 +12,8 @@ public class CommonWidgetManager : ModuleRules
                 "Core",
                 "UMG",
                 "CommonUI",
-                "GameplayTags"
+                "GameplayTags",
+                "EnhancedInput"
             }
         );
 
