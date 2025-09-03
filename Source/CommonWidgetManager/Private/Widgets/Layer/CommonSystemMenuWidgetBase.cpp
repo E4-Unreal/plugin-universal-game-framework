@@ -9,4 +9,8 @@ UCommonSystemMenuWidgetBase::UCommonSystemMenuWidgetBase(const FObjectInitialize
     : Super(ObjectInitializer)
 {
     LayerTag = CommonWidgetManager::UI::Layer::System::Menu;
+
+    UIInputConfig = FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
+    UIInputConfig.bIgnoreLookInput = true;
+    UIInputConfig.bIgnoreMoveInput = true;
 }
