@@ -19,6 +19,9 @@ class COMMONWIDGETMANAGER_API UCommonPawnWidgetManagerComponent : public UActorC
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UCommonLayerWidgetBase> HUDWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<TObjectPtr<UInputAction>, TSubclassOf<UCommonLayerWidgetBase>> ToggleableLayerWidgetMap;
 
 public:
@@ -28,6 +31,12 @@ public:
 
 protected:
     FORCEINLINE APawn* GetOwningPawn() const { return CastChecked<APawn>(GetOwner()); }
+    virtual void BindEvents();
     virtual void BindActions();
     virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> LayerWidgetClass);
+    virtual void ShowHUDWidget();
+    virtual void HideHUDWidget();
+
+    UFUNCTION()
+    virtual void OnControllerChanged(APawn* Pawn, AController* OldController, AController* NewController);
 };

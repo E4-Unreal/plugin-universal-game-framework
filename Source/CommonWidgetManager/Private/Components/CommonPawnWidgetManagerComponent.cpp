@@ -10,7 +10,16 @@ void UCommonPawnWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    ShowHUDWidget();
+    BindEvents();
     BindActions();
+}
+
+void UCommonPawnWidgetManagerComponent::BindEvents()
+{
+    APawn* OwningPawn = GetOwningPawn();
+
+    OwningPawn->ReceiveControllerChangedDelegate.AddDynamic(this, &ThisClass::OnControllerChanged);
 }
 
 void UCommonPawnWidgetManagerComponent::BindActions()
@@ -37,5 +46,47 @@ void UCommonPawnWidgetManagerComponent::ToggleLayerWidget(TSubclassOf<UCommonLay
         {
             WidgetManager->ToggleLayerWidget(LayerWidgetClass);
         }
+    }
+}
+
+void UCommonPawnWidgetManagerComponent::ShowHUDWidget()
+{
+    APawn* OwningPawn = GetOwningPawn();
+    AController* OwningController = OwningPawn->GetController();
+
+    if (OwningController && OwningController->IsLocalPlayerController())
+    {
+        if (UCommonPlayerWidgetManagerComponent* WidgetManager = OwningController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
+        {
+            WidgetManager->ShowLayerWidget(HUDWidgetClass);
+        }
+    }
+}
+
+void UCommonPawnWidgetManagerComponent::HideHUDWidget()
+{
+    APawn* OwningPawn = GetOwningPawn();
+    AController* OwningController = OwningPawn->GetController();
+
+    if (OwningController && OwningController->IsLocalPlayerController())
+    {
+        if (UCommonPlayerWidgetManagerComponent* WidgetManager = OwningController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
+        {
+            WidgetManager->HideLayerWidget(HUDWidgetClass);
+        }
+    }
+}
+
+void UCommonPawnWidgetManagerComponent::OnControllerChanged(APawn* Pawn, AController* OldController,
+    AController* NewController)
+{
+    if (OldController)
+    {
+        HideHUDWidget();
+    }
+
+    if (NewController)
+    {
+        ShowHUDWidget();
     }
 }
