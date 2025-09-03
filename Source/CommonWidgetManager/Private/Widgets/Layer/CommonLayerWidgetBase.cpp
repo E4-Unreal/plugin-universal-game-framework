@@ -7,6 +7,7 @@ UCommonLayerWidgetBase::UCommonLayerWidgetBase(const FObjectInitializer& ObjectI
     : Super(ObjectInitializer)
 {
     bIsBackHandler = true;
+    bIsModal = true;
 
     UIInputConfig = FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
     UIInputConfig.bIgnoreLookInput = false;
