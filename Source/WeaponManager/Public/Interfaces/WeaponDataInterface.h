@@ -28,5 +28,8 @@ public:
     FGameplayTag GetSlotType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FGameplayTag GetSocketType() const;
+    FName GetActiveSocketName() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FName GetInActiveSocketName() const;
 };

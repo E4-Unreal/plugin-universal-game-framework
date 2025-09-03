@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Types/WeaponSlot.h"
+#include "Types/WeaponSlotIndex.h"
 #include "Components/ActorComponent.h"
 #include "WeaponManagerComponent.generated.h"
 
@@ -19,8 +20,14 @@ public:
     TMap<FGameplayTag, int32> SlotConfig;
 
 protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    TWeakObjectPtr<USkeletalMeshComponent> Mesh;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<FWeaponSlot> Slots;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    FWeaponSlotIndex CurrentSlotIndex;
 
 public:
     UWeaponManagerComponent();
@@ -29,8 +36,15 @@ public:
 
     virtual void InitializeComponent() override;
 
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
+
 protected:
     /* API */
 
     virtual void CreateSlots();
+    virtual AActor* SpawnWeaponActor(TSubclassOf<AActor> WeaponActorClass) const;
+    virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
 };

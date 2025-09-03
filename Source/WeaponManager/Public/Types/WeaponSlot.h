@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "WeaponSlotIndex.h"
 #include "WeaponSlot.generated.h"
 
 class IWeaponActorInterface;
@@ -27,4 +28,7 @@ struct WEAPONMANAGER_API FWeaponSlot
     TScriptInterface<IWeaponActorInterface> Actor;
 
     FORCEINLINE bool IsEmpty() const { return Actor == nullptr; }
+
+    bool operator==(const FWeaponSlotIndex& Other) const { return Type == Other.Type && Index == Other.Index; }
+    bool operator!=(const FWeaponSlotIndex& Other) const { return !(*this == Other); }
 };
