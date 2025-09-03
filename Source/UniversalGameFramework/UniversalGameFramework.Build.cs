@@ -21,12 +21,12 @@ public class UniversalGameFramework : ModuleRules
                 "EquipmentManager",
                 "DynamicData",
                 "ShopSystem",
-                "WidgetManager",
                 "SocketManager",
                 "QuickSlotManager",
                 "CurrencyManager",
                 "DataManager",
-                "CommonWidgetManager"
+                "CommonWidgetManager",
+                "WeaponManager"
             }
         );
 
