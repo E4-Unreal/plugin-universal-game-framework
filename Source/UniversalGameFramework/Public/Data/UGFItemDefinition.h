@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DynamicData/Public/Data/DefinitionBase.h"
-#include "Interfaces/InventoryItemDataInterface.h"
+#include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/ProductInterface.h"
 #include "Types/InventoryItemData.h"
 #include "GameplayTags/CurrencyGameplayTags.h"
@@ -15,16 +15,28 @@
  */
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDefinitionBase,
-    public IInventoryItemDataInterface,
+    public IItemDataInterface,
     public IProductInterface
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    int32 MaxStack = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTag ItemType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<UStaticMesh> StaticMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FText DisplayNameText;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (Categories = "Currency"))
@@ -37,14 +49,17 @@ protected:
     int32 SellPrice;
 
 public:
-    /* InventoryItemDataInterface */
+    /* ItemDataInterface */
 
-    virtual const FInventoryItemData GetInventoryItemData_Implementation() const override { return GetData<FInventoryItemData>(); }
+    virtual int32 GetMaxStack_Implementation() const override { return MaxStack; }
+    virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
+    virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
+    virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
+    virtual FText GetDisplayNameText_Implementation() const override { return DisplayNameText; }
+    virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
 
     /* ProductInterface */
 
-    virtual FText GetDisplayNameText_Implementation() const override { return DisplayNameText; }
-    virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
     virtual const FGameplayTag GetCurrencyType_Implementation() const override { return CurrencyType; }
     virtual int32 GetBuyPrice_Implementation() const override { return BuyPrice; }
     virtual int32 GetSellPrice_Implementation() const override { return SellPrice; }

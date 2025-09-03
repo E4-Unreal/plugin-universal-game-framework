@@ -37,7 +37,7 @@ void AItemActor::BeginPlay()
     {
         for (const auto& InventoryItem : InventoryItems)
         {
-            if (InventoryItem.GetData().IsNotValid())
+            if (!InventoryItem.IsValid())
             {
                 Destroy();
                 break;
@@ -73,7 +73,7 @@ void AItemActor::OnInteractionTriggered_Implementation(AActor* Interactor)
     {
         for (const auto& InventoryItem : InventoryItems)
         {
-            if (InventoryItem.GetData().IsValid()) InventoryComponent->AddItem(InventoryItem.Item, InventoryItem.Quantity);
+            if (!InventoryItem.IsValid()) InventoryComponent->AddItem(InventoryItem.Item, InventoryItem.Quantity);
         }
 
         if (bAutoDestroy) Destroy();
@@ -89,7 +89,7 @@ UStaticMesh* AItemActor::GetStaticMesh() const
 {
     if (InventoryItems.Num() != 1) return DefaultStaticMesh;
 
-    auto StaticMesh = InventoryItems[0].GetData().StaticMesh.LoadSynchronous();
+    UStaticMesh* StaticMesh = IItemDataInterface::Execute_GetStaticMesh(InventoryItems[0].Item.GetObject()).LoadSynchronous();
 
     return StaticMesh ? StaticMesh : DefaultStaticMesh.Get();
 }

@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventoryItemData.h"
-#include "Interfaces/InventoryItemDataInterface.h"
+#include "Interfaces/ItemDataInterface.h"
 #include "InventorySlot.generated.h"
 
 struct FInventoryItemData;
@@ -20,15 +19,14 @@ struct INVENTORYSYSTEM_API FInventorySlot
     int32 Index;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TScriptInterface<IInventoryItemDataInterface> Item;
+    TScriptInterface<IItemDataInterface> Item;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Quantity;
 
-    const FInventoryItemData GetInventoryItemData() const;
     int32 GetCapacity() const;
 
-    FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && GetInventoryItemData().IsValid(); }
+    FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && Item; }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
 
     bool operator==(const FInventorySlot& Other) const { return Index == Other.Index; }

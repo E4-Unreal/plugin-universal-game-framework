@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Interfaces/InventoryItemDataInterface.h"
+#include "Interfaces/ItemDataInterface.h"
 #include "Types/InventoryItemData.h"
 #include "InventoryItemDataAsset.generated.h"
 
@@ -12,16 +12,36 @@
  *
  */
 UCLASS()
-class INVENTORYSYSTEM_API UInventoryItemDataAsset : public UPrimaryDataAsset, public IInventoryItemDataInterface
+class INVENTORYSYSTEM_API UInventoryItemDataAsset : public UPrimaryDataAsset, public IItemDataInterface
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditDefaultsOnly, Category = "Config", meta = (ShowOnlyInnerProperties))
-    FInventoryItemData InventoryItemData;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    int32 MaxStack = 1;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTag ItemType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<UStaticMesh> StaticMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FText DisplayNameText;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
 public:
-    /* InventoryItemDataInterface */
+    /* ItemDataInterface */
 
-    virtual const FInventoryItemData GetInventoryItemData_Implementation() const override { return InventoryItemData; }
+    virtual int32 GetMaxStack_Implementation() const override { return MaxStack; }
+    virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
+    virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
+    virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
+    virtual FText GetDisplayNameText_Implementation() const override { return DisplayNameText; }
+    virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
 };
