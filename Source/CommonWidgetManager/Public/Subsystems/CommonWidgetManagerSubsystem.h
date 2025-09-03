@@ -8,6 +8,9 @@
 
 class FButtonClickedDelegate;
 class FPromptSubmittedDelegate;
+class UCommonActivatableWidget;
+class UCommonLayerWidgetBase;
+class UCommonPlayerWidgetManagerComponent;
 
 /**
  *
@@ -20,12 +23,27 @@ class COMMONWIDGETMANAGER_API UCommonWidgetManagerSubsystem : public UGameInstan
 public:
     virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
-    UFUNCTION(BlueprintCallable)
-    virtual void ShowAlertWidget(APlayerController* PlayerController, const FText& TitleText, const FText& MessageText);
+    UFUNCTION(BlueprintPure)
+    virtual APlayerController* GetLocalPlayerController(AActor* PlayerActor) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual UCommonPlayerWidgetManagerComponent* GetCommonPlayerWidgetManager(AActor* PlayerActor) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowConfirmWidget(APlayerController* PlayerController, const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
+    virtual void ShowAlertWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText);
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowPromptWidget(APlayerController* PlayerController, const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
+    virtual void ShowConfirmWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowPromptWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
+
+    UFUNCTION(BlueprintCallable)
+    virtual UCommonActivatableWidget* ShowLayerWidget(AActor* PlayerActor, TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool HideLayerWidget(AActor* PlayerActor, TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ToggleLayerWidget(AActor* PlayerActor, TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
 };

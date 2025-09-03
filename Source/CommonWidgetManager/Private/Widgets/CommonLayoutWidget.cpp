@@ -5,26 +5,23 @@
 
 #include "GameplayTags/CommonWidgetManagerGameplayTags.h"
 
-void UCommonLayoutWidget::NativeOnInitialized()
+UCommonLayoutWidget::UCommonLayoutWidget(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
 {
-    Super::NativeOnInitialized();
+    FLayerConfig GameOverlayLayerConfig;
+    GameOverlayLayerConfig.bIsOverlay = true;
+    GameOverlayLayerConfig.TransitionConfig.TransitionDuration = 0.0f;
 
-    SetLayers();
-}
+    FLayerConfig GameMenuLayerConfig;
+    GameMenuLayerConfig.bIsOverlay = true;
+    GameMenuLayerConfig.TransitionConfig.TransitionDuration = 0.0f;
 
-void UCommonLayoutWidget::NativePreConstruct()
-{
-#if WITH_EDITOR
-    SetLayers();
-#endif
+    FLayerConfig SystemMenuLayerConfig;
 
-    Super::NativePreConstruct();
-}
+    FLayerConfig SystemPopupLayerConfig;
 
-void UCommonLayoutWidget::SetLayers()
-{
-    SetLayer(CommonWidgetManager::UI::Layer::Game::Overlay, GetGameOverlayLayer());
-    SetLayer(CommonWidgetManager::UI::Layer::Game::Menu, GetGameMenuLayer());
-    SetLayer(CommonWidgetManager::UI::Layer::System::Popup, GetSystemPopupLayer());
-    SetLayer(CommonWidgetManager::UI::Layer::System::Menu, GetSystemMenuLayer());
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::Game::Overlay, GameOverlayLayerConfig);
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::Game::Menu, GameMenuLayerConfig);
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::System::Menu, SystemMenuLayerConfig);
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::System::Popup, SystemPopupLayerConfig);
 }

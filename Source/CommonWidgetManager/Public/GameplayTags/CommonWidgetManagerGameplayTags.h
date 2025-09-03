@@ -24,8 +24,8 @@ namespace CommonWidgetManager
             {
                 COMMONWIDGETMANAGER_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Root)
 
-                COMMONWIDGETMANAGER_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Popup)
                 COMMONWIDGETMANAGER_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Menu)
+                COMMONWIDGETMANAGER_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Popup)
             }
         }
     }

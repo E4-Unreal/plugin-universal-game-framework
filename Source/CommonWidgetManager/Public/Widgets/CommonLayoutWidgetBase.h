@@ -5,11 +5,14 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
+#include "Types/LayerConfig.h"
 #include "CommonLayoutWidgetBase.generated.h"
 
 class UCommonLayerWidgetBase;
 class UCommonActivatableWidget;
 class UCommonActivatableWidgetStack;
+class ULayerStack;
+class UOverlay;
 
 /**
  *
@@ -19,6 +22,10 @@ class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatabl
 {
     GENERATED_BODY()
 
+private:
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<UOverlay> RootOverlay;
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FUIInputConfig UIInputConfig;
@@ -26,11 +33,20 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UCommonLayerWidgetBase> EscapeMenuWidgetClass;
 
+    // TMap<LayerTag, bIsOverlay>
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TMap<FGameplayTag, FLayerConfig> LayerConfigs;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<FGameplayTag, TObjectPtr<UCommonActivatableWidgetStack>> LayerMap;
+    TMap<FGameplayTag, TObjectPtr<ULayerStack>> LayerMap;
 
 public:
     UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer);
+
+    /* UserWidget */
+
+    virtual void NativeOnInitialized() override;
+    virtual void NativePreConstruct() override;
 
     /* CommonActivatableWidget */
 
@@ -40,21 +56,31 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure, meta = (Categories = "UI.Layer"))
-    FORCEINLINE UCommonActivatableWidgetStack* GetLayer(FGameplayTag LayerTag) const { return LayerMap.FindRef(LayerTag); }
+    FORCEINLINE ULayerStack* GetLayer(FGameplayTag LayerTag) const { return LayerMap.FindRef(LayerTag); }
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
-    virtual UCommonActivatableWidget* AddWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
+    virtual UCommonActivatableWidget* ShowWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual UCommonActivatableWidget* ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
-    virtual void RemoveWidget(FGameplayTag LayerTag, UCommonActivatableWidget* Widget);
+    virtual bool HideWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
 
     UFUNCTION(BlueprintCallable)
-    virtual UCommonActivatableWidget* AddLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+    virtual bool HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
+    virtual void ToggleWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
 
     UFUNCTION(BlueprintCallable)
-    virtual void RemoveLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+    virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    /* Getter */
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE UOverlay* GetRootOverlay() const { return RootOverlay; }
 
 protected:
-    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
-    virtual void SetLayer(FGameplayTag LayerTag, UCommonActivatableWidgetStack* LayerWidget);
+    virtual void CreateLayerMap();
 };

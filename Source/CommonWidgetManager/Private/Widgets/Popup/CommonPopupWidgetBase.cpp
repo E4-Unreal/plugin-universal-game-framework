@@ -10,6 +10,10 @@ UCommonPopupWidgetBase::UCommonPopupWidgetBase(const FObjectInitializer& ObjectI
     : Super(ObjectInitializer)
 {
     LayerTag = CommonWidgetManager::UI::Layer::System::Popup;
+
+    UIInputConfig = FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
+    UIInputConfig.bIgnoreLookInput = true;
+    UIInputConfig.bIgnoreMoveInput = true;
 }
 
 void UCommonPopupWidgetBase::SetTitleText_Implementation(const FText& TitleText)

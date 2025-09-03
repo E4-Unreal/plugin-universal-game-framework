@@ -3,7 +3,7 @@
 
 #include "Players/UGFPlayerController.h"
 
-#include "Components/CommonWidgetManagerComponent.h"
+#include "Components/CommonPlayerWidgetManagerComponent.h"
 
 const FName AUGFPlayerController::WidgetManagerName(TEXT("WidgetManager"));
 
@@ -13,5 +13,5 @@ AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectIniti
 {
     /* WidgetManager */
 
-    WidgetManager = CreateDefaultSubobject<UCommonWidgetManagerComponent>(WidgetManagerName);
+    WidgetManager = CreateDefaultSubobject<UCommonPlayerWidgetManagerComponent>(WidgetManagerName);
 }

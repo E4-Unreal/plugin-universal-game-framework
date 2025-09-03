@@ -3,8 +3,12 @@
 
 #include "Widgets/CommonLayoutWidgetBase.h"
 
+#include "Components/Overlay.h"
+#include "Components/OverlaySlot.h"
+#include "Objects/LayerStack.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-#include "Widgets/CommonLayerWidgetBase.h"
+#include "Widgets/CustomActivatableWidgetStack.h"
+#include "Widgets/Layer/CommonLayerWidgetBase.h"
 
 
 UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer)
@@ -18,6 +22,23 @@ UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& Objec
     UIInputConfig.bIgnoreMoveInput = false;
 }
 
+void UCommonLayoutWidgetBase::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    CreateLayerMap();
+}
+
+void UCommonLayoutWidgetBase::NativePreConstruct()
+{
+    Super::NativePreConstruct();
+
+    if (IsDesignTime())
+    {
+        CreateLayerMap();
+    }
+}
+
 bool UCommonLayoutWidgetBase::NativeOnHandleBackAction()
 {
     if (bIsBackHandler)
@@ -26,7 +47,7 @@ bool UCommonLayoutWidgetBase::NativeOnHandleBackAction()
         {
             if (EscapeMenuWidgetClass)
             {
-                AddLayerWidget(EscapeMenuWidgetClass);
+                ToggleLayerWidget(EscapeMenuWidgetClass);
             }
         }
 
@@ -46,66 +67,83 @@ TOptional<FUIInputConfig> UCommonLayoutWidgetBase::GetDesiredInputConfig() const
     return UIInputConfig;
 }
 
-UCommonActivatableWidget* UCommonLayoutWidgetBase::AddWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
+UCommonActivatableWidget* UCommonLayoutWidgetBase::ShowWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
 {
     UCommonActivatableWidget* Widget = nullptr;
 
-    if (UCommonActivatableWidgetStack* Layer = GetLayer(LayerTag))
+    if (ULayerStack* Layer = GetLayer(LayerTag))
     {
-        if (WidgetClass)
-        {
-            UCommonActivatableWidget* ActiveWidget = Layer->GetActiveWidget();
-            if (ActiveWidget && ActiveWidget->IsA(WidgetClass))
-            {
-                Widget = ActiveWidget;
-            }
-            else
-            {
-                const TArray<UCommonActivatableWidget*>& AddedWidgets = Layer->GetWidgetList();
-                for (UCommonActivatableWidget* AddedWidget : AddedWidgets)
-                {
-                    if (AddedWidget->IsA(WidgetClass))
-                    {
-                        Layer->RemoveWidget(*AddedWidget);
-                        break;
-                    }
-                }
-
-                Widget = Layer->AddWidget(WidgetClass);
-            }
-        }
+        Widget = Layer->ShowWidget(WidgetClass);
     }
 
     return Widget;
 }
 
-void UCommonLayoutWidgetBase::RemoveWidget(FGameplayTag LayerTag, UCommonActivatableWidget* Widget)
+UCommonActivatableWidget* UCommonLayoutWidgetBase::ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
 {
-    if (UCommonActivatableWidgetStack* Layer = GetLayer(LayerTag))
+    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
+    return ShowWidget(LayerWidget->GetLayerTag(), WidgetClass);
+}
+
+bool UCommonLayoutWidgetBase::HideWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
+{
+    bool bResult = false;
+
+    if (ULayerStack* Layer = GetLayer(LayerTag))
     {
-        if (Widget)
-        {
-            Layer->RemoveWidget(*Widget);
-        }
+        bResult = Layer->HideWidget(WidgetClass);
+    }
+
+    return bResult;
+}
+
+bool UCommonLayoutWidgetBase::HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+{
+    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
+    return HideWidget(LayerWidget->GetLayerTag(), WidgetClass);
+}
+
+void UCommonLayoutWidgetBase::ToggleWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
+{
+    if (ULayerStack* Layer = GetLayer(LayerTag))
+    {
+        Layer->ToggleWidget(WidgetClass);
     }
 }
 
-UCommonActivatableWidget* UCommonLayoutWidgetBase::AddLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+void UCommonLayoutWidgetBase::ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
 {
     UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
-    return AddWidget(LayerWidget->GetLayerTag(), WidgetClass);
+    ToggleWidget(LayerWidget->GetLayerTag(), WidgetClass);
 }
 
-void UCommonLayoutWidgetBase::RemoveLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+void UCommonLayoutWidgetBase::CreateLayerMap()
 {
-    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
-    RemoveWidget(LayerWidget->GetLayerTag(), LayerWidget);
-}
+    if (!LayerMap.IsEmpty()) return;
 
-void UCommonLayoutWidgetBase::SetLayer(FGameplayTag LayerTag, UCommonActivatableWidgetStack* LayerWidget)
-{
-    if (LayerWidget)
+    for (const auto& [LayerTag, LayerConfig] : LayerConfigs)
     {
-        LayerMap.Emplace(LayerTag, LayerWidget);
+        ULayerStack* LayerStack = NewObject<ULayerStack>();
+        if (LayerConfig.bIsOverlay)
+        {
+            UOverlay* Overlay = WidgetTree->ConstructWidget<UOverlay>();
+            UOverlaySlot* OverlaySlot = RootOverlay->AddChildToOverlay(Overlay);
+            OverlaySlot->SetVerticalAlignment(VAlign_Fill);
+            OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
+
+            LayerStack->InitializeAsOverlayStack(this, Overlay, LayerConfig.TransitionConfig);
+        }
+        else
+        {
+            UCustomActivatableWidgetStack* Stack = WidgetTree->ConstructWidget<UCustomActivatableWidgetStack>();
+            Stack->SetTransitionConfig(LayerConfig.TransitionConfig);
+            UOverlaySlot* OverlaySlot = RootOverlay->AddChildToOverlay(Stack);
+            OverlaySlot->SetVerticalAlignment(VAlign_Fill);
+            OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
+
+            LayerStack->InitializeAsStack(this, Stack);
+        }
+
+        LayerMap.Emplace(LayerTag, LayerStack);
     }
 }

@@ -3,23 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
-#include "CommonWidgetManagerComponent.generated.h"
-
+#include "Widgets/Popup/CommonConfirmWidgetBase.h"
+#include "Widgets/Popup/CommonPromptWidgetBase.h"
+#include "CommonPlayerWidgetManagerComponent.generated.h"
 
 class UCommonLayoutWidgetBase;
 class UCommonAlertWidgetBase;
-class UCommonConfirmWidgetBase;
-class FButtonClickedDelegate;
-class UCommonPromptWidgetBase;
-class FPromptSubmittedDelegate;
 
 /**
- * PlayerController 전용 액터 컴포넌트
+ * PlayerController 전용 CommonWidgetManagerComponent
  */
-UCLASS(meta=(BlueprintSpawnableComponent))
-class COMMONWIDGETMANAGER_API UCommonWidgetManagerComponent : public UActorComponent
+UCLASS(meta = (BlueprintSpawnableComponent))
+class COMMONWIDGETMANAGER_API UCommonPlayerWidgetManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -41,13 +37,14 @@ protected:
     TObjectPtr<UCommonLayoutWidgetBase> LayoutWidget;
 
 public:
-    UCommonWidgetManagerComponent();
+    UCommonPlayerWidgetManagerComponent();
+
+    /* ActorComponent */
 
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
-    UFUNCTION(BlueprintPure)
-    virtual APlayerController* GetOwningPlayerController() const;
+    /* API */
 
     UFUNCTION(BlueprintCallable)
     virtual void ShowAlertWidget(const FText& TitleText, const FText& MessageText);
@@ -58,6 +55,20 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void ShowPromptWidget(const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
 
+    UFUNCTION(BlueprintCallable)
+    virtual UCommonActivatableWidget* ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    /* Getter */
+
     UFUNCTION(BlueprintPure)
     UCommonLayoutWidgetBase* GetLayoutWidget() const { return LayoutWidget; }
+
+protected:
+    APlayerController* GetOwningPlayerController() const;
 };
