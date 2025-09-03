@@ -46,7 +46,10 @@ public:
     FORCEINLINE void SetMesh(USkeletalMeshComponent* NewMesh) { Mesh = NewMesh; }
 
     UFUNCTION(BlueprintPure)
-    const FWeaponSlot& GetSlotByIndex(FWeaponSlotIndex InSlotIndex);
+    AActor* GetCurrentWeaponActor() const;
+
+    UFUNCTION(BlueprintPure)
+    const FWeaponSlot& GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const;
 
     UFUNCTION(BlueprintCallable)
     virtual void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);

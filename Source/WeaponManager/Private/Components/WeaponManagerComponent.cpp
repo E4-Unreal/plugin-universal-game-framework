@@ -30,7 +30,14 @@ void UWeaponManagerComponent::BeginPlay()
     SetSlotIndex(StartupSlotIndex);
 }
 
-const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSlotIndex)
+AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
+{
+    const auto& CurrentSlot = GetSlotByIndex(CurrentSlotIndex);
+    
+    return CurrentSlot.Actor;
+}
+
+const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const
 {
     for (const auto& Slot : Slots)
     {
