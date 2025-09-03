@@ -79,7 +79,7 @@ bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
         {
             if (Slot.IsEmpty() && Slot.Type == SlotType)
             {
-                if (AActor* WeaponActor = SpawnWeaponActor(WeaponActorClass))
+                if (AActor* WeaponActor = SpawnWeaponActorByData(NewWeaponData))
                 {
                     if (Slot == CurrentSlotIndex)
                     {
@@ -124,7 +124,7 @@ void UWeaponManagerComponent::FindMesh()
     }
 }
 
-AActor* UWeaponManagerComponent::SpawnWeaponActor(const TScriptInterface<IWeaponDataInterface>& WeaponData) const
+AActor* UWeaponManagerComponent::SpawnWeaponActorByData(const TScriptInterface<IWeaponDataInterface>& WeaponData) const
 {
     AActor* WeaponActor = nullptr;
 
