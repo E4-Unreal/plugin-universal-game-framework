@@ -38,30 +38,6 @@ void UCommonPlayerWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingH
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-APlayerController* UCommonPlayerWidgetManagerComponent::GetOwningPlayerController() const
-{
-    APlayerController* OwningPlayerController = nullptr;
-    if (AActor* OwningActor = GetOwner())
-    {
-        if (OwningActor->IsA(APlayerController::StaticClass()))
-        {
-            OwningPlayerController = Cast<APlayerController>(OwningActor);
-        }
-        else if (OwningActor->IsA(APawn::StaticClass()))
-        {
-            APawn* OwningPawn = Cast<APawn>(OwningActor);
-            OwningPlayerController = Cast<APlayerController>(OwningPawn->GetController());
-        }
-
-        if (OwningPlayerController && !OwningPlayerController->IsLocalController())
-        {
-            OwningPlayerController = nullptr;
-        }
-    }
-
-    return OwningPlayerController;
-}
-
 void UCommonPlayerWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, const FText& MessageText)
 {
     if (GetLayoutWidget() && AlertWidgetClass)
@@ -141,4 +117,11 @@ void UCommonPlayerWidgetManagerComponent::ToggleLayerWidget(TSubclassOf<UCommonL
             GetLayoutWidget()->ToggleLayerWidget(WidgetClass);
         }
     }
+}
+
+APlayerController* UCommonPlayerWidgetManagerComponent::GetOwningPlayerController() const
+{
+    APlayerController* PlayerController = CastChecked<APlayerController>(GetOwner());
+
+    return PlayerController->IsLocalController() ? PlayerController : nullptr;
 }

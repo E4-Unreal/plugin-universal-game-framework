@@ -46,9 +46,6 @@ public:
 
     /* API */
 
-    UFUNCTION(BlueprintPure)
-    virtual APlayerController* GetOwningPlayerController() const;
-
     UFUNCTION(BlueprintCallable)
     virtual void ShowAlertWidget(const FText& TitleText, const FText& MessageText);
 
@@ -71,4 +68,7 @@ public:
 
     UFUNCTION(BlueprintPure)
     UCommonLayoutWidgetBase* GetLayoutWidget() const { return LayoutWidget; }
+
+protected:
+    APlayerController* GetOwningPlayerController() const;
 };
