@@ -4,21 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "CommonWidgetManagerComponent.generated.h"
-
+#include "Widgets/Popup/CommonConfirmWidgetBase.h"
+#include "Widgets/Popup/CommonPromptWidgetBase.h"
+#include "CommonPlayerWidgetManagerComponent.generated.h"
 
 class UCommonLayoutWidgetBase;
 class UCommonAlertWidgetBase;
-class UCommonConfirmWidgetBase;
-class FButtonClickedDelegate;
-class UCommonPromptWidgetBase;
-class FPromptSubmittedDelegate;
 
 /**
- * PlayerController 전용 액터 컴포넌트
+ * PlayerController 전용 CommonWidgetManagerComponent
  */
-UCLASS(meta=(BlueprintSpawnableComponent))
-class COMMONWIDGETMANAGER_API UCommonWidgetManagerComponent : public UActorComponent
+UCLASS(meta = (BlueprintSpawnableComponent))
+class COMMONWIDGETMANAGER_API UCommonPlayerWidgetManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -40,7 +37,7 @@ protected:
     TObjectPtr<UCommonLayoutWidgetBase> LayoutWidget;
 
 public:
-    UCommonWidgetManagerComponent();
+    UCommonPlayerWidgetManagerComponent();
 
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;

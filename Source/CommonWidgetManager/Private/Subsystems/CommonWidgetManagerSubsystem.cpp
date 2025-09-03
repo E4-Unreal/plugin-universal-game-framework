@@ -3,7 +3,7 @@
 
 #include "Subsystems/CommonWidgetManagerSubsystem.h"
 
-#include "Components/CommonWidgetManagerComponent.h"
+#include "Components/CommonPlayerWidgetManagerComponent.h"
 #include "Widgets/CommonLayoutWidgetBase.h"
 
 bool UCommonWidgetManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
@@ -19,7 +19,7 @@ void UCommonWidgetManagerSubsystem::ShowAlertWidget(APlayerController* PlayerCon
 {
     if (PlayerController && PlayerController->IsLocalController())
     {
-        if (UCommonWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonWidgetManagerComponent>())
+        if (UCommonPlayerWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
         {
             CommonWidgetManager->ShowAlertWidget(TitleText, MessageText);
         }
@@ -31,7 +31,7 @@ void UCommonWidgetManagerSubsystem::ShowConfirmWidget(APlayerController* PlayerC
 {
     if (PlayerController && PlayerController->IsLocalController())
     {
-        if (UCommonWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonWidgetManagerComponent>())
+        if (UCommonPlayerWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
         {
             CommonWidgetManager->ShowConfirmWidget(TitleText, MessageText, ConfirmButtonClickedDelegate);
         }
@@ -43,7 +43,7 @@ void UCommonWidgetManagerSubsystem::ShowPromptWidget(APlayerController* PlayerCo
 {
     if (PlayerController && PlayerController->IsLocalController())
     {
-        if (UCommonWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonWidgetManagerComponent>())
+        if (UCommonPlayerWidgetManagerComponent* CommonWidgetManager = PlayerController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
         {
             CommonWidgetManager->ShowPromptWidget(TitleText, MessageText, ConfirmButtonClickedDelegate, bShouldNumeric, MinNum, MaxNum);
         }

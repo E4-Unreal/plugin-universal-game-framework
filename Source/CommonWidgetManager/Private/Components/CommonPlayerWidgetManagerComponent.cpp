@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/CommonWidgetManagerComponent.h"
+#include "Components/CommonPlayerWidgetManagerComponent.h"
 
 #include "Blueprint/UserWidget.h"
 #include "Widgets/CommonLayoutWidgetBase.h"
@@ -9,12 +9,12 @@
 #include "Widgets/Popup/CommonConfirmWidgetBase.h"
 #include "Widgets/Popup/CommonPromptWidgetBase.h"
 
-UCommonWidgetManagerComponent::UCommonWidgetManagerComponent()
+UCommonPlayerWidgetManagerComponent::UCommonPlayerWidgetManagerComponent()
 {
 
 }
 
-void UCommonWidgetManagerComponent::BeginPlay()
+void UCommonPlayerWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
@@ -28,7 +28,7 @@ void UCommonWidgetManagerComponent::BeginPlay()
     }
 }
 
-void UCommonWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
+void UCommonPlayerWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
     if (LayoutWidget)
     {
@@ -38,7 +38,7 @@ void UCommonWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingHierarc
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-APlayerController* UCommonWidgetManagerComponent::GetOwningPlayerController() const
+APlayerController* UCommonPlayerWidgetManagerComponent::GetOwningPlayerController() const
 {
     APlayerController* OwningPlayerController = nullptr;
     if (AActor* OwningActor = GetOwner())
@@ -62,7 +62,7 @@ APlayerController* UCommonWidgetManagerComponent::GetOwningPlayerController() co
     return OwningPlayerController;
 }
 
-void UCommonWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, const FText& MessageText)
+void UCommonPlayerWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, const FText& MessageText)
 {
     if (GetLayoutWidget() && AlertWidgetClass)
     {
@@ -74,7 +74,7 @@ void UCommonWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, cons
     }
 }
 
-void UCommonWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, const FText& MessageText,
+void UCommonPlayerWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, const FText& MessageText,
     const FButtonClickedDelegate& ConfirmButtonClickedDelegate)
 {
     if (GetLayoutWidget() && ConfirmWidgetClass)
@@ -88,7 +88,7 @@ void UCommonWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, co
     }
 }
 
-void UCommonWidgetManagerComponent::ShowPromptWidget(const FText& TitleText, const FText& MessageText,
+void UCommonPlayerWidgetManagerComponent::ShowPromptWidget(const FText& TitleText, const FText& MessageText,
     const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric, int64 MinNum, int64 MaxNum)
 {
     if (GetLayoutWidget() && PromptWidgetClass)
