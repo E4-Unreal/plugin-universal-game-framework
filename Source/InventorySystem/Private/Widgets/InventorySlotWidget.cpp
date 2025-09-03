@@ -52,7 +52,7 @@ void UInventorySlotWidget::UpdateInventorySlot(const FInventorySlot& InventorySl
 {
     Super::UpdateInventorySlot(InventorySlot);
 
-    SetQuantityTextBlock(InventorySlot.Quantity);
+    SetQuantityTextBlock(InventorySlot.GetQuantity());
 }
 
 void UInventorySlotWidget::Clear()

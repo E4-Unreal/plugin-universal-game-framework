@@ -7,17 +7,30 @@
 
 const FInventorySlot FInventorySlot::EmptySlot{ -1, nullptr, -1 };
 
-int32 FInventorySlot::GetMaxStack() const
+const int32 FInventorySlot::GetMaxStack() const
 {
-    return IsValid() ? IItemDataInterface::Execute_GetMaxStack(Item.GetObject()) : 0;
+    return IsValid() ? Item.GetMaxStack() : 0;
 }
 
-int32 FInventorySlot::GetCapacity() const
+const int32 FInventorySlot::GetCapacity() const
 {
-    return IsValid() ? GetMaxStack() - Quantity : 0;
+    return IsValid() ? GetMaxStack() - GetQuantity() : 0;
 }
 
 FGameplayTag FInventorySlot::GetItemType() const
 {
-    return IsValid() ? IItemDataInterface::Execute_GetItemType(Item.GetObject()) : FGameplayTag::EmptyTag;
+    return IsValid() ? Item.GetItemType() : FGameplayTag::EmptyTag;
+}
+
+int32 FInventorySlot::GetQuantity() const
+{
+    return IsValid() ? Item.Quantity : 0;
+}
+
+void FInventorySlot::SetQuantity(int32 NewQuantity)
+{
+    if (IsValid())
+    {
+        Item.Quantity = NewQuantity;
+    }
 }

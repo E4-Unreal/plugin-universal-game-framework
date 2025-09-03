@@ -47,12 +47,16 @@ bool UInventoryComponent::AddItem(const FItemInstance& NewItem)
     ExistingIndices.Reserve(InventorySlots.Num());
     for (const auto& InventorySlot : InventorySlots)
     {
-        ExistingIndices.Emplace(InventorySlot.Index);
-        if (InventorySlot.Item != NewItem.Data) continue;
+        const int32 SlotIndex = InventorySlot.Index;
+        const int32 SlotQuantity = InventorySlot.GetQuantity();
+        const int32 SlotCapacity = InventorySlot.GetCapacity();
 
-        int32 QuantityToAdd = FMath::Min(Quantity, InventorySlot.GetCapacity());
+        ExistingIndices.Emplace(SlotIndex);
+        if (InventorySlot != NewItem.Data) continue;
+
+        int32 QuantityToAdd = FMath::Min(Quantity, SlotCapacity);
         Quantity -= QuantityToAdd;
-        SetInventorySlotQuantity(InventorySlot.Index, InventorySlot.Quantity + QuantityToAdd);
+        SetInventorySlotQuantity(SlotIndex, SlotQuantity + QuantityToAdd);
 
         if (Quantity <= 0) return true;
     }
@@ -65,12 +69,7 @@ bool UInventoryComponent::AddItem(const FItemInstance& NewItem)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        FInventorySlot NewInventorySlot;
-        NewInventorySlot.Index = Index;
-        NewInventorySlot.Item = NewItem.Data;
-        NewInventorySlot.Quantity = QuantityToAdd;
-
-        SetInventorySlot(NewInventorySlot);
+        SetInventorySlot(FInventorySlot(Index, NewItem.Data, QuantityToAdd));
 
         if (Quantity <= 0) return true;
     }
@@ -90,19 +89,21 @@ bool UInventoryComponent::RemoveItem(const FItemInstance& NewItem)
     for (int32 Index = InventorySlots.Num() - 1; Index >= 0; --Index)
     {
         const auto& InventorySlot = InventorySlots[Index];
+        const int32 SlotQuantity = InventorySlot.GetQuantity();
+
         if (InventorySlot.Item != NewItem.Data) continue;
 
-        int32 QuantityToRemove = FMath::Min(Quantity, InventorySlot.Quantity);
+        int32 QuantityToRemove = FMath::Min(Quantity, SlotQuantity);
         Quantity -= QuantityToRemove;
 
-        if (InventorySlot.Quantity == QuantityToRemove)
+        if (SlotQuantity == QuantityToRemove)
         {
             RemoveInventorySlot(Index);
         }
         else
         {
             FInventorySlot NewInventorySlot = InventorySlot;
-            NewInventorySlot.Quantity -= QuantityToRemove;
+            NewInventorySlot.SetQuantity(NewInventorySlot.GetQuantity() - QuantityToRemove);
             SetInventorySlot(NewInventorySlot);
         }
 
@@ -116,7 +117,7 @@ bool UInventoryComponent::RemoveItem(const FItemInstance& NewItem)
 bool UInventoryComponent::SetInventorySlotQuantity(int32 SlotIndex, int32 NewQuantity)
 {
     auto InventorySlot = InventorySlots.FindByKey(SlotIndex);
-    if (bool bCanSet = InventorySlot && IItemDataInterface::Execute_GetMaxStack(InventorySlot->Item.GetObject()) >= NewQuantity; !bCanSet) return false;
+    if (bool bCanSet = InventorySlot && InventorySlot->GetMaxStack() >= NewQuantity; !bCanSet) return false;
 
     if (NewQuantity <= 0)
     {
@@ -124,7 +125,7 @@ bool UInventoryComponent::SetInventorySlotQuantity(int32 SlotIndex, int32 NewQua
     }
     else
     {
-        InventorySlot->Quantity = NewQuantity;
+        InventorySlot->SetQuantity(NewQuantity);
     }
 
     InventoryUpdated.Broadcast(SlotIndex);
@@ -189,9 +190,11 @@ void UInventoryComponent::SwapOrFillInventorySlots(int32 SourceIndex, int32 Dest
     // Fill
     else
     {
-        int32 QuantityToMove = FMath::Min(SourceInventorySlot.Quantity, DestinationInventorySlot.GetCapacity());
-        SetInventorySlotQuantity(SourceIndex, SourceInventorySlot.Quantity - QuantityToMove);
-        OtherInventoryComponent->SetInventorySlotQuantity(DestinationIndex, DestinationInventorySlot.Quantity + QuantityToMove);
+        int32 SourceSlotQuantity = SourceInventorySlot.GetQuantity();
+        int32 DestinationSlotQuantity = DestinationInventorySlot.GetQuantity();
+        int32 QuantityToMove = FMath::Min(SourceSlotQuantity, DestinationInventorySlot.GetCapacity());
+        SetInventorySlotQuantity(SourceIndex, SourceSlotQuantity - QuantityToMove);
+        OtherInventoryComponent->SetInventorySlotQuantity(DestinationIndex, DestinationSlotQuantity + QuantityToMove);
     }
 }
 
@@ -200,13 +203,15 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
     const auto& InventorySlot = GetInventorySlot(SlotIndex);
-    if (InventorySlot.Quantity < Quantity) return;
+    int32 SlotQuantity = InventorySlot.GetQuantity();
 
-    TArray<FItemInstance> InventoryItemsToDrop = { FItemInstance{ InventorySlot.Item, Quantity } };
+    if (SlotQuantity < Quantity) return;
+
+    TArray<FItemInstance> InventoryItemsToDrop = { InventorySlot.Item };
     AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
 
-    SetInventorySlotQuantity(SlotIndex, InventorySlot.Quantity - Quantity);
+    SetInventorySlotQuantity(SlotIndex, SlotQuantity - Quantity);
 }
 
 int32 UInventoryComponent::GetItemQuantity(const TScriptInterface<IItemDataInterface>& Item) const
@@ -216,9 +221,9 @@ int32 UInventoryComponent::GetItemQuantity(const TScriptInterface<IItemDataInter
     int32 Quantity = 0;
     for (const auto& InventorySlot : InventorySlots)
     {
-        if (Item == InventorySlot.Item.GetObject())
+        if (InventorySlot == Item)
         {
-            Quantity += InventorySlot.Quantity;
+            Quantity += InventorySlot.GetQuantity();
         }
     }
 
@@ -235,7 +240,7 @@ int32 UInventoryComponent::GetItemCapacity(const TScriptInterface<IItemDataInter
         Capacity = EmptySlotNum * IItemDataInterface::Execute_GetMaxStack(Item.GetObject());
         for (const auto& InventorySlot : InventorySlots)
         {
-            if (Item == InventorySlot.Item)
+            if (InventorySlot == Item)
             {
                 Capacity += InventorySlot.GetCapacity();
             }

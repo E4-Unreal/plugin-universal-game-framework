@@ -22,4 +22,10 @@ struct INVENTORYSYSTEM_API FItemInstance
     int32 GetMaxStack() const;
     int32 GetCapacity() const;
     FGameplayTag GetItemType() const;
+
+    bool operator==(const FItemInstance& Other) const { return Data == Other.Data && Quantity == Other.Quantity; }
+    bool operator!=(const FItemInstance& Other) const { return !(*this == Other); }
+
+    bool operator==(const TScriptInterface<IItemDataInterface>& Other) const { return Data == Other; }
+    bool operator!=(const TScriptInterface<IItemDataInterface>& Other) const { return !(*this == Other); }
 };
