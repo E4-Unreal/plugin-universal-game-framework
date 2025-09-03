@@ -10,6 +10,7 @@ UCommonLayoutWidget::UCommonLayoutWidget(const FObjectInitializer& ObjectInitial
 {
     FLayerConfig GameOverlayLayerConfig;
     GameOverlayLayerConfig.bIsOverlay = true;
+    GameOverlayLayerConfig.TransitionConfig.TransitionDuration = 0.0f;
 
     FLayerConfig GameMenuLayerConfig;
     GameMenuLayerConfig.bIsOverlay = true;
