@@ -8,7 +8,6 @@
 #include "UGFPlayerCharacter.generated.h"
 
 class USaveGame;
-class UWidgetManagerComponent;
 class UEquipmentManagerComponent;
 class UCurrencyManagerComponent;
 class UInventoryComponent;
@@ -17,6 +16,7 @@ class UInputBinderComponent;
 class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UCommonPawnWidgetManagerComponent;
 
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API AUGFPlayerCharacter : public AUGFCharacter,
@@ -33,7 +33,7 @@ protected:
     const static FName CurrencyManagerName;
     const static FName InventoryName;
     const static FName EquipmentManagerName;
-    const static FName WidgetManagerName;
+    const static FName CommonPawnWidgetManagerName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -61,7 +61,7 @@ private:
     TObjectPtr<UEquipmentManagerComponent> EquipmentManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UWidgetManagerComponent> WidgetManager;
+    TObjectPtr<UCommonPawnWidgetManagerComponent> CommonPawnWidgetManager;
 
 public:
     AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer);
@@ -86,7 +86,7 @@ public:
     FORCEINLINE UInventoryComponent* GetInventory() const { return Inventory; }
     FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
     FORCEINLINE UEquipmentManagerComponent* GetEquipmentManager() const { return EquipmentManager; }
-    FORCEINLINE UWidgetManagerComponent* GetWidgetManager() const { return WidgetManager; }
+    FORCEINLINE UCommonPawnWidgetManagerComponent* GetCommonPawnWidgetManager() const { return CommonPawnWidgetManager; }
 
 protected:
     UFUNCTION(BlueprintNativeEvent)

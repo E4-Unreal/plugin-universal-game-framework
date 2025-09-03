@@ -6,6 +6,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/CommonPawnWidgetManagerComponent.h"
 #include "Components/CurrencyManagerComponent.h"
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponent.h"
@@ -24,7 +25,7 @@ const FName AUGFPlayerCharacter::InteractionSystemName(TEXT("InteractionSystem")
 const FName AUGFPlayerCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFPlayerCharacter::InventoryName(TEXT("Inventory"));
 const FName AUGFPlayerCharacter::EquipmentManagerName(TEXT("EquipmentManager"));
-const FName AUGFPlayerCharacter::WidgetManagerName(TEXT("WidgetManager"));
+const FName AUGFPlayerCharacter::CommonPawnWidgetManagerName(TEXT("CommonPawnWidgetManager"));
 
 AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -69,9 +70,9 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
 
     EquipmentManager = CreateOptionalDefaultSubobject<UEquipmentManagerComponent>(EquipmentManagerName);
 
-    /* WidgetManager */
+    /* CommonPawnWidgetManager */
 
-    WidgetManager = CreateDefaultSubobject<UWidgetManagerComponent>(WidgetManagerName);
+    CommonPawnWidgetManager = CreateDefaultSubobject<UCommonPawnWidgetManagerComponent>(CommonPawnWidgetManagerName);
 }
 
 void AUGFPlayerCharacter::BeginPlay()
