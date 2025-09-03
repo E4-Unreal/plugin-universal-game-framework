@@ -30,12 +30,10 @@ public:
     virtual void BeginPlay() override;
 
 protected:
-    FORCEINLINE APawn* GetOwningPawn() const { return CastChecked<APawn>(GetOwner()); }
     virtual void BindEvents();
-    virtual void BindActions();
     virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> LayerWidgetClass);
-    virtual void ShowHUDWidget();
-    virtual void HideHUDWidget();
+    virtual void ShowHUDWidget(AActor* PlayerActor);
+    virtual void HideHUDWidget(AActor* PlayerActor);
 
     UFUNCTION()
     virtual void OnControllerChanged(APawn* Pawn, AController* OldController, AController* NewController);

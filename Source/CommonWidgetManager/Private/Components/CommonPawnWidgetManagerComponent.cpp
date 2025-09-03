@@ -5,88 +5,67 @@
 
 #include "EnhancedInputComponent.h"
 #include "Components/CommonPlayerWidgetManagerComponent.h"
+#include "Subsystems/CommonWidgetManagerSubsystem.h"
 
 void UCommonPawnWidgetManagerComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    ShowHUDWidget();
+    ShowHUDWidget(GetOwner());
+
     BindEvents();
-    BindActions();
 }
 
 void UCommonPawnWidgetManagerComponent::BindEvents()
 {
-    APawn* OwningPawn = GetOwningPawn();
-
-    OwningPawn->ReceiveControllerChangedDelegate.AddDynamic(this, &ThisClass::OnControllerChanged);
-}
-
-void UCommonPawnWidgetManagerComponent::BindActions()
-{
-    APawn* OwningPawn = GetOwningPawn();
-
-    if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwningPawn->InputComponent))
+    if (APawn* OwningPawn = Cast<APawn>(GetOwner()))
     {
-        for (const auto& [InputAction, LayerWidgetClass] : ToggleableLayerWidgetMap)
+        OwningPawn->ReceiveControllerChangedDelegate.AddDynamic(this, &ThisClass::OnControllerChanged);
+
+        if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwningPawn->InputComponent))
         {
-            EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ThisClass::ToggleLayerWidget, LayerWidgetClass);
+            for (const auto& [InputAction, LayerWidgetClass] : ToggleableLayerWidgetMap)
+            {
+                EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ThisClass::ToggleLayerWidget, LayerWidgetClass);
+            }
         }
     }
 }
 
 void UCommonPawnWidgetManagerComponent::ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> LayerWidgetClass)
 {
-    APawn* OwningPawn = GetOwningPawn();
-    AController* OwningController = OwningPawn->GetController();
-
-    if (OwningController && OwningController->IsLocalPlayerController())
+    if (UCommonWidgetManagerSubsystem* Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
     {
-        if (UCommonPlayerWidgetManagerComponent* WidgetManager = OwningController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
-        {
-            WidgetManager->ToggleLayerWidget(LayerWidgetClass);
-        }
+        Subsystem->ToggleLayerWidget(GetOwner(), LayerWidgetClass);
     }
 }
 
-void UCommonPawnWidgetManagerComponent::ShowHUDWidget()
+void UCommonPawnWidgetManagerComponent::ShowHUDWidget(AActor* PlayerActor)
 {
-    APawn* OwningPawn = GetOwningPawn();
-    AController* OwningController = OwningPawn->GetController();
-
-    if (OwningController && OwningController->IsLocalPlayerController())
+    if (UCommonWidgetManagerSubsystem* Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
     {
-        if (UCommonPlayerWidgetManagerComponent* WidgetManager = OwningController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
-        {
-            WidgetManager->ShowLayerWidget(HUDWidgetClass);
-        }
+        Subsystem->ShowLayerWidget(PlayerActor, HUDWidgetClass);
     }
 }
 
-void UCommonPawnWidgetManagerComponent::HideHUDWidget()
+void UCommonPawnWidgetManagerComponent::HideHUDWidget(AActor* PlayerActor)
 {
-    APawn* OwningPawn = GetOwningPawn();
-    AController* OwningController = OwningPawn->GetController();
-
-    if (OwningController && OwningController->IsLocalPlayerController())
+    if (UCommonWidgetManagerSubsystem* Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
     {
-        if (UCommonPlayerWidgetManagerComponent* WidgetManager = OwningController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>())
-        {
-            WidgetManager->HideLayerWidget(HUDWidgetClass);
-        }
+        Subsystem->HideLayerWidget(PlayerActor, HUDWidgetClass);
     }
 }
 
 void UCommonPawnWidgetManagerComponent::OnControllerChanged(APawn* Pawn, AController* OldController,
-    AController* NewController)
+                                                            AController* NewController)
 {
     if (OldController)
     {
-        HideHUDWidget();
+        HideHUDWidget(OldController);
     }
 
     if (NewController)
     {
-        ShowHUDWidget();
+        ShowHUDWidget(NewController);
     }
 }
