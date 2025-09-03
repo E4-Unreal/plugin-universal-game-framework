@@ -15,6 +15,8 @@ struct WEAPONMANAGER_API FWeaponSlot
 {
     GENERATED_BODY()
 
+    static const FWeaponSlot EmptySlot;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FGameplayTag Type;
 
@@ -25,9 +27,12 @@ struct WEAPONMANAGER_API FWeaponSlot
     TScriptInterface<IWeaponDataInterface> Data;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TScriptInterface<IWeaponActorInterface> Actor;
+    TObjectPtr<AActor> Actor;
 
     FORCEINLINE bool IsEmpty() const { return Actor == nullptr; }
+
+    const FName GetActiveSocketName() const;
+    const FName GetInActiveSocketName() const;
 
     bool operator==(const FWeaponSlotIndex& Other) const { return Type == Other.Type && Index == Other.Index; }
     bool operator!=(const FWeaponSlotIndex& Other) const { return !(*this == Other); }

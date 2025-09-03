@@ -19,6 +19,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<FGameplayTag, int32> SlotConfig;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FWeaponSlotIndex StartupSlotIndex;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<USkeletalMeshComponent> Mesh;
@@ -35,8 +38,15 @@ public:
     /* ActorComponent */
 
     virtual void InitializeComponent() override;
+    virtual void BeginPlay() override;
 
     /* API */
+
+    UFUNCTION(BlueprintPure)
+    const FWeaponSlot& GetSlotByIndex(FWeaponSlotIndex InSlotIndex);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
 
     UFUNCTION(BlueprintCallable)
     virtual bool AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
@@ -45,6 +55,6 @@ protected:
     /* API */
 
     virtual void CreateSlots();
-    virtual AActor* SpawnWeaponActor(TSubclassOf<AActor> WeaponActorClass) const;
+    virtual AActor* SpawnWeaponActor(const TScriptInterface<IWeaponDataInterface>& WeaponData) const;
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
 };

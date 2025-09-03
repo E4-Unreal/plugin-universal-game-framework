@@ -3,12 +3,16 @@
 
 #include "Components/WeaponManagerComponent.h"
 
+#include "GameplayTags/WeaponGameplayTags.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
     bWantsInitializeComponent = true;
+
+    SlotConfig.Emplace(Weapon::Slot::Primary, 1);
+    StartupSlotIndex = FWeaponSlotIndex(Weapon::Slot::Primary, 0);
 }
 
 void UWeaponManagerComponent::InitializeComponent()
@@ -17,6 +21,47 @@ void UWeaponManagerComponent::InitializeComponent()
 
     CreateSlots();
 }
+
+void UWeaponManagerComponent::BeginPlay()
+{
+    Super::BeginPlay();
+
+    SetSlotIndex(StartupSlotIndex);
+}
+
+const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSlotIndex)
+{
+    for (const auto& Slot : Slots)
+    {
+        if (Slot == InSlotIndex)
+        {
+            return Slot;
+        }
+    }
+
+    return FWeaponSlot::EmptySlot;
+}
+
+void UWeaponManagerComponent::SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce)
+{
+    if (!bForce && CurrentSlotIndex == NewSlotIndex) return;
+
+    FWeaponSlotIndex OldSlotIndex = CurrentSlotIndex;
+    CurrentSlotIndex = NewSlotIndex;
+
+    const FWeaponSlot& OldSlot = GetSlotByIndex(OldSlotIndex);
+    if (!OldSlot.IsEmpty())
+    {
+        AttachWeaponActorToSocket(OldSlot.Actor, OldSlot.GetInActiveSocketName());
+    }
+
+    const FWeaponSlot& NewSlot = GetSlotByIndex(NewSlotIndex);
+    if (!NewSlot.IsEmpty())
+    {
+        AttachWeaponActorToSocket(NewSlot.Actor, NewSlot.GetActiveSocketName());
+    }
+}
+
 
 bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
 {
@@ -70,19 +115,27 @@ void UWeaponManagerComponent::CreateSlots()
     }
 }
 
-AActor* UWeaponManagerComponent::SpawnWeaponActor(TSubclassOf<AActor> WeaponActorClass) const
+AActor* UWeaponManagerComponent::SpawnWeaponActor(const TScriptInterface<IWeaponDataInterface>& WeaponData) const
 {
     AActor* WeaponActor = nullptr;
 
-    if (WeaponActorClass && WeaponActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass()))
+    if (WeaponData)
     {
-        FActorSpawnParameters ActorSpawnParameters;
-        ActorSpawnParameters.Owner = GetOwner();
-        ActorSpawnParameters.Instigator = GetOwner()->GetInstigator();
-        ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+        if (TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetWeaponActorClass(WeaponData.GetObject()))
+        {
+            FActorSpawnParameters ActorSpawnParameters;
+            ActorSpawnParameters.Owner = GetOwner();
+            ActorSpawnParameters.Instigator = GetOwner()->GetInstigator();
+            ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-        const FVector SpawnLocation = GetOwner()->GetActorLocation();
-        WeaponActor = GetWorld()->SpawnActor<AActor>(WeaponActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
+            const FVector SpawnLocation = GetOwner()->GetActorLocation();
+            WeaponActor = GetWorld()->SpawnActor<AActor>(WeaponActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
+
+            if (WeaponActor && WeaponActor->Implements<UWeaponActorInterface>())
+            {
+                IWeaponActorInterface::Execute_SetWeaponData(WeaponActor, WeaponData);
+            }
+        }
     }
 
     return WeaponActor;

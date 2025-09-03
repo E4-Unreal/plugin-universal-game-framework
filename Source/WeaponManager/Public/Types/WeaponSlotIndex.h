@@ -16,4 +16,7 @@ struct WEAPONMANAGER_API FWeaponSlotIndex
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Index;
+
+    bool operator==(const FWeaponSlotIndex& Other) const { return Type == Other.Type && Index == Other.Index; }
+    bool operator!=(const FWeaponSlotIndex& Other) const { return !(*this == Other); }
 };
