@@ -39,8 +39,12 @@ protected:
 public:
     UCommonPlayerWidgetManagerComponent();
 
+    /* ActorComponent */
+
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
+
+    /* API */
 
     UFUNCTION(BlueprintPure)
     virtual APlayerController* GetOwningPlayerController() const;
@@ -53,6 +57,17 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void ShowPromptWidget(const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
+
+    UFUNCTION(BlueprintCallable)
+    virtual UCommonActivatableWidget* ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
+
+    /* Getter */
 
     UFUNCTION(BlueprintPure)
     UCommonLayoutWidgetBase* GetLayoutWidget() const { return LayoutWidget; }

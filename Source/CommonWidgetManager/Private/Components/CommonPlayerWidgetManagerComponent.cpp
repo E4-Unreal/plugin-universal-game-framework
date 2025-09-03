@@ -104,3 +104,41 @@ void UCommonPlayerWidgetManagerComponent::ShowPromptWidget(const FText& TitleTex
         }
     }
 }
+
+UCommonActivatableWidget* UCommonPlayerWidgetManagerComponent::ShowLayerWidget(
+    TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+{
+    if (WidgetClass)
+    {
+        if (GetLayoutWidget())
+        {
+            return GetLayoutWidget()->ShowLayerWidget(WidgetClass);
+        }
+    }
+
+    return nullptr;
+}
+
+bool UCommonPlayerWidgetManagerComponent::HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+{
+    if (WidgetClass)
+    {
+        if (GetLayoutWidget())
+        {
+            return GetLayoutWidget()->HideLayerWidget(WidgetClass);
+        }
+    }
+
+    return false;
+}
+
+void UCommonPlayerWidgetManagerComponent::ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+{
+    if (WidgetClass)
+    {
+        if (GetLayoutWidget())
+        {
+            GetLayoutWidget()->ToggleLayerWidget(WidgetClass);
+        }
+    }
+}
