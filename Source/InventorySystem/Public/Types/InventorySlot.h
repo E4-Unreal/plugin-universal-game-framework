@@ -24,7 +24,9 @@ struct INVENTORYSYSTEM_API FInventorySlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Quantity;
 
+    int32 GetMaxStack() const;
     int32 GetCapacity() const;
+    FGameplayTag GetItemType() const;
 
     FORCEINLINE bool IsValid() const { return Index >= 0 && Item && Quantity > 0 && Item; }
     FORCEINLINE bool IsNotValid() const { return !IsValid(); }
