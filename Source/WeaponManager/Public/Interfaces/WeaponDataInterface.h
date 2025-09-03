@@ -32,4 +32,10 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FName GetInActiveSocketName() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
 };
