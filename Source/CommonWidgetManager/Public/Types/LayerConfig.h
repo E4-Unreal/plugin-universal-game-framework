@@ -3,11 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "TransitionConfig.h"
 #include "LayerConfig.generated.h"
-
-enum class ECommonSwitcherTransition : uint8;
-enum class ETransitionCurve : uint8;
-enum class ECommonSwitcherTransitionFallbackStrategy : uint8;
 
 USTRUCT(BlueprintType)
 struct COMMONWIDGETMANAGER_API FLayerConfig
@@ -18,14 +15,5 @@ struct COMMONWIDGETMANAGER_API FLayerConfig
     bool bIsOverlay;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    ECommonSwitcherTransition TransitionType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    ETransitionCurve TransitionCurveType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float TransitionDuration = 0.4f;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    ECommonSwitcherTransitionFallbackStrategy TransitionFallbackStrategy;
+    FTransitionConfig TransitionConfig;
 };

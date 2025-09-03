@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Types/TransitionConfig.h"
 #include "UObject/Object.h"
 #include "LayerStack.generated.h"
 
@@ -30,6 +31,9 @@ protected:
     TObjectPtr<UOverlay> Overlay;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    FTransitionConfig TransitionConfig;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<TObjectPtr<UCommonActivatableWidgetStack>> OverlayStack;
 
 public:
@@ -40,7 +44,7 @@ public:
     virtual void InitializeAsStack(UUserWidget* NewParentWidget, UCommonActivatableWidgetStack* NewStack);
 
     UFUNCTION(BlueprintCallable)
-    virtual void InitializeAsOverlayStack(UUserWidget* NewParentWidget, UOverlay* NewOverlay);
+    virtual void InitializeAsOverlayStack(UUserWidget* NewParentWidget, UOverlay* NewOverlay, const FTransitionConfig& NewTransitionConfig);
 
     UFUNCTION(BlueprintCallable)
     virtual UCommonActivatableWidget* ShowWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass);

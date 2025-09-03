@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
+#include "Types/LayerConfig.h"
 #include "CommonLayoutWidgetBase.generated.h"
 
 class UCommonLayerWidgetBase;
@@ -34,7 +35,7 @@ protected:
 
     // TMap<LayerTag, bIsOverlay>
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TMap<FGameplayTag, bool> LayerConfig;
+    TMap<FGameplayTag, FLayerConfig> LayerConfigs;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<FGameplayTag, TObjectPtr<ULayerStack>> LayerMap;

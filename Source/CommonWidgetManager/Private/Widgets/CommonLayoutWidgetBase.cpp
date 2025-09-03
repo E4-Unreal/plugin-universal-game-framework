@@ -7,6 +7,7 @@
 #include "Components/OverlaySlot.h"
 #include "Objects/LayerStack.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
+#include "Widgets/CustomActivatableWidgetStack.h"
 #include "Widgets/Layer/CommonLayerWidgetBase.h"
 
 
@@ -120,21 +121,22 @@ void UCommonLayoutWidgetBase::CreateLayerMap()
 {
     if (!LayerMap.IsEmpty()) return;
 
-    for (const auto& [LayerTag, IsOverlay] : LayerConfig)
+    for (const auto& [LayerTag, LayerConfig] : LayerConfigs)
     {
         ULayerStack* LayerStack = NewObject<ULayerStack>();
-        if (IsOverlay)
+        if (LayerConfig.bIsOverlay)
         {
             UOverlay* Overlay = WidgetTree->ConstructWidget<UOverlay>();
             UOverlaySlot* OverlaySlot = RootOverlay->AddChildToOverlay(Overlay);
             OverlaySlot->SetVerticalAlignment(VAlign_Fill);
             OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
 
-            LayerStack->InitializeAsOverlayStack(this, Overlay);
+            LayerStack->InitializeAsOverlayStack(this, Overlay, LayerConfig.TransitionConfig);
         }
         else
         {
-            UCommonActivatableWidgetStack* Stack = WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>();
+            UCustomActivatableWidgetStack* Stack = WidgetTree->ConstructWidget<UCustomActivatableWidgetStack>();
+            Stack->SetTransitionConfig(LayerConfig.TransitionConfig);
             UOverlaySlot* OverlaySlot = RootOverlay->AddChildToOverlay(Stack);
             OverlaySlot->SetVerticalAlignment(VAlign_Fill);
             OverlaySlot->SetHorizontalAlignment(HAlign_Fill);

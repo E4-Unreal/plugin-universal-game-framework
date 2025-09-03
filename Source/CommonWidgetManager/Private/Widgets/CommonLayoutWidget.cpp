@@ -8,8 +8,19 @@
 UCommonLayoutWidget::UCommonLayoutWidget(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::Game::Overlay, true);
-    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::Game::Menu, true);
-    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::System::Menu, false);
-    LayerConfig.Emplace(CommonWidgetManager::UI::Layer::System::Popup, false);
+    FLayerConfig GameOverlayLayerConfig;
+    GameOverlayLayerConfig.bIsOverlay = true;
+
+    FLayerConfig GameMenuLayerConfig;
+    GameMenuLayerConfig.bIsOverlay = true;
+    GameMenuLayerConfig.TransitionConfig.TransitionDuration = 0.0f;
+
+    FLayerConfig SystemMenuLayerConfig;
+
+    FLayerConfig SystemPopupLayerConfig;
+
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::Game::Overlay, GameOverlayLayerConfig);
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::Game::Menu, GameMenuLayerConfig);
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::System::Menu, SystemMenuLayerConfig);
+    LayerConfigs.Emplace(CommonWidgetManager::UI::Layer::System::Popup, SystemPopupLayerConfig);
 }

@@ -7,6 +7,7 @@
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
+#include "Widgets/CustomActivatableWidgetStack.h"
 
 void ULayerStack::InitializeAsStack(UUserWidget* NewParentWidget, UCommonActivatableWidgetStack* NewStack)
 {
@@ -16,12 +17,13 @@ void ULayerStack::InitializeAsStack(UUserWidget* NewParentWidget, UCommonActivat
     OverlayStack.Empty();
 }
 
-void ULayerStack::InitializeAsOverlayStack(UUserWidget* NewParentWidget, UOverlay* NewOverlay)
+void ULayerStack::InitializeAsOverlayStack(UUserWidget* NewParentWidget, UOverlay* NewOverlay, const FTransitionConfig& NewTransitionConfig)
 {
     ParentWidget = NewParentWidget;
     Stack = nullptr;
     Overlay = NewOverlay;
     OverlayStack.Empty();
+    TransitionConfig = NewTransitionConfig;
 }
 
 UCommonActivatableWidget* ULayerStack::ShowWidget(TSubclassOf<UCommonActivatableWidget> WidgetClass)
@@ -124,8 +126,9 @@ UCommonActivatableWidgetStack* ULayerStack::AddStackInstance()
 {
     if (ParentWidget.IsValid() && Overlay)
     {
-        if (UCommonActivatableWidgetStack* StackInstance = ParentWidget->WidgetTree->ConstructWidget<UCommonActivatableWidgetStack>())
+        if (UCustomActivatableWidgetStack* StackInstance = ParentWidget->WidgetTree->ConstructWidget<UCustomActivatableWidgetStack>())
         {
+            StackInstance->SetTransitionConfig(TransitionConfig);
             if (UOverlaySlot* OverlaySlot = Overlay->AddChildToOverlay(StackInstance))
             {
                 OverlaySlot->SetVerticalAlignment(VAlign_Fill);
