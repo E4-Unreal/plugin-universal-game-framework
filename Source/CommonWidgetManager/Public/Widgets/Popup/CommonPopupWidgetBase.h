@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/CommonLayerWidgetBase.h"
+#include "Widgets/Layer/CommonLayerWidgetBase.h"
 #include "CommonPopupWidgetBase.generated.h"
 
 class UCommonTextBlock;

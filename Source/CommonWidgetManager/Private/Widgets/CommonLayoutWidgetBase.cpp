@@ -7,7 +7,7 @@
 #include "Components/OverlaySlot.h"
 #include "Objects/LayerStack.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
-#include "Widgets/CommonLayerWidgetBase.h"
+#include "Widgets/Layer/CommonLayerWidgetBase.h"
 
 
 UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& ObjectInitializer)
