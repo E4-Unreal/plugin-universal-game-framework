@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "WeaponSlotIndex.h"
 #include "WeaponSlot.generated.h"
 
-class IWeaponActorInterface;
 class IWeaponDataInterface;
+class IWeaponInstanceInterface;
 
 USTRUCT(BlueprintType)
 struct WEAPONMANAGER_API FWeaponSlot
@@ -18,22 +17,22 @@ struct WEAPONMANAGER_API FWeaponSlot
     static const FWeaponSlot EmptySlot;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FGameplayTag Type;
+    FWeaponSlotIndex Index;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    int32 Index;
+    TScriptInterface<IWeaponInstanceInterface> WeaponInstance;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TScriptInterface<IWeaponDataInterface> Data;
+    FORCEINLINE bool IsEmpty() const { return WeaponInstance == nullptr; }
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<AActor> Actor;
-
-    FORCEINLINE bool IsEmpty() const { return Actor == nullptr; }
+    TScriptInterface<IWeaponDataInterface> GetData() const;
+    void SetData(const TScriptInterface<IWeaponDataInterface>& NewData);
 
     const FName GetActiveSocketName() const;
     const FName GetInActiveSocketName() const;
 
-    bool operator==(const FWeaponSlotIndex& Other) const { return Type == Other.Type && Index == Other.Index; }
+    AActor* GetActor() const;
+    void SetActor(AActor* NewActor);
+
+    bool operator==(const FWeaponSlotIndex& Other) const { return Index == Other; }
     bool operator!=(const FWeaponSlotIndex& Other) const { return !(*this == Other); }
 };

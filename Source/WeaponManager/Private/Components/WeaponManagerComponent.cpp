@@ -33,8 +33,8 @@ void UWeaponManagerComponent::BeginPlay()
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
     const auto& CurrentSlot = GetSlotByIndex(CurrentSlotIndex);
-    
-    return CurrentSlot.Actor;
+
+    return CurrentSlot.GetActor();
 }
 
 const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const
@@ -60,13 +60,13 @@ void UWeaponManagerComponent::SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool b
     const FWeaponSlot& OldSlot = GetSlotByIndex(OldSlotIndex);
     if (!OldSlot.IsEmpty())
     {
-        AttachWeaponActorToSocket(OldSlot.Actor, OldSlot.GetInActiveSocketName());
+        AttachWeaponActorToSocket(OldSlot.GetActor(), OldSlot.GetInActiveSocketName());
     }
 
     const FWeaponSlot& NewSlot = GetSlotByIndex(NewSlotIndex);
     if (!NewSlot.IsEmpty())
     {
-        AttachWeaponActorToSocket(NewSlot.Actor, NewSlot.GetActiveSocketName());
+        AttachWeaponActorToSocket(NewSlot.GetActor(), NewSlot.GetActiveSocketName());
     }
 }
 
@@ -84,7 +84,7 @@ bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
 
         for (auto& Slot : Slots)
         {
-            if (Slot.IsEmpty() && Slot.Type == SlotType)
+            if (Slot.IsEmpty() && Slot.Index.Type == SlotType)
             {
                 if (AActor* WeaponActor = SpawnWeaponActorByData(NewWeaponData))
                 {
@@ -96,9 +96,8 @@ bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
                     {
                         AttachWeaponActorToSocket(WeaponActor, InActiveSocketName);
                     }
-
-                    Slot.Data = NewWeaponData;
-                    Slot.Actor = WeaponActor;
+                    Slot.SetData(NewWeaponData);
+                    Slot.SetActor(WeaponActor);
                     bResult = true;
 
                     break;
@@ -118,7 +117,10 @@ void UWeaponManagerComponent::CreateSlots()
     {
         for (int32 Index = 0; Index < MaxNum; ++Index)
         {
-            Slots.Emplace(FWeaponSlot(SlotType, Index));
+            FWeaponSlot NewSlot;
+            NewSlot.Index = FWeaponSlotIndex(SlotType, Index);
+
+            Slots.Emplace(NewSlot);
         }
     }
 }
