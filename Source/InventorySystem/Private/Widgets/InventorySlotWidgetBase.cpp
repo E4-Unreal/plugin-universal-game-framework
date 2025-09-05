@@ -36,10 +36,14 @@ void UInventorySlotWidgetBase::UpdateInventorySlot(const FInventorySlot& Invento
 
 void UInventorySlotWidgetBase::Clear()
 {
-    SetThumbnailImage(nullptr);
+    GetThumbnailImage()->SetBrushTintColor(FLinearColor::Transparent);
 }
 
 void UInventorySlotWidgetBase::SetThumbnailImage(TSoftObjectPtr<UTexture2D> ThumbnailTexture)
 {
-    GetThumbnailImage()->SetBrushFromTexture(ThumbnailTexture.LoadSynchronous());
+    if (!ThumbnailTexture.IsNull())
+    {
+        GetThumbnailImage()->SetBrushFromTexture(ThumbnailTexture.LoadSynchronous());
+        GetThumbnailImage()->SetBrushTintColor(FLinearColor::White);
+    }
 }
