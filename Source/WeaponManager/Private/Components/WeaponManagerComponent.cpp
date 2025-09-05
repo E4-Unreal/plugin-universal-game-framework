@@ -79,11 +79,66 @@ void UWeaponManagerComponent::SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool b
     }
 }
 
+bool UWeaponManagerComponent::DoesSocketExist(FName SocketName) const
+{
+    return Mesh.IsValid() && Mesh->DoesSocketExist(SocketName);
+}
+
+bool UWeaponManagerComponent::DoesEmptySlotExist(FGameplayTag SlotType) const
+{
+    // TODO 리팩토링 캐싱 맵 방식으로 변경
+
+    bool bResult = false;
+
+    for (const auto& Slot : Slots)
+    {
+        if (Slot.Index.Type == SlotType && Slot.IsEmpty())
+        {
+            bResult = true;
+
+            break;
+        }
+    }
+
+    return bResult;
+}
+
+bool UWeaponManagerComponent::IsWeaponDataValid(const TScriptInterface<IWeaponDataInterface>& NewData) const
+{
+    if (NewData)
+    {
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData.GetObject());
+        const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetWeaponActorClass(NewData.GetObject());
+        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData.GetObject());
+
+        return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+    }
+
+    return false;
+}
+
+bool UWeaponManagerComponent::CanAddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewData) const
+{
+    const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData.GetObject());
+
+    return IsWeaponDataValid(NewData) && DoesEmptySlotExist(SlotType);
+}
 
 bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
 {
-    bool bResult = false;
+    if (CanAddWeaponByData(NewWeaponData))
+    {
+        ServerAddWeaponByData(NewWeaponData);
 
+        return true;
+    }
+
+    return false;
+}
+
+void UWeaponManagerComponent::ServerAddWeaponByData_Implementation(
+    const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
+{
     if (NewWeaponData)
     {
         const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewWeaponData.GetObject());
@@ -109,15 +164,12 @@ bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
                     Slot.WeaponInstance = CreateReplicatedObject<UWeaponInstance>();
                     Slot.SetData(NewWeaponData);
                     Slot.SetActor(WeaponActor);
-                    bResult = true;
 
                     break;
                 }
             }
         }
     }
-
-    return bResult;
 }
 
 void UWeaponManagerComponent::CreateSlots()

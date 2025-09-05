@@ -58,8 +58,23 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
 
+    UFUNCTION(BlueprintPure)
+    virtual bool DoesSocketExist(FName SocketName) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual bool IsWeaponDataValid(const TScriptInterface<IWeaponDataInterface>& NewData) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual bool CanAddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewData) const;
+
     UFUNCTION(BlueprintCallable)
     virtual bool AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
+
+    UFUNCTION(BlueprintCallable, Server, Reliable)
+    void ServerAddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
 
 protected:
     /* API */
