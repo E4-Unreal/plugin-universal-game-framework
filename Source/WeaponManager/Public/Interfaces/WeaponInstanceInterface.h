@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
-#include "WeaponDataInterface.generated.h"
+#include "WeaponInstanceInterface.generated.h"
+
+class IWeaponDataInterface;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UWeaponDataInterface : public UInterface
+class UWeaponInstanceInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -16,29 +17,26 @@ class UWeaponDataInterface : public UInterface
 /**
  *
  */
-class WEAPONMANAGER_API IWeaponDataInterface
+class WEAPONMANAGER_API IWeaponInstanceInterface
 {
     GENERATED_BODY()
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<AActor> GetWeaponActorClass() const;
+    TScriptInterface<IWeaponDataInterface> GetData() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FGameplayTag GetSlotType() const;
+    void SetData(const TScriptInterface<IWeaponDataInterface>& NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FName GetActiveSocketName() const;
+    AActor* GetActor() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FName GetInActiveSocketName() const;
+    void SetActor(AActor* NewActor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
+    float GetDurability() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    float GetMaxDurability() const;
+    void SetDurability(float NewDurability);
 };

@@ -10,7 +10,8 @@ public class WeaponManager : ModuleRules
             new string[]
             {
                 "Core",
-                "GameplayTags"
+                "GameplayTags",
+                "DataManager",
             }
         );
 
