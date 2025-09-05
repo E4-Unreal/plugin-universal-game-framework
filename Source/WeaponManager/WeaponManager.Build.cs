@@ -12,6 +12,7 @@ public class WeaponManager : ModuleRules
                 "Core",
                 "GameplayTags",
                 "DataManager",
+                "SlotManager"
             }
         );
 

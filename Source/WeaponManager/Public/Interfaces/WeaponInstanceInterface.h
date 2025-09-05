@@ -29,6 +29,12 @@ public:
     void SetData(const TSoftObjectPtr<UDataAsset>& NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    AActor* GetActor() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetActor(AActor* NewActor) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     float GetDurability() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)

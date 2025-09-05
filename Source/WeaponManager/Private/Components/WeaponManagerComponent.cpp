@@ -7,21 +7,12 @@
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
-#include "Net/UnrealNetwork.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
     bWantsInitializeComponent = true;
 
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
-    StartupSlotIndex = FWeaponSlotIndex(Weapon::Slot::Primary, 0);
-}
-
-void UWeaponManagerComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(ThisClass, Slots);
 }
 
 void UWeaponManagerComponent::InitializeComponent()
@@ -29,53 +20,48 @@ void UWeaponManagerComponent::InitializeComponent()
     Super::InitializeComponent();
 
     FindMesh();
-    CreateSlots();
-}
-
-void UWeaponManagerComponent::BeginPlay()
-{
-    Super::BeginPlay();
-
-    SetSlotIndex(StartupSlotIndex);
 }
 
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
-    const auto& CurrentSlot = GetSlotByIndex(CurrentSlotIndex);
-
-    return CurrentSlot.Actor.Get();
-}
-
-const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const
-{
-    for (const auto& Slot : Slots)
+    UReplicatedObject* CurrentContent = GetContent(CurrentIndex);
+    if (CheckInstance(CurrentContent))
     {
-        if (Slot == InSlotIndex)
-        {
-            return Slot;
-        }
+        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
+
+        return Actor;
     }
 
-    return FWeaponSlot::EmptySlot;
+    return nullptr;
 }
 
 void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSlotIndex, bool bForce)
 {
-    if (!bForce && CurrentSlotIndex == NewSlotIndex) return;
+    int32 NewIndex = GetIndex(NewSlotIndex);
+    if (!SlotMap.Contains(NewIndex)) return;
+    if (!bForce && CurrentIndex == NewIndex) return;
 
-    FWeaponSlotIndex OldSlotIndex = CurrentSlotIndex;
-    CurrentSlotIndex = NewSlotIndex;
+    int32 OldIndex = CurrentIndex;
+    CurrentIndex = NewIndex;
 
-    const FWeaponSlot& OldSlot = GetSlotByIndex(OldSlotIndex);
-    if (!OldSlot.IsEmpty())
+    UReplicatedObject* OldContent = GetContent(OldIndex);
+    if (CheckInstance(OldContent))
     {
-        AttachWeaponActorToSocket(OldSlot.Actor.Get(), OldSlot.GetInActiveSocketName());
+        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(OldContent);
+        TSoftObjectPtr<UDataAsset> Data = IWeaponInstanceInterface::Execute_GetData(OldContent);
+        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetInActiveSocketName(Data.LoadSynchronous());
+
+        AttachWeaponActorToSocket(Actor, InActiveSocketName);
     }
 
-    const FWeaponSlot& NewSlot = GetSlotByIndex(NewSlotIndex);
-    if (!NewSlot.IsEmpty())
+    UReplicatedObject* NewContent = GetContent(NewIndex);
+    if (CheckInstance(NewContent))
     {
-        AttachWeaponActorToSocket(NewSlot.Actor.Get(), NewSlot.GetActiveSocketName());
+        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(NewContent);
+        TSoftObjectPtr<UDataAsset> Data = IWeaponInstanceInterface::Execute_GetData(NewContent);
+        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(Data.LoadSynchronous());
+
+        AttachWeaponActorToSocket(Actor, ActiveSocketName);
     }
 }
 
@@ -86,21 +72,15 @@ bool UWeaponManagerComponent::DoesSocketExist(FName SocketName) const
 
 bool UWeaponManagerComponent::DoesEmptySlotExist(FGameplayTag SlotType) const
 {
-    // TODO 리팩토링 캐싱 맵 방식으로 변경
-
-    bool bResult = false;
-
-    for (const auto& Slot : Slots)
+    for (const auto& [SlotIndex, Index] : SlotIndexMap)
     {
-        if (Slot.Index.Type == SlotType && Slot.IsEmpty())
+        if (SlotIndex.Type == SlotType && IsEmpty(Index))
         {
-            bResult = true;
-
-            break;
+            return true;
         }
     }
 
-    return bResult;
+    return false;
 }
 
 bool UWeaponManagerComponent::CanAddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData) const
@@ -125,13 +105,13 @@ void UWeaponManagerComponent::AddWeaponFromData(const TSoftObjectPtr<UDataAsset>
         const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
         const FName InActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
 
-        for (auto& Slot : Slots)
+        for (auto& [SlotIndex, Index] : SlotIndexMap)
         {
-            if (Slot.IsEmpty() && Slot.Index.Type == SlotType)
+            if (IsEmpty(Index) && SlotIndex.Type == SlotType)
             {
                 if (AActor* Actor = SpawnActorFromData(NewData))
                 {
-                    if (Slot == CurrentSlotIndex)
+                    if (Index == CurrentIndex)
                     {
                         AttachWeaponActorToSocket(Actor, ActiveSocketName);
                     }
@@ -140,7 +120,8 @@ void UWeaponManagerComponent::AddWeaponFromData(const TSoftObjectPtr<UDataAsset>
                         AttachWeaponActorToSocket(Actor, InActiveSocketName);
                     }
 
-                    Slot.Actor = Actor;
+                    UReplicatedObject* NewContent = IWeaponActorInterface::Execute_GetInstance(Actor);
+                    SetContent(Index, NewContent);
 
                     break;
                 }
@@ -151,18 +132,24 @@ void UWeaponManagerComponent::AddWeaponFromData(const TSoftObjectPtr<UDataAsset>
 
 void UWeaponManagerComponent::CreateSlots()
 {
-    if (!Slots.IsEmpty()) return;
-
+    int32 SlotIndex = -1;
     for (const auto& [SlotType, MaxNum] : SlotConfig)
     {
         for (int32 Index = 0; Index < MaxNum; ++Index)
         {
-            FWeaponSlot NewSlot;
-            NewSlot.Index = FWeaponSlotIndex(SlotType, Index);
+            ++SlotIndex;
 
-            Slots.Emplace(NewSlot);
+            SlotIndexMap.Emplace(FWeaponSlotIndex(SlotType, Index), SlotIndex);
+            Slots.Emplace(SlotIndex, nullptr);
         }
     }
+
+    MaxSlotNum = SlotIndex + 1;
+}
+
+int32 UWeaponManagerComponent::GetIndex(const FWeaponSlotIndex& SlotIndex)
+{
+    return SlotIndexMap.Contains(SlotIndex) ? SlotIndexMap[SlotIndex] : -1;
 }
 
 void UWeaponManagerComponent::FindMesh()
@@ -211,6 +198,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Insta
 
             if (CheckActor(SpawnedActor))
             {
+                IWeaponInstanceInterface::Execute_SetActor(Instance, SpawnedActor);
                 return SpawnedActor;
             }
             else
@@ -243,7 +231,7 @@ UReplicatedObject* UWeaponManagerComponent::CreateInstance(const TSoftObjectPtr<
     return nullptr;
 }
 
-bool UWeaponManagerComponent::CheckActor(AActor* Actor)
+bool UWeaponManagerComponent::CheckActor(AActor* Actor) const
 {
     if (Actor && Actor->Implements<UWeaponActorInterface>())
     {
@@ -258,7 +246,7 @@ bool UWeaponManagerComponent::CheckActorClass(TSubclassOf<AActor> ActorClass)
     return ActorClass && ActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass());
 }
 
-bool UWeaponManagerComponent::CheckInstance(UReplicatedObject* Instance)
+bool UWeaponManagerComponent::CheckInstance(UReplicatedObject* Instance) const
 {
     if (Instance && Instance->Implements<UWeaponInstanceInterface>())
     {

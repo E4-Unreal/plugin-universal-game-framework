@@ -17,6 +17,8 @@ struct WEAPONMANAGER_API FWeaponSlotIndex
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     int32 Index;
 
-    bool operator==(const FWeaponSlotIndex& Other) const { return Type == Other.Type && Index == Other.Index; }
+    bool Equals(const FWeaponSlotIndex& Other) const { return Type == Other.Type && Index == Other.Index; }
+    bool operator==(const FWeaponSlotIndex& Other) const { return Equals(Other); }
     bool operator!=(const FWeaponSlotIndex& Other) const { return !(*this == Other); }
+    friend uint32 GetTypeHash(const FWeaponSlotIndex& WeaponSlotIndex) { return FCrc::MemCrc32(&WeaponSlotIndex, sizeof(FWeaponSlotIndex)); }
 };
