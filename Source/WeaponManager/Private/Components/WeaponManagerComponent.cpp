@@ -121,13 +121,12 @@ bool UWeaponManagerComponent::CanAddWeaponByData(const TScriptInterface<IWeaponD
 {
     const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData.GetObject());
 
-    return IsWeaponDataValid(NewData) && DoesEmptySlotExist(SlotType);
+    return GetOwner()->HasAuthority() && IsWeaponDataValid(NewData) && DoesEmptySlotExist(SlotType);
 }
 
-void UWeaponManagerComponent::AddWeaponByData_Implementation(
-    const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
+void UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
 {
-    if (NewWeaponData)
+    if (CanAddWeaponByData(NewWeaponData))
     {
         const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewWeaponData.GetObject());
         const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetWeaponActorClass(NewWeaponData.GetObject());
