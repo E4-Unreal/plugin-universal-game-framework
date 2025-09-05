@@ -3,10 +3,19 @@
 
 #include "Components/ReplicatedComponent.h"
 
+#include "Net/UnrealNetwork.h"
+
 UReplicatedComponent::UReplicatedComponent()
 {
     SetIsReplicatedByDefault(true);
     bReplicateUsingRegisteredSubObjectList = true;
+}
+
+void UReplicatedComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, ReplicatedObjects);
 }
 
 UReplicatedObject* UReplicatedComponent::CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass)

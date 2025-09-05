@@ -16,11 +16,15 @@ class DATAMANAGER_API UReplicatedComponent : public UActorComponent
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     TArray<TObjectPtr<UReplicatedObject>> ReplicatedObjects;
 
 public:
     UReplicatedComponent();
+
+    /* Object */
+
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
     virtual UReplicatedObject* CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass);
