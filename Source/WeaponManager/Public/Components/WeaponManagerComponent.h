@@ -65,10 +65,10 @@ public:
     virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool CanAddWeaponFromData(TSoftObjectPtr<UDataAsset> NewData) const;
+    virtual bool CanAddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    void AddWeaponFromData(TSoftObjectPtr<UDataAsset> NewData);
+    void AddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData);
 
 protected:
     /* API */
@@ -77,12 +77,12 @@ protected:
     virtual void FindMesh();
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
 
-    virtual AActor* SpawnActorFromData(TSoftObjectPtr<UDataAsset> Data) { return SpawnActorFromInstance(CreateInstance(Data)); }
+    virtual AActor* SpawnActorFromData(const TSoftObjectPtr<UDataAsset>& Data) { return SpawnActorFromInstance(CreateInstance(Data)); }
     virtual AActor* SpawnActorFromInstance(UReplicatedObject* Instance);
-    virtual UReplicatedObject* CreateInstance(TSoftObjectPtr<UDataAsset> Data);
+    virtual UReplicatedObject* CreateInstance(const TSoftObjectPtr<UDataAsset>& Data);
     bool CheckActor(AActor* Actor);
     bool CheckActorClass(TSubclassOf<AActor> ActorClass);
     bool CheckInstance(UReplicatedObject* Instance);
     bool CheckInstanceClass(TSubclassOf<UReplicatedObject> InstanceClass);
-    bool CheckData(TSoftObjectPtr<UDataAsset> Data) const;
+    bool CheckData(const TSoftObjectPtr<UDataAsset>& Data) const;
 };

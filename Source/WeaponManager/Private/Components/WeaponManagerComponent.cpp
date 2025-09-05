@@ -103,7 +103,7 @@ bool UWeaponManagerComponent::DoesEmptySlotExist(FGameplayTag SlotType) const
     return bResult;
 }
 
-bool UWeaponManagerComponent::CanAddWeaponFromData(TSoftObjectPtr<UDataAsset> NewData) const
+bool UWeaponManagerComponent::CanAddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData) const
 {
     if (CheckData(NewData))
     {
@@ -116,7 +116,7 @@ bool UWeaponManagerComponent::CanAddWeaponFromData(TSoftObjectPtr<UDataAsset> Ne
     return false;
 }
 
-void UWeaponManagerComponent::AddWeaponFromData(TSoftObjectPtr<UDataAsset> NewData)
+void UWeaponManagerComponent::AddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData)
 {
     if (CanAddWeaponFromData(NewData))
     {
@@ -223,7 +223,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Insta
     return nullptr;
 }
 
-UReplicatedObject* UWeaponManagerComponent::CreateInstance(TSoftObjectPtr<UDataAsset> Data)
+UReplicatedObject* UWeaponManagerComponent::CreateInstance(const TSoftObjectPtr<UDataAsset>& Data)
 {
     if (CheckData(Data))
     {
@@ -273,7 +273,7 @@ bool UWeaponManagerComponent::CheckInstanceClass(TSubclassOf<UReplicatedObject> 
     return InstanceClass && InstanceClass->ImplementsInterface(UWeaponInstanceInterface::StaticClass());
 }
 
-bool UWeaponManagerComponent::CheckData(TSoftObjectPtr<UDataAsset> Data) const
+bool UWeaponManagerComponent::CheckData(const TSoftObjectPtr<UDataAsset>& Data) const
 {
     if (!Data.IsNull() && Data->Implements<UWeaponDataInterface>())
     {
