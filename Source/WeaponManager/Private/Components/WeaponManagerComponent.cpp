@@ -103,11 +103,12 @@ bool UWeaponManagerComponent::DoesEmptySlotExist(FGameplayTag SlotType) const
     return bResult;
 }
 
-bool UWeaponManagerComponent::CanAddWeaponFromData(UDataAsset* NewData) const
+bool UWeaponManagerComponent::CanAddWeaponFromData(TSoftObjectPtr<UDataAsset> NewData) const
 {
     if (CheckData(NewData))
     {
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
+        UDataAsset* LoadedData = NewData.LoadSynchronous();
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(LoadedData);
 
         return DoesEmptySlotExist(SlotType);
     }
@@ -115,13 +116,14 @@ bool UWeaponManagerComponent::CanAddWeaponFromData(UDataAsset* NewData) const
     return false;
 }
 
-void UWeaponManagerComponent::AddWeaponFromData(UDataAsset* NewData)
+void UWeaponManagerComponent::AddWeaponFromData(TSoftObjectPtr<UDataAsset> NewData)
 {
     if (CanAddWeaponFromData(NewData))
     {
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData);
-        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData);
+        UDataAsset* LoadedData = NewData.LoadSynchronous();
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(LoadedData);
+        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
+        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
 
         for (auto& Slot : Slots)
         {
@@ -192,8 +194,6 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
 
 AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Instance)
 {
-    AActor* Actor = nullptr;
-
     if (CheckInstance(Instance))
     {
         UDataAsset* Data = IWeaponInstanceInterface::Execute_GetData(Instance).LoadSynchronous();
@@ -207,11 +207,11 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Insta
         const FVector SpawnLocation = GetOwner()->GetActorLocation();
         if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters))
         {
-            IWeaponActorInterface::Execute_SetInstance(Actor, Instance);
+            IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Instance);
 
-            if (CheckActor(Actor))
+            if (CheckActor(SpawnedActor))
             {
-                Actor = SpawnedActor;
+                return SpawnedActor;
             }
             else
             {
@@ -220,18 +220,23 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Insta
         }
     }
 
-    return Actor;
+    return nullptr;
 }
 
-UReplicatedObject* UWeaponManagerComponent::CreateInstance(UDataAsset* Data)
+UReplicatedObject* UWeaponManagerComponent::CreateInstance(TSoftObjectPtr<UDataAsset> Data)
 {
     if (CheckData(Data))
     {
-        TSubclassOf<UReplicatedObject> InstanceClass = IWeaponDataInterface::Execute_GetInstanceClass(Data);
+        UDataAsset* LoadedData = Data.LoadSynchronous();
+        TSubclassOf<UReplicatedObject> InstanceClass = IWeaponDataInterface::Execute_GetInstanceClass(LoadedData);
         if (CheckInstanceClass(InstanceClass))
         {
             if (UReplicatedObject* Instance = CreateReplicatedObject(InstanceClass))
-            return CreateReplicatedObject(InstanceClass);
+            {
+                IWeaponInstanceInterface::Execute_SetData(Instance, LoadedData);
+
+                return Instance;
+            }
         }
     }
 
