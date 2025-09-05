@@ -11,11 +11,11 @@
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponent.h"
 #include "Components/InventoryComponent.h"
-#include "Components/WidgetManagerComponent.h"
 #include "Components/EquipmentManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Games/UGFSaveGame.h"
 #include "Subsystems/DataManagerSubsystem.h"
+#include "Components/WeaponManagerComponent.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -26,6 +26,7 @@ const FName AUGFPlayerCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFPlayerCharacter::InventoryName(TEXT("Inventory"));
 const FName AUGFPlayerCharacter::EquipmentManagerName(TEXT("EquipmentManager"));
 const FName AUGFPlayerCharacter::CommonPawnWidgetManagerName(TEXT("CommonPawnWidgetManager"));
+const FName AUGFPlayerCharacter::WeaponManagerName(TEXT("WeaponManager"));
 
 AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -73,6 +74,10 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
     /* CommonPawnWidgetManager */
 
     CommonPawnWidgetManager = CreateDefaultSubobject<UCommonPawnWidgetManagerComponent>(CommonPawnWidgetManagerName);
+
+    /* WeaponManager */
+
+    WeaponManager = CreateDefaultSubobject<UWeaponManagerComponent>(WeaponManagerName);
 }
 
 void AUGFPlayerCharacter::BeginPlay()

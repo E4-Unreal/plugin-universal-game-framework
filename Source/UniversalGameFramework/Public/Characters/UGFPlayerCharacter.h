@@ -17,6 +17,7 @@ class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UCommonPawnWidgetManagerComponent;
+class UWeaponManagerComponent;
 
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API AUGFPlayerCharacter : public AUGFCharacter,
@@ -34,6 +35,7 @@ protected:
     const static FName InventoryName;
     const static FName EquipmentManagerName;
     const static FName CommonPawnWidgetManagerName;
+    const static FName WeaponManagerName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -63,6 +65,9 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UCommonPawnWidgetManagerComponent> CommonPawnWidgetManager;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UWeaponManagerComponent> WeaponManager;
+
 public:
     AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer);
 
@@ -87,6 +92,7 @@ public:
     FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
     FORCEINLINE UEquipmentManagerComponent* GetEquipmentManager() const { return EquipmentManager; }
     FORCEINLINE UCommonPawnWidgetManagerComponent* GetCommonPawnWidgetManager() const { return CommonPawnWidgetManager; }
+    FORCEINLINE UWeaponManagerComponent* GetWeaponManager() const { return WeaponManager; }
 
 protected:
     UFUNCTION(BlueprintNativeEvent)
