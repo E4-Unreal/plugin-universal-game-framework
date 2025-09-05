@@ -70,11 +70,8 @@ public:
     UFUNCTION(BlueprintPure)
     virtual bool CanAddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewData) const;
 
-    UFUNCTION(BlueprintCallable)
-    virtual bool AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
-
     UFUNCTION(BlueprintCallable, Server, Reliable)
-    void ServerAddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
+    void AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
 
 protected:
     /* API */

@@ -124,19 +124,7 @@ bool UWeaponManagerComponent::CanAddWeaponByData(const TScriptInterface<IWeaponD
     return IsWeaponDataValid(NewData) && DoesEmptySlotExist(SlotType);
 }
 
-bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
-{
-    if (CanAddWeaponByData(NewWeaponData))
-    {
-        ServerAddWeaponByData(NewWeaponData);
-
-        return true;
-    }
-
-    return false;
-}
-
-void UWeaponManagerComponent::ServerAddWeaponByData_Implementation(
+void UWeaponManagerComponent::AddWeaponByData_Implementation(
     const TScriptInterface<IWeaponDataInterface>& NewWeaponData)
 {
     if (NewWeaponData)
