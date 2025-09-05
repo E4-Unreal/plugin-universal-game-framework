@@ -24,10 +24,10 @@ class WEAPONMANAGER_API IWeaponDataInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<UReplicatedObject> GetInstanceClass() const;
+    TSubclassOf<AActor> GetActorClass() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<AActor> GetActorClass() const;
+    TSubclassOf<UReplicatedObject> GetInstanceClass() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FGameplayTag GetSlotType() const;
