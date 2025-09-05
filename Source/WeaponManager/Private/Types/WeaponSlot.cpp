@@ -3,22 +3,27 @@
 
 #include "Types/WeaponSlot.h"
 
+#include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 
 const FWeaponSlot FWeaponSlot::EmptySlot { };
 
-TScriptInterface<IWeaponDataInterface> FWeaponSlot::GetData() const
+TScriptInterface<IWeaponInstanceInterface> FWeaponSlot::GetInstance() const
 {
-    return WeaponInstance ? IWeaponInstanceInterface::Execute_GetWeaponData(WeaponInstance.GetObject()) : nullptr;
+    if (Actor.IsValid() && Actor->Implements<UWeaponActorInterface>())
+    {
+        return IWeaponActorInterface::Execute_GetWeaponInstance(Actor.Get());
+    }
+
+    return nullptr;
 }
 
-void FWeaponSlot::SetData(const TScriptInterface<IWeaponDataInterface>& NewData)
+TScriptInterface<IWeaponDataInterface> FWeaponSlot::GetData() const
 {
-    if (WeaponInstance)
-    {
-        IWeaponInstanceInterface::Execute_SetWeaponData(WeaponInstance.GetObject(), NewData);
-    }
+    TScriptInterface<IWeaponInstanceInterface> Instance = GetInstance();
+
+    return Instance ? IWeaponInstanceInterface::Execute_GetWeaponData(Instance.GetObject()) : nullptr;
 }
 
 const FName FWeaponSlot::GetActiveSocketName() const

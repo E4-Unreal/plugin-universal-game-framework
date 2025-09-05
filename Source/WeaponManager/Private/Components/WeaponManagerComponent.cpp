@@ -148,8 +148,6 @@ void UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
                         AttachWeaponActorToSocket(WeaponActor, InActiveSocketName);
                     }
 
-                    Slot.WeaponInstance = IWeaponActorInterface::Execute_GetWeaponInstance(WeaponActor);
-                    Slot.SetData(NewWeaponData);
                     Slot.Actor = WeaponActor;
 
                     break;

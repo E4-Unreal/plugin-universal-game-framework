@@ -20,15 +20,12 @@ struct WEAPONMANAGER_API FWeaponSlot
     FWeaponSlotIndex Index;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TScriptInterface<IWeaponInstanceInterface> WeaponInstance;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TWeakObjectPtr<AActor> Actor;
 
-    FORCEINLINE bool IsEmpty() const { return WeaponInstance == nullptr; }
+    FORCEINLINE bool IsEmpty() const { return !Actor.IsValid(); }
 
+    TScriptInterface<IWeaponInstanceInterface> GetInstance() const;
     TScriptInterface<IWeaponDataInterface> GetData() const;
-    void SetData(const TScriptInterface<IWeaponDataInterface>& NewData);
 
     const FName GetActiveSocketName() const;
     const FName GetInActiveSocketName() const;
