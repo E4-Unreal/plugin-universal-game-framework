@@ -59,7 +59,7 @@ const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSl
     return FWeaponSlot::EmptySlot;
 }
 
-void UWeaponManagerComponent::SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce)
+void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSlotIndex, bool bForce)
 {
     if (!bForce && CurrentSlotIndex == NewSlotIndex) return;
 

@@ -55,8 +55,8 @@ public:
     UFUNCTION(BlueprintPure)
     const FWeaponSlot& GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const;
 
-    UFUNCTION(BlueprintCallable)
-    virtual void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
+    UFUNCTION(BlueprintCallable, Server, Reliable)
+    void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
 
     UFUNCTION(BlueprintPure)
     virtual bool DoesSocketExist(FName SocketName) const;
