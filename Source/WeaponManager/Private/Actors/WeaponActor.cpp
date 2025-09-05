@@ -72,7 +72,7 @@ void AWeaponActor::SetWeaponInstance_Implementation(const TScriptInterface<IWeap
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (Data)
+    if (Data.GetObject() && Data.GetObject()->Implements<UWeaponDataInterface>())
     {
         TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(Data.GetObject());
         TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(Data.GetObject());
