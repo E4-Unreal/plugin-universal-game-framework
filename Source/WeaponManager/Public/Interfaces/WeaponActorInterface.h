@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "WeaponActorInterface.generated.h"
 
-class IWeaponDataInterface;
+class IWeaponInstanceInterface;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UWeaponActorInterface : public UInterface
@@ -23,8 +23,8 @@ class WEAPONMANAGER_API IWeaponActorInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TScriptInterface<IWeaponDataInterface> GetWeaponData() const;
+    TScriptInterface<IWeaponInstanceInterface> GetWeaponInstance() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetWeaponData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
+    void SetWeaponInstance(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance);
 };

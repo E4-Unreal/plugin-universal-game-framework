@@ -7,6 +7,8 @@
 #include "Interfaces/WeaponActorInterface.h"
 #include "WeaponActor.generated.h"
 
+class IWeaponDataInterface;
+
 UCLASS()
 class WEAPONMANAGER_API AWeaponActor : public AActor,
     public IWeaponActorInterface
@@ -32,8 +34,15 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TScriptInterface<IWeaponDataInterface> WeaponData;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_WeaponInstance)
+    TScriptInterface<IWeaponInstanceInterface> WeaponInstance;
+
 public:
     AWeaponActor(const FObjectInitializer& ObjectInitializer);
+
+    /* Object */
+
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
     /* Actor */
 
@@ -44,12 +53,8 @@ public:
 
     /* WeaponActorInterface */
 
-    virtual TScriptInterface<IWeaponDataInterface> GetWeaponData_Implementation() const override { return WeaponData; }
-    virtual void SetWeaponData_Implementation(const TScriptInterface<IWeaponDataInterface>& NewWeaponData) override
-    {
-        WeaponData = NewWeaponData;
-        ApplyWeaponData();
-    }
+    virtual TScriptInterface<IWeaponInstanceInterface> GetWeaponInstance_Implementation() const override { return WeaponInstance; }
+    virtual void SetWeaponInstance_Implementation(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance) override;
 
     /* Getter */
 
@@ -61,4 +66,9 @@ protected:
     /* API */
 
     virtual void ApplyWeaponData();
+
+    /* Replication */
+
+    UFUNCTION()
+    virtual void OnRep_WeaponInstance(TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance);
 };

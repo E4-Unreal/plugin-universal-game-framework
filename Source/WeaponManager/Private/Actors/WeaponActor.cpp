@@ -4,6 +4,8 @@
 #include "Actors/WeaponActor.h"
 
 #include "Interfaces/WeaponDataInterface.h"
+#include "Interfaces/WeaponInstanceInterface.h"
+#include "Net/UnrealNetwork.h"
 
 const FName AWeaponActor::RootSceneName(TEXT("RootScene"));
 const FName AWeaponActor::StaticMeshName(TEXT("StaticMesh"));
@@ -32,6 +34,13 @@ AWeaponActor::AWeaponActor(const FObjectInitializer& ObjectInitializer)
     GetStaticMesh()->SetCollisionProfileName("NoCollision");
 }
 
+void AWeaponActor::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, WeaponInstance);
+}
+
 void AWeaponActor::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
@@ -53,6 +62,14 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 }
 #endif
 
+void AWeaponActor::SetWeaponInstance_Implementation(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance)
+{
+    TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance = WeaponInstance;
+    WeaponInstance = NewWeaponInstance;
+
+    OnRep_WeaponInstance(OldWeaponInstance);
+}
+
 void AWeaponActor::ApplyWeaponData()
 {
     if (WeaponData)
@@ -71,4 +88,14 @@ void AWeaponActor::ApplyWeaponData()
             GetStaticMesh()->SetStaticMesh(StaticMeshAsset.LoadSynchronous());
         }
     }
+}
+
+void AWeaponActor::OnRep_WeaponInstance(TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance)
+{
+    if (WeaponInstance)
+    {
+        WeaponData = IWeaponInstanceInterface::Execute_GetData(WeaponInstance.GetObject());
+    }
+
+    ApplyWeaponData();
 }

@@ -78,6 +78,6 @@ protected:
 
     virtual void CreateSlots();
     virtual void FindMesh();
-    virtual AActor* SpawnWeaponActorByData(const TScriptInterface<IWeaponDataInterface>& WeaponData) const;
+    virtual AActor* SpawnWeaponActorByData(const TScriptInterface<IWeaponDataInterface>& WeaponData);
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
 };

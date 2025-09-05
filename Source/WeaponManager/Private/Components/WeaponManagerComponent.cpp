@@ -148,7 +148,7 @@ void UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
                         AttachWeaponActorToSocket(WeaponActor, InActiveSocketName);
                     }
 
-                    Slot.WeaponInstance = CreateReplicatedObject<UWeaponInstance>();
+                    Slot.WeaponInstance = IWeaponActorInterface::Execute_GetWeaponInstance(WeaponActor);
                     Slot.SetData(NewWeaponData);
                     Slot.SetActor(WeaponActor);
 
@@ -183,7 +183,7 @@ void UWeaponManagerComponent::FindMesh()
     }
 }
 
-AActor* UWeaponManagerComponent::SpawnWeaponActorByData(const TScriptInterface<IWeaponDataInterface>& WeaponData) const
+AActor* UWeaponManagerComponent::SpawnWeaponActorByData(const TScriptInterface<IWeaponDataInterface>& WeaponData)
 {
     AActor* WeaponActor = nullptr;
 
@@ -201,7 +201,13 @@ AActor* UWeaponManagerComponent::SpawnWeaponActorByData(const TScriptInterface<I
 
             if (WeaponActor && WeaponActor->Implements<UWeaponActorInterface>())
             {
-                IWeaponActorInterface::Execute_SetWeaponData(WeaponActor, WeaponData);
+                if (UWeaponInstance* NewWeaponInstance = CreateReplicatedObject<UWeaponInstance>())
+                {
+                    IWeaponInstanceInterface::Execute_SetActor(NewWeaponInstance, WeaponActor);
+                    IWeaponInstanceInterface::Execute_SetData(NewWeaponInstance, WeaponData);
+                    IWeaponInstanceInterface::Execute_SetDurability(NewWeaponInstance, IWeaponDataInterface::Execute_GetMaxDurability(WeaponData.GetObject()));
+                    IWeaponActorInterface::Execute_SetWeaponInstance(WeaponActor, NewWeaponInstance);
+                }
             }
         }
     }
