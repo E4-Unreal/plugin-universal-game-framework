@@ -27,7 +27,7 @@ protected:
     virtual void DestroyReplicatedObject(UReplicatedObject* ReplicatedObject);
 
     template <typename TReplicatedObject = UReplicatedObject>
-    TReplicatedObject* CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass)
+    TReplicatedObject* CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass = TReplicatedObject::StaticClass())
     {
         if (ReplicatedObjectClass && ReplicatedObjectClass->IsChildOf<TReplicatedObject>())
         {
