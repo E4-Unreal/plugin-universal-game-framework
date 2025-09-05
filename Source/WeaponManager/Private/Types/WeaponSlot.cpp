@@ -3,39 +3,40 @@
 
 #include "Types/WeaponSlot.h"
 
+#include "Data/ReplicatedObject.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 
 const FWeaponSlot FWeaponSlot::EmptySlot { };
 
-TScriptInterface<IWeaponInstanceInterface> FWeaponSlot::GetInstance() const
+UReplicatedObject* FWeaponSlot::GetInstance() const
 {
     if (Actor.IsValid() && Actor->Implements<UWeaponActorInterface>())
     {
-        return IWeaponActorInterface::Execute_GetWeaponInstance(Actor.Get());
+        return IWeaponActorInterface::Execute_GetInstance(Actor.Get());
     }
 
     return nullptr;
 }
 
-TScriptInterface<IWeaponDataInterface> FWeaponSlot::GetData() const
+TSoftObjectPtr<UDataAsset> FWeaponSlot::GetData() const
 {
-    TScriptInterface<IWeaponInstanceInterface> Instance = GetInstance();
+    UReplicatedObject* Instance = GetInstance();
 
-    return Instance ? IWeaponInstanceInterface::Execute_GetWeaponData(Instance.GetObject()) : nullptr;
+    return Instance && Instance->Implements<UWeaponInstanceInterface>() ? IWeaponInstanceInterface::Execute_GetData(Instance) : nullptr;
 }
 
 const FName FWeaponSlot::GetActiveSocketName() const
 {
-    const TScriptInterface<IWeaponDataInterface>& Data = GetData();
+    TSoftObjectPtr<UDataAsset> Data = GetData();
 
-    return Data ? IWeaponDataInterface::Execute_GetActiveSocketName(Data.GetObject()) : FName();
+    return !Data.IsNull() && Data->Implements<UWeaponDataInterface>() ? IWeaponDataInterface::Execute_GetActiveSocketName(Data.LoadSynchronous()) : FName();
 }
 
 const FName FWeaponSlot::GetInActiveSocketName() const
 {
-    const TScriptInterface<IWeaponDataInterface>& Data = GetData();
+    TSoftObjectPtr<UDataAsset> Data = GetData();
 
-    return Data ? IWeaponDataInterface::Execute_GetInActiveSocketName(Data.GetObject()) : FName();
+    return !Data.IsNull() && Data->Implements<UWeaponDataInterface>() ? IWeaponDataInterface::Execute_GetInActiveSocketName(Data.LoadSynchronous()) : FName();
 }

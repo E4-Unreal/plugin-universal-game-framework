@@ -31,11 +31,11 @@ private:
     TObjectPtr<UStaticMeshComponent> StaticMesh;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TScriptInterface<IWeaponDataInterface> Data;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "WeaponDataInterface"))
+    TSoftObjectPtr<UDataAsset> Data;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_Instance)
-    TScriptInterface<IWeaponInstanceInterface> Instance;
+    TObjectPtr<UReplicatedObject> Instance;
 
 public:
     AWeaponActor(const FObjectInitializer& ObjectInitializer);
@@ -53,8 +53,8 @@ public:
 
     /* WeaponActorInterface */
 
-    virtual TScriptInterface<IWeaponInstanceInterface> GetWeaponInstance_Implementation() const override { return Instance; }
-    virtual void SetWeaponInstance_Implementation(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance) override;
+    virtual UReplicatedObject* GetInstance_Implementation() const override { return Instance; }
+    virtual void SetInstance_Implementation(UReplicatedObject* NewInstance) override;
 
     /* Getter */
 
@@ -66,10 +66,10 @@ protected:
     /* API */
 
     virtual void ApplyWeaponData();
-    virtual void OnInstanceChanged(const TScriptInterface<IWeaponInstanceInterface>& OldInstance, const TScriptInterface<IWeaponInstanceInterface>& NewInstance);
+    virtual void OnInstanceChanged(UReplicatedObject* OldInstance, UReplicatedObject* NewInstance);
 
     /* Replication */
 
     UFUNCTION()
-    virtual void OnRep_Instance(TScriptInterface<IWeaponInstanceInterface> OldInstance);
+    virtual void OnRep_Instance(UReplicatedObject* OldInstance);
 };

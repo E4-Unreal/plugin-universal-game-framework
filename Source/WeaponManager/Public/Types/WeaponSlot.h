@@ -6,8 +6,7 @@
 #include "WeaponSlotIndex.h"
 #include "WeaponSlot.generated.h"
 
-class IWeaponDataInterface;
-class IWeaponInstanceInterface;
+class UReplicatedObject;
 
 USTRUCT(BlueprintType)
 struct WEAPONMANAGER_API FWeaponSlot
@@ -24,8 +23,8 @@ struct WEAPONMANAGER_API FWeaponSlot
 
     FORCEINLINE bool IsEmpty() const { return !Actor.IsValid(); }
 
-    TScriptInterface<IWeaponInstanceInterface> GetInstance() const;
-    TScriptInterface<IWeaponDataInterface> GetData() const;
+    UReplicatedObject* GetInstance() const;
+    TSoftObjectPtr<UDataAsset> GetData() const;
 
     const FName GetActiveSocketName() const;
     const FName GetInActiveSocketName() const;

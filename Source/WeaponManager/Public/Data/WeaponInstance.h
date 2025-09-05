@@ -18,8 +18,8 @@ class WEAPONMANAGER_API UWeaponInstance : public UReplicatedObject, public IWeap
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    TScriptInterface<IWeaponDataInterface> Data;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated, meta = (MustImplement = "WeaponDataInterface"))
+    TSoftObjectPtr<UDataAsset> Data;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     int32 Durability;
@@ -31,8 +31,8 @@ public:
 
     /* WeaponDataInstanceInterface */
 
-    virtual TScriptInterface<IWeaponDataInterface> GetWeaponData_Implementation() const override { return Data; }
-    virtual void SetWeaponData_Implementation(const TScriptInterface<IWeaponDataInterface>& NewWeaponData) override { Data = NewWeaponData; }
+    virtual TSoftObjectPtr<UDataAsset> GetData_Implementation() const override { return Data; }
     virtual float GetDurability_Implementation() const override { return Durability; }
+    virtual void SetData_Implementation(const TSoftObjectPtr<UDataAsset>& NewData) override;
     virtual void SetDurability_Implementation(float NewDurability) override;
 };

@@ -14,11 +14,24 @@ void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
     DOREPLIFETIME(ThisClass, Durability);
 }
 
+void UWeaponInstance::SetData_Implementation(const TSoftObjectPtr<UDataAsset>& NewData)
+{
+    Data = NewData;
+
+    if (!Data.IsNull())
+    {
+        UDataAsset* LoadedData = Data.LoadSynchronous();
+        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(LoadedData);
+        Durability = MaxDurability;
+    }
+}
+
 void UWeaponInstance::SetDurability_Implementation(float NewDurability)
 {
-    if (Data)
+    if (!Data.IsNull())
     {
-        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data.GetObject());
+        UDataAsset* LoadedData = Data.LoadSynchronous();
+        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(LoadedData);
         Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
     }
 }

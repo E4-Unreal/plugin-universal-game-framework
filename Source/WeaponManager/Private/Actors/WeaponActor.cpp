@@ -3,6 +3,7 @@
 
 #include "Actors/WeaponActor.h"
 
+#include "Data/ReplicatedObject.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -62,20 +63,21 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 }
 #endif
 
-void AWeaponActor::SetWeaponInstance_Implementation(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance)
+void AWeaponActor::SetInstance_Implementation(UReplicatedObject* NewInstance)
 {
-    TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance = Instance;
-    Instance = NewWeaponInstance;
+    UReplicatedObject* OldWeaponInstance = Instance;
+    Instance = NewInstance;
 
     OnInstanceChanged(OldWeaponInstance, Instance);
 }
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (Data.GetObject() && Data.GetObject()->Implements<UWeaponDataInterface>())
+    if (!Data.IsNull() && Data->Implements<UWeaponDataInterface>())
     {
-        TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(Data.GetObject());
-        TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(Data.GetObject());
+        UDataAsset* LoadedData = Data.LoadSynchronous();
+        TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(LoadedData);
+        TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(LoadedData);
 
         if (!SkeletalMeshAsset.IsNull())
         {
@@ -90,18 +92,17 @@ void AWeaponActor::ApplyWeaponData()
     }
 }
 
-void AWeaponActor::OnInstanceChanged(const TScriptInterface<IWeaponInstanceInterface>& OldInstance,
-    const TScriptInterface<IWeaponInstanceInterface>& NewInstance)
+void AWeaponActor::OnInstanceChanged(UReplicatedObject* OldInstance, UReplicatedObject* NewInstance)
 {
-    if (NewInstance)
+    if (NewInstance && NewInstance->Implements<UWeaponInstanceInterface>())
     {
-        Data = IWeaponInstanceInterface::Execute_GetWeaponData(Instance.GetObject());
+        Data = IWeaponInstanceInterface::Execute_GetData(Instance);
     }
 
     ApplyWeaponData();
 }
 
-void AWeaponActor::OnRep_Instance(TScriptInterface<IWeaponInstanceInterface> OldInstance)
+void AWeaponActor::OnRep_Instance(UReplicatedObject* OldInstance)
 {
     OnInstanceChanged(OldInstance, Instance);
 }

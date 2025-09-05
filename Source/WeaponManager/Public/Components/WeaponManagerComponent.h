@@ -65,19 +65,24 @@ public:
     virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool IsWeaponDataValid(const TScriptInterface<IWeaponDataInterface>& NewData) const;
-
-    UFUNCTION(BlueprintPure)
-    virtual bool CanAddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewData) const;
+    virtual bool CanAddWeaponFromData(UDataAsset* NewData) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    void AddWeaponByData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
+    void AddWeaponFromData(UDataAsset* NewData);
 
 protected:
     /* API */
 
     virtual void CreateSlots();
     virtual void FindMesh();
-    virtual AActor* SpawnWeaponActorByData(const TScriptInterface<IWeaponDataInterface>& WeaponData);
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
+
+    virtual AActor* SpawnActorFromData(UDataAsset* Data) { return SpawnActorFromInstance(CreateInstance(Data)); }
+    virtual AActor* SpawnActorFromInstance(UReplicatedObject* Instance);
+    virtual UReplicatedObject* CreateInstance(UDataAsset* Data);
+    bool CheckActor(AActor* Actor);
+    bool CheckActorClass(TSubclassOf<AActor> ActorClass);
+    bool CheckInstance(UReplicatedObject* Instance);
+    bool CheckInstanceClass(TSubclassOf<UReplicatedObject> InstanceClass);
+    bool CheckData(TSoftObjectPtr<UDataAsset> Data) const;
 };
