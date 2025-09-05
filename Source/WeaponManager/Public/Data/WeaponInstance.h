@@ -22,9 +22,6 @@ protected:
     TScriptInterface<IWeaponDataInterface> Data;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    TWeakObjectPtr<AActor> Actor;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     int32 Durability;
 
 public:
@@ -34,10 +31,8 @@ public:
 
     /* WeaponDataInstanceInterface */
 
-    virtual TScriptInterface<IWeaponDataInterface> GetData_Implementation() const override { return Data; }
-    virtual void SetData_Implementation(const TScriptInterface<IWeaponDataInterface>& NewData) override { Data = NewData; }
-    virtual AActor* GetActor_Implementation() const override { return Actor.Get(); }
-    virtual void SetActor_Implementation(AActor* NewActor) override { Actor = NewActor; }
+    virtual TScriptInterface<IWeaponDataInterface> GetWeaponData_Implementation() const override { return Data; }
+    virtual void SetWeaponData_Implementation(const TScriptInterface<IWeaponDataInterface>& NewWeaponData) override { Data = NewWeaponData; }
     virtual float GetDurability_Implementation() const override { return Durability; }
     virtual void SetDurability_Implementation(float NewDurability) override;
 };

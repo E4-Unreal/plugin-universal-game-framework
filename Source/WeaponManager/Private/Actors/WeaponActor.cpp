@@ -95,7 +95,7 @@ void AWeaponActor::OnInstanceChanged(const TScriptInterface<IWeaponInstanceInter
 {
     if (NewInstance)
     {
-        Data = IWeaponInstanceInterface::Execute_GetData(Instance.GetObject());
+        Data = IWeaponInstanceInterface::Execute_GetWeaponData(Instance.GetObject());
     }
 
     ApplyWeaponData();

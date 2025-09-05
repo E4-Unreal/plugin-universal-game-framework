@@ -43,7 +43,7 @@ AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
     const auto& CurrentSlot = GetSlotByIndex(CurrentSlotIndex);
 
-    return CurrentSlot.GetActor();
+    return CurrentSlot.Actor.Get();
 }
 
 const FWeaponSlot& UWeaponManagerComponent::GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const
@@ -69,13 +69,13 @@ void UWeaponManagerComponent::SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool b
     const FWeaponSlot& OldSlot = GetSlotByIndex(OldSlotIndex);
     if (!OldSlot.IsEmpty())
     {
-        AttachWeaponActorToSocket(OldSlot.GetActor(), OldSlot.GetInActiveSocketName());
+        AttachWeaponActorToSocket(OldSlot.Actor.Get(), OldSlot.GetInActiveSocketName());
     }
 
     const FWeaponSlot& NewSlot = GetSlotByIndex(NewSlotIndex);
     if (!NewSlot.IsEmpty())
     {
-        AttachWeaponActorToSocket(NewSlot.GetActor(), NewSlot.GetActiveSocketName());
+        AttachWeaponActorToSocket(NewSlot.Actor.Get(), NewSlot.GetActiveSocketName());
     }
 }
 
@@ -150,7 +150,7 @@ void UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
 
                     Slot.WeaponInstance = IWeaponActorInterface::Execute_GetWeaponInstance(WeaponActor);
                     Slot.SetData(NewWeaponData);
-                    Slot.SetActor(WeaponActor);
+                    Slot.Actor = WeaponActor;
 
                     break;
                 }
@@ -203,8 +203,7 @@ AActor* UWeaponManagerComponent::SpawnWeaponActorByData(const TScriptInterface<I
             {
                 if (UWeaponInstance* NewWeaponInstance = CreateReplicatedObject<UWeaponInstance>())
                 {
-                    IWeaponInstanceInterface::Execute_SetActor(NewWeaponInstance, WeaponActor);
-                    IWeaponInstanceInterface::Execute_SetData(NewWeaponInstance, WeaponData);
+                    IWeaponInstanceInterface::Execute_SetWeaponData(NewWeaponInstance, WeaponData);
                     IWeaponInstanceInterface::Execute_SetDurability(NewWeaponInstance, IWeaponDataInterface::Execute_GetMaxDurability(WeaponData.GetObject()));
                     IWeaponActorInterface::Execute_SetWeaponInstance(WeaponActor, NewWeaponInstance);
                 }

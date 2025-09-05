@@ -11,7 +11,6 @@ void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ThisClass, Data);
-    DOREPLIFETIME(ThisClass, Actor);
     DOREPLIFETIME(ThisClass, Durability);
 }
 

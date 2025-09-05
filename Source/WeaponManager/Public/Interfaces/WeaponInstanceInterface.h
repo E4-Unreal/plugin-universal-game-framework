@@ -23,16 +23,10 @@ class WEAPONMANAGER_API IWeaponInstanceInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TScriptInterface<IWeaponDataInterface> GetData() const;
+    TScriptInterface<IWeaponDataInterface> GetWeaponData() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetData(const TScriptInterface<IWeaponDataInterface>& NewData);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    AActor* GetActor() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetActor(AActor* NewActor);
+    void SetWeaponData(const TScriptInterface<IWeaponDataInterface>& NewWeaponData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     float GetDurability() const;
