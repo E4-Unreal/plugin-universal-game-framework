@@ -38,7 +38,7 @@ void AWeaponActor::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ThisClass, WeaponInstance);
+    DOREPLIFETIME(ThisClass, Instance);
 }
 
 void AWeaponActor::PostInitializeComponents()
@@ -55,7 +55,7 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, WeaponData))
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Data))
     {
         ApplyWeaponData();
     }
@@ -64,18 +64,18 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 
 void AWeaponActor::SetWeaponInstance_Implementation(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance)
 {
-    TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance = WeaponInstance;
-    WeaponInstance = NewWeaponInstance;
+    TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance = Instance;
+    Instance = NewWeaponInstance;
 
-    OnRep_WeaponInstance(OldWeaponInstance);
+    OnInstanceChanged(OldWeaponInstance, Instance);
 }
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (WeaponData)
+    if (Data)
     {
-        TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(WeaponData.GetObject());
-        TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(WeaponData.GetObject());
+        TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(Data.GetObject());
+        TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(Data.GetObject());
 
         if (!SkeletalMeshAsset.IsNull())
         {
@@ -90,12 +90,18 @@ void AWeaponActor::ApplyWeaponData()
     }
 }
 
-void AWeaponActor::OnRep_WeaponInstance(TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance)
+void AWeaponActor::OnInstanceChanged(const TScriptInterface<IWeaponInstanceInterface>& OldInstance,
+    const TScriptInterface<IWeaponInstanceInterface>& NewInstance)
 {
-    if (WeaponInstance)
+    if (NewInstance)
     {
-        WeaponData = IWeaponInstanceInterface::Execute_GetData(WeaponInstance.GetObject());
+        Data = IWeaponInstanceInterface::Execute_GetData(Instance.GetObject());
     }
 
     ApplyWeaponData();
+}
+
+void AWeaponActor::OnRep_Instance(TScriptInterface<IWeaponInstanceInterface> OldInstance)
+{
+    OnInstanceChanged(OldInstance, Instance);
 }

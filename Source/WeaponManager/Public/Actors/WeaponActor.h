@@ -32,10 +32,10 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TScriptInterface<IWeaponDataInterface> WeaponData;
+    TScriptInterface<IWeaponDataInterface> Data;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_WeaponInstance)
-    TScriptInterface<IWeaponInstanceInterface> WeaponInstance;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_Instance)
+    TScriptInterface<IWeaponInstanceInterface> Instance;
 
 public:
     AWeaponActor(const FObjectInitializer& ObjectInitializer);
@@ -53,7 +53,7 @@ public:
 
     /* WeaponActorInterface */
 
-    virtual TScriptInterface<IWeaponInstanceInterface> GetWeaponInstance_Implementation() const override { return WeaponInstance; }
+    virtual TScriptInterface<IWeaponInstanceInterface> GetWeaponInstance_Implementation() const override { return Instance; }
     virtual void SetWeaponInstance_Implementation(const TScriptInterface<IWeaponInstanceInterface>& NewWeaponInstance) override;
 
     /* Getter */
@@ -66,9 +66,10 @@ protected:
     /* API */
 
     virtual void ApplyWeaponData();
+    virtual void OnInstanceChanged(const TScriptInterface<IWeaponInstanceInterface>& OldInstance, const TScriptInterface<IWeaponInstanceInterface>& NewInstance);
 
     /* Replication */
 
     UFUNCTION()
-    virtual void OnRep_WeaponInstance(TScriptInterface<IWeaponInstanceInterface> OldWeaponInstance);
+    virtual void OnRep_Instance(TScriptInterface<IWeaponInstanceInterface> OldInstance);
 };
