@@ -7,6 +7,7 @@
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
+#include "Net/UnrealNetwork.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
@@ -14,6 +15,13 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
     StartupSlotIndex = FWeaponSlotIndex(Weapon::Slot::Primary, 0);
+}
+
+void UWeaponManagerComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, Slots);
 }
 
 void UWeaponManagerComponent::InitializeComponent()

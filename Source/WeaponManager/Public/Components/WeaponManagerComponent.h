@@ -26,7 +26,7 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<USkeletalMeshComponent> Mesh;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     TArray<FWeaponSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
@@ -34,6 +34,10 @@ protected:
 
 public:
     UWeaponManagerComponent();
+
+    /* Object */
+
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
     /* ActorComponent */
 

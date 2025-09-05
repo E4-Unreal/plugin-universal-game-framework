@@ -18,16 +18,20 @@ class WEAPONMANAGER_API UWeaponInstance : public UReplicatedObject, public IWeap
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     TScriptInterface<IWeaponDataInterface> Data;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     TWeakObjectPtr<AActor> Actor;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     int32 Durability;
 
 public:
+    /* Object */
+
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
     /* WeaponDataInstanceInterface */
 
     virtual TScriptInterface<IWeaponDataInterface> GetData_Implementation() const override { return Data; }

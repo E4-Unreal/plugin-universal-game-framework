@@ -4,6 +4,16 @@
 #include "Data/WeaponInstance.h"
 
 #include "Interfaces/WeaponDataInterface.h"
+#include "Net/UnrealNetwork.h"
+
+void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, Data);
+    DOREPLIFETIME(ThisClass, Actor);
+    DOREPLIFETIME(ThisClass, Durability);
+}
 
 void UWeaponInstance::SetDurability_Implementation(float NewDurability)
 {
