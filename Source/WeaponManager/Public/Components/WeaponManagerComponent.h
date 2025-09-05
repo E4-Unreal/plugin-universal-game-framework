@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "Types/WeaponSlot.h"
 #include "Types/WeaponSlotIndex.h"
-#include "Components/ActorComponent.h"
+#include "Components/ReplicatedComponent.h"
 #include "WeaponManagerComponent.generated.h"
 
 
 UCLASS(meta=(BlueprintSpawnableComponent))
-class WEAPONMANAGER_API UWeaponManagerComponent : public UActorComponent
+class WEAPONMANAGER_API UWeaponManagerComponent : public UReplicatedComponent
 {
     GENERATED_BODY()
 

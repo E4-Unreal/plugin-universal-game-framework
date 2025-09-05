@@ -3,6 +3,7 @@
 
 #include "Components/WeaponManagerComponent.h"
 
+#include "Data/WeaponInstance.h"
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
@@ -96,6 +97,8 @@ bool UWeaponManagerComponent::AddWeaponByData(const TScriptInterface<IWeaponData
                     {
                         AttachWeaponActorToSocket(WeaponActor, InActiveSocketName);
                     }
+
+                    Slot.WeaponInstance = CreateReplicatedObject<UWeaponInstance>();
                     Slot.SetData(NewWeaponData);
                     Slot.SetActor(WeaponActor);
                     bResult = true;
