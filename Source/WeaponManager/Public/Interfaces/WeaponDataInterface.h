@@ -7,6 +7,8 @@
 #include "UObject/Interface.h"
 #include "WeaponDataInterface.generated.h"
 
+class UReplicatedObject;
+
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UWeaponDataInterface : public UInterface
 {
@@ -22,7 +24,10 @@ class WEAPONMANAGER_API IWeaponDataInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<AActor> GetWeaponActorClass() const;
+    TSubclassOf<UReplicatedObject> GetInstanceClass() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSubclassOf<AActor> GetActorClass() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FGameplayTag GetSlotType() const;
