@@ -23,10 +23,10 @@ class WEAPONMANAGER_API IWeaponInstanceInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSoftObjectPtr<UDataAsset> GetData() const;
+    UDataAsset* GetData() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetData(const TSoftObjectPtr<UDataAsset>& NewData);
+    void SetData(UDataAsset* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     AActor* GetActor() const;

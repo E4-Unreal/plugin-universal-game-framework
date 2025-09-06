@@ -7,6 +7,7 @@
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
+#include "Objects/SlotContent.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
@@ -24,7 +25,7 @@ void UWeaponManagerComponent::InitializeComponent()
 
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
-    UReplicatedObject* CurrentContent = GetContent(CurrentIndex);
+    USlotContent* CurrentContent = GetContent(CurrentIndex);
     if (CheckInstance(CurrentContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
@@ -44,7 +45,7 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSl
     int32 OldIndex = CurrentIndex;
     CurrentIndex = NewIndex;
 
-    UReplicatedObject* OldContent = GetContent(OldIndex);
+    USlotContent* OldContent = GetContent(OldIndex);
     if (CheckInstance(OldContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(OldContent);
@@ -54,7 +55,7 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSl
         AttachWeaponActorToSocket(Actor, InActiveSocketName);
     }
 
-    UReplicatedObject* NewContent = GetContent(NewIndex);
+    USlotContent* NewContent = GetContent(NewIndex);
     if (CheckInstance(NewContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(NewContent);
@@ -120,7 +121,7 @@ void UWeaponManagerComponent::AddWeaponFromData(const TSoftObjectPtr<UDataAsset>
                         AttachWeaponActorToSocket(Actor, InActiveSocketName);
                     }
 
-                    UReplicatedObject* NewContent = IWeaponActorInterface::Execute_GetInstance(Actor);
+                    USlotContent* NewContent = IWeaponActorInterface::Execute_GetInstance(Actor);
                     SetContent(Index, NewContent);
 
                     break;
@@ -179,11 +180,11 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
     return bResult;
 }
 
-AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Instance)
+AActor* UWeaponManagerComponent::SpawnActorFromInstance(USlotContent* Instance)
 {
     if (CheckInstance(Instance))
     {
-        UDataAsset* Data = IWeaponInstanceInterface::Execute_GetData(Instance).LoadSynchronous();
+        UDataAsset* Data = IWeaponInstanceInterface::Execute_GetData(Instance);
         TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
 
         FActorSpawnParameters ActorSpawnParameters;
@@ -211,15 +212,15 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(UReplicatedObject* Insta
     return nullptr;
 }
 
-UReplicatedObject* UWeaponManagerComponent::CreateInstance(const TSoftObjectPtr<UDataAsset>& Data)
+USlotContent* UWeaponManagerComponent::CreateInstance(const TSoftObjectPtr<UDataAsset>& Data)
 {
     if (CheckData(Data))
     {
         UDataAsset* LoadedData = Data.LoadSynchronous();
-        TSubclassOf<UReplicatedObject> InstanceClass = IWeaponDataInterface::Execute_GetInstanceClass(LoadedData);
+        TSubclassOf<USlotContent> InstanceClass = IWeaponDataInterface::Execute_GetInstanceClass(LoadedData);
         if (CheckInstanceClass(InstanceClass))
         {
-            if (UReplicatedObject* Instance = CreateReplicatedObject(InstanceClass))
+            if (USlotContent* Instance = CreateReplicatedObject<USlotContent>(InstanceClass))
             {
                 IWeaponInstanceInterface::Execute_SetData(Instance, LoadedData);
 
@@ -246,7 +247,7 @@ bool UWeaponManagerComponent::CheckActorClass(TSubclassOf<AActor> ActorClass)
     return ActorClass && ActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass());
 }
 
-bool UWeaponManagerComponent::CheckInstance(UReplicatedObject* Instance) const
+bool UWeaponManagerComponent::CheckInstance(USlotContent* Instance) const
 {
     if (Instance && Instance->Implements<UWeaponInstanceInterface>())
     {
@@ -256,7 +257,7 @@ bool UWeaponManagerComponent::CheckInstance(UReplicatedObject* Instance) const
     return false;
 }
 
-bool UWeaponManagerComponent::CheckInstanceClass(TSubclassOf<UReplicatedObject> InstanceClass)
+bool UWeaponManagerComponent::CheckInstanceClass(TSubclassOf<USlotContent> InstanceClass)
 {
     return InstanceClass && InstanceClass->ImplementsInterface(UWeaponInstanceInterface::StaticClass());
 }

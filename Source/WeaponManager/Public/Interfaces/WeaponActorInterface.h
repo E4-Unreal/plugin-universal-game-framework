@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "WeaponActorInterface.generated.h"
 
-class UReplicatedObject;
+class USlotContent;
 class IWeaponInstanceInterface;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
@@ -24,8 +24,8 @@ class WEAPONMANAGER_API IWeaponActorInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UReplicatedObject* GetInstance() const;
+    USlotContent* GetInstance() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetInstance(UReplicatedObject* NewInstance);
+    void SetInstance(USlotContent* NewInstance);
 };

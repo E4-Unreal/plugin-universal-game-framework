@@ -4,6 +4,7 @@
 #include "Components/SlotManagerComponentBase.h"
 
 #include "Net/UnrealNetwork.h"
+#include "Objects/SlotContent.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
 {
@@ -35,7 +36,7 @@ bool USlotManagerComponentBase::IsEmpty(int32 Index) const
     return DoesSlotExist(Index) ? GetContent(Index) == nullptr : false;
 }
 
-UReplicatedObject* USlotManagerComponentBase::GetContent(int32 Index) const
+USlotContent* USlotManagerComponentBase::GetContent(int32 Index) const
 {
     return SlotMap.FindRef(Index);
 }
@@ -57,10 +58,14 @@ int32 USlotManagerComponentBase::GetEmptySlotIndex() const
     return EmptyIndex;
 }
 
-void USlotManagerComponentBase::SetContent(int32 Index, UReplicatedObject* NewContent)
+void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent)
 {
     if (DoesSlotExist(Index))
     {
+        USlotContent* OldContent = Slots[Index].Content;
+        if (OldContent) RemoveReplicatedObject(OldContent);
+        if (NewContent) AddReplicatedObject(NewContent);
+
         Slots[Index].Content = NewContent;
         SlotMap.Emplace(Index, NewContent);
 
@@ -68,7 +73,7 @@ void USlotManagerComponentBase::SetContent(int32 Index, UReplicatedObject* NewCo
     }
 }
 
-void USlotManagerComponentBase::AddContent(UReplicatedObject* NewContent)
+void USlotManagerComponentBase::AddContent(USlotContent* NewContent)
 {
     SetContent(GetEmptySlotIndex(), NewContent);
 }
@@ -78,7 +83,7 @@ void USlotManagerComponentBase::TransferContent(USlotManagerComponentBase* Sourc
 {
     if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
     {
-        UReplicatedObject* Content = Source->GetContent(DestinationIndex);
+        USlotContent* Content = Source->GetContent(DestinationIndex);
         Source->SetContent(SourceIndex, nullptr);
         Destination->SetContent(DestinationIndex, Content);
     }
@@ -99,8 +104,8 @@ void USlotManagerComponentBase::SwapContent(USlotManagerComponentBase* Source, i
         }
         else if (!Source->IsEmpty(SourceIndex) && !Destination->IsEmpty(DestinationIndex))
         {
-            UReplicatedObject* SourceContent = Source->GetContent(DestinationIndex);
-            UReplicatedObject* DestinationContent = Destination->GetContent(SourceIndex);
+            USlotContent* SourceContent = Source->GetContent(DestinationIndex);
+            USlotContent* DestinationContent = Destination->GetContent(SourceIndex);
             Source->SetContent(SourceIndex, DestinationContent);
             Destination->SetContent(DestinationIndex, SourceContent);
         }
@@ -112,7 +117,7 @@ void USlotManagerComponentBase::SyncContent(USlotManagerComponentBase* Source, i
 {
     if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
     {
-        UReplicatedObject* Content = Source->GetContent(DestinationIndex);
+        USlotContent* Content = Source->GetContent(DestinationIndex);
         Destination->SetContent(DestinationIndex, Content);
     }
 }

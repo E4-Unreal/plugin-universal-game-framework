@@ -7,6 +7,8 @@
 #include "Components/ReplicatedComponent.h"
 #include "SlotManagerComponentBase.generated.h"
 
+class USlotContent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotUpdated, int32, Index);
 
 /**
@@ -22,7 +24,7 @@ protected:
     TArray<FContentSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<int32, TObjectPtr<UReplicatedObject>> SlotMap;
+    TMap<int32, TObjectPtr<USlotContent>> SlotMap;
 
 public:
     UPROPERTY(BlueprintAssignable)
@@ -47,16 +49,16 @@ public:
     virtual bool IsEmpty(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual UReplicatedObject* GetContent(int32 Index) const;
+    virtual USlotContent* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
     virtual int32 GetEmptySlotIndex() const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetContent(int32 Index, UReplicatedObject* NewContent);
+    virtual void SetContent(int32 Index, USlotContent* NewContent);
 
     UFUNCTION(BlueprintCallable)
-    virtual void AddContent(UReplicatedObject* NewContent);
+    virtual void AddContent(USlotContent* NewContent);
 
     UFUNCTION(BlueprintCallable)
     virtual void TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);

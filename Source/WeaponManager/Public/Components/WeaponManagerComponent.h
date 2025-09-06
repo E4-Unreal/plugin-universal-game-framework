@@ -73,11 +73,11 @@ protected:
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
     virtual AActor* SpawnActorFromData(const TSoftObjectPtr<UDataAsset>& Data) { return SpawnActorFromInstance(CreateInstance(Data)); }
-    virtual AActor* SpawnActorFromInstance(UReplicatedObject* Instance);
-    virtual UReplicatedObject* CreateInstance(const TSoftObjectPtr<UDataAsset>& Data);
+    virtual AActor* SpawnActorFromInstance(USlotContent* Instance);
+    virtual USlotContent* CreateInstance(const TSoftObjectPtr<UDataAsset>& Data);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
-    bool CheckInstance(UReplicatedObject* Instance) const;
-    static bool CheckInstanceClass(TSubclassOf<UReplicatedObject> InstanceClass);
+    bool CheckInstance(USlotContent* Instance) const;
+    static bool CheckInstanceClass(TSubclassOf<USlotContent> InstanceClass);
     bool CheckData(const TSoftObjectPtr<UDataAsset>& Data) const;
 };
