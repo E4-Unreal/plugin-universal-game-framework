@@ -11,3 +11,13 @@ void USlotContent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& O
 
     DOREPLIFETIME(ThisClass, Data);
 }
+
+UDataAsset* USlotContent::GetData_Implementation() const
+{
+    return Data;
+}
+
+void USlotContent::SetData_Implementation(UDataAsset* NewData)
+{
+    Data = NewData;
+}

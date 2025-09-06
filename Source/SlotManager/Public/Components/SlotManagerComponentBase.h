@@ -78,6 +78,8 @@ protected:
 
     virtual void CreateSlots();
     virtual void MappingSlots();
+    virtual USlotContent* CreateContentFromData(UDataAsset* Data);
+    virtual bool CheckData(UDataAsset* Data) const;
 
     /* Replicate */
 

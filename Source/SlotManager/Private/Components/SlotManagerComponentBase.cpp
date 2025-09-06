@@ -3,6 +3,7 @@
 
 #include "Components/SlotManagerComponentBase.h"
 
+#include "Interfaces/SlotDataInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Objects/SlotContent.h"
 
@@ -138,6 +139,27 @@ void USlotManagerComponentBase::MappingSlots()
     {
         SlotMap.Emplace(Index, Content);
     }
+}
+
+USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
+{
+    if (CheckData(Data))
+    {
+        TSubclassOf<USlotContent> ContentClass = ISlotDataInterface::Execute_GetContentClass(Data);
+        if (USlotContent* Content = CreateReplicatedObject<USlotContent>(ContentClass))
+        {
+            Content->SetData(Data);
+
+            return Content;
+        }
+    }
+
+    return nullptr;
+}
+
+bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
+{
+    return Data && Data->Implements<USlotDataInterface>() && ISlotDataInterface::Execute_GetContentClass(Data);
 }
 
 void USlotManagerComponentBase::OnRep_Slots(TArray<FContentSlot> OldSlots)

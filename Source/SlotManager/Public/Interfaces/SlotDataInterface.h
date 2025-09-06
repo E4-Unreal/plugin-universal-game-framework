@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "SlotDataInterface.generated.h"
 
+class USlotContent;
+
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class USlotDataInterface : public UInterface
 {
@@ -20,6 +22,9 @@ class SLOTMANAGER_API ISlotDataInterface
     GENERATED_BODY()
 
 public:
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSubclassOf<USlotContent> GetContentClass() const;
+
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<UTexture2D> GetThumbnailTexture() const;
 };

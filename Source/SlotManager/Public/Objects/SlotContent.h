@@ -14,10 +14,18 @@ class SLOTMANAGER_API USlotContent : public UReplicatedObject
 {
     GENERATED_BODY()
 
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Replicated)
+protected:
+    UPROPERTY(VisibleAnywhere, Category = "State", Transient)
     TObjectPtr<UDataAsset> Data;
 
 public:
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UDataAsset* GetData() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetData(UDataAsset* NewData);
 };
