@@ -23,7 +23,7 @@ void UQuickSlotManagerComponent::InitializeComponent()
     FindSocketManager();
 }
 
-void UQuickSlotManagerComponent::SwapSlots_Implementation(int32 SourceIndex, int32 DestinationIndex)
+/*void UQuickSlotManagerComponent::SwapSlots_Implementation(int32 SourceIndex, int32 DestinationIndex)
 {
     const FQuickSlot& SourceSlot = GetSlot(SourceIndex);
     const FQuickSlot& DestinationSlot = GetSlot(DestinationIndex);
@@ -36,7 +36,7 @@ void UQuickSlotManagerComponent::SwapSlots_Implementation(int32 SourceIndex, int
 
     SlotUpdatedDelegate.Broadcast(SourceIndex);
     SlotUpdatedDelegate.Broadcast(DestinationIndex);
-}
+}*/
 
 void UQuickSlotManagerComponent::SetSlotIndex(int32 NewSlotIndex)
 {
@@ -79,7 +79,7 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
         }
     }
 
-    SlotUpdatedDelegate.Broadcast(InSlotIndex);
+    /*SlotUpdatedDelegate.Broadcast(InSlotIndex);*/
 }
 
 void UQuickSlotManagerComponent::CreateSlots()
@@ -115,5 +115,5 @@ void UQuickSlotManagerComponent::OnSlotIndexChanged(int32 OldSlotIndex)
         NewSlot.Actor->SetActorEnableCollision(true);
     }
 
-    SlotIndexChangedDelegate.Broadcast(OldSlotIndex, SlotIndex);
+    /*SlotIndexChangedDelegate.Broadcast(OldSlotIndex, SlotIndex);*/
 }

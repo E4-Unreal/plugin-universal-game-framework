@@ -19,11 +19,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 SlotNum;
 
-    UPROPERTY(BlueprintAssignable)
+    /*UPROPERTY(BlueprintAssignable)
     FSlotIndexChangedDelegate SlotIndexChangedDelegate;
 
     UPROPERTY(BlueprintAssignable)
-    FSlotUpdatedDelegate SlotUpdatedDelegate;
+    FSlotUpdatedDelegate SlotUpdatedDelegate;*/
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
@@ -42,14 +42,14 @@ public:
 
     /* QuickSlotManagerInterface */
 
-    virtual int32 GetSlotNum_Implementation() const override { return SlotNum; }
+    /*virtual int32 GetSlotNum_Implementation() const override { return SlotNum; }
     virtual bool IsSlotEmpty_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).IsEmpty(); }
     virtual TScriptInterface<ISlotDataInterface> GetSlotData_Implementation(int32 InSlotIndex) const override { return GetSlot(InSlotIndex).Data; }
     virtual void SwapSlots_Implementation(int32 SourceIndex, int32 DestinationIndex) override;
     virtual void BindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Add(Handler); }
     virtual void UnBindSlotIndexChangedHandler_Implementation(const FSlotIndexChangedHandler& Handler) override { SlotIndexChangedDelegate.Remove(Handler); }
     virtual void BindSlotUpdatedHandler_Implementation(const FSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Add(Handler); }
-    virtual void UnBindSlotUpdatedHandler_Implementation(const FSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Remove(Handler); }
+    virtual void UnBindSlotUpdatedHandler_Implementation(const FSlotUpdatedHandler& Handler) override { SlotUpdatedDelegate.Remove(Handler); }*/
 
     /* API */
 

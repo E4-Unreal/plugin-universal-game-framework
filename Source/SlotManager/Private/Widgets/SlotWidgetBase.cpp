@@ -4,12 +4,13 @@
 #include "Widgets/SlotWidgetBase.h"
 
 #include "Components/Image.h"
-#include "Interfaces/SlotManagerInterface.h"
+#include "Components/SlotManagerComponentBase.h"
 #include "Interfaces/SlotDataInterface.h"
+#include "Objects/SlotContent.h"
 
-void USlotWidgetBase::SetSlotManager_Implementation(const TScriptInterface<ISlotManagerInterface>& NewSlotManager)
+void USlotWidgetBase::SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager)
 {
-    SlotManager = NewSlotManager ? NewSlotManager.GetObject() : nullptr;
+    SlotManager = NewSlotManager;
 }
 
 void USlotWidgetBase::SetSlotIndex_Implementation(int32 NewSlotIndex)
@@ -22,31 +23,14 @@ void USlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (TScriptInterface<ISlotDataInterface> Data = ISlotManagerInterface::Execute_GetSlotData(SlotManager.Get(), SlotIndex))
+        if (USlotContent* Content = SlotManager->GetContent(SlotIndex))
         {
-            Execute_ApplyData(this, Data);
-        }
-        else
-        {
-            Execute_Clear(this);
+            ApplyData(Content->GetData());
         }
     }
     else
     {
-        Execute_ApplyData(this, PreviewData);
-    }
-}
-
-void USlotWidgetBase::Clear_Implementation()
-{
-    ThumbnailImage->SetBrushFromTexture(nullptr);
-}
-
-void USlotWidgetBase::ApplyData_Implementation(const TScriptInterface<ISlotDataInterface>& InData)
-{
-    if (UObject* DataObject = InData.GetObject())
-    {
-        ThumbnailImage->SetBrushFromSoftTexture(ISlotDataInterface::Execute_GetThumbnailTexture(DataObject));
+        ApplyData(PreviewData.LoadSynchronous());
     }
 }
 
@@ -59,7 +43,7 @@ void USlotWidgetBase::NativePreConstruct()
 
 bool USlotWidgetBase::CanDrag() const
 {
-    return Super::CanDrag() && SlotManager.IsValid() && SlotManager->Implements<USlotManagerInterface>() && !ISlotManagerInterface::Execute_IsSlotEmpty(SlotManager.Get(), SlotIndex);
+    return Super::CanDrag() && SlotManager.IsValid() && !SlotManager->IsEmpty(SlotIndex);
 }
 
 void USlotWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)
@@ -79,13 +63,45 @@ void USlotWidgetBase::OnWidgetDrop(UUserWidget* DropWidget)
 
     if (DropWidget->Implements<USlotWidgetInterface>())
     {
-        TScriptInterface<ISlotManagerInterface> OtherSlotManager = Execute_GetSlotManager(DropWidget);
-        int32 OtherSlotIndex = Execute_GetSlotIndex(DropWidget);
+        USlotManagerComponentBase* Source = Execute_GetSlotManager(DropWidget);
+        int32 SourceIndex = Execute_GetSlotIndex(DropWidget);
 
-        // TODO 서로 다른 SlotManager 일 경우를 대비하여 Swap 대신 Set으로 대체 필요
-        if (SlotManager.Get() == OtherSlotManager.GetObject())
+        if (SlotManager.IsValid())
         {
-            ISlotManagerInterface::Execute_SwapSlots(SlotManager.Get(), OtherSlotIndex, SlotIndex);
+            SlotManager->SwapContent(Source, SourceIndex, SlotManager.Get(), SlotIndex);
         }
+    }
+}
+
+void USlotWidgetBase::SetThumbnailTexture(UTexture2D* NewTexture)
+{
+    if (NewTexture)
+    {
+        ThumbnailImage->SetBrushTintColor(FLinearColor::White);
+        ThumbnailImage->SetBrushFromTexture(NewTexture);
+    }
+    else
+    {
+        ThumbnailImage->SetBrushTintColor(FLinearColor::Transparent);
+    }
+}
+
+void USlotWidgetBase::Clear()
+{
+    SetThumbnailTexture(nullptr);
+}
+
+void USlotWidgetBase::ApplyData(UDataAsset* InData)
+{
+    if (InData && InData->Implements<USlotDataInterface>())
+    {
+        UTexture2D* ThumbnailTexture = ISlotDataInterface::Execute_GetThumbnailTexture(InData).LoadSynchronous();
+        if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture.LoadSynchronous();
+
+        SetThumbnailTexture(ThumbnailTexture);
+    }
+    else
+    {
+        Clear();
     }
 }

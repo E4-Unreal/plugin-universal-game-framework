@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Interfaces/SlotManagerInterface.h"
 #include "SlotPanelWidgetBase.generated.h"
 
+class USlotManagerComponentBase;
 class UUniformGridPanel;
 
 /**
@@ -17,12 +17,9 @@ class SLOTMANAGER_API USlotPanelWidgetBase : public UUserWidget
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UUniformGridPanel> SlotPanel;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "SlotManagerInterface"))
-    TSubclassOf<UObject> SlotManagerClass;
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<USlotManagerComponentBase> SlotManagerClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "SlotWidgetInterface"))
     TSubclassOf<UUserWidget> SlotWidgetClass;
@@ -33,14 +30,15 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 PreviewSlotNum = 20;
 
+protected:
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<UUniformGridPanel> SlotPanel;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
-    TWeakObjectPtr<UObject> SlotManager;
+    TWeakObjectPtr<USlotManagerComponentBase> SlotManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<int32, TObjectPtr<UUserWidget>> SlotWidgetMap;
-
-    FSlotUpdatedHandler SlotUpdatedHandler;
-    FSlotIndexChangedHandler SlotIndexChangedHandler;
 
 public:
     USlotPanelWidgetBase(const FObjectInitializer& ObjectInitializer);
