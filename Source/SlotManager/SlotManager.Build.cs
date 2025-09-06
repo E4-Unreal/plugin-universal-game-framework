@@ -10,6 +10,8 @@ public class SlotManager : ModuleRules
             new string[]
             {
                 "Core",
+                "UMG",
+                "InputCore",
                 "UniversalUtilities",
                 "DataManager"
             }

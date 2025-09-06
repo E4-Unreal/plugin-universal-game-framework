@@ -22,7 +22,7 @@ class USlotManagerInterface : public UInterface
 /**
  *
  */
-class WIDGETMANAGER_API ISlotManagerInterface
+class SLOTMANAGER_API ISlotManagerInterface
 {
     GENERATED_BODY()
 

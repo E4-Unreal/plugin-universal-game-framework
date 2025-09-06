@@ -16,7 +16,7 @@ public class QuickSlotManager : ModuleRules
 
                 "UniversalUtilities",
                 "SocketManager",
-                "WidgetManager",
+                "SlotManager",
             }
         );
 

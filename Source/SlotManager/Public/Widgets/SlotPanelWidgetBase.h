@@ -13,7 +13,7 @@ class UUniformGridPanel;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API USlotPanelWidgetBase : public UUserWidget
+class SLOTMANAGER_API USlotPanelWidgetBase : public UUserWidget
 {
     GENERATED_BODY()
 

@@ -13,7 +13,7 @@ class UImage;
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API USlotWidgetBase : public UDraggableWidgetBase, public ISlotWidgetInterface
+class SLOTMANAGER_API USlotWidgetBase : public UDraggableWidgetBase, public ISlotWidgetInterface
 {
     GENERATED_BODY()
 

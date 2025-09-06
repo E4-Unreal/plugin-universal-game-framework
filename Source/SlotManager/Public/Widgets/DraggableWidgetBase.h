@@ -10,7 +10,7 @@
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UDraggableWidgetBase : public UUserWidget
+class SLOTMANAGER_API UDraggableWidgetBase : public UUserWidget
 {
     GENERATED_BODY()
 
