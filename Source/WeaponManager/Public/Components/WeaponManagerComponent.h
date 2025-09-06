@@ -51,16 +51,19 @@ public:
     void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
 
     UFUNCTION(BlueprintPure)
-    virtual bool CanAddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData) const;
+    virtual bool CanAddWeaponFromData(UDataAsset* NewData) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    void AddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData);
+    void AddWeaponFromData(UDataAsset* NewData);
 
 protected:
     /* SlotManagerComponentBase */
 
     virtual void CreateSlots() override;
     virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
+    virtual bool CheckContent(USlotContent* Content) const override;
+    virtual bool CheckContentClass(TSubclassOf<USlotContent> ContentClass) const override;
+    virtual bool CheckData(UDataAsset* Data) const override;
 
     /* API */
 
@@ -72,12 +75,8 @@ protected:
     virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
-    virtual AActor* SpawnActorFromData(const TSoftObjectPtr<UDataAsset>& Data) { return SpawnActorFromInstance(CreateInstance(Data)); }
-    virtual AActor* SpawnActorFromInstance(USlotContent* Instance);
-    virtual USlotContent* CreateInstance(const TSoftObjectPtr<UDataAsset>& Data);
+    virtual AActor* SpawnActorFromData(UDataAsset* Data) { return SpawnActorFromContent(CreateContentFromData(Data)); }
+    virtual AActor* SpawnActorFromContent(USlotContent* Content);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
-    bool CheckInstance(USlotContent* Instance) const;
-    static bool CheckInstanceClass(TSubclassOf<USlotContent> InstanceClass);
-    bool CheckData(const TSoftObjectPtr<UDataAsset>& Data) const;
 };

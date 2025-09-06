@@ -4,6 +4,7 @@
 #include "Components/SlotManagerComponentBase.h"
 
 #include "Interfaces/SlotDataInterface.h"
+#include "Misc/TypeContainer.h"
 #include "Net/UnrealNetwork.h"
 #include "Objects/SlotContent.h"
 
@@ -157,9 +158,31 @@ USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
     return nullptr;
 }
 
+bool USlotManagerComponentBase::CheckContent(USlotContent* Content) const
+{
+    if (Content && CheckContentClass(Content->GetClass()))
+    {
+        return CheckData(Content->GetData());
+    }
+
+    return false;
+}
+
+bool USlotManagerComponentBase::CheckContentClass(TSubclassOf<USlotContent> ContentClass) const
+{
+    return ContentClass != nullptr;
+}
+
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 {
-    return Data && Data->Implements<USlotDataInterface>() && ISlotDataInterface::Execute_GetContentClass(Data);
+    if (Data && Data->Implements<USlotDataInterface>())
+    {
+        TSubclassOf<USlotContent> ContentClass = ISlotDataInterface::Execute_GetContentClass(Data);
+
+        return CheckContentClass(ContentClass);
+    }
+
+    return false;
 }
 
 void USlotManagerComponentBase::OnRep_Slots(TArray<FContentSlot> OldSlots)

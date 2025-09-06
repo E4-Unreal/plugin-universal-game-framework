@@ -26,7 +26,7 @@ void UWeaponManagerComponent::InitializeComponent()
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
     USlotContent* CurrentContent = GetContent(CurrentIndex);
-    if (CheckInstance(CurrentContent))
+    if (CheckContent(CurrentContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
 
@@ -46,7 +46,7 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSl
     CurrentIndex = NewIndex;
 
     USlotContent* OldContent = GetContent(OldIndex);
-    if (CheckInstance(OldContent))
+    if (CheckContent(OldContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(OldContent);
         TSoftObjectPtr<UDataAsset> Data = IWeaponInstanceInterface::Execute_GetData(OldContent);
@@ -56,7 +56,7 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSl
     }
 
     USlotContent* NewContent = GetContent(NewIndex);
-    if (CheckInstance(NewContent))
+    if (CheckContent(NewContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(NewContent);
         TSoftObjectPtr<UDataAsset> Data = IWeaponInstanceInterface::Execute_GetData(NewContent);
@@ -84,12 +84,11 @@ bool UWeaponManagerComponent::DoesEmptySlotExist(FGameplayTag SlotType) const
     return false;
 }
 
-bool UWeaponManagerComponent::CanAddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData) const
+bool UWeaponManagerComponent::CanAddWeaponFromData(UDataAsset* NewData) const
 {
     if (CheckData(NewData))
     {
-        UDataAsset* LoadedData = NewData.LoadSynchronous();
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(LoadedData);
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
 
         return DoesEmptySlotExist(SlotType);
     }
@@ -97,14 +96,13 @@ bool UWeaponManagerComponent::CanAddWeaponFromData(const TSoftObjectPtr<UDataAss
     return false;
 }
 
-void UWeaponManagerComponent::AddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData)
+void UWeaponManagerComponent::AddWeaponFromData(UDataAsset* NewData)
 {
     if (CanAddWeaponFromData(NewData))
     {
-        UDataAsset* LoadedData = NewData.LoadSynchronous();
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(LoadedData);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
-        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
+        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData);
+        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData);
 
         for (auto& [SlotIndex, Index] : SlotIndexMap)
         {
@@ -148,6 +146,37 @@ void UWeaponManagerComponent::CreateSlots()
     MaxSlotNum = SlotIndex + 1;
 }
 
+bool UWeaponManagerComponent::CheckContent(USlotContent* Content) const
+{
+    if (Super::CheckContent(Content))
+    {
+        const float Durability = IWeaponInstanceInterface::Execute_GetDurability(Content);
+
+        return Durability >= 0.0f;
+    }
+
+    return false;
+}
+
+bool UWeaponManagerComponent::CheckContentClass(TSubclassOf<USlotContent> ContentClass) const
+{
+    return Super::CheckContentClass(ContentClass) && ContentClass->ImplementsInterface(UWeaponInstanceInterface::StaticClass());
+}
+
+bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
+{
+    if (Super::CheckData(Data) && Data->Implements<UWeaponDataInterface>())
+    {
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(Data);
+        const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
+        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(Data);
+
+        return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+    }
+
+    return false;
+}
+
 int32 UWeaponManagerComponent::GetIndex(const FWeaponSlotIndex& SlotIndex)
 {
     return SlotIndexMap.Contains(SlotIndex) ? SlotIndexMap[SlotIndex] : -1;
@@ -180,11 +209,11 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
     return bResult;
 }
 
-AActor* UWeaponManagerComponent::SpawnActorFromInstance(USlotContent* Instance)
+AActor* UWeaponManagerComponent::SpawnActorFromContent(USlotContent* Content)
 {
-    if (CheckInstance(Instance))
+    if (CheckContent(Content))
     {
-        UDataAsset* Data = IWeaponInstanceInterface::Execute_GetData(Instance);
+        UDataAsset* Data = IWeaponInstanceInterface::Execute_GetData(Content);
         TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
 
         FActorSpawnParameters ActorSpawnParameters;
@@ -195,11 +224,11 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(USlotContent* Instance)
         const FVector SpawnLocation = GetOwner()->GetActorLocation();
         if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters))
         {
-            IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Instance);
+            IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Content);
 
             if (CheckActor(SpawnedActor))
             {
-                IWeaponInstanceInterface::Execute_SetActor(Instance, SpawnedActor);
+                IWeaponInstanceInterface::Execute_SetActor(Content, SpawnedActor);
                 return SpawnedActor;
             }
             else
@@ -212,31 +241,11 @@ AActor* UWeaponManagerComponent::SpawnActorFromInstance(USlotContent* Instance)
     return nullptr;
 }
 
-USlotContent* UWeaponManagerComponent::CreateInstance(const TSoftObjectPtr<UDataAsset>& Data)
-{
-    if (CheckData(Data))
-    {
-        UDataAsset* LoadedData = Data.LoadSynchronous();
-        TSubclassOf<USlotContent> InstanceClass = IWeaponDataInterface::Execute_GetInstanceClass(LoadedData);
-        if (CheckInstanceClass(InstanceClass))
-        {
-            if (USlotContent* Instance = CreateReplicatedObject<USlotContent>(InstanceClass))
-            {
-                IWeaponInstanceInterface::Execute_SetData(Instance, LoadedData);
-
-                return Instance;
-            }
-        }
-    }
-
-    return nullptr;
-}
-
 bool UWeaponManagerComponent::CheckActor(AActor* Actor) const
 {
     if (Actor && Actor->Implements<UWeaponActorInterface>())
     {
-        return CheckInstance(IWeaponActorInterface::Execute_GetInstance(Actor));
+        return CheckContent(IWeaponActorInterface::Execute_GetInstance(Actor));
     }
 
     return false;
@@ -245,34 +254,4 @@ bool UWeaponManagerComponent::CheckActor(AActor* Actor) const
 bool UWeaponManagerComponent::CheckActorClass(TSubclassOf<AActor> ActorClass)
 {
     return ActorClass && ActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass());
-}
-
-bool UWeaponManagerComponent::CheckInstance(USlotContent* Instance) const
-{
-    if (Instance && Instance->Implements<UWeaponInstanceInterface>())
-    {
-        return CheckData(IWeaponInstanceInterface::Execute_GetData(Instance));
-    }
-
-    return false;
-}
-
-bool UWeaponManagerComponent::CheckInstanceClass(TSubclassOf<USlotContent> InstanceClass)
-{
-    return InstanceClass && InstanceClass->ImplementsInterface(UWeaponInstanceInterface::StaticClass());
-}
-
-bool UWeaponManagerComponent::CheckData(const TSoftObjectPtr<UDataAsset>& Data) const
-{
-    if (!Data.IsNull() && Data->Implements<UWeaponDataInterface>())
-    {
-        UDataAsset* LoadedData = Data.LoadSynchronous();
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(LoadedData);
-        const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetActorClass(LoadedData);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(LoadedData);
-
-        return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
-    }
-
-    return false;
 }

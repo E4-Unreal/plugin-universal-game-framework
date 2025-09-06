@@ -15,7 +15,7 @@ class SLOTMANAGER_API USlotContent : public UReplicatedObject
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleAnywhere, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, Category = "State", Transient, Replicated)
     TObjectPtr<UDataAsset> Data;
 
 public:
