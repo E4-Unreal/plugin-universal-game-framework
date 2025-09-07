@@ -29,12 +29,14 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+    /* SlotContent */
+
+    virtual void SetData_Implementation(UDataAsset* NewData) override;
+
     /* WeaponDataInstanceInterface */
 
-    virtual UDataAsset* GetData_Implementation() const override { return Data; }
     virtual float GetDurability_Implementation() const override { return Durability; }
     virtual AActor* GetActor_Implementation() const override { return Actor.Get(); }
-    virtual void SetData_Implementation(UDataAsset* NewData) override;
     virtual void SetDurability_Implementation(float NewDurability) override;
-    virtual void SetActor_Implementation(AActor* NewActor) override;
+    virtual void SetActor_Implementation(AActor* NewActor) override { Actor = NewActor; }
 };
