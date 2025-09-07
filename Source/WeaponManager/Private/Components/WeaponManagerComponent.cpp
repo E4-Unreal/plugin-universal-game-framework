@@ -92,8 +92,6 @@ void UWeaponManagerComponent::AddWeaponFromData(UDataAsset* NewData)
     if (CanAddWeaponFromData(NewData))
     {
         const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData);
-        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(NewData);
 
         for (auto& [SlotIndex, Index] : SlotIndexMap)
         {
@@ -101,15 +99,6 @@ void UWeaponManagerComponent::AddWeaponFromData(UDataAsset* NewData)
             {
                 if (AActor* Actor = SpawnActorFromData(NewData))
                 {
-                    if (Index == CurrentSlotIndex)
-                    {
-                        AttachWeaponActorToSocket(Actor, ActiveSocketName);
-                    }
-                    else
-                    {
-                        AttachWeaponActorToSocket(Actor, InActiveSocketName);
-                    }
-
                     USlotContent* NewContent = IWeaponActorInterface::Execute_GetInstance(Actor);
                     SetContent(Index, NewContent);
 
@@ -174,8 +163,11 @@ void UWeaponManagerComponent::HandleOnSlotUpdated(int32 Index, USlotContent* Old
 
     if (Index == CurrentSlotIndex)
     {
-        UnEquip(OldContent);
         Equip(NewContent);
+    }
+    else
+    {
+        UnEquip(NewContent);
     }
 }
 

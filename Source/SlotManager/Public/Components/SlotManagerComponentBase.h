@@ -54,19 +54,19 @@ public:
     UFUNCTION(BlueprintPure)
     virtual int32 GetEmptySlotIndex() const;
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual void SetContent(int32 Index, USlotContent* NewContent);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual void AddContent(USlotContent* NewContent);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void SwapContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void SyncContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);
 
 protected:

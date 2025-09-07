@@ -63,6 +63,8 @@ int32 USlotManagerComponentBase::GetEmptySlotIndex() const
 
 void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent)
 {
+    if (!GetOwner()->HasAuthority()) return;
+
     if (DoesSlotExist(Index))
     {
         USlotContent* OldContent = Slots[Index].Content;
@@ -78,10 +80,12 @@ void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent
 
 void USlotManagerComponentBase::AddContent(USlotContent* NewContent)
 {
+    if (!GetOwner()->HasAuthority()) return;
+
     SetContent(GetEmptySlotIndex(), NewContent);
 }
 
-void USlotManagerComponentBase::TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex,
+void USlotManagerComponentBase::TransferContent_Implementation(USlotManagerComponentBase* Source, int32 SourceIndex,
                                                 USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
     if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
@@ -92,7 +96,7 @@ void USlotManagerComponentBase::TransferContent(USlotManagerComponentBase* Sourc
     }
 }
 
-void USlotManagerComponentBase::SwapContent(USlotManagerComponentBase* Source, int32 SourceIndex,
+void USlotManagerComponentBase::SwapContent_Implementation(USlotManagerComponentBase* Source, int32 SourceIndex,
     USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
     if (Source && Destination)
@@ -115,7 +119,7 @@ void USlotManagerComponentBase::SwapContent(USlotManagerComponentBase* Source, i
     }
 }
 
-void USlotManagerComponentBase::SyncContent(USlotManagerComponentBase* Source, int32 SourceIndex,
+void USlotManagerComponentBase::SyncContent_Implementation(USlotManagerComponentBase* Source, int32 SourceIndex,
     USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
     if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
