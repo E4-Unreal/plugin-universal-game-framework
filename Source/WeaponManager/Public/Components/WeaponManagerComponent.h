@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Types/WeaponSlot.h"
 #include "Types/WeaponSlotIndex.h"
 #include "Components/SlotManagerComponentBase.h"
 #include "WeaponManagerComponent.generated.h"
@@ -64,6 +63,7 @@ protected:
     virtual bool CheckContent(USlotContent* Content) const override;
     virtual bool CheckContentClass(TSubclassOf<USlotContent> ContentClass) const override;
     virtual bool CheckData(UDataAsset* Data) const override;
+    virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent) override;
 
     /* API */
 
@@ -79,4 +79,7 @@ protected:
     virtual AActor* SpawnActorFromContent(USlotContent* Content);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
+
+    virtual void Equip(USlotContent* Content);
+    virtual void UnEquip(USlotContent* Content);
 };
