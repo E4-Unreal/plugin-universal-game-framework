@@ -191,16 +191,22 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
 {
     bool bResult = false;
 
-    if (WeaponActor && Mesh.IsValid() && Mesh->DoesSocketExist(SocketName))
+    if (WeaponActor)
     {
-        FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
-            EAttachmentRule::SnapToTarget,
-            EAttachmentRule::SnapToTarget,
-            EAttachmentRule::KeepWorld,
-            true);
+        if (Mesh.IsValid() && Mesh->DoesSocketExist(SocketName))
+        {
+            FAttachmentTransformRules AttachmentTransformRules = FAttachmentTransformRules(
+                EAttachmentRule::SnapToTarget,
+                EAttachmentRule::SnapToTarget,
+                EAttachmentRule::KeepWorld,
+                true);
 
-        bResult = WeaponActor->AttachToComponent(Mesh.Get(), AttachmentTransformRules, SocketName);
-        WeaponActor->SetActorHiddenInGame(!bResult);
+            bResult = WeaponActor->AttachToComponent(Mesh.Get(), AttachmentTransformRules, SocketName);
+        }
+        else
+        {
+            WeaponActor->SetActorHiddenInGame(!bResult);
+        }
     }
 
     return bResult;
