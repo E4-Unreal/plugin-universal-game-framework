@@ -111,8 +111,8 @@ void USlotManagerComponentBase::SwapContent_Implementation(USlotManagerComponent
         }
         else if (!Source->IsEmpty(SourceIndex) && !Destination->IsEmpty(DestinationIndex))
         {
-            USlotContent* SourceContent = Source->GetContent(DestinationIndex);
-            USlotContent* DestinationContent = Destination->GetContent(SourceIndex);
+            USlotContent* SourceContent = Source->GetContent(SourceIndex);
+            USlotContent* DestinationContent = Destination->GetContent(DestinationIndex);
             Source->SetContent(SourceIndex, DestinationContent);
             Destination->SetContent(DestinationIndex, SourceContent);
         }
