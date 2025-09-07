@@ -27,6 +27,10 @@ void USlotWidgetBase::Refresh_Implementation()
         {
             ApplyData(Content->GetData());
         }
+        else
+        {
+            Clear();
+        }
     }
     else
     {

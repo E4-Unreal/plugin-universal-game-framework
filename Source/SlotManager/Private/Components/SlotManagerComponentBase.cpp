@@ -85,9 +85,9 @@ void USlotManagerComponentBase::TransferContent(USlotManagerComponentBase* Sourc
 {
     if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
     {
-        USlotContent* Content = Source->GetContent(DestinationIndex);
+        USlotContent* SourceContent = Source->GetContent(SourceIndex);
         Source->SetContent(SourceIndex, nullptr);
-        Destination->SetContent(DestinationIndex, Content);
+        Destination->SetContent(DestinationIndex, SourceContent);
     }
 }
 
