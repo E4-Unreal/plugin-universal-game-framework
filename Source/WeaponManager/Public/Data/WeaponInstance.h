@@ -19,6 +19,9 @@ class WEAPONMANAGER_API UWeaponInstance : public USlotContent, public IWeaponIns
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
+    TWeakObjectPtr<AActor> Actor;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     int32 Durability;
 
 public:
@@ -30,6 +33,8 @@ public:
 
     virtual UDataAsset* GetData_Implementation() const override { return Data; }
     virtual float GetDurability_Implementation() const override { return Durability; }
+    virtual AActor* GetActor_Implementation() const override { return Actor.Get(); }
     virtual void SetData_Implementation(UDataAsset* NewData) override;
     virtual void SetDurability_Implementation(float NewDurability) override;
+    virtual void SetActor_Implementation(AActor* NewActor) override;
 };

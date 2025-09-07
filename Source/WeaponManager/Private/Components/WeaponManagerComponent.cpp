@@ -203,10 +203,8 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
 
             bResult = WeaponActor->AttachToComponent(Mesh.Get(), AttachmentTransformRules, SocketName);
         }
-        else
-        {
-            WeaponActor->SetActorHiddenInGame(!bResult);
-        }
+
+        WeaponActor->SetActorHiddenInGame(!bResult);
     }
 
     return bResult;

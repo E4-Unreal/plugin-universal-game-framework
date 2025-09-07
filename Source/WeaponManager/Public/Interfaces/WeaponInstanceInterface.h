@@ -32,7 +32,7 @@ public:
     AActor* GetActor() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetActor(AActor* NewActor) const;
+    void SetActor(AActor* NewActor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     float GetDurability() const;

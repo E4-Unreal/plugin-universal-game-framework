@@ -10,6 +10,7 @@ void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+    DOREPLIFETIME(ThisClass, Actor);
     DOREPLIFETIME(ThisClass, Durability);
 }
 
@@ -31,4 +32,9 @@ void UWeaponInstance::SetDurability_Implementation(float NewDurability)
         const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
         Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
     }
+}
+
+void UWeaponInstance::SetActor_Implementation(AActor* NewActor)
+{
+    Actor = NewActor;
 }
