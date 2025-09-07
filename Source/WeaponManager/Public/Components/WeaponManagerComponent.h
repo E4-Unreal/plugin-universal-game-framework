@@ -29,7 +29,7 @@ protected:
     TMap<FWeaponSlotIndex, int32> SlotIndexMap;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    int32 CurrentIndex;
+    int32 CurrentSlotIndex;
 
 public:
     UWeaponManagerComponent();
@@ -47,7 +47,10 @@ public:
     AActor* GetCurrentWeaponActor() const;
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
-    void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
+    void SetWeaponSlotIndex(FWeaponSlotIndex NewWeaponSlotIndex, bool bForce = false);
+
+    UFUNCTION(BlueprintCallable, Server, Reliable)
+    void SetSlotIndex(int32 NewSlotIndex, bool bForce = false);
 
     UFUNCTION(BlueprintPure)
     virtual bool CanAddWeaponFromData(UDataAsset* NewData) const;

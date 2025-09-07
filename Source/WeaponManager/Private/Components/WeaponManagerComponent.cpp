@@ -25,7 +25,7 @@ void UWeaponManagerComponent::InitializeComponent()
 
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
-    USlotContent* CurrentContent = GetContent(CurrentIndex);
+    USlotContent* CurrentContent = GetContent(CurrentSlotIndex);
     if (CheckContent(CurrentContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
@@ -36,19 +36,24 @@ AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
     return nullptr;
 }
 
-void UWeaponManagerComponent::SetSlotIndex_Implementation(FWeaponSlotIndex NewSlotIndex, bool bForce)
+void UWeaponManagerComponent::SetWeaponSlotIndex_Implementation(FWeaponSlotIndex NewWeaponSlotIndex, bool bForce)
 {
-    int32 NewIndex = GetIndex(NewSlotIndex);
-    if (!SlotMap.Contains(NewIndex)) return;
-    if (!bForce && CurrentIndex == NewIndex) return;
+    int32 NewIndex = GetIndex(NewWeaponSlotIndex);
+    SetSlotIndex(NewIndex, bForce);
+}
 
-    int32 OldIndex = CurrentIndex;
-    CurrentIndex = NewIndex;
+void UWeaponManagerComponent::SetSlotIndex_Implementation(int32 NewSlotIndex, bool bForce)
+{
+    if (!SlotMap.Contains(NewSlotIndex)) return;
+    if (!bForce && CurrentSlotIndex == NewSlotIndex) return;
+
+    int32 OldIndex = CurrentSlotIndex;
+    CurrentSlotIndex = NewSlotIndex;
 
     USlotContent* OldContent = GetContent(OldIndex);
     UnEquip(OldContent);
 
-    USlotContent* NewContent = GetContent(NewIndex);
+    USlotContent* NewContent = GetContent(NewSlotIndex);
     Equip(NewContent);
 }
 
@@ -96,7 +101,7 @@ void UWeaponManagerComponent::AddWeaponFromData(UDataAsset* NewData)
             {
                 if (AActor* Actor = SpawnActorFromData(NewData))
                 {
-                    if (Index == CurrentIndex)
+                    if (Index == CurrentSlotIndex)
                     {
                         AttachWeaponActorToSocket(Actor, ActiveSocketName);
                     }
@@ -167,7 +172,7 @@ void UWeaponManagerComponent::HandleOnSlotUpdated(int32 Index, USlotContent* Old
 {
     Super::HandleOnSlotUpdated(Index, OldContent, NewContent);
 
-    if (Index == CurrentIndex)
+    if (Index == CurrentSlotIndex)
     {
         UnEquip(OldContent);
         Equip(NewContent);
