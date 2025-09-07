@@ -9,7 +9,7 @@
 
 class USlotContent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotUpdated, int32, Index);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSlotUpdated, int32, Index, USlotContent*, OldContent, USlotContent*, NewContent);
 
 /**
  * 인벤토리, 장비창, 스킬창, 퀵 슬롯 등의 부모 클래스
@@ -84,7 +84,7 @@ protected:
     virtual bool CheckData(UDataAsset* Data) const;
 
     UFUNCTION()
-    virtual void HandleOnSlotUpdated(int32 Index);
+    virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent);
 
     /* Replicate */
 

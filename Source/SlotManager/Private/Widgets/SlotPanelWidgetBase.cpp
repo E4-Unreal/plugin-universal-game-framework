@@ -123,9 +123,9 @@ void USlotPanelWidgetBase::OnSlotIndexChanged_Implementation(int32 OldSlotIndex,
 
 }
 
-void USlotPanelWidgetBase::OnSlotUpdated_Implementation(int32 SlotIndex)
+void USlotPanelWidgetBase::OnSlotUpdated_Implementation(int32 Index, USlotContent* OldContent, USlotContent* NewContent)
 {
-    if (UUserWidget* SlotWidget = SlotWidgetMap.FindRef(SlotIndex))
+    if (UUserWidget* SlotWidget = SlotWidgetMap.FindRef(Index))
     {
         if (SlotWidget->Implements<USlotWidgetInterface>())
         {

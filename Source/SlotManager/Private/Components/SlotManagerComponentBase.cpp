@@ -72,7 +72,7 @@ void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent
         Slots[Index].Content = NewContent;
         SlotMap.Emplace(Index, NewContent);
 
-        OnSlotUpdated.Broadcast(Index);
+        OnSlotUpdated.Broadcast(Index, OldContent, NewContent);
     }
 }
 
@@ -186,9 +186,12 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
     return false;
 }
 
-void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)
+void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent)
 {
-    LOG_ACTOR_COMPONENT(Log, TEXT("SlotUpdated: %d"), Index)
+    FString OldContentName = OldContent ? OldContent->GetName() : "Null";
+    FString NewContentName = NewContent ? NewContent->GetName() : "Null";
+
+    LOG_ACTOR_COMPONENT(Log, TEXT("SlotUpdated(%d): %s > %s"), Index, *OldContentName, *NewContentName)
 }
 
 void USlotManagerComponentBase::OnRep_Slots(TArray<FContentSlot> OldSlots)
@@ -212,10 +215,12 @@ void USlotManagerComponentBase::OnRep_Slots(TArray<FContentSlot> OldSlots)
         UpdatedSlotIndices.Emplace(Index);
     }
 
+    TMap<int32, TObjectPtr<USlotContent>> OldSlotMap = SlotMap;
+
     MappingSlots();
 
     for (int32 Index : UpdatedSlotIndices)
     {
-        OnSlotUpdated.Broadcast(Index);
+        OnSlotUpdated.Broadcast(Index, OldSlotMap.FindRef(Index), SlotMap.FindRef(Index));
     }
 }
