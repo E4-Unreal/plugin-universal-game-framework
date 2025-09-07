@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DataManager/Public/Data/ReplicatedObject.h"
 #include "Interfaces/WeaponInstanceInterface.h"
+#include "Objects/SlotContent.h"
 #include "WeaponInstance.generated.h"
 
 class IWeaponDataInterface;
@@ -13,13 +13,13 @@ class IWeaponDataInterface;
  *
  */
 UCLASS()
-class WEAPONMANAGER_API UWeaponInstance : public UReplicatedObject, public IWeaponInstanceInterface
+class WEAPONMANAGER_API UWeaponInstance : public USlotContent, public IWeaponInstanceInterface
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated, meta = (MustImplement = "WeaponDataInterface"))
-    TSoftObjectPtr<UDataAsset> Data;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
+    TWeakObjectPtr<AActor> Actor;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
     int32 Durability;
@@ -31,8 +31,10 @@ public:
 
     /* WeaponDataInstanceInterface */
 
-    virtual TSoftObjectPtr<UDataAsset> GetData_Implementation() const override { return Data; }
+    virtual UDataAsset* GetData_Implementation() const override { return Data; }
     virtual float GetDurability_Implementation() const override { return Durability; }
-    virtual void SetData_Implementation(const TSoftObjectPtr<UDataAsset>& NewData) override;
+    virtual AActor* GetActor_Implementation() const override { return Actor.Get(); }
+    virtual void SetData_Implementation(UDataAsset* NewData) override;
     virtual void SetDurability_Implementation(float NewDurability) override;
+    virtual void SetActor_Implementation(AActor* NewActor) override;
 };

@@ -6,8 +6,8 @@
 #include "UObject/Interface.h"
 #include "SlotWidgetInterface.generated.h"
 
+class USlotManagerComponentBase;
 class ISlotDataInterface;
-class ISlotManagerInterface;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class USlotWidgetInterface : public UInterface
@@ -18,16 +18,16 @@ class USlotWidgetInterface : public UInterface
 /**
  *
  */
-class WIDGETMANAGER_API ISlotWidgetInterface
+class SLOTMANAGER_API ISlotWidgetInterface
 {
     GENERATED_BODY()
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TScriptInterface<ISlotManagerInterface> GetSlotManager() const;
+    USlotManagerComponentBase* GetSlotManager() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetSlotManager(const TScriptInterface<ISlotManagerInterface>& NewSlotManager);
+    void SetSlotManager(USlotManagerComponentBase* NewSlotManager);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     int32 GetSlotIndex() const;
@@ -37,10 +37,4 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Refresh();
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void Clear();
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void ApplyData(const TScriptInterface<ISlotDataInterface>& NewData);
 };

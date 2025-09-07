@@ -35,7 +35,7 @@ protected:
     TSoftObjectPtr<UDataAsset> Data;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_Instance)
-    TObjectPtr<UReplicatedObject> Instance;
+    TObjectPtr<USlotContent> Instance;
 
 public:
     AWeaponActor(const FObjectInitializer& ObjectInitializer);
@@ -53,8 +53,8 @@ public:
 
     /* WeaponActorInterface */
 
-    virtual UReplicatedObject* GetInstance_Implementation() const override { return Instance; }
-    virtual void SetInstance_Implementation(UReplicatedObject* NewInstance) override;
+    virtual USlotContent* GetInstance_Implementation() const override { return Instance; }
+    virtual void SetInstance_Implementation(USlotContent* NewInstance) override;
 
     /* Getter */
 
@@ -66,10 +66,10 @@ protected:
     /* API */
 
     virtual void ApplyWeaponData();
-    virtual void OnInstanceChanged(UReplicatedObject* OldInstance, UReplicatedObject* NewInstance);
+    virtual void OnInstanceChanged(USlotContent* OldInstance, USlotContent* NewInstance);
 
     /* Replication */
 
     UFUNCTION()
-    virtual void OnRep_Instance(UReplicatedObject* OldInstance);
+    virtual void OnRep_Instance(USlotContent* OldInstance);
 };

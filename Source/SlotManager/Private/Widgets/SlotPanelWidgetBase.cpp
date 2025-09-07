@@ -3,15 +3,15 @@
 
 #include "Widgets/SlotPanelWidgetBase.h"
 
+#include "LandscapeGizmoActiveActor.h"
+#include "Components/SlotManagerComponentBase.h"
 #include "Components/UniformGridPanel.h"
-#include "Interfaces/SlotManagerInterface.h"
 #include "Interfaces/SlotWidgetInterface.h"
 
 USlotPanelWidgetBase::USlotPanelWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    SlotUpdatedHandler.BindDynamic(this, &ThisClass::OnSlotUpdated);
-    SlotIndexChangedHandler.BindDynamic(this, &ThisClass::OnSlotIndexChanged);
+
 }
 
 void USlotPanelWidgetBase::NativeOnInitialized()
@@ -45,11 +45,7 @@ void USlotPanelWidgetBase::FindSlotManager()
 
     if (APlayerController* PlayerController = GetOwningPlayer())
     {
-        if (PlayerController->IsA(SlotManagerClass))
-        {
-            SlotManager = PlayerController;
-        }
-        else if (UActorComponent* FoundComponent = PlayerController->GetComponentByClass(SlotManagerClass.Get()))
+        if (USlotManagerComponentBase* FoundComponent = Cast<USlotManagerComponentBase>(PlayerController->GetComponentByClass(SlotManagerClass)))
         {
             SlotManager = FoundComponent;
         }
@@ -60,11 +56,7 @@ void USlotPanelWidgetBase::FindSlotManager()
 
     if (APawn* PlayerPawn = GetOwningPlayerPawn())
     {
-        if (PlayerPawn->IsA(SlotManagerClass))
-        {
-            SlotManager = PlayerPawn;
-        }
-        else if (UActorComponent* FoundComponent = PlayerPawn->GetComponentByClass(SlotManagerClass.Get()))
+        if (USlotManagerComponentBase* FoundComponent = Cast<USlotManagerComponentBase>(PlayerPawn->GetComponentByClass(SlotManagerClass.Get())))
         {
             SlotManager = FoundComponent;
         }
@@ -89,11 +81,7 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
     if (SlotWidgetClass)
     {
         // Get SlotNum
-        int32 SlotNum  = PreviewSlotNum;
-        if (SlotManager.IsValid() && SlotManager->Implements<USlotManagerInterface>())
-        {
-            SlotNum = ISlotManagerInterface::Execute_GetSlotNum(SlotManager.Get());
-        }
+        int32 SlotNum  = SlotManager.IsValid() ? SlotManager->GetMaxSlotNum() : PreviewSlotNum;
 
         // Create SlotWidgets
         for (int32 Index = 0; Index < SlotNum; ++Index)
@@ -116,19 +104,17 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
 
 void USlotPanelWidgetBase::BindSlotManagerEvents()
 {
-    if (SlotManager.IsValid() && SlotManager->Implements<USlotManagerInterface>())
+    if (SlotManager.IsValid())
     {
-        ISlotManagerInterface::Execute_BindSlotUpdatedHandler(SlotManager.Get(), SlotUpdatedHandler);
-        ISlotManagerInterface::Execute_BindSlotIndexChangedHandler(SlotManager.Get(), SlotIndexChangedHandler);
+        SlotManager->OnSlotUpdated.AddDynamic(this, &USlotPanelWidgetBase::OnSlotUpdated);
     }
 }
 
 void USlotPanelWidgetBase::UnBindSlotManagerEvents()
 {
-    if (SlotManager.IsValid() && SlotManager->Implements<USlotManagerInterface>())
+    if (SlotManager.IsValid())
     {
-        ISlotManagerInterface::Execute_UnBindSlotUpdatedHandler(SlotManager.Get(), SlotUpdatedHandler);
-        ISlotManagerInterface::Execute_UnBindSlotIndexChangedHandler(SlotManager.Get(), SlotIndexChangedHandler);
+        SlotManager->OnSlotUpdated.RemoveDynamic(this, &USlotPanelWidgetBase::OnSlotUpdated);
     }
 }
 
@@ -137,9 +123,9 @@ void USlotPanelWidgetBase::OnSlotIndexChanged_Implementation(int32 OldSlotIndex,
 
 }
 
-void USlotPanelWidgetBase::OnSlotUpdated_Implementation(int32 SlotIndex)
+void USlotPanelWidgetBase::OnSlotUpdated_Implementation(int32 Index, USlotContent* OldContent, USlotContent* NewContent)
 {
-    if (UUserWidget* SlotWidget = SlotWidgetMap.FindRef(SlotIndex))
+    if (UUserWidget* SlotWidget = SlotWidgetMap.FindRef(Index))
     {
         if (SlotWidget->Implements<USlotWidgetInterface>())
         {

@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class WeaponManager : ModuleRules
+public class SlotManager : ModuleRules
 {
-    public WeaponManager(ReadOnlyTargetRules Target) : base(Target)
+    public SlotManager(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,9 +10,10 @@ public class WeaponManager : ModuleRules
             new string[]
             {
                 "Core",
-                "GameplayTags",
-                "DataManager",
-                "SlotManager"
+                "UMG",
+                "InputCore",
+                "UniversalUtilities",
+                "DataManager"
             }
         );
 

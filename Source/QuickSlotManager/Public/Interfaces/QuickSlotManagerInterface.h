@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interfaces/SlotManagerInterface.h"
+#include "UObject/Interface.h"
 #include "QuickSlotManagerInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UQuickSlotManagerInterface : public USlotManagerInterface
+class UQuickSlotManagerInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -15,7 +15,7 @@ class UQuickSlotManagerInterface : public USlotManagerInterface
 /**
  *
  */
-class QUICKSLOTMANAGER_API IQuickSlotManagerInterface : public ISlotManagerInterface
+class QUICKSLOTMANAGER_API IQuickSlotManagerInterface
 {
     GENERATED_BODY()
 };

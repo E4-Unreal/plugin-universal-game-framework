@@ -7,25 +7,30 @@
 #include "Interfaces/SlotWidgetInterface.h"
 #include "SlotWidgetBase.generated.h"
 
+class USlotManagerComponentBase;
 class UImage;
 
 /**
  *
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API USlotWidgetBase : public UDraggableWidgetBase, public ISlotWidgetInterface
+class SLOTMANAGER_API USlotWidgetBase : public UDraggableWidgetBase, public ISlotWidgetInterface
 {
     GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UTexture2D> DefaultThumbnailTexture;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (AllowedClasses = "SlotDataInterface"))
+    TSoftObjectPtr<UDataAsset> PreviewData;
 
 protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> ThumbnailImage;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TScriptInterface<ISlotDataInterface> PreviewData;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
-    TWeakObjectPtr<UObject> SlotManager;
+    TWeakObjectPtr<USlotManagerComponentBase> SlotManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     int32 SlotIndex;
@@ -33,13 +38,11 @@ protected:
 public:
     /* SlotWidgetInterface */
 
-    virtual TScriptInterface<ISlotManagerInterface> GetSlotManager_Implementation() const override { return SlotManager.Get(); }
-    virtual void SetSlotManager_Implementation(const TScriptInterface<ISlotManagerInterface>& NewSlotManager) override;
+    virtual USlotManagerComponentBase* GetSlotManager_Implementation() const override { return SlotManager.Get(); }
+    virtual void SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager) override;
     virtual int32 GetSlotIndex_Implementation() const override { return SlotIndex; }
     virtual void SetSlotIndex_Implementation(int32 NewSlotIndex) override;
-    virtual void ApplyData_Implementation(const TScriptInterface<ISlotDataInterface>& NewData) override;
     virtual void Refresh_Implementation() override;
-    virtual void Clear_Implementation() override;
 
 protected:
     /* UserWidget */
@@ -51,4 +54,10 @@ protected:
     virtual bool CanDrag() const override;
     virtual void OnDraggedWidgetCreated(UUserWidget* DraggedWidget) override;
     virtual void OnWidgetDrop(UUserWidget* DropWidget) override;
+
+    /* API */
+
+    virtual void SetThumbnailTexture(UTexture2D* NewTexture);
+    virtual void ApplyData(UDataAsset* InData);
+    virtual void Clear();
 };

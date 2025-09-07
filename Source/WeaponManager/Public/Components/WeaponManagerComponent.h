@@ -3,14 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Types/WeaponSlot.h"
 #include "Types/WeaponSlotIndex.h"
-#include "Components/ReplicatedComponent.h"
+#include "Components/SlotManagerComponentBase.h"
 #include "WeaponManagerComponent.generated.h"
 
 
 UCLASS(meta=(BlueprintSpawnableComponent))
-class WEAPONMANAGER_API UWeaponManagerComponent : public UReplicatedComponent
+class WEAPONMANAGER_API UWeaponManagerComponent : public USlotManagerComponentBase
 {
     GENERATED_BODY()
 
@@ -19,30 +18,25 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<FGameplayTag, int32> SlotConfig;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FWeaponSlotIndex StartupSlotIndex;
-
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<USkeletalMeshComponent> Mesh;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    TArray<FWeaponSlot> Slots;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    int32 MaxSlotNum;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    FWeaponSlotIndex CurrentSlotIndex;
+    TMap<FWeaponSlotIndex, int32> SlotIndexMap;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    int32 CurrentSlotIndex;
 
 public:
     UWeaponManagerComponent();
 
-    /* Object */
-
-    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
     /* ActorComponent */
 
     virtual void InitializeComponent() override;
-    virtual void BeginPlay() override;
 
     /* API */
 
@@ -52,37 +46,43 @@ public:
     UFUNCTION(BlueprintPure)
     AActor* GetCurrentWeaponActor() const;
 
-    UFUNCTION(BlueprintPure)
-    const FWeaponSlot& GetSlotByIndex(FWeaponSlotIndex InSlotIndex) const;
+    UFUNCTION(BlueprintCallable, Server, Reliable)
+    void SetWeaponSlotIndex(FWeaponSlotIndex NewWeaponSlotIndex, bool bForce = false);
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
-    void SetSlotIndex(FWeaponSlotIndex NewSlotIndex, bool bForce = false);
+    void SetSlotIndex(int32 NewSlotIndex, bool bForce = false);
 
     UFUNCTION(BlueprintPure)
-    virtual bool DoesSocketExist(FName SocketName) const;
-
-    UFUNCTION(BlueprintPure)
-    virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
-
-    UFUNCTION(BlueprintPure)
-    virtual bool CanAddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData) const;
+    virtual bool CanAddWeaponFromData(UDataAsset* NewData) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    void AddWeaponFromData(const TSoftObjectPtr<UDataAsset>& NewData);
+    void AddWeaponFromData(UDataAsset* NewData);
 
 protected:
+    /* SlotManagerComponentBase */
+
+    virtual void CreateSlots() override;
+    virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
+    virtual bool CheckContent(USlotContent* Content) const override;
+    virtual bool CheckContentClass(TSubclassOf<USlotContent> ContentClass) const override;
+    virtual bool CheckData(UDataAsset* Data) const override;
+    virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent) override;
+
     /* API */
 
-    virtual void CreateSlots();
-    virtual void FindMesh();
-    virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
+    virtual int32 GetIndex(const FWeaponSlotIndex& SlotIndex);
 
-    virtual AActor* SpawnActorFromData(const TSoftObjectPtr<UDataAsset>& Data) { return SpawnActorFromInstance(CreateInstance(Data)); }
-    virtual AActor* SpawnActorFromInstance(UReplicatedObject* Instance);
-    virtual UReplicatedObject* CreateInstance(const TSoftObjectPtr<UDataAsset>& Data);
-    bool CheckActor(AActor* Actor);
-    bool CheckActorClass(TSubclassOf<AActor> ActorClass);
-    bool CheckInstance(UReplicatedObject* Instance);
-    bool CheckInstanceClass(TSubclassOf<UReplicatedObject> InstanceClass);
-    bool CheckData(const TSoftObjectPtr<UDataAsset>& Data) const;
+    virtual void FindMesh();
+
+    virtual bool DoesSocketExist(FName SocketName) const;
+    virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
+
+    virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
+    virtual AActor* SpawnActorFromData(UDataAsset* Data) { return SpawnActorFromContent(CreateContentFromData(Data)); }
+    virtual AActor* SpawnActorFromContent(USlotContent* Content);
+    bool CheckActor(AActor* Actor) const;
+    static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
+
+    virtual void Equip(USlotContent* Content);
+    virtual void UnEquip(USlotContent* Content);
 };
