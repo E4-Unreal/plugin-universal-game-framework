@@ -49,6 +49,9 @@ public:
     virtual bool IsEmpty(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
+    virtual bool HasContent(USlotContent* InContent) const;
+
+    UFUNCTION(BlueprintPure)
     virtual USlotContent* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
@@ -58,7 +61,10 @@ public:
     virtual void SetContent(int32 Index, USlotContent* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual void AddContent(USlotContent* NewContent);
+    virtual bool AddContent(USlotContent* NewContent);
+
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+    virtual bool RemoveContent(USlotContent* InContent);
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);

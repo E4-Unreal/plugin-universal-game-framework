@@ -26,7 +26,9 @@ public class UniversalGameFramework : ModuleRules
                 "CurrencyManager",
                 "DataManager",
                 "CommonWidgetManager",
-                "WeaponManager"
+                "WeaponManager",
+                "DataManager",
+                "SlotManager"
             }
         );
 

@@ -10,5 +10,5 @@ void UInventoryTrashWidget::OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* 
 {
     Super::OnInventorySlotWidgetDrop(InventorySlotWidget);
 
-    GetInventoryComponent()->RemoveInventorySlot(InventorySlotWidget->GetSlotIndex());
+    //GetInventoryComponent()->RemoveInventorySlot(InventorySlotWidget->GetSlotIndex());
 }

@@ -39,6 +39,19 @@ bool USlotManagerComponentBase::IsEmpty(int32 Index) const
     return DoesSlotExist(Index) ? GetContent(Index) == nullptr : false;
 }
 
+bool USlotManagerComponentBase::HasContent(USlotContent* InContent) const
+{
+    for (const auto& [Index, Content] : SlotMap)
+    {
+        if (Content == InContent)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 USlotContent* USlotManagerComponentBase::GetContent(int32 Index) const
 {
     return SlotMap.FindRef(Index);
@@ -78,15 +91,40 @@ void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent
     }
 }
 
-void USlotManagerComponentBase::AddContent(USlotContent* NewContent)
+bool USlotManagerComponentBase::AddContent(USlotContent* NewContent)
 {
-    if (!GetOwner()->HasAuthority()) return;
+    if (!GetOwner()->HasAuthority()) return false;
 
-    SetContent(GetEmptySlotIndex(), NewContent);
+    int32 EmptyIndex = GetEmptySlotIndex();
+    if (DoesSlotExist(EmptyIndex))
+    {
+        SetContent(EmptyIndex, NewContent);
+
+        return true;
+    }
+
+    return false;
+}
+
+bool USlotManagerComponentBase::RemoveContent(USlotContent* InContent)
+{
+    if (!GetOwner()->HasAuthority()) return false;
+
+    for (const auto& [Index, Content] : SlotMap)
+    {
+        if (Content == InContent)
+        {
+            SetContent(Index, nullptr);
+
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void USlotManagerComponentBase::TransferContent_Implementation(USlotManagerComponentBase* Source, int32 SourceIndex,
-                                                USlotManagerComponentBase* Destination, int32 DestinationIndex)
+                                                               USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
     if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
     {

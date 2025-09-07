@@ -25,5 +25,5 @@ class INVENTORYSYSTEM_API IItemActorInterface
     // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetInventoryItems(const TArray<FItemInstance>& NewInventoryItems);
+    void SetInventoryItems(const TArray<UItemInstance*>& NewInventoryItems);
 };

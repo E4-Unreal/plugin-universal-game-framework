@@ -16,6 +16,7 @@
 #include "Games/UGFSaveGame.h"
 #include "Subsystems/DataManagerSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
+#include "Data/ItemInstance.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -110,14 +111,20 @@ bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& Curr
 
 bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    FItemInstance NewItem = FItemInstance(Product.GetObject(), Quantity);
-    return GetInventory()->AddItem(NewItem);
+    UItemInstance* ItemInstance = NewObject<UItemInstance>();
+    IItemInstanceInterface::Execute_SetData(ItemInstance, Cast<UDataAsset>(Product.GetObject()));
+    IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+
+    return GetInventory()->AddContent(ItemInstance);
 }
 
 bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    FItemInstance NewItem = FItemInstance(Product.GetObject(), Quantity);
-    return GetInventory()->RemoveItem(NewItem);
+    UItemInstance* ItemInstance = NewObject<UItemInstance>();
+    IItemInstanceInterface::Execute_SetData(ItemInstance, Cast<UDataAsset>(Product.GetObject()));
+    IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+    
+    return GetInventory()->RemoveContent(ItemInstance);
 }
 
 void AUGFPlayerCharacter::OnSaveData_Implementation(USaveGame* SaveGame)

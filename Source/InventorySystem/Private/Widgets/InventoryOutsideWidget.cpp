@@ -4,14 +4,21 @@
 #include "Widgets/InventoryOutsideWidget.h"
 
 #include "Components/InventoryComponent.h"
+#include "Interfaces/ItemInstanceInterface.h"
+#include "Objects/SlotContent.h"
 #include "Widgets/InventorySlotWidgetBase.h"
+#include "Widgets/SlotWidgetBase.h"
 
-void UInventoryOutsideWidget::OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget)
+void UInventoryOutsideWidget::OnWidgetDrop(UUserWidget* DropWidget)
 {
-    Super::OnInventorySlotWidgetDrop(InventorySlotWidget);
+    if (DropWidget && DropWidget->Implements<USlotWidgetInterface>())
+    {
+        if (UInventoryComponent* Inventory = Cast<UInventoryComponent>(ISlotWidgetInterface::Execute_GetSlotManager(DropWidget)))
+        {
+            const int32 SlotIndex = ISlotWidgetInterface::Execute_GetSlotIndex(DropWidget);
+            const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Inventory->GetContent(SlotIndex));
 
-    auto InventoryComponent = InventorySlotWidget->GetInventoryComponent();
-    int32 SlotIndex = InventorySlotWidget->GetSlotIndex();
-    const auto& InventorySlot = InventoryComponent->GetInventorySlot(SlotIndex);
-    InventoryComponent->DropItemFromSlot(SlotIndex, InventorySlot.GetQuantity());
+            Inventory->DropItemFromSlot(SlotIndex, SlotQuantity);
+        }
+    }
 }

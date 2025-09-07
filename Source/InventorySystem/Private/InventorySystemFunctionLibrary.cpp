@@ -6,7 +6,7 @@
 #include "Interfaces/ItemActorInterface.h"
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                     const TArray<FItemInstance>& InventoryItems, const FVector& Offset)
+                                                     const TArray<UItemInstance*>& InventoryItems, const FVector& Offset)
 {
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && !InventoryItems.IsEmpty(); !bCanSpawn) return nullptr;
 

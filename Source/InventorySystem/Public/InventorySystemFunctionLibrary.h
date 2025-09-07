@@ -6,8 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "InventorySystemFunctionLibrary.generated.h"
 
+class UItemInstance;
 class IItemActorInterface;
-struct FItemInstance;
 
 UCLASS()
 class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFunctionLibrary
@@ -16,5 +16,5 @@ class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFun
 
 public:
     UFUNCTION(BlueprintCallable)
-    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<FItemInstance>& InventoryItems, const FVector& Offset = FVector::ZeroVector);
+    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UItemInstance*>& InventoryItems, const FVector& Offset = FVector::ZeroVector);
 };

@@ -22,25 +22,11 @@ private:
     TObjectPtr<UTextBlock> QuantityTextBlock;
 
 protected:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config")
-    TSubclassOf<UInventorySlotWidgetBase> DraggedWidgetClass;
-
-protected:
-    /* UserWidget */
-
-    virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
-    virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
-
-    /* InventoryWidgetBase */
-
-    virtual void OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget) override;
-
-    /* InventorySlotWidgetBase */
-
-    virtual void UpdateInventorySlot(const FInventorySlot& InventorySlot) override;
+    /* SlotWidgetBase */
+    
     virtual void Clear() override;
 
-    /* InventoryWidgetBase */
+    /* API */
 
     UFUNCTION(BlueprintPure)
     virtual UTextBlock* GetQuantityTextBlock() const { return QuantityTextBlock; }
