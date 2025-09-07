@@ -83,6 +83,9 @@ protected:
     virtual bool CheckContentClass(TSubclassOf<USlotContent> ContentClass) const;
     virtual bool CheckData(UDataAsset* Data) const;
 
+    UFUNCTION()
+    virtual void HandleOnSlotUpdated(int32 Index);
+
     /* Replicate */
 
     UFUNCTION()

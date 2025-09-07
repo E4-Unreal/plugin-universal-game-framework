@@ -4,9 +4,9 @@
 #include "Components/SlotManagerComponentBase.h"
 
 #include "Interfaces/SlotDataInterface.h"
-#include "Misc/TypeContainer.h"
 #include "Net/UnrealNetwork.h"
 #include "Objects/SlotContent.h"
+#include "Logging.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
 {
@@ -17,6 +17,7 @@ void USlotManagerComponentBase::InitializeComponent()
 {
     Super::InitializeComponent();
 
+    OnSlotUpdated.AddDynamic(this, &ThisClass::HandleOnSlotUpdated);
     CreateSlots();
     MappingSlots();
 }
@@ -183,6 +184,11 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
     }
 
     return false;
+}
+
+void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT("SlotUpdated: %d"), Index)
 }
 
 void USlotManagerComponentBase::OnRep_Slots(TArray<FContentSlot> OldSlots)
