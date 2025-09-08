@@ -11,9 +11,11 @@ UObject* UDataDefinitionBase::CreateInstance_Implementation() const
     {
         UObject* NewInstance = NewObject<UObject>(GetTransientPackage(), InstanceClass);
         IDataInstanceInterface::Execute_SetData(NewInstance, const_cast<UDataDefinitionBase*>(this));
+
+        return NewInstance;
     }
 
-    return IDataDefinitionInterface::CreateInstance_Implementation();
+    return nullptr;
 }
 
 UDataAsset* UDataDefinitionBase::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const

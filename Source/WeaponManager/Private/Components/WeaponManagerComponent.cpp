@@ -228,6 +228,7 @@ void UWeaponManagerComponent::Equip(UObject* Content)
     if (CheckContent(Content))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
+        if (Actor == nullptr) Actor = SpawnActorFromContent(Content);
         UDataAsset* WeaponData = IDataInstanceInterface::Execute_GetData(Content);
         const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(WeaponData);
 

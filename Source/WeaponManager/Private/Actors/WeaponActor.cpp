@@ -3,6 +3,7 @@
 
 #include "Actors/WeaponActor.h"
 
+#include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -95,7 +96,7 @@ void AWeaponActor::OnInstanceChanged(UObject* OldInstance, UObject* NewInstance)
 {
     if (NewInstance && NewInstance->Implements<UWeaponInstanceInterface>())
     {
-        Data = IWeaponInstanceInterface::Execute_GetData(Instance);
+        Data = IDataInstanceInterface::Execute_GetData(Instance);
     }
 
     ApplyWeaponData();

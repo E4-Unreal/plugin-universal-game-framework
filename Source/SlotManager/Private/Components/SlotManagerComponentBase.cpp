@@ -201,15 +201,13 @@ bool USlotManagerComponentBase::CheckContent(UObject* Content) const
     if (Content == nullptr || !Content->Implements<UDataInstanceInterface>()) return false;
 
     UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content);
+    if (!CheckData(Data)) return false;
 
-    if (CheckData(Data))
+    for (auto UsingInstanceInterface : UsingInstanceInterfaces)
     {
-        for (auto UsingInstanceInterface : UsingInstanceInterfaces)
+        if (UsingInstanceInterface && !Content->GetClass()->ImplementsInterface(UsingInstanceInterface))
         {
-            if (UsingInstanceInterface && !Content->GetClass()->ImplementsInterface(UsingInstanceInterface))
-            {
-                return false;
-            }
+            return false;
         }
     }
 
