@@ -19,6 +19,13 @@ class SLOTMANAGER_API USlotManagerComponentBase : public UReplicatedComponent
 {
     GENERATED_BODY()
 
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TArray<TSubclassOf<UInterface>> UsingDataInterfaces;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TArray<TSubclassOf<UInterface>> UsingInstanceInterfaces;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_Slots)
     TArray<FContentSlot> Slots;
@@ -86,7 +93,6 @@ protected:
     virtual void MappingSlots();
     virtual USlotContent* CreateContentFromData(UDataAsset* Data);
     virtual bool CheckContent(USlotContent* Content) const;
-    virtual bool CheckContentClass(TSubclassOf<USlotContent> ContentClass) const;
     virtual bool CheckData(UDataAsset* Data) const;
 
     UFUNCTION()

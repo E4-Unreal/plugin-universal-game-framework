@@ -32,6 +32,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetInstances(const TArray<UObject*>& NewInstances) { Instances = NewInstances; }
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* GetInstanceByInterface(TSubclassOf<UInterface> Interface) const;
+    UFUNCTION(BlueprintPure)
+    bool HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintPure)
+    UObject* GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };

@@ -24,11 +24,24 @@ void UDataInstanceContainer::SetData_Implementation(UDataAsset* NewData)
     }
 }
 
-UObject* UDataInstanceContainer::GetInstanceByInterface_Implementation(TSubclassOf<UInterface> Interface) const
+bool UDataInstanceContainer::HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     for (auto Instance : Instances)
     {
-        if (Instance && Instance->GetClass()->ImplementsInterface(Interface))
+        if (Instance && Instance->GetClass()->ImplementsInterface(InterfaceClass))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+UObject* UDataInstanceContainer::GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
+{
+    for (auto Instance : Instances)
+    {
+        if (Instance && Instance->GetClass()->ImplementsInterface(InterfaceClass))
         {
             return Instance;
         }

@@ -203,29 +203,35 @@ USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
 
 bool USlotManagerComponentBase::CheckContent(USlotContent* Content) const
 {
-    if (Content && CheckContentClass(Content->GetClass()))
+    if (Content == nullptr) return false;
+
+    if (CheckData(Content->GetData()))
     {
-        return CheckData(Content->GetData());
+        for (auto UsingInstanceInterface : UsingInstanceInterfaces)
+        {
+            if (UsingInstanceInterface && !Content->HasInstanceByInterface(UsingInstanceInterface))
+            {
+                return false;
+            }
+        }
     }
 
-    return false;
-}
-
-bool USlotManagerComponentBase::CheckContentClass(TSubclassOf<USlotContent> ContentClass) const
-{
-    return ContentClass != nullptr;
+    return true;
 }
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 {
-    if (Data && Data->Implements<USlotDataInterface>())
-    {
-        TSubclassOf<USlotContent> ContentClass = ISlotDataInterface::Execute_GetContentClass(Data);
+    if (Data == nullptr) return false;
 
-        return CheckContentClass(ContentClass);
+    for (auto UsingDataInterface : UsingDataInterfaces)
+    {
+        if (UsingDataInterface && !Data->GetClass()->ImplementsInterface(UsingDataInterface))
+        {
+            return false;
+        }
     }
 
-    return false;
+    return true;
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent)

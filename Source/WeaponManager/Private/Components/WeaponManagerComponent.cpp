@@ -138,11 +138,6 @@ bool UWeaponManagerComponent::CheckContent(USlotContent* Content) const
     return false;
 }
 
-bool UWeaponManagerComponent::CheckContentClass(TSubclassOf<USlotContent> ContentClass) const
-{
-    return Super::CheckContentClass(ContentClass) && ContentClass->ImplementsInterface(UWeaponInstanceInterface::StaticClass());
-}
-
 bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
 {
     if (Super::CheckData(Data) && Data->Implements<UWeaponDataInterface>())
