@@ -14,13 +14,21 @@ void UDataCollection::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
     DOREPLIFETIME(ThisClass, Instances);
 }
 
+bool UDataCollection::IsValid_Implementation() const
+{
+    return Super::IsValid_Implementation() && !Instances.IsEmpty();
+}
+
 void UDataCollection::SetData_Implementation(UDataAsset* NewData)
 {
-    Super::SetData_Implementation(NewData);
-
-    if (UDataDefinitionBase* Definition = Cast<UDataDefinitionBase>(Data))
+    if (UDataDefinitionBase* NewDefinition = Cast<UDataDefinitionBase>(NewData))
     {
-        SetInstances(Definition->CreateInstances());
+        const auto& NewInstances = NewDefinition->CreateInstances();
+        if (!NewInstances.IsEmpty())
+        {
+            Data = NewData;
+            SetInstances(NewInstances);
+        }
     }
 }
 

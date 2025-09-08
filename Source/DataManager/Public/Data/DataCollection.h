@@ -25,6 +25,7 @@ public:
 
     /* DefinitionContainerBase */
 
+    virtual bool IsValid_Implementation() const override;
     virtual void SetData_Implementation(UDataAsset* NewData) override;
 
     /* API */
