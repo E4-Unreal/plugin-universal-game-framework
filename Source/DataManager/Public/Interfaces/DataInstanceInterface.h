@@ -1,0 +1,25 @@
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "UObject/Interface.h"
+#include "DataInstanceInterface.generated.h"
+
+UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
+class UDataInstanceInterface : public UInterface
+{
+    GENERATED_BODY()
+};
+
+/**
+ *
+ */
+class DATAMANAGER_API IDataInstanceInterface
+{
+    GENERATED_BODY()
+
+public:
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UObject* GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+};
