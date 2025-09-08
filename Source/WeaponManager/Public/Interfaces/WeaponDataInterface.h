@@ -27,9 +27,6 @@ public:
     TSubclassOf<AActor> GetActorClass() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<USlotContent> GetInstanceClass() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FGameplayTag GetSlotType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
