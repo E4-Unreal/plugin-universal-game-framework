@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
-#include "Objects/SlotContent.h"
 #include "ItemInstance.generated.h"
 
 /**
  *
  */
 UCLASS(EditInlineNew)
-class INVENTORYSYSTEM_API UItemInstance : public USlotContent, public IItemInstanceInterface
+class INVENTORYSYSTEM_API UItemInstance : public UDataInstanceBase, public IItemInstanceInterface
 {
     GENERATED_BODY()
 

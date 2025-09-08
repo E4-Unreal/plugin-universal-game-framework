@@ -29,11 +29,11 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* DataContainerBase */
+    /* DataInstanceInterface */
 
     virtual void SetData_Implementation(UDataAsset* NewData) override;
 
-    /* WeaponDataInstanceInterface */
+    /* WeaponInstanceInterface */
 
     virtual float GetDurability_Implementation() const override { return Durability; }
     virtual AActor* GetActor_Implementation() const override { return Actor.Get(); }

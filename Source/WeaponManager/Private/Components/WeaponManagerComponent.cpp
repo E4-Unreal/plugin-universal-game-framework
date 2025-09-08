@@ -5,9 +5,9 @@
 
 #include "Data/WeaponInstance.h"
 #include "GameplayTags/WeaponGameplayTags.h"
+#include "Interfaces/DataDefinitionInterface.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
-#include "Objects/SlotContent.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
@@ -26,7 +26,7 @@ void UWeaponManagerComponent::InitializeComponent()
     FindMesh();
 }
 
-int32 UWeaponManagerComponent::GetEmptySlotIndex(USlotContent* NewContent) const
+int32 UWeaponManagerComponent::GetEmptySlotIndex(UObject* NewContent) const
 {
     if (CheckContent(NewContent))
     {
@@ -47,7 +47,7 @@ int32 UWeaponManagerComponent::GetEmptySlotIndex(USlotContent* NewContent) const
 
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
-    USlotContent* CurrentContent = GetContent(CurrentSlotIndex);
+    UObject* CurrentContent = GetContent(CurrentSlotIndex);
     if (CheckContent(CurrentContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
@@ -72,10 +72,10 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(int32 NewSlotIndex, bo
     int32 OldIndex = CurrentSlotIndex;
     CurrentSlotIndex = NewSlotIndex;
 
-    USlotContent* OldContent = GetContent(OldIndex);
+    UObject* OldContent = GetContent(OldIndex);
     UnEquip(OldContent);
 
-    USlotContent* NewContent = GetContent(NewSlotIndex);
+    UObject* NewContent = GetContent(NewSlotIndex);
     Equip(NewContent);
 }
 
@@ -115,7 +115,7 @@ bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
     return false;
 }
 
-void UWeaponManagerComponent::HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent)
+void UWeaponManagerComponent::HandleOnSlotUpdated(int32 Index, UObject* OldContent, UObject* NewContent)
 {
     Super::HandleOnSlotUpdated(Index, OldContent, NewContent);
 
@@ -165,7 +165,18 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
     return bResult;
 }
 
-AActor* UWeaponManagerComponent::SpawnActorFromContent(USlotContent* Content)
+AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
+{
+    if (CheckData(Data))
+    {
+        UObject* NewContent = IDataDefinitionInterface::Execute_CreateInstance(Data);
+        return SpawnActorFromContent(NewContent);
+    }
+
+    return nullptr;
+}
+
+AActor* UWeaponManagerComponent::SpawnActorFromContent(UObject* Content)
 {
     if (CheckContent(Content))
     {
@@ -212,7 +223,7 @@ bool UWeaponManagerComponent::CheckActorClass(TSubclassOf<AActor> ActorClass)
     return ActorClass && ActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass());
 }
 
-void UWeaponManagerComponent::Equip(USlotContent* Content)
+void UWeaponManagerComponent::Equip(UObject* Content)
 {
     if (CheckContent(Content))
     {
@@ -224,7 +235,7 @@ void UWeaponManagerComponent::Equip(USlotContent* Content)
     }
 }
 
-void UWeaponManagerComponent::UnEquip(USlotContent* Content)
+void UWeaponManagerComponent::UnEquip(UObject* Content)
 {
     if (CheckContent(Content))
     {

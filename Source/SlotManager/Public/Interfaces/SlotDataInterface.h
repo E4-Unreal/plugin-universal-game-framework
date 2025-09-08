@@ -23,8 +23,5 @@ class SLOTMANAGER_API ISlotDataInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<USlotContent> GetContentClass() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<UTexture2D> GetThumbnailTexture() const;
 };

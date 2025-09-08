@@ -5,8 +5,8 @@
 
 #include "Components/Image.h"
 #include "Components/SlotManagerComponentBase.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/SlotDataInterface.h"
-#include "Objects/SlotContent.h"
 
 void USlotWidgetBase::SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager)
 {
@@ -23,7 +23,7 @@ void USlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (USlotContent* Content = SlotManager->GetContent(SlotIndex))
+        if (UObject* Content = SlotManager->GetContent(SlotIndex))
         {
             UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content);
             ApplyData(Data);

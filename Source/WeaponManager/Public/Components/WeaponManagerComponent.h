@@ -40,7 +40,7 @@ public:
 
     /* SlotManagerComponentBase */
 
-    virtual int32 GetEmptySlotIndex(USlotContent* NewContent) const override;
+    virtual int32 GetEmptySlotIndex(UObject* NewContent) const override;
 
     /* API */
 
@@ -62,7 +62,7 @@ protected:
     virtual void CreateSlots() override;
     virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
     virtual bool CheckData(UDataAsset* Data) const override;
-    virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent) override;
+    virtual void HandleOnSlotUpdated(int32 Index, UObject* OldContent, UObject* NewContent) override;
 
     /* API */
 
@@ -73,11 +73,11 @@ protected:
     virtual bool DoesSocketExist(FName SocketName) const;
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
-    virtual AActor* SpawnActorFromData(UDataAsset* Data) { return SpawnActorFromContent(CreateContentFromData(Data)); }
-    virtual AActor* SpawnActorFromContent(USlotContent* Content);
+    virtual AActor* SpawnActorFromData(UDataAsset* Data);
+    virtual AActor* SpawnActorFromContent(UObject* Content);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
 
-    virtual void Equip(USlotContent* Content);
-    virtual void UnEquip(USlotContent* Content);
+    virtual void Equip(UObject* Content);
+    virtual void UnEquip(UObject* Content);
 };

@@ -5,6 +5,7 @@
 
 #include "InventorySystemFunctionLibrary.h"
 #include "Data/ItemInstance.h"
+#include "Interfaces/DataDefinitionInterface.h"
 #include "Interfaces/ItemDataInterface.h"
 
 UInventoryComponent::UInventoryComponent()
@@ -19,7 +20,7 @@ void UInventoryComponent::BeginPlay()
     AddDefaultItems();
 }
 
-bool UInventoryComponent::HasContent(USlotContent* InContent) const
+bool UInventoryComponent::HasContent(UObject* InContent) const
 {
     if (CheckContent(InContent))
     {
@@ -32,7 +33,7 @@ bool UInventoryComponent::HasContent(USlotContent* InContent) const
     return false;
 }
 
-bool UInventoryComponent::AddContent(USlotContent* InContent)
+bool UInventoryComponent::AddContent(UObject* InContent)
 {
     // 실행 가능 여부 확인
     if (!CheckContent(InContent)) return false;
@@ -68,7 +69,7 @@ bool UInventoryComponent::AddContent(USlotContent* InContent)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        USlotContent* NewContent = CreateContentFromData(InData);
+        UObject* NewContent = IDataDefinitionInterface::Execute_CreateInstance(InData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
@@ -76,7 +77,7 @@ bool UInventoryComponent::AddContent(USlotContent* InContent)
     return true;
 }
 
-bool UInventoryComponent::RemoveContent(USlotContent* InContent)
+bool UInventoryComponent::RemoveContent(UObject* InContent)
 {
     // 실행 가능 여부 확인
     if (!HasContent(InContent)) return false;
@@ -108,10 +109,10 @@ void UInventoryComponent::SwapContent(USlotManagerComponentBase* Source, int32 S
     // Fill
     if (Source && Destination && !Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex) && Source == Destination)
     {
-        const USlotContent* SourceContent = Source->GetContent(SourceIndex);
+        const UObject* SourceContent = Source->GetContent(SourceIndex);
         const UDataAsset* SourceData = IDataInstanceInterface::Execute_GetData(SourceContent);
 
-        const USlotContent* DestinationContent = Destination->GetContent(DestinationIndex);
+        const UObject* DestinationContent = Destination->GetContent(DestinationIndex);
         const UDataAsset* DestinationData = IDataInstanceInterface::Execute_GetData(DestinationContent);
 
         if (SourceData == DestinationData)
@@ -136,7 +137,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 {
     if (CheckData(NewData))
     {
-        USlotContent* NewContent = CreateContentFromData(NewData);
+        UObject* NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
@@ -144,7 +145,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 
 bool UInventoryComponent::SetSlotQuantity(int32 SlotIndex, int32 NewQuantity)
 {
-    USlotContent* Content = GetContent(SlotIndex);
+    UObject* Content = GetContent(SlotIndex);
     if (CheckContent(Content))
     {
         IItemInstanceInterface::Execute_SetQuantity(Content, NewQuantity);
@@ -160,13 +161,13 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 {
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
-    const USlotContent* Content = GetContent(SlotIndex);
+    const UObject* Content = GetContent(SlotIndex);
     UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content);
     const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
 
     if (SlotQuantity < Quantity) return;
 
-    UItemInstance* NewItem = CastChecked<UItemInstance>(CreateContentFromData(Data));
+    UItemInstance* NewItem = CastChecked<UItemInstance>(IDataDefinitionInterface::Execute_CreateInstance(Data));
     IItemInstanceInterface::Execute_SetQuantity(NewItem, Quantity);
 
     TArray<UItemInstance*> InventoryItemsToDrop = { NewItem };

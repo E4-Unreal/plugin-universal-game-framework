@@ -8,7 +8,7 @@
 
 class USlotManagerComponentBase;
 class UUniformGridPanel;
-class USlotContent;
+class UObject;
 
 /**
  *
@@ -61,5 +61,5 @@ protected:
     void OnSlotIndexChanged(int32 OldSlotIndex, int32 NewSlotIndex);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void OnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent);
+    void OnSlotUpdated(int32 Index, UObject* OldContent, UObject* NewContent);
 };

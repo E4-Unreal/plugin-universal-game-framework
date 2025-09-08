@@ -5,8 +5,6 @@
 
 #include "Components/InventoryComponent.h"
 #include "Interfaces/ItemInstanceInterface.h"
-#include "Objects/SlotContent.h"
-#include "Widgets/InventorySlotWidgetBase.h"
 #include "Widgets/SlotWidgetBase.h"
 
 void UInventoryOutsideWidget::OnWidgetDrop(UUserWidget* DropWidget)

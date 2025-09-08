@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
-#include "Objects/SlotContent.h"
 #include "UGFItemInstance.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API UUGFItemInstance : public USlotContent,
+class UNIVERSALGAMEFRAMEWORK_API UUGFItemInstance : public UDataInstanceBase,
     public IItemInstanceInterface,
     public IWeaponInstanceInterface
 {

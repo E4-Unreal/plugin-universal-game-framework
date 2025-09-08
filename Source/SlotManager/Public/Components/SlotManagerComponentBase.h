@@ -7,9 +7,7 @@
 #include "Components/ReplicatedComponent.h"
 #include "SlotManagerComponentBase.generated.h"
 
-class USlotContent;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSlotUpdated, int32, Index, USlotContent*, OldContent, USlotContent*, NewContent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnSlotUpdated, int32, Index, UObject*, OldContent, UObject*, NewContent);
 
 /**
  * 인벤토리, 장비창, 스킬창, 퀵 슬롯 등의 부모 클래스
@@ -31,7 +29,7 @@ protected:
     TArray<FContentSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<int32, TObjectPtr<USlotContent>> SlotMap;
+    TMap<int32, TObjectPtr<UObject>> SlotMap;
 
 public:
     UPROPERTY(BlueprintAssignable)
@@ -56,25 +54,25 @@ public:
     virtual bool IsSlotEmpty(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool HasContent(USlotContent* InContent) const;
+    virtual bool HasContent(UObject* InContent) const;
 
     UFUNCTION(BlueprintPure)
-    virtual USlotContent* GetContent(int32 Index) const;
+    virtual UObject* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual int32 GetEmptySlotIndex(USlotContent* NewContent) const;
+    virtual int32 GetEmptySlotIndex(UObject* NewContent) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual void SetContent(int32 Index, USlotContent* NewContent);
+    virtual void SetContent(int32 Index, UObject* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool AddContent(USlotContent* NewContent);
+    virtual bool AddContent(UObject* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool AddContentByData(UDataAsset* NewData) { return AddContent(CreateContentFromData(NewData)); }
+    virtual bool AddContentByData(UDataAsset* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool RemoveContent(USlotContent* InContent);
+    virtual bool RemoveContent(UObject* InContent);
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);
@@ -94,12 +92,11 @@ protected:
 
     virtual void CreateSlots();
     virtual void MappingSlots();
-    virtual USlotContent* CreateContentFromData(UDataAsset* Data) const;
-    virtual bool CheckContent(USlotContent* Content) const;
+    virtual bool CheckContent(UObject* Content) const;
     virtual bool CheckData(UDataAsset* Data) const;
 
     UFUNCTION()
-    virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent);
+    virtual void HandleOnSlotUpdated(int32 Index, UObject* OldContent, UObject* NewContent);
 
     /* Replicate */
 

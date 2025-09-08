@@ -12,10 +12,10 @@ const FWeaponSlot FWeaponSlot::EmptySlot { };
 
 UReplicatedObject* FWeaponSlot::GetInstance() const
 {
-    if (Actor.IsValid() && Actor->Implements<UWeaponActorInterface>())
+    /*if (Actor.IsValid() && Actor->Implements<UWeaponActorInterface>())
     {
         return IWeaponActorInterface::Execute_GetInstance(Actor.Get());
-    }
+    }*/
 
     return nullptr;
 }

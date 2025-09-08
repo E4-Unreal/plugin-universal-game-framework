@@ -4,8 +4,9 @@
 #include "Components/SlotManagerComponentBase.h"
 
 #include "Net/UnrealNetwork.h"
-#include "Objects/SlotContent.h"
 #include "Logging.h"
+#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInstanceInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
 {
@@ -38,7 +39,7 @@ bool USlotManagerComponentBase::IsSlotEmpty(int32 Index) const
     return DoesSlotExist(Index) ? GetContent(Index) == nullptr : false;
 }
 
-bool USlotManagerComponentBase::HasContent(USlotContent* InContent) const
+bool USlotManagerComponentBase::HasContent(UObject* InContent) const
 {
     for (const auto& [Index, Content] : SlotMap)
     {
@@ -51,12 +52,12 @@ bool USlotManagerComponentBase::HasContent(USlotContent* InContent) const
     return false;
 }
 
-USlotContent* USlotManagerComponentBase::GetContent(int32 Index) const
+UObject* USlotManagerComponentBase::GetContent(int32 Index) const
 {
     return SlotMap.FindRef(Index);
 }
 
-int32 USlotManagerComponentBase::GetEmptySlotIndex(USlotContent* NewContent) const
+int32 USlotManagerComponentBase::GetEmptySlotIndex(UObject* NewContent) const
 {
     int32 EmptyIndex = -1;
 
@@ -73,15 +74,15 @@ int32 USlotManagerComponentBase::GetEmptySlotIndex(USlotContent* NewContent) con
     return EmptyIndex;
 }
 
-void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent)
+void USlotManagerComponentBase::SetContent(int32 Index, UObject* NewContent)
 {
     if (!GetOwner()->HasAuthority()) return;
 
     if (DoesSlotExist(Index))
     {
-        USlotContent* OldContent = Slots[Index].Content;
-        if (OldContent) RemoveReplicatedObject(OldContent);
-        if (NewContent) AddReplicatedObject(NewContent);
+        UObject* OldContent = Slots[Index].Content;
+        if (OldContent) RemoveReplicatedObject(Cast<UReplicatedObject>(OldContent));
+        if (NewContent) AddReplicatedObject(Cast<UReplicatedObject>(NewContent));
 
         Slots[Index].Content = NewContent;
         SlotMap.Emplace(Index, NewContent);
@@ -90,7 +91,7 @@ void USlotManagerComponentBase::SetContent(int32 Index, USlotContent* NewContent
     }
 }
 
-bool USlotManagerComponentBase::AddContent(USlotContent* NewContent)
+bool USlotManagerComponentBase::AddContent(UObject* NewContent)
 {
     if (!GetOwner()->HasAuthority()) return false;
 
@@ -105,7 +106,18 @@ bool USlotManagerComponentBase::AddContent(USlotContent* NewContent)
     return false;
 }
 
-bool USlotManagerComponentBase::RemoveContent(USlotContent* InContent)
+bool USlotManagerComponentBase::AddContentByData(UDataAsset* NewData)
+{
+    if (CheckData(NewData))
+    {
+        UObject* NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
+        return AddContent(NewContent);
+    }
+
+    return false;
+}
+
+bool USlotManagerComponentBase::RemoveContent(UObject* InContent)
 {
     if (!GetOwner()->HasAuthority()) return false;
 
@@ -127,7 +139,7 @@ void USlotManagerComponentBase::TransferContent_Implementation(USlotManagerCompo
 {
     if (Source && !Source->IsSlotEmpty(SourceIndex) && Destination && Destination->IsSlotEmpty(DestinationIndex))
     {
-        USlotContent* SourceContent = Source->GetContent(SourceIndex);
+        UObject* SourceContent = Source->GetContent(SourceIndex);
         Source->SetContent(SourceIndex, nullptr);
         Destination->SetContent(DestinationIndex, SourceContent);
     }
@@ -148,8 +160,8 @@ void USlotManagerComponentBase::SwapContent_Implementation(USlotManagerComponent
         }
         else if (!Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex))
         {
-            USlotContent* SourceContent = Source->GetContent(SourceIndex);
-            USlotContent* DestinationContent = Destination->GetContent(DestinationIndex);
+            UObject* SourceContent = Source->GetContent(SourceIndex);
+            UObject* DestinationContent = Destination->GetContent(DestinationIndex);
             Source->SetContent(SourceIndex, DestinationContent);
             Destination->SetContent(DestinationIndex, SourceContent);
         }
@@ -161,7 +173,7 @@ void USlotManagerComponentBase::SyncContent_Implementation(USlotManagerComponent
 {
     if (Source && !Source->IsSlotEmpty(SourceIndex) && Destination && Destination->IsSlotEmpty(DestinationIndex))
     {
-        USlotContent* Content = Source->GetContent(DestinationIndex);
+        UObject* Content = Source->GetContent(DestinationIndex);
         Destination->SetContent(DestinationIndex, Content);
     }
 }
@@ -184,23 +196,7 @@ void USlotManagerComponentBase::MappingSlots()
     }
 }
 
-USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data) const
-{
-    if (CheckData(Data))
-    {
-        USlotContent* NewContent = NewObject<USlotContent>();
-        if (NewContent->Implements<UDataInstanceInterface>())
-        {
-            IDataInstanceInterface::Execute_SetData(NewContent, Data);
-
-            return IDataInstanceInterface::Execute_IsValid(NewContent) ? NewContent : nullptr;
-        }
-    }
-
-    return nullptr;
-}
-
-bool USlotManagerComponentBase::CheckContent(USlotContent* Content) const
+bool USlotManagerComponentBase::CheckContent(UObject* Content) const
 {
     if (Content == nullptr || !Content->Implements<UDataInstanceInterface>()) return false;
 
@@ -210,7 +206,7 @@ bool USlotManagerComponentBase::CheckContent(USlotContent* Content) const
     {
         for (auto UsingInstanceInterface : UsingInstanceInterfaces)
         {
-            if (UsingInstanceInterface && IDataInstanceInterface::Execute_GetDataByInterface(Content, UsingInstanceInterface) == nullptr)
+            if (UsingInstanceInterface && !Content->GetClass()->ImplementsInterface(UsingInstanceInterface))
             {
                 return false;
             }
@@ -222,7 +218,7 @@ bool USlotManagerComponentBase::CheckContent(USlotContent* Content) const
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 {
-    if (Data == nullptr) return false;
+    if (Data == nullptr || !Data->Implements<UDataDefinitionInterface>()) return false;
 
     for (auto UsingDataInterface : UsingDataInterfaces)
     {
@@ -235,7 +231,7 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
     return true;
 }
 
-void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent)
+void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index, UObject* OldContent, UObject* NewContent)
 {
     FString OldContentName = OldContent ? OldContent->GetName() : "Null";
     FString NewContentName = NewContent ? NewContent->GetName() : "Null";
@@ -264,7 +260,7 @@ void USlotManagerComponentBase::OnRep_Slots(TArray<FContentSlot> OldSlots)
         UpdatedSlotIndices.Emplace(Index);
     }
 
-    TMap<int32, TObjectPtr<USlotContent>> OldSlotMap = SlotMap;
+    TMap<int32, TObjectPtr<UObject>> OldSlotMap = SlotMap;
 
     MappingSlots();
 

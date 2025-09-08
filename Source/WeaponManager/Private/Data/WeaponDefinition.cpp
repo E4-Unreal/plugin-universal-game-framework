@@ -4,10 +4,12 @@
 #include "Data/WeaponDefinition.h"
 
 #include "Actors/WeaponActor.h"
+#include "Data/WeaponInstance.h"
 #include "GameplayTags/WeaponGameplayTags.h"
 
 UWeaponDefinition::UWeaponDefinition()
 {
+    InstanceClass = UWeaponInstance::StaticClass();
     ActorClass = AWeaponActor::StaticClass();
     SlotType = Weapon::Slot::Primary;
     ActiveSocketName = FName("hand_r");

@@ -24,8 +24,8 @@ class WEAPONMANAGER_API IWeaponActorInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    USlotContent* GetInstance() const;
+    UObject* GetInstance() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetInstance(USlotContent* NewInstance);
+    void SetInstance(UObject* NewInstance);
 };

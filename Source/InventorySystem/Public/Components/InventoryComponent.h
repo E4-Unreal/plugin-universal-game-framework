@@ -39,9 +39,9 @@ public:
     /* SlotManagerComponentBase */
 
     virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
-    virtual bool HasContent(USlotContent* InContent) const override;
-    virtual bool AddContent(USlotContent* InContent) override;
-    virtual bool RemoveContent(USlotContent* InContent) override;
+    virtual bool HasContent(UObject* InContent) const override;
+    virtual bool AddContent(UObject* InContent) override;
+    virtual bool RemoveContent(UObject* InContent) override;
     virtual void SwapContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex) override;
 
     /* API */
