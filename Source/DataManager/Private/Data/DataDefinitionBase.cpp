@@ -30,6 +30,19 @@ TArray<UDataInstanceBase*> UDataDefinitionBase::CreateInstances() const
     return NewInstances;
 }
 
+bool UDataDefinitionBase::CanCreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const
+{
+    if (InstanceClass)
+    {
+        if (UDataInstanceBase* DefaultInstance = InstanceClass->GetDefaultObject<UDataInstanceBase>())
+        {
+            return DefaultInstance->CanCreateFromData(GetClass());
+        }
+    }
+
+    return false;
+}
+
 UDataInstanceBase* UDataDefinitionBase::CreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const
 {
     if (InstanceClass)

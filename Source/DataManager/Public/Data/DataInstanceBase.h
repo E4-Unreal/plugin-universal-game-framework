@@ -24,4 +24,8 @@ public:
     /* DefinitionContainerBase */
 
     virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override;
+
+    /* API */
+
+    virtual bool CanCreateFromData(TSubclassOf<UDataDefinitionBase> DefinitionClass);
 };

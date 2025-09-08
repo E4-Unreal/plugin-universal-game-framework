@@ -7,5 +7,10 @@
 
 void UDataInstanceBase::SetDefinition_Implementation(UDataDefinitionBase* NewDefinition)
 {
-    Definition = NewDefinition && DefinitionInterfaceClass && NewDefinition->GetClass()->ImplementsInterface(DefinitionInterfaceClass) ? NewDefinition : nullptr;
+    Definition = NewDefinition && CanCreateFromData(NewDefinition->GetClass()) ? NewDefinition : nullptr;
+}
+
+bool UDataInstanceBase::CanCreateFromData(TSubclassOf<UDataDefinitionBase> DefinitionClass)
+{
+    return DefinitionClass && DefinitionInterfaceClass && DefinitionClass->ImplementsInterface(DefinitionInterfaceClass);
 }

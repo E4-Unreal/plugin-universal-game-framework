@@ -28,6 +28,9 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual TArray<UDataInstanceBase*> CreateInstances() const;
 
+    UFUNCTION(BlueprintPure)
+    virtual bool CanCreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const;
+
     UFUNCTION(BlueprintCallable)
     virtual UDataInstanceBase* CreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const;
 };
