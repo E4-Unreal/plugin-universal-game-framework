@@ -30,6 +30,9 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
+    static UDataCollection* CreateDataCollectionFromData(UDataAsset* InData);
+
+    UFUNCTION(BlueprintCallable)
     void SetInstances(const TArray<UObject*>& NewInstances) { Instances = NewInstances; }
 
     UFUNCTION(BlueprintPure)

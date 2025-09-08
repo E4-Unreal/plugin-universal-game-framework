@@ -23,9 +23,6 @@ protected:
 
 public:
     UFUNCTION(BlueprintCallable)
-    UDataCollection* CreateCollection() const;
-
-    UFUNCTION(BlueprintCallable)
     virtual TArray<UObject*> CreateInstances() const;
 
     UFUNCTION(BlueprintPure)

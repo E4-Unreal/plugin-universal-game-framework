@@ -24,6 +24,19 @@ void UDataCollection::SetData_Implementation(UDataAsset* NewData)
     }
 }
 
+UDataCollection* UDataCollection::CreateDataCollectionFromData(UDataAsset* InData)
+{
+    if (InData)
+    {
+        UDataCollection* NewCollection = NewObject<UDataCollection>();
+        NewCollection->SetData(InData);
+
+        return NewCollection->IsValid() ? NewCollection : nullptr;
+    }
+
+    return nullptr;
+}
+
 bool UDataCollection::HasDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     return GetDataByInterface(InterfaceClass) != nullptr;
