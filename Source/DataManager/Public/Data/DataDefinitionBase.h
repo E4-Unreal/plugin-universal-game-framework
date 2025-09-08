@@ -7,7 +7,7 @@
 #include "DataDefinitionBase.generated.h"
 
 class UDataInstanceBase;
-class UDataInstanceContainer;
+class UDataCollection;
 
 /**
  *
@@ -23,7 +23,7 @@ protected:
 
 public:
     UFUNCTION(BlueprintCallable)
-    UDataInstanceContainer* CreateCollection() const;
+    UDataCollection* CreateCollection() const;
 
     UFUNCTION(BlueprintCallable)
     virtual TArray<UObject*> CreateInstances() const;

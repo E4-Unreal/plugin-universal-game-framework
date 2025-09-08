@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "DataSlot.generated.h"
 
-class UDataInstanceContainer;
+class UDataCollection;
 class UDataInstanceBase;
 
 USTRUCT(BlueprintType)
@@ -17,5 +17,5 @@ struct SLOTMANAGER_API FDataSlot
     int32 Index;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UDataInstanceContainer> Collection;
+    TObjectPtr<UDataCollection> Collection;
 };

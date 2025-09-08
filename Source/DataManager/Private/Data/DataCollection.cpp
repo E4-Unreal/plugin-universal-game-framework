@@ -1,20 +1,20 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/DataInstanceContainer.h"
+#include "Data/DataCollection.h"
 
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
 #include "Net/UnrealNetwork.h"
 
-void UDataInstanceContainer::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+void UDataCollection::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ThisClass, Instances);
 }
 
-void UDataInstanceContainer::SetData_Implementation(UDataAsset* NewData)
+void UDataCollection::SetData_Implementation(UDataAsset* NewData)
 {
     Super::SetData_Implementation(NewData);
 
@@ -24,12 +24,12 @@ void UDataInstanceContainer::SetData_Implementation(UDataAsset* NewData)
     }
 }
 
-bool UDataInstanceContainer::HasDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
+bool UDataCollection::HasDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     return GetDataByInterface(InterfaceClass) != nullptr;
 }
 
-UDataAsset* UDataInstanceContainer::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
+UDataAsset* UDataCollection::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     if (InterfaceClass == nullptr) return nullptr;
 
@@ -55,12 +55,12 @@ UDataAsset* UDataInstanceContainer::GetDataByInterface(TSubclassOf<UInterface> I
     return nullptr;
 }
 
-bool UDataInstanceContainer::HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
+bool UDataCollection::HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     return GetInstanceByInterface(InterfaceClass) != nullptr;
 }
 
-UObject* UDataInstanceContainer::GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
+UObject* UDataCollection::GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     for (auto Instance : Instances)
     {

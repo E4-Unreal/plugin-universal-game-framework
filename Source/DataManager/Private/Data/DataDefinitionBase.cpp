@@ -4,11 +4,11 @@
 #include "Data/DataDefinitionBase.h"
 
 #include "Data/DataInstanceBase.h"
-#include "Data/DataInstanceContainer.h"
+#include "Data/DataCollection.h"
 
-UDataInstanceContainer* UDataDefinitionBase::CreateCollection() const
+UDataCollection* UDataDefinitionBase::CreateCollection() const
 {
-    UDataInstanceContainer* NewCollection = NewObject<UDataInstanceContainer>();
+    UDataCollection* NewCollection = NewObject<UDataCollection>();
     NewCollection->SetData(const_cast<UDataDefinitionBase*>(this));
 
     return NewCollection;

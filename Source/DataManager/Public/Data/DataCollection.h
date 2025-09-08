@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "DataContainerBase.h"
-#include "DataInstanceContainer.generated.h"
+#include "DataCollection.generated.h"
 
 /**
  *
  */
 UCLASS()
-class DATAMANAGER_API UDataInstanceContainer : public UDataContainerBase
+class DATAMANAGER_API UDataCollection : public UDataContainerBase
 {
     GENERATED_BODY()
 
