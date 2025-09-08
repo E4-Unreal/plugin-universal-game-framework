@@ -53,7 +53,7 @@ public:
     virtual bool DoesSlotExist(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool IsEmpty(int32 Index) const;
+    virtual bool IsSlotEmpty(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
     virtual bool HasContent(USlotContent* InContent) const;
@@ -94,7 +94,7 @@ protected:
 
     virtual void CreateSlots();
     virtual void MappingSlots();
-    virtual USlotContent* CreateContentFromData(UDataAsset* Data);
+    virtual USlotContent* CreateContentFromData(UDataAsset* Data) const;
     virtual bool CheckContent(USlotContent* Content) const;
     virtual bool CheckData(UDataAsset* Data) const;
 

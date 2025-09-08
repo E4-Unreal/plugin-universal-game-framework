@@ -26,6 +26,25 @@ void UWeaponManagerComponent::InitializeComponent()
     FindMesh();
 }
 
+int32 UWeaponManagerComponent::GetEmptySlotIndex(USlotContent* NewContent) const
+{
+    if (CheckContent(NewContent))
+    {
+        UDataAsset* WeaponData = NewContent->GetData();
+        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(WeaponData);
+
+        for (const auto& [SlotIndex, Index] : SlotIndexMap)
+        {
+            if (SlotIndex.Type == SlotType && IsSlotEmpty(Index))
+            {
+                return Index;
+            }
+        }
+    }
+
+    return -1;
+}
+
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
     USlotContent* CurrentContent = GetContent(CurrentSlotIndex);
@@ -63,53 +82,6 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(int32 NewSlotIndex, bo
 bool UWeaponManagerComponent::DoesSocketExist(FName SocketName) const
 {
     return Mesh.IsValid() && Mesh->DoesSocketExist(SocketName);
-}
-
-bool UWeaponManagerComponent::DoesEmptySlotExist(FGameplayTag SlotType) const
-{
-    for (const auto& [SlotIndex, Index] : SlotIndexMap)
-    {
-        if (SlotIndex.Type == SlotType && IsEmpty(Index))
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool UWeaponManagerComponent::CanAddWeaponFromData(UDataAsset* NewData) const
-{
-    if (CheckData(NewData))
-    {
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
-
-        return DoesEmptySlotExist(SlotType);
-    }
-
-    return false;
-}
-
-void UWeaponManagerComponent::AddWeaponFromData(UDataAsset* NewData)
-{
-    if (CanAddWeaponFromData(NewData))
-    {
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(NewData);
-
-        for (auto& [SlotIndex, Index] : SlotIndexMap)
-        {
-            if (IsEmpty(Index) && SlotIndex.Type == SlotType)
-            {
-                if (AActor* Actor = SpawnActorFromData(NewData))
-                {
-                    USlotContent* NewContent = IWeaponActorInterface::Execute_GetInstance(Actor);
-                    SetContent(Index, NewContent);
-
-                    break;
-                }
-            }
-        }
-    }
 }
 
 void UWeaponManagerComponent::CreateSlots()

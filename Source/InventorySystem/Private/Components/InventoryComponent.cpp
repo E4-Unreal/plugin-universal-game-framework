@@ -106,7 +106,7 @@ void UInventoryComponent::SwapContent(USlotManagerComponentBase* Source, int32 S
     USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
     // Fill
-    if (Source && Destination && !Source->IsEmpty(SourceIndex) && !Destination->IsEmpty(DestinationIndex) && Source == Destination)
+    if (Source && Destination && !Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex) && Source == Destination)
     {
         const USlotContent* SourceContent = Source->GetContent(SourceIndex);
         const UDataAsset* SourceData = SourceContent->GetData();
@@ -158,7 +158,7 @@ bool UInventoryComponent::SetSlotQuantity(int32 SlotIndex, int32 NewQuantity)
 
 void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 {
-    if (bool bCanDrop = !IsEmpty(SlotIndex); !bCanDrop) return;
+    if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
     const USlotContent* Content = GetContent(SlotIndex);
     UDataAsset* Data = Content->GetData();

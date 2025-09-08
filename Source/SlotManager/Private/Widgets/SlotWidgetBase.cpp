@@ -47,7 +47,7 @@ void USlotWidgetBase::NativePreConstruct()
 
 bool USlotWidgetBase::CanDrag() const
 {
-    return Super::CanDrag() && SlotManager.IsValid() && !SlotManager->IsEmpty(SlotIndex);
+    return Super::CanDrag() && SlotManager.IsValid() && !SlotManager->IsSlotEmpty(SlotIndex);
 }
 
 void USlotWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)

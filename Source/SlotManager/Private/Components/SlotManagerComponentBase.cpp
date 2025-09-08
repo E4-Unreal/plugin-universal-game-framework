@@ -33,7 +33,7 @@ bool USlotManagerComponentBase::DoesSlotExist(int32 Index) const
     return SlotMap.Contains(Index);
 }
 
-bool USlotManagerComponentBase::IsEmpty(int32 Index) const
+bool USlotManagerComponentBase::IsSlotEmpty(int32 Index) const
 {
     return DoesSlotExist(Index) ? GetContent(Index) == nullptr : false;
 }
@@ -62,7 +62,7 @@ int32 USlotManagerComponentBase::GetEmptySlotIndex(USlotContent* NewContent) con
 
     for (int32 Index = 0; Index < Slots.Num(); ++Index)
     {
-        if (IsEmpty(Index))
+        if (IsSlotEmpty(Index))
         {
             EmptyIndex = Index;
 
@@ -125,7 +125,7 @@ bool USlotManagerComponentBase::RemoveContent(USlotContent* InContent)
 void USlotManagerComponentBase::TransferContent_Implementation(USlotManagerComponentBase* Source, int32 SourceIndex,
                                                                USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
-    if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
+    if (Source && !Source->IsSlotEmpty(SourceIndex) && Destination && Destination->IsSlotEmpty(DestinationIndex))
     {
         USlotContent* SourceContent = Source->GetContent(SourceIndex);
         Source->SetContent(SourceIndex, nullptr);
@@ -138,15 +138,15 @@ void USlotManagerComponentBase::SwapContent_Implementation(USlotManagerComponent
 {
     if (Source && Destination)
     {
-        if (!Source->IsEmpty(SourceIndex) && Destination->IsEmpty(DestinationIndex))
+        if (!Source->IsSlotEmpty(SourceIndex) && Destination->IsSlotEmpty(DestinationIndex))
         {
             TransferContent(Source, SourceIndex, Destination, DestinationIndex);
         }
-        else if (Source->IsEmpty(SourceIndex) && !Destination->IsEmpty(DestinationIndex))
+        else if (Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex))
         {
             TransferContent(Destination, DestinationIndex, Source, SourceIndex);
         }
-        else if (!Source->IsEmpty(SourceIndex) && !Destination->IsEmpty(DestinationIndex))
+        else if (!Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex))
         {
             USlotContent* SourceContent = Source->GetContent(SourceIndex);
             USlotContent* DestinationContent = Destination->GetContent(DestinationIndex);
@@ -159,7 +159,7 @@ void USlotManagerComponentBase::SwapContent_Implementation(USlotManagerComponent
 void USlotManagerComponentBase::SyncContent_Implementation(USlotManagerComponentBase* Source, int32 SourceIndex,
     USlotManagerComponentBase* Destination, int32 DestinationIndex)
 {
-    if (Source && !Source->IsEmpty(SourceIndex) && Destination && Destination->IsEmpty(DestinationIndex))
+    if (Source && !Source->IsSlotEmpty(SourceIndex) && Destination && Destination->IsSlotEmpty(DestinationIndex))
     {
         USlotContent* Content = Source->GetContent(DestinationIndex);
         Destination->SetContent(DestinationIndex, Content);
@@ -184,7 +184,7 @@ void USlotManagerComponentBase::MappingSlots()
     }
 }
 
-USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
+USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data) const
 {
     if (CheckData(Data))
     {

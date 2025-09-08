@@ -38,6 +38,10 @@ public:
 
     virtual void InitializeComponent() override;
 
+    /* SlotManagerComponentBase */
+
+    virtual int32 GetEmptySlotIndex(USlotContent* NewContent) const override;
+
     /* API */
 
     UFUNCTION(BlueprintCallable)
@@ -51,12 +55,6 @@ public:
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
     void SetSlotIndex(int32 NewSlotIndex, bool bForce = false);
-
-    UFUNCTION(BlueprintPure)
-    virtual bool CanAddWeaponFromData(UDataAsset* NewData) const;
-
-    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    void AddWeaponFromData(UDataAsset* NewData);
 
 protected:
     /* SlotManagerComponentBase */
@@ -73,7 +71,6 @@ protected:
     virtual void FindMesh();
 
     virtual bool DoesSocketExist(FName SocketName) const;
-    virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
     virtual AActor* SpawnActorFromData(UDataAsset* Data) { return SpawnActorFromContent(CreateContentFromData(Data)); }
