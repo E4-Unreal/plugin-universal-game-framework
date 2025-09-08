@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(Blueprintable)
 class DATAMANAGER_API UReplicatedObject : public UObject
 {
     GENERATED_BODY()
