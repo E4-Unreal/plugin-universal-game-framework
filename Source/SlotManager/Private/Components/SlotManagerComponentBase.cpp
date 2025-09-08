@@ -56,7 +56,7 @@ USlotContent* USlotManagerComponentBase::GetContent(int32 Index) const
     return SlotMap.FindRef(Index);
 }
 
-int32 USlotManagerComponentBase::GetEmptySlotIndex() const
+int32 USlotManagerComponentBase::GetEmptySlotIndex(USlotContent* NewContent) const
 {
     int32 EmptyIndex = -1;
 
@@ -94,7 +94,7 @@ bool USlotManagerComponentBase::AddContent(USlotContent* NewContent)
 {
     if (!GetOwner()->HasAuthority()) return false;
 
-    int32 EmptyIndex = GetEmptySlotIndex();
+    int32 EmptyIndex = GetEmptySlotIndex(NewContent);
     if (DoesSlotExist(EmptyIndex))
     {
         SetContent(EmptyIndex, NewContent);

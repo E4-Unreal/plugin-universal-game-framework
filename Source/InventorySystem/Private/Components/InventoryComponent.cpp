@@ -61,9 +61,9 @@ bool UInventoryComponent::AddContent(USlotContent* InContent)
 
     // 새로운 인벤토리 슬롯 추가
 
-    while (Quantity > 0 && DoesSlotExist(GetEmptySlotIndex()))
+    while (Quantity > 0 && DoesSlotExist(GetEmptySlotIndex(InContent)))
     {
-        const int32 EmptySlotIndex = GetEmptySlotIndex();
+        const int32 EmptySlotIndex = GetEmptySlotIndex(InContent);
 
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;

@@ -62,13 +62,16 @@ public:
     virtual USlotContent* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual int32 GetEmptySlotIndex() const;
+    virtual int32 GetEmptySlotIndex(USlotContent* NewContent) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual void SetContent(int32 Index, USlotContent* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual bool AddContent(USlotContent* NewContent);
+
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+    virtual bool AddContentByData(UDataAsset* NewData) { return AddContent(CreateContentFromData(NewData)); }
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual bool RemoveContent(USlotContent* InContent);
