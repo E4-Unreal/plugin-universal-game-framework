@@ -3,25 +3,25 @@
 
 #include "Data/DataDefinitionBase.h"
 
-#include "Data/DataCollection.h"
+#include "Data/DataInstanceContainer.h"
 #include "Data/DataInstanceBase.h"
 
-UDataCollection* UDataDefinitionBase::CreateCollection() const
+UDataInstanceContainer* UDataDefinitionBase::CreateCollection() const
 {
-    UDataCollection* NewCollection = NewObject<UDataCollection>();
-    NewCollection->SetDefinition(const_cast<UDataDefinitionBase*>(this));
+    UDataInstanceContainer* NewCollection = NewObject<UDataInstanceContainer>();
+    NewCollection->SetData(const_cast<UDataDefinitionBase*>(this));
 
     return NewCollection;
 }
 
-TArray<UDataInstanceBase*> UDataDefinitionBase::CreateInstances() const
+TArray<UObject*> UDataDefinitionBase::CreateInstances() const
 {
-    TArray<UDataInstanceBase*> NewInstances;
+    TArray<UObject*> NewInstances;
     NewInstances.Reserve(InstanceClasses.Num());
 
-    for (TSubclassOf<UDataInstanceBase> InstanceClass : InstanceClasses)
+    for (TSubclassOf<UObject> InstanceClass : InstanceClasses)
     {
-        if (UDataInstanceBase* NewInstance = CreateInstance(InstanceClass))
+        if (UObject* NewInstance = CreateInstance(InstanceClass))
         {
             NewInstances.Emplace(NewInstance);
         }
@@ -30,7 +30,7 @@ TArray<UDataInstanceBase*> UDataDefinitionBase::CreateInstances() const
     return NewInstances;
 }
 
-bool UDataDefinitionBase::CanCreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const
+bool UDataDefinitionBase::CanCreateInstance(TSubclassOf<UObject> InstanceClass) const
 {
     if (InstanceClass)
     {
@@ -43,12 +43,12 @@ bool UDataDefinitionBase::CanCreateInstance(TSubclassOf<UDataInstanceBase> Insta
     return false;
 }
 
-UDataInstanceBase* UDataDefinitionBase::CreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const
+UObject* UDataDefinitionBase::CreateInstance(TSubclassOf<UObject> InstanceClass) const
 {
     if (InstanceClass)
     {
         UDataInstanceBase* NewInstance = NewObject<UDataInstanceBase>(GetTransientPackage(), InstanceClass);
-        NewInstance->SetDefinition(const_cast<UDataDefinitionBase*>(this));
+        NewInstance->SetData(const_cast<UDataDefinitionBase*>(this));
 
         return NewInstance->IsValid() ? NewInstance : nullptr;
     }

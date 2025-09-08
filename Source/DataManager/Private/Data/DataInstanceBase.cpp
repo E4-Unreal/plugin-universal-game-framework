@@ -3,14 +3,12 @@
 
 #include "Data/DataInstanceBase.h"
 
-#include "Data/DataDefinitionBase.h"
-
-void UDataInstanceBase::SetDefinition_Implementation(UDataDefinitionBase* NewDefinition)
+void UDataInstanceBase::SetData_Implementation(UDataAsset* NewData)
 {
-    Definition = NewDefinition && CanCreateFromData(NewDefinition->GetClass()) ? NewDefinition : nullptr;
+    Data = Data && CanCreateFromData(Data->GetClass()) ? NewData : nullptr;
 }
 
-bool UDataInstanceBase::CanCreateFromData(TSubclassOf<UDataDefinitionBase> DefinitionClass)
+bool UDataInstanceBase::CanCreateFromData(TSubclassOf<UDataAsset> DataClass)
 {
-    return DefinitionClass && DefinitionInterfaceClass && DefinitionClass->ImplementsInterface(DefinitionInterfaceClass);
+    return DataClass && DataInterfaceClass && DataClass->ImplementsInterface(DataInterfaceClass);
 }

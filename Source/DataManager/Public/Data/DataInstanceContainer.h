@@ -3,23 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DefinitionContainerBase.h"
-#include "DataCollection.generated.h"
-
-class UDataDefinitionBase;
-class UDataInstanceBase;
+#include "DataContainerBase.h"
+#include "DataInstanceContainer.generated.h"
 
 /**
  *
  */
 UCLASS()
-class DATAMANAGER_API UDataCollection : public UDefinitionContainerBase
+class DATAMANAGER_API UDataInstanceContainer : public UDataContainerBase
 {
     GENERATED_BODY()
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    TArray<TObjectPtr<UDataInstanceBase>> Instances;
+    TArray<TObjectPtr<UObject>> Instances;
 
 public:
     /* Object */
@@ -28,13 +25,13 @@ public:
 
     /* DefinitionContainerBase */
 
-    virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override;
+    virtual void SetData_Implementation(UDataAsset* NewData) override;
 
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    void SetInstances(const TArray<UDataInstanceBase*>& NewInstances) { Instances = NewInstances; }
+    void SetInstances(const TArray<UObject*>& NewInstances) { Instances = NewInstances; }
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataInstanceBase* GetInstanceByInterface(TSubclassOf<UInterface> Interface) const;
+    UObject* GetInstanceByInterface(TSubclassOf<UInterface> Interface) const;
 };

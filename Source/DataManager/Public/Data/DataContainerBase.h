@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ReplicatedObject.h"
-#include "DefinitionContainerBase.generated.h"
+#include "DataContainerBase.generated.h"
 
 class UDataDefinitionBase;
 
@@ -12,13 +12,13 @@ class UDataDefinitionBase;
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDefinitionContainerBase : public UReplicatedObject
+class DATAMANAGER_API UDataContainerBase : public UReplicatedObject
 {
     GENERATED_BODY()
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    TObjectPtr<UDataDefinitionBase> Definition;
+    TObjectPtr<UDataAsset> Data;
 
 public:
     /* Object */
@@ -27,12 +27,12 @@ public:
 
     /* API */
 
-    UFUNCTION(BlueprintPure)
-    bool IsValid() const { return Definition != nullptr; }
-
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE UDataDefinitionBase* GetDefinition() const { return Definition; }
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool IsValid() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetDefinition(UDataDefinitionBase* NewDefinition);
+    UDataAsset* GetData() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetData(UDataAsset* NewData);
 };

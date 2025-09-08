@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DefinitionContainerBase.h"
+#include "DataContainerBase.h"
 #include "DataInstanceBase.generated.h"
 
 class UDataDefinitionBase;
@@ -12,20 +12,20 @@ class UDataDefinitionBase;
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataInstanceBase : public UDefinitionContainerBase
+class DATAMANAGER_API UDataInstanceBase : public UDataContainerBase
 {
     GENERATED_BODY()
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UInterface> DefinitionInterfaceClass;
+    TSubclassOf<UInterface> DataInterfaceClass;
 
 public:
-    /* DefinitionContainerBase */
+    /* DataContainerBase */
 
-    virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override;
+    virtual void SetData_Implementation(UDataAsset* NewData) override;
 
     /* API */
 
-    virtual bool CanCreateFromData(TSubclassOf<UDataDefinitionBase> DefinitionClass);
+    virtual bool CanCreateFromData(TSubclassOf<UDataAsset> DataClass);
 };
