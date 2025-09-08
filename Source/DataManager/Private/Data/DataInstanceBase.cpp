@@ -3,12 +3,16 @@
 
 #include "Data/DataInstanceBase.h"
 
-void UDataInstanceBase::SetData_Implementation(UDataAsset* NewData)
+#include "Net/UnrealNetwork.h"
+
+void UDataInstanceBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
-    Data = Data && CanBeCreatedFromData(Data) ? NewData : nullptr;
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, Data);
 }
 
-bool UDataInstanceBase::CanBeCreatedFromData_Implementation(UDataAsset* InData) const
+UObject* UDataInstanceBase::GetInstanceByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
-    return InData && DataInterfaceClass && InData->GetClass()->ImplementsInterface(DataInterfaceClass);
+    return InterfaceClass && GetClass()->ImplementsInterface(InterfaceClass) ? const_cast<UDataInstanceBase*>(this) : nullptr;
 }

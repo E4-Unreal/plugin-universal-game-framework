@@ -21,5 +21,8 @@ class DATAMANAGER_API IDataDefinitionInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TArray<TSubclassOf<UObject>> GetInstanceClasses() const;
+    UObject* CreateInstance() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };

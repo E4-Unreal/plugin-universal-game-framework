@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataCollection.h"
+#include "Data/ReplicatedObject.h"
 #include "SlotContent.generated.h"
 
 /**
  *
  */
 UCLASS()
-class SLOTMANAGER_API USlotContent : public UDataCollection
+class SLOTMANAGER_API USlotContent : public UReplicatedObject
 {
     GENERATED_BODY()
 };

@@ -17,10 +17,11 @@ class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDa
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInstanceInterface"))
-    TArray<TSubclassOf<UObject>> InstanceClasses;
+    TSubclassOf<UObject> InstanceClass;
 
 public:
     /* DataDefinitionInterface */
 
-    virtual TArray<TSubclassOf<UObject>> GetInstanceClasses_Implementation() const override { return InstanceClasses; }
+    virtual UObject* CreateInstance_Implementation() const override;
+    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 };

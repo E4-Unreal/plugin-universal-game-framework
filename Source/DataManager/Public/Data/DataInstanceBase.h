@@ -3,28 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DataContainerBase.h"
+#include "ReplicatedObject.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "DataInstanceBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataInstanceBase : public UDataContainerBase
+class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject, public IDataInstanceInterface
 {
     GENERATED_BODY()
 
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UInterface> DataInterfaceClass;
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Replicated)
+    TObjectPtr<UDataAsset> Data;
 
 public:
-    /* DataContainerBase */
+    /* Object */
 
-    virtual void SetData_Implementation(UDataAsset* NewData) override;
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* API */
+    /* IDataInstanceInterface */
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool CanBeCreatedFromData(UDataAsset* InData) const;
+    virtual UDataAsset* GetData_Implementation() const override { return Data; }
+    virtual void SetData_Implementation(UDataAsset* NewData) override { Data = NewData; }
+    virtual UObject* GetInstanceByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 };
