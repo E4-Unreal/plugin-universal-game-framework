@@ -6,8 +6,6 @@
 #include "DataContainerBase.h"
 #include "DataInstanceBase.generated.h"
 
-class UDataDefinitionBase;
-
 /**
  *
  */
@@ -27,5 +25,6 @@ public:
 
     /* API */
 
-    virtual bool CanCreateFromData(TSubclassOf<UDataAsset> DataClass);
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool CanBeCreatedFromData(UDataAsset* InData) const;
 };

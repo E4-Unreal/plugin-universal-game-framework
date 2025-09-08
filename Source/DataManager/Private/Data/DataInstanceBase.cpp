@@ -5,10 +5,10 @@
 
 void UDataInstanceBase::SetData_Implementation(UDataAsset* NewData)
 {
-    Data = Data && CanCreateFromData(Data->GetClass()) ? NewData : nullptr;
+    Data = Data && CanBeCreatedFromData(Data) ? NewData : nullptr;
 }
 
-bool UDataInstanceBase::CanCreateFromData(TSubclassOf<UDataAsset> DataClass)
+bool UDataInstanceBase::CanBeCreatedFromData_Implementation(UDataAsset* InData) const
 {
-    return DataClass && DataInterfaceClass && DataClass->ImplementsInterface(DataInterfaceClass);
+    return InData && DataInterfaceClass && InData->GetClass()->ImplementsInterface(DataInterfaceClass);
 }

@@ -6,8 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "DataDefinitionBase.generated.h"
 
+class UDataInstanceBase;
 class UDataInstanceContainer;
-class UObject;
 
 /**
  *
@@ -19,7 +19,7 @@ class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TArray<TSubclassOf<UObject>> InstanceClasses;
+    TArray<TSubclassOf<UDataInstanceBase>> InstanceClasses;
 
 public:
     UFUNCTION(BlueprintCallable)
@@ -29,8 +29,8 @@ public:
     virtual TArray<UObject*> CreateInstances() const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool CanCreateInstance(TSubclassOf<UObject> InstanceClass) const;
+    bool CanCreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual UObject* CreateInstance(TSubclassOf<UObject> InstanceClass) const;
+    UObject* CreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const;
 };

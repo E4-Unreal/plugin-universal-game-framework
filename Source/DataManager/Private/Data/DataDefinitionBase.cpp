@@ -3,8 +3,8 @@
 
 #include "Data/DataDefinitionBase.h"
 
-#include "Data/DataInstanceContainer.h"
 #include "Data/DataInstanceBase.h"
+#include "Data/DataInstanceContainer.h"
 
 UDataInstanceContainer* UDataDefinitionBase::CreateCollection() const
 {
@@ -19,9 +19,9 @@ TArray<UObject*> UDataDefinitionBase::CreateInstances() const
     TArray<UObject*> NewInstances;
     NewInstances.Reserve(InstanceClasses.Num());
 
-    for (TSubclassOf<UObject> InstanceClass : InstanceClasses)
+    for (auto InstanceClass : InstanceClasses)
     {
-        if (UObject* NewInstance = CreateInstance(InstanceClass))
+        if (auto NewInstance = CreateInstance(InstanceClass))
         {
             NewInstances.Emplace(NewInstance);
         }
@@ -30,20 +30,20 @@ TArray<UObject*> UDataDefinitionBase::CreateInstances() const
     return NewInstances;
 }
 
-bool UDataDefinitionBase::CanCreateInstance(TSubclassOf<UObject> InstanceClass) const
+bool UDataDefinitionBase::CanCreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const
 {
     if (InstanceClass)
     {
-        if (UDataInstanceBase* DefaultInstance = InstanceClass->GetDefaultObject<UDataInstanceBase>())
+        if (auto DefaultInstance = InstanceClass->GetDefaultObject<UDataInstanceBase>())
         {
-            return DefaultInstance->CanCreateFromData(GetClass());
+            return DefaultInstance->CanBeCreatedFromData(const_cast<UDataDefinitionBase*>(this));
         }
     }
 
     return false;
 }
 
-UObject* UDataDefinitionBase::CreateInstance(TSubclassOf<UObject> InstanceClass) const
+UObject* UDataDefinitionBase::CreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const
 {
     if (InstanceClass)
     {
