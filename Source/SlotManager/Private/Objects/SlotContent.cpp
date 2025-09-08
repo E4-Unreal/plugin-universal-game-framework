@@ -2,22 +2,3 @@
 
 
 #include "Objects/SlotContent.h"
-
-#include "Net/UnrealNetwork.h"
-
-void USlotContent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
-{
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(ThisClass, Data);
-}
-
-UDataAsset* USlotContent::GetData_Implementation() const
-{
-    return Data;
-}
-
-void USlotContent::SetData_Implementation(UDataAsset* NewData)
-{
-    Data = NewData;
-}

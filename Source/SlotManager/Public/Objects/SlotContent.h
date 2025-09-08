@@ -3,29 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/ReplicatedObject.h"
+#include "Data/DataInstanceContainer.h"
 #include "SlotContent.generated.h"
 
 /**
  *
  */
 UCLASS()
-class SLOTMANAGER_API USlotContent : public UReplicatedObject
+class SLOTMANAGER_API USlotContent : public UDataInstanceContainer
 {
     GENERATED_BODY()
-
-protected:
-    UPROPERTY(VisibleAnywhere, Category = "State", Transient, Replicated)
-    TObjectPtr<UDataAsset> Data;
-
-public:
-    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
-    /* API */
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataAsset* GetData() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetData(UDataAsset* NewData);
 };
