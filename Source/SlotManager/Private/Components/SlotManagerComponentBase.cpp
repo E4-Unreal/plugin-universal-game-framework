@@ -3,7 +3,6 @@
 
 #include "Components/SlotManagerComponentBase.h"
 
-#include "Interfaces/SlotDataInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Objects/SlotContent.h"
 #include "Logging.h"
@@ -189,13 +188,10 @@ USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
 {
     if (CheckData(Data))
     {
-        TSubclassOf<USlotContent> ContentClass = ISlotDataInterface::Execute_GetContentClass(Data);
-        if (USlotContent* Content = CreateReplicatedObject<USlotContent>(ContentClass))
-        {
-            Content->SetData(Data);
+        USlotContent* NewContent = NewObject<USlotContent>();
+        NewContent->SetData(Data);
 
-            return Content;
-        }
+        return NewContent->IsValid() ? NewContent : nullptr;
     }
 
     return nullptr;

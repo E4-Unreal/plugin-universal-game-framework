@@ -13,6 +13,9 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 {
     bWantsInitializeComponent = true;
 
+    UsingDataInterfaces.Emplace(UWeaponDataInterface::StaticClass());
+    UsingInstanceInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
+
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
 }
 
@@ -126,21 +129,9 @@ void UWeaponManagerComponent::CreateSlots()
     MaxSlotNum = SlotIndex + 1;
 }
 
-bool UWeaponManagerComponent::CheckContent(USlotContent* Content) const
-{
-    if (Super::CheckContent(Content))
-    {
-        const float Durability = IWeaponInstanceInterface::Execute_GetDurability(Content);
-
-        return Durability >= 0.0f;
-    }
-
-    return false;
-}
-
 bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
 {
-    if (Super::CheckData(Data) && Data->Implements<UWeaponDataInterface>())
+    if (Super::CheckData(Data))
     {
         const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(Data);
         const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
@@ -206,8 +197,8 @@ AActor* UWeaponManagerComponent::SpawnActorFromContent(USlotContent* Content)
 {
     if (CheckContent(Content))
     {
-        UDataAsset* Data = IWeaponInstanceInterface::Execute_GetData(Content);
-        TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
+        UDataAsset* WeaponData = Content->GetData();
+        TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(WeaponData);
 
         FActorSpawnParameters ActorSpawnParameters;
         ActorSpawnParameters.Owner = GetOwner();
@@ -254,8 +245,8 @@ void UWeaponManagerComponent::Equip(USlotContent* Content)
     if (CheckContent(Content))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
-        TSoftObjectPtr<UDataAsset> Data = IWeaponInstanceInterface::Execute_GetData(Content);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(Data.LoadSynchronous());
+        UDataAsset* WeaponData = Content->GetData();
+        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(WeaponData);
 
         AttachWeaponActorToSocket(Actor, ActiveSocketName);
     }
@@ -266,8 +257,8 @@ void UWeaponManagerComponent::UnEquip(USlotContent* Content)
     if (CheckContent(Content))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
-        TSoftObjectPtr<UDataAsset> Data = IWeaponInstanceInterface::Execute_GetData(Content);
-        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetInActiveSocketName(Data.LoadSynchronous());
+        UDataAsset* WeaponData = Content->GetData();
+        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetInActiveSocketName(WeaponData);
 
         AttachWeaponActorToSocket(Actor, InActiveSocketName);
     }

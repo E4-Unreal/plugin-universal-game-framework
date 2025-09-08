@@ -63,7 +63,6 @@ protected:
 
     virtual void CreateSlots() override;
     virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
-    virtual bool CheckContent(USlotContent* Content) const override;
     virtual bool CheckData(UDataAsset* Data) const override;
     virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent) override;
 
