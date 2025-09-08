@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataDefinitionBase.h"
+#include "Interfaces/SlotDataInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "WeaponDefinition.generated.h"
 
@@ -11,11 +12,16 @@
  *
  */
 UCLASS()
-class WEAPONMANAGER_API UWeaponDefinition : public UDataDefinitionBase, public IWeaponDataInterface
+class WEAPONMANAGER_API UWeaponDefinition : public UDataDefinitionBase,
+    public ISlotDataInterface,
+    public IWeaponDataInterface
 {
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TSoftObjectPtr<UTexture2D> ThumbnailTexture;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UStaticMesh> StaticMesh;
 
@@ -39,6 +45,10 @@ protected:
 
 public:
     UWeaponDefinition();
+
+    /* SlotDataInterface */
+
+    virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
 
     /* WeaponDataInterface */
 
