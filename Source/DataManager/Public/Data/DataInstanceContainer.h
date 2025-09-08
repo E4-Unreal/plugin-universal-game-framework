@@ -33,6 +33,12 @@ public:
     void SetInstances(const TArray<UObject*>& NewInstances) { Instances = NewInstances; }
 
     UFUNCTION(BlueprintPure)
+    bool HasDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintPure)
+    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintPure)
     bool HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 
     UFUNCTION(BlueprintPure)

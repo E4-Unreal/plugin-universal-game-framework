@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ReplicatedObject.h"
+#include "Interfaces/DataContainerInterface.h"
 #include "DataContainerBase.generated.h"
 
 class UDataDefinitionBase;
@@ -12,7 +13,7 @@ class UDataDefinitionBase;
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataContainerBase : public UReplicatedObject
+class DATAMANAGER_API UDataContainerBase : public UReplicatedObject, public IDataContainerInterface
 {
     GENERATED_BODY()
 
