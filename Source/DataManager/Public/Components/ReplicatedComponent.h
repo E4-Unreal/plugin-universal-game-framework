@@ -26,10 +26,16 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+    /* API */
+
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+    virtual void AddReplicatedObject(UReplicatedObject* ReplicatedObject);
+
+    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+    virtual void RemoveReplicatedObject(UReplicatedObject* ReplicatedObject);
+
 protected:
     virtual UReplicatedObject* CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass);
-    virtual void AddReplicatedObject(UReplicatedObject* ReplicatedObject);
-    virtual void RemoveReplicatedObject(UReplicatedObject* ReplicatedObject);
 
     template <typename TReplicatedObject = UReplicatedObject>
     TReplicatedObject* CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass = TReplicatedObject::StaticClass())
