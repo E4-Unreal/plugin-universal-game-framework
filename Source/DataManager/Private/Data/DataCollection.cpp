@@ -5,6 +5,7 @@
 
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
 
 void UDataCollection::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -21,36 +22,25 @@ bool UDataCollection::IsValid_Implementation() const
 
 void UDataCollection::SetData_Implementation(UDataAsset* NewData)
 {
-    if (UDataDefinitionBase* NewDefinition = Cast<UDataDefinitionBase>(NewData))
+    if (NewData && NewData->Implements<UDataDefinitionInterface>())
     {
-        const auto& NewInstances = NewDefinition->CreateInstances();
-        if (!NewInstances.IsEmpty())
+        TArray<UObject*> NewInstances;
+        const auto& InstanceClasses = IDataDefinitionInterface::Execute_GetInstanceClasses(NewData);
+        for (const auto& InstanceClass : InstanceClasses)
         {
-            Data = NewData;
-            SetInstances(NewInstances);
+            if (InstanceClass && InstanceClass->ImplementsInterface(UDataInstanceInterface::StaticClass()))
+            {
+                auto NewInstance = NewObject<UObject>(GetTransientPackage(), InstanceClass);
+                IDataInstanceInterface::Execute_SetData(NewInstance, NewData);
+                if (IDataInstanceInterface::Execute_IsValid(NewInstance)) NewInstances.Emplace(NewInstance);
+            }
         }
+
+        Instances = NewInstances;
     }
 }
 
-UDataCollection* UDataCollection::CreateDataCollectionFromData(UDataAsset* InData)
-{
-    if (InData)
-    {
-        UDataCollection* NewCollection = NewObject<UDataCollection>();
-        NewCollection->SetData(InData);
-
-        return NewCollection->IsValid() ? NewCollection : nullptr;
-    }
-
-    return nullptr;
-}
-
-bool UDataCollection::HasDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
-{
-    return GetDataByInterface(InterfaceClass) != nullptr;
-}
-
-UDataAsset* UDataCollection::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
+UDataAsset* UDataCollection::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
     if (InterfaceClass == nullptr) return nullptr;
 
@@ -76,18 +66,29 @@ UDataAsset* UDataCollection::GetDataByInterface(TSubclassOf<UInterface> Interfac
     return nullptr;
 }
 
-bool UDataCollection::HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
-{
-    return GetInstanceByInterface(InterfaceClass) != nullptr;
-}
-
-UObject* UDataCollection::GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
+UObject* UDataCollection::GetInstanceByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
     for (auto Instance : Instances)
     {
         if (Instance && Instance->GetClass()->ImplementsInterface(InterfaceClass))
         {
             return Instance;
+        }
+    }
+
+    return nullptr;
+}
+
+UDataCollection* UDataCollection::CreateDataCollectionFromData(UDataAsset* InData)
+{
+    if (InData)
+    {
+        auto NewCollection = NewObject<UDataCollection>();
+        if (NewCollection && NewCollection->Implements<UDataInstanceInterface>())
+        {
+            IDataInstanceInterface::Execute_SetData(NewCollection, InData);
+
+            return IDataInstanceInterface::Execute_IsValid(NewCollection) ? NewCollection : nullptr;
         }
     }
 

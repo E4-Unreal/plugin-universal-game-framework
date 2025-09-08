@@ -25,7 +25,8 @@ void USlotWidgetBase::Refresh_Implementation()
     {
         if (USlotContent* Content = SlotManager->GetContent(SlotIndex))
         {
-            ApplyData(Content->GetData());
+            UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content);
+            ApplyData(Data);
         }
         else
         {

@@ -24,7 +24,7 @@ bool UInventoryComponent::HasContent(USlotContent* InContent) const
     if (CheckContent(InContent))
     {
         const int32 InQuantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
-        int32 OwnedQuantity = GetItemQuantity(InContent->GetData());
+        int32 OwnedQuantity = GetItemQuantity(IDataInstanceInterface::Execute_GetData(InContent));
 
         return OwnedQuantity >= InQuantity;
     }
@@ -37,7 +37,7 @@ bool UInventoryComponent::AddContent(USlotContent* InContent)
     // 실행 가능 여부 확인
     if (!CheckContent(InContent)) return false;
 
-    UDataAsset* InData = InContent->GetData();
+    UDataAsset* InData = IDataInstanceInterface::Execute_GetData(InContent);
     int32 Quantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
     const int32 MaxStack = IItemDataInterface::Execute_GetMaxStack(InData);
 
@@ -46,7 +46,7 @@ bool UInventoryComponent::AddContent(USlotContent* InContent)
     {
         if (Content == nullptr) continue;
 
-        UDataAsset* SlotData = Content->GetData();
+        UDataAsset* SlotData = IDataInstanceInterface::Execute_GetData(Content);
         const int32 SlotMaxStack = IItemDataInterface::Execute_GetMaxStack(SlotData);
         const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
         const int32 SlotCapacity = SlotMaxStack - SlotQuantity;
@@ -81,13 +81,13 @@ bool UInventoryComponent::RemoveContent(USlotContent* InContent)
     // 실행 가능 여부 확인
     if (!HasContent(InContent)) return false;
 
-    UDataAsset* InData = InContent->GetData();
+    UDataAsset* InData = IDataInstanceInterface::Execute_GetData(InContent);
     int32 InQuantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
 
     // 인벤토리 조회 및 아이템 제거
     for (const auto& [Index, Content] : SlotMap)
     {
-        if (Content->GetData() != InData) continue;
+        if (IDataInstanceInterface::Execute_GetData(Content) != InData) continue;
 
         const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
 
@@ -109,10 +109,10 @@ void UInventoryComponent::SwapContent(USlotManagerComponentBase* Source, int32 S
     if (Source && Destination && !Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex) && Source == Destination)
     {
         const USlotContent* SourceContent = Source->GetContent(SourceIndex);
-        const UDataAsset* SourceData = SourceContent->GetData();
+        const UDataAsset* SourceData = IDataInstanceInterface::Execute_GetData(SourceContent);
 
         const USlotContent* DestinationContent = Destination->GetContent(DestinationIndex);
-        const UDataAsset* DestinationData = DestinationContent->GetData();
+        const UDataAsset* DestinationData = IDataInstanceInterface::Execute_GetData(DestinationContent);
 
         if (SourceData == DestinationData)
         {
@@ -161,7 +161,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
     const USlotContent* Content = GetContent(SlotIndex);
-    UDataAsset* Data = Content->GetData();
+    UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content);
     const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
 
     if (SlotQuantity < Quantity) return;
@@ -184,7 +184,7 @@ int32 UInventoryComponent::GetItemQuantity(UDataAsset* Item) const
     int32 Quantity = 0;
     for (const auto& [Index, Content] : Slots)
     {
-        if (Content->GetData() == Item)
+        if (IDataInstanceInterface::Execute_GetData(Content) == Item)
         {
             Quantity += IItemInstanceInterface::Execute_GetQuantity(Content);
         }
@@ -203,7 +203,7 @@ int32 UInventoryComponent::GetItemCapacity(UDataAsset* Item) const
         Capacity = EmptySlotNum * IItemDataInterface::Execute_GetMaxStack(Item);
         for (const auto& [Index, Content] : Slots)
         {
-            if (Content->GetData() == Item)
+            if (IDataInstanceInterface::Execute_GetData(Content) == Item)
             {
                 const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
                 const int32 SlotMaxStack = IItemDataInterface::Execute_GetMaxStack(Item);

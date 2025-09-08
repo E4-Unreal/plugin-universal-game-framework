@@ -83,7 +83,7 @@ UStaticMesh* AItemActor::GetStaticMesh() const
     if (InventoryItems.Num() == 1)
     {
         USlotContent* Content = InventoryItems.Last();
-        if (UDataAsset* Data = Content->GetData())
+        if (UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content))
         {
             StaticMesh = IItemDataInterface::Execute_GetStaticMesh(Data).LoadSynchronous();
         }

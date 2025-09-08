@@ -189,9 +189,12 @@ USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
     if (CheckData(Data))
     {
         USlotContent* NewContent = NewObject<USlotContent>();
-        NewContent->SetData(Data);
+        if (NewContent->Implements<UDataInstanceInterface>())
+        {
+            IDataInstanceInterface::Execute_SetData(NewContent, Data);
 
-        return NewContent->IsValid() ? NewContent : nullptr;
+            return IDataInstanceInterface::Execute_IsValid(NewContent) ? NewContent : nullptr;
+        }
     }
 
     return nullptr;
@@ -199,13 +202,15 @@ USlotContent* USlotManagerComponentBase::CreateContentFromData(UDataAsset* Data)
 
 bool USlotManagerComponentBase::CheckContent(USlotContent* Content) const
 {
-    if (Content == nullptr) return false;
+    if (Content == nullptr || !Content->Implements<UDataInstanceInterface>()) return false;
 
-    if (CheckData(Content->GetData()))
+    UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content);
+
+    if (CheckData(Data))
     {
         for (auto UsingInstanceInterface : UsingInstanceInterfaces)
         {
-            if (UsingInstanceInterface && !Content->HasInstanceByInterface(UsingInstanceInterface))
+            if (UsingInstanceInterface && IDataInstanceInterface::Execute_GetDataByInterface(Content, UsingInstanceInterface) == nullptr)
             {
                 return false;
             }

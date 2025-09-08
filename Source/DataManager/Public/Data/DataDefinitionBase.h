@@ -4,30 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "Interfaces/DataDefinitionInterface.h"
 #include "DataDefinitionBase.generated.h"
-
-class UDataInstanceBase;
-class UDataCollection;
 
 /**
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset
+class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDataDefinitionInterface
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TArray<TSubclassOf<UDataInstanceBase>> InstanceClasses;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInstanceInterface"))
+    TArray<TSubclassOf<UObject>> InstanceClasses;
 
 public:
-    UFUNCTION(BlueprintCallable)
-    virtual TArray<UObject*> CreateInstances() const;
+    /* DataDefinitionInterface */
 
-    UFUNCTION(BlueprintPure)
-    bool CanCreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const;
-
-    UFUNCTION(BlueprintCallable)
-    UObject* CreateInstance(TSubclassOf<UDataInstanceBase> InstanceClass) const;
+    virtual TArray<TSubclassOf<UObject>> GetInstanceClasses_Implementation() const override { return InstanceClasses; }
 };

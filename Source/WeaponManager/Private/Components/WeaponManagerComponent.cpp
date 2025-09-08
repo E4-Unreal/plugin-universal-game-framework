@@ -30,7 +30,7 @@ int32 UWeaponManagerComponent::GetEmptySlotIndex(USlotContent* NewContent) const
 {
     if (CheckContent(NewContent))
     {
-        UDataAsset* WeaponData = NewContent->GetData();
+        UDataAsset* WeaponData = IDataInstanceInterface::Execute_GetData(NewContent);
         const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(WeaponData);
 
         for (const auto& [SlotIndex, Index] : SlotIndexMap)
@@ -169,7 +169,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromContent(USlotContent* Content)
 {
     if (CheckContent(Content))
     {
-        UDataAsset* WeaponData = Content->GetData();
+        UDataAsset* WeaponData = IDataInstanceInterface::Execute_GetData(Content);
         TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(WeaponData);
 
         FActorSpawnParameters ActorSpawnParameters;
@@ -217,7 +217,7 @@ void UWeaponManagerComponent::Equip(USlotContent* Content)
     if (CheckContent(Content))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
-        UDataAsset* WeaponData = Content->GetData();
+        UDataAsset* WeaponData = IDataInstanceInterface::Execute_GetData(Content);
         const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(WeaponData);
 
         AttachWeaponActorToSocket(Actor, ActiveSocketName);
@@ -229,7 +229,7 @@ void UWeaponManagerComponent::UnEquip(USlotContent* Content)
     if (CheckContent(Content))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
-        UDataAsset* WeaponData = Content->GetData();
+        UDataAsset* WeaponData = IDataInstanceInterface::Execute_GetData(Content);
         const FName InActiveSocketName = IWeaponDataInterface::Execute_GetInActiveSocketName(WeaponData);
 
         AttachWeaponActorToSocket(Actor, InActiveSocketName);

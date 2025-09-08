@@ -21,5 +21,17 @@ class DATAMANAGER_API IDataInstanceInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool IsValid() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UDataAsset* GetData() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetData(UDataAsset* NewData);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UObject* GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };

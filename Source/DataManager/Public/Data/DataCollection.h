@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "DataContainerBase.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "DataCollection.generated.h"
 
 /**
  *
  */
 UCLASS()
-class DATAMANAGER_API UDataCollection : public UDataContainerBase
+class DATAMANAGER_API UDataCollection : public UDataContainerBase, public IDataInstanceInterface
 {
     GENERATED_BODY()
 
@@ -23,28 +24,15 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* DefinitionContainerBase */
+    /* DataInstanceInterface */
 
     virtual bool IsValid_Implementation() const override;
     virtual void SetData_Implementation(UDataAsset* NewData) override;
+    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UObject* GetInstanceByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 
     /* API */
 
     UFUNCTION(BlueprintCallable)
     static UDataCollection* CreateDataCollectionFromData(UDataAsset* InData);
-
-    UFUNCTION(BlueprintCallable)
-    void SetInstances(const TArray<UObject*>& NewInstances) { Instances = NewInstances; }
-
-    UFUNCTION(BlueprintPure)
-    bool HasDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
-
-    UFUNCTION(BlueprintPure)
-    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
-
-    UFUNCTION(BlueprintPure)
-    bool HasInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
-
-    UFUNCTION(BlueprintPure)
-    UObject* GetInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };
