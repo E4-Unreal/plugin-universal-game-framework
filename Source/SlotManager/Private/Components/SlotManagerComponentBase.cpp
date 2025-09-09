@@ -200,7 +200,7 @@ bool USlotManagerComponentBase::CheckContent(UDataInstanceBase* Content) const
 {
     if (Content == nullptr) return false;
 
-    UDataAsset* Data = Content->GetData();
+    UDataAsset* Data = GetDataFromContent(Content);
     if (!CheckData(Data)) return false;
 
     for (auto UsingInstanceInterface : UsingInstanceInterfaces)
@@ -227,6 +227,11 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
     }
 
     return true;
+}
+
+UDataAsset* USlotManagerComponentBase::GetDataFromContent(UDataInstanceBase* InContent) const
+{
+    return InContent ? InContent->GetData() : nullptr;
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index, UDataInstanceBase* OldContent, UDataInstanceBase* NewContent)

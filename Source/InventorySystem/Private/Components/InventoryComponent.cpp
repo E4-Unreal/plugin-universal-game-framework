@@ -25,7 +25,7 @@ bool UInventoryComponent::HasContent(UDataInstanceBase* InContent) const
     if (CheckContent(InContent))
     {
         const int32 InQuantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
-        int32 OwnedQuantity = GetItemQuantity(InContent->GetData());
+        int32 OwnedQuantity = GetItemQuantity(GetDataFromContent(InContent));
 
         return OwnedQuantity >= InQuantity;
     }
@@ -38,7 +38,7 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
     // 실행 가능 여부 확인
     if (!CheckContent(InContent)) return false;
 
-    UDataAsset* InData = InContent->GetData();
+    UDataAsset* InData = GetDataFromContent(InContent);
     int32 Quantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
     const int32 MaxStack = IItemDataInterface::Execute_GetMaxStack(InData);
 
@@ -69,7 +69,7 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        UDataInstanceBase* NewContent = IDataDefinitionInterface::Execute_CreateInstance(InData);
+        auto NewContent = IDataDefinitionInterface::Execute_CreateInstance(InData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
@@ -82,7 +82,7 @@ bool UInventoryComponent::RemoveContent(UDataInstanceBase* InContent)
     // 실행 가능 여부 확인
     if (!HasContent(InContent)) return false;
 
-    UDataAsset* InData = InContent->GetData();
+    UDataAsset* InData = GetDataFromContent(InContent);
     int32 InQuantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
 
     // 인벤토리 조회 및 아이템 제거
@@ -109,11 +109,11 @@ void UInventoryComponent::SwapContent(USlotManagerComponentBase* Source, int32 S
     // Fill
     if (Source && Destination && !Source->IsSlotEmpty(SourceIndex) && !Destination->IsSlotEmpty(DestinationIndex) && Source == Destination)
     {
-        const UDataInstanceBase* SourceContent = Source->GetContent(SourceIndex);
-        const UDataAsset* SourceData = SourceContent->GetData();
+        auto SourceContent = Source->GetContent(SourceIndex);
+        UDataAsset* SourceData = GetDataFromContent(SourceContent);
 
-        const UDataInstanceBase* DestinationContent = Destination->GetContent(DestinationIndex);
-        const UDataAsset* DestinationData = DestinationContent->GetData();
+        auto DestinationContent = Destination->GetContent(DestinationIndex);
+        UDataAsset* DestinationData = GetDataFromContent(DestinationContent);
 
         if (SourceData == DestinationData)
         {
@@ -137,7 +137,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 {
     if (CheckData(NewData))
     {
-        UDataInstanceBase* NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
+        auto NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
@@ -145,11 +145,19 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 
 bool UInventoryComponent::SetSlotQuantity(int32 SlotIndex, int32 NewQuantity)
 {
-    UDataInstanceBase* Content = GetContent(SlotIndex);
-    if (CheckContent(Content))
+    auto OldContent = GetContent(SlotIndex);
+    if (CheckContent(OldContent))
     {
-        IItemInstanceInterface::Execute_SetQuantity(Content, NewQuantity);
-        OnSlotUpdated.Broadcast(SlotIndex, Content, Content);
+        if (NewQuantity <= 0)
+        {
+            SetContent(SlotIndex, nullptr);
+        }
+        else
+        {
+            IItemInstanceInterface::Execute_SetQuantity(OldContent, NewQuantity);
+        }
+
+        OnSlotUpdated.Broadcast(SlotIndex, OldContent, GetContent(SlotIndex));
 
         return true;
     }
@@ -161,16 +169,16 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 {
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
-    const UDataInstanceBase* Content = GetContent(SlotIndex);
+    const auto Content = GetContent(SlotIndex);
     UDataAsset* Data = Content->GetData();
     const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
 
     if (SlotQuantity < Quantity) return;
 
-    UItemInstance* NewItem = CastChecked<UItemInstance>(IDataDefinitionInterface::Execute_CreateInstance(Data));
-    IItemInstanceInterface::Execute_SetQuantity(NewItem, Quantity);
+    auto NewItemInstance = IDataDefinitionInterface::Execute_CreateInstance(Data);
+    IItemInstanceInterface::Execute_SetQuantity(NewItemInstance, Quantity);
 
-    TArray<UDataInstanceBase*> InventoryItemsToDrop = { NewItem };
+    TArray<UDataInstanceBase*> InventoryItemsToDrop = { NewItemInstance };
 
     AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
@@ -185,7 +193,7 @@ int32 UInventoryComponent::GetItemQuantity(UDataAsset* Item) const
     int32 Quantity = 0;
     for (const auto& [Index, Content] : Slots)
     {
-        if (Content->GetData() == Item)
+        if (GetDataFromContent(Content) == Item)
         {
             Quantity += IItemInstanceInterface::Execute_GetQuantity(Content);
         }
@@ -204,7 +212,7 @@ int32 UInventoryComponent::GetItemCapacity(UDataAsset* Item) const
         Capacity = EmptySlotNum * IItemDataInterface::Execute_GetMaxStack(Item);
         for (const auto& [Index, Content] : Slots)
         {
-            if (Content->GetData() == Item)
+            if (GetDataFromContent(Content) == Item)
             {
                 const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
                 const int32 SlotMaxStack = IItemDataInterface::Execute_GetMaxStack(Item);

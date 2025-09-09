@@ -94,6 +94,7 @@ protected:
     virtual void MappingSlots();
     virtual bool CheckContent(UDataInstanceBase* Content) const;
     virtual bool CheckData(UDataAsset* Data) const;
+    virtual UDataAsset* GetDataFromContent(UDataInstanceBase* InContent) const;
 
     UFUNCTION()
     virtual void HandleOnSlotUpdated(int32 Index, UDataInstanceBase* OldContent, UDataInstanceBase* NewContent);
