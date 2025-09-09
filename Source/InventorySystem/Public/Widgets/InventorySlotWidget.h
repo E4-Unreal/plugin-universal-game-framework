@@ -21,9 +21,14 @@ private:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UTextBlock> QuantityTextBlock;
 
+public:
+    /* SlotWidgetInterface */
+
+    virtual void Refresh_Implementation() override;
+
 protected:
     /* SlotWidgetBase */
-    
+
     virtual void Clear() override;
 
     /* API */
