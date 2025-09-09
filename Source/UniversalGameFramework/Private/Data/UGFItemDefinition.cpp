@@ -2,3 +2,12 @@
 
 
 #include "Data/UGFItemDefinition.h"
+
+#include "Data/ItemInstance.h"
+#include "GameplayTags/CurrencyGameplayTags.h"
+
+UUGFItemDefinition::UUGFItemDefinition()
+{
+    InstanceClass = UItemInstance::StaticClass();
+    CurrencyType = Currency::Default;
+}
