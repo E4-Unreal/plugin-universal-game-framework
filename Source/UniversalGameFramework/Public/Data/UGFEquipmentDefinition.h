@@ -37,8 +37,10 @@ public:
 
     /* WeaponDataInterface */
 
-    virtual FGameplayTag GetSlotType_Implementation() const override { return SlotType; }
+    virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
+    virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
     virtual TSubclassOf<AActor> GetActorClass_Implementation() const override { return ActorClass; }
+    virtual FGameplayTag GetSlotType_Implementation() const override { return SlotType; }
     virtual FName GetActiveSocketName_Implementation() const override { return ActiveSocketName; }
     virtual FName GetInActiveSocketName_Implementation() const override { return InActiveSocketName; }
     virtual float GetMaxDurability_Implementation() const override { return MaxDurability; }
