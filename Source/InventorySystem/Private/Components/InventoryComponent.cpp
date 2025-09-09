@@ -45,9 +45,9 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
     // 기존 인벤토리 슬롯 채우기
     for (const auto& [Index, Content] : SlotMap)
     {
-        if (Content == nullptr) continue;
+        if (Content == nullptr || Content != InContent) continue;
 
-        UDataAsset* SlotData = Content->GetData();
+        UDataAsset* SlotData = GetDataFromContent(Content);
         const int32 SlotMaxStack = IItemDataInterface::Execute_GetMaxStack(SlotData);
         const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
         const int32 SlotCapacity = SlotMaxStack - SlotQuantity;
@@ -88,7 +88,7 @@ bool UInventoryComponent::RemoveContent(UDataInstanceBase* InContent)
     // 인벤토리 조회 및 아이템 제거
     for (const auto& [Index, Content] : SlotMap)
     {
-        if (Content->GetData() != InData) continue;
+        if (GetDataFromContent(Content) != InData) continue;
 
         const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
 
@@ -170,7 +170,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
     const auto Content = GetContent(SlotIndex);
-    UDataAsset* Data = Content->GetData();
+    UDataAsset* Data = GetDataFromContent(Content);
     const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
 
     if (SlotQuantity < Quantity) return;
