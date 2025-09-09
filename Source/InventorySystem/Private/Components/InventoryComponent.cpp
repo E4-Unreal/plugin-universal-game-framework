@@ -157,7 +157,7 @@ bool UInventoryComponent::SetSlotQuantity(int32 SlotIndex, int32 NewQuantity)
             IItemInstanceInterface::Execute_SetQuantity(OldContent, NewQuantity);
         }
 
-        OnSlotUpdated.Broadcast(SlotIndex, OldContent, GetContent(SlotIndex));
+        OnSlotUpdated.Broadcast(SlotIndex);
 
         return true;
     }

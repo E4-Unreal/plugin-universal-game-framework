@@ -115,17 +115,18 @@ bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
     return false;
 }
 
-void UWeaponManagerComponent::HandleOnSlotUpdated(int32 Index, UDataInstanceBase* OldContent, UDataInstanceBase* NewContent)
+void UWeaponManagerComponent::HandleOnSlotUpdated(int32 Index)
 {
-    Super::HandleOnSlotUpdated(Index, OldContent, NewContent);
+    Super::HandleOnSlotUpdated(Index);
 
+    auto Content = GetContent(Index);
     if (Index == CurrentSlotIndex)
     {
-        Equip(NewContent);
+        Equip(Content);
     }
     else
     {
-        UnEquip(NewContent);
+        UnEquip(Content);
     }
 }
 

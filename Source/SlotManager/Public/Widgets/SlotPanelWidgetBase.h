@@ -61,5 +61,5 @@ protected:
     void OnSlotIndexChanged(int32 OldSlotIndex, int32 NewSlotIndex);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void OnSlotUpdated(int32 Index, UDataInstanceBase* OldContent, UDataInstanceBase* NewContent);
+    void OnSlotUpdated(int32 Index);
 };
