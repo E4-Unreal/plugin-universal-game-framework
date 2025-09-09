@@ -19,14 +19,8 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFItemInstance : public UDataInstanceBase,
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = "1"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Transient, Replicated, meta = (ClampMin = "1"))
     int32 Quantity = 1;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    TWeakObjectPtr<AActor> Actor;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
-    int32 Durability;
 
 public:
     /* ItemInstanceInterface */
@@ -37,15 +31,4 @@ public:
     /* Object */
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
-    /* SlotContent */
-
-    virtual void SetData_Implementation(UDataAsset* NewData) override;
-
-    /* WeaponDataInstanceInterface */
-
-    virtual float GetDurability_Implementation() const override { return Durability; }
-    virtual AActor* GetActor_Implementation() const override { return Actor.Get(); }
-    virtual void SetDurability_Implementation(float NewDurability) override;
-    virtual void SetActor_Implementation(AActor* NewActor) override { Actor = NewActor; }
 };
