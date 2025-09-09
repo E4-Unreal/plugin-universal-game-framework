@@ -3,7 +3,7 @@
 
 #include "Actors/WeaponActor.h"
 
-#include "Interfaces/DataInstanceInterface.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -63,9 +63,9 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 }
 #endif
 
-void AWeaponActor::SetInstance_Implementation(UObject* NewInstance)
+void AWeaponActor::SetInstance_Implementation(UDataInstanceBase* NewInstance)
 {
-    UObject* OldWeaponInstance = Instance;
+    UDataInstanceBase* OldWeaponInstance = Instance;
     Instance = NewInstance;
 
     OnInstanceChanged(OldWeaponInstance, Instance);
@@ -92,17 +92,14 @@ void AWeaponActor::ApplyWeaponData()
     }
 }
 
-void AWeaponActor::OnInstanceChanged(UObject* OldInstance, UObject* NewInstance)
+void AWeaponActor::OnInstanceChanged(UDataInstanceBase* OldInstance, UDataInstanceBase* NewInstance)
 {
-    if (NewInstance && NewInstance->Implements<UWeaponInstanceInterface>())
-    {
-        Data = IDataInstanceInterface::Execute_GetData(Instance);
-    }
+    Data = NewInstance ? NewInstance->GetData() : nullptr;
 
     ApplyWeaponData();
 }
 
-void AWeaponActor::OnRep_Instance(UObject* OldInstance)
+void AWeaponActor::OnRep_Instance(UDataInstanceBase* OldInstance)
 {
     OnInstanceChanged(OldInstance, Instance);
 }

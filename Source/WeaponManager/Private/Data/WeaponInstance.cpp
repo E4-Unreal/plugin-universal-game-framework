@@ -14,9 +14,9 @@ void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
     DOREPLIFETIME(ThisClass, Durability);
 }
 
-void UWeaponInstance::SetData_Implementation(UDataAsset* NewData)
+void UWeaponInstance::SetData(UDataAsset* NewData)
 {
-    Super::SetData_Implementation(NewData);
+    Data = NewData;
 
     if (Data)
     {

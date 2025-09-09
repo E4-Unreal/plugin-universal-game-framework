@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "ReplicatedObject.h"
-#include "Interfaces/DataInstanceInterface.h"
 #include "DataInstanceBase.generated.h"
 
 /**
  *
  */
-UCLASS(Abstract)
-class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject, public IDataInstanceInterface
+UCLASS(Abstract, EditInlineNew)
+class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject
 {
     GENERATED_BODY()
 
@@ -24,9 +23,14 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* IDataInstanceInterface */
+    /* API */
 
-    virtual UDataAsset* GetData_Implementation() const override { return Data; }
-    virtual void SetData_Implementation(UDataAsset* NewData) override { Data = NewData; }
-    virtual UObject* GetInstanceByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE UDataAsset* GetData() const { return Data; }
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetData(UDataAsset* NewData) { Data = NewData; }
+
+    UFUNCTION(BlueprintCallable)
+    virtual UDataInstanceBase* GetDataInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };

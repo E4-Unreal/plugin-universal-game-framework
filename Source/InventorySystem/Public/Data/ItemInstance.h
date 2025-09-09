@@ -26,8 +26,6 @@ public:
 
     /* ItemInstanceInterface */
 
-    virtual UDataAsset* GetData_Implementation() const override { return Data; }
     virtual int32 GetQuantity_Implementation() const override { return Quantity; }
-    virtual void SetData_Implementation(UDataAsset* NewData) override { Data = NewData; }
     virtual void SetQuantity_Implementation(int32 NewQuantity) override { Quantity = NewQuantity; }
 };

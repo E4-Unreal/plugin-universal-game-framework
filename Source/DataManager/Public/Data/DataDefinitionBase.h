@@ -16,12 +16,12 @@ class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDa
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInstanceInterface"))
-    TSubclassOf<UObject> InstanceClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UDataInstanceBase> InstanceClass;
 
 public:
     /* DataDefinitionInterface */
 
-    virtual UObject* CreateInstance_Implementation() const override;
+    virtual UDataInstanceBase* CreateInstance_Implementation() const override;
     virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 };

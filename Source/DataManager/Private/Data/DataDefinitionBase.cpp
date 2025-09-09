@@ -3,14 +3,14 @@
 
 #include "Data/DataDefinitionBase.h"
 
-#include "Interfaces/DataInstanceInterface.h"
+#include "Data/DataInstanceBase.h"
 
-UObject* UDataDefinitionBase::CreateInstance_Implementation() const
+UDataInstanceBase* UDataDefinitionBase::CreateInstance_Implementation() const
 {
-    if (InstanceClass && InstanceClass->ImplementsInterface(UDataInstanceInterface::StaticClass()))
+    if (InstanceClass)
     {
-        UObject* NewInstance = NewObject<UObject>(GetTransientPackage(), InstanceClass);
-        IDataInstanceInterface::Execute_SetData(NewInstance, const_cast<UDataDefinitionBase*>(this));
+        auto NewInstance = NewObject<UDataInstanceBase>(GetTransientPackage(), InstanceClass);
+        NewInstance->SetData(const_cast<ThisClass*>(this));
 
         return NewInstance;
     }

@@ -18,6 +18,7 @@
 #include "Components/WeaponManagerComponent.h"
 #include "Data/ItemInstance.h"
 #include "Data/UGFItemInstance.h"
+#include "Interfaces/DataDefinitionInterface.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -112,20 +113,36 @@ bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& Curr
 
 bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    auto ItemInstance = NewObject<UUGFItemInstance>();
-    IDataInstanceInterface::Execute_SetData(ItemInstance, Cast<UDataAsset>(Product.GetObject()));
-    IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+    auto Data = Product.GetObject();
+    if (Data && Data->Implements<UDataDefinitionInterface>())
+    {
+        auto Instance = IDataDefinitionInterface::Execute_CreateInstance(Data);
+        if (auto ItemInstance = Instance->GetDataInstanceByInterface(UItemInstanceInterface::StaticClass()))
+        {
+            IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
 
-    return GetInventory()->AddContent(ItemInstance);
+            return GetInventory()->AddContent(ItemInstance);
+        }
+    }
+
+    return false;
 }
 
 bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    auto ItemInstance = NewObject<UUGFItemInstance>();
-    IDataInstanceInterface::Execute_SetData(ItemInstance, Cast<UDataAsset>(Product.GetObject()));
-    IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+    auto Data = Product.GetObject();
+    if (Data && Data->Implements<UDataDefinitionInterface>())
+    {
+        auto Instance = IDataDefinitionInterface::Execute_CreateInstance(Data);
+        if (auto ItemInstance = Instance->GetDataInstanceByInterface(UItemInstanceInterface::StaticClass()))
+        {
+            IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
 
-    return GetInventory()->RemoveContent(ItemInstance);
+            return GetInventory()->RemoveContent(ItemInstance);
+        }
+    }
+
+    return false;
 }
 
 void AUGFPlayerCharacter::OnSaveData_Implementation(USaveGame* SaveGame)

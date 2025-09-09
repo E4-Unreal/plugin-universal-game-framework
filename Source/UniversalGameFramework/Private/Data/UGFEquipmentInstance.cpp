@@ -14,28 +14,22 @@ void UUGFEquipmentInstance::GetLifetimeReplicatedProps(TArray<class FLifetimePro
     DOREPLIFETIME(ThisClass, Durability)
 }
 
-void UUGFEquipmentInstance::SetData_Implementation(UDataAsset* NewData)
+void UUGFEquipmentInstance::SetData(UDataAsset* NewData)
 {
-    Super::SetData_Implementation(NewData);
+    Super::SetData(NewData);
 
-    if (Data)
+    if (Data && Data->Implements<UWeaponDataInterface>())
     {
-        if (Data->Implements<UWeaponDataInterface>())
-        {
-            const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
-            Durability = MaxDurability;
-        }
+        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
+        Durability = MaxDurability;
     }
 }
 
 void UUGFEquipmentInstance::SetDurability_Implementation(float NewDurability)
 {
-    if (Data)
+    if (Data && Data->Implements<UWeaponDataInterface>())
     {
-        if (Data->Implements<UWeaponDataInterface>())
-        {
-            const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
-            Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
-        }
+        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
+        Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
     }
 }

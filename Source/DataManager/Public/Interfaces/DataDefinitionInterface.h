@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "DataDefinitionInterface.generated.h"
 
+class UDataInstanceBase;
+
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UDataDefinitionInterface : public UInterface
 {
@@ -21,7 +23,7 @@ class DATAMANAGER_API IDataDefinitionInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* CreateInstance() const;
+    UDataInstanceBase* CreateInstance() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;

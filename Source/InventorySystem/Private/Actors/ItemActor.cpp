@@ -14,9 +14,9 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     DisplayStaticMesh->SetSimulatePhysics(true);
 }
 
-void AItemActor::SetInventoryItems_Implementation(const TArray<UItemInstance*>& NewInventoryItems)
+void AItemActor::SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances)
 {
-    InventoryItems = NewInventoryItems;
+    ItemInstances = NewItemsInstances;
 
     Refresh();
 }
@@ -30,7 +30,7 @@ void AItemActor::PostInitializeComponents()
 
 void AItemActor::BeginPlay()
 {
-    if (InventoryItems.IsEmpty())
+    if (ItemInstances.IsEmpty())
     {
         Destroy();
     }
@@ -48,7 +48,7 @@ void AItemActor::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyCh
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
     if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DefaultStaticMesh) ||
-        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, InventoryItems)
+        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, ItemInstances)
         )
     {
         Refresh();
@@ -62,7 +62,7 @@ void AItemActor::OnInteractionTriggered_Implementation(AActor* Interactor)
 
     if (auto InventoryComponent = Interactor->GetComponentByClass<UInventoryComponent>())
     {
-        for (const auto& InventoryItem : InventoryItems)
+        for (const auto& InventoryItem : ItemInstances)
         {
             if (InventoryItem) InventoryComponent->AddContent(InventoryItem);
         }
@@ -80,12 +80,14 @@ UStaticMesh* AItemActor::GetStaticMesh() const
 {
     UStaticMesh* StaticMesh = nullptr;
 
-    if (InventoryItems.Num() == 1)
+    if (ItemInstances.Num() == 1)
     {
-        UObject* Content = InventoryItems.Last();
-        if (UDataAsset* Data = IDataInstanceInterface::Execute_GetData(Content))
+        if (auto ItemInstance = ItemInstances.Last())
         {
-            StaticMesh = IItemDataInterface::Execute_GetStaticMesh(Data).LoadSynchronous();
+            if (UDataAsset* Data = ItemInstance->GetData())
+            {
+                StaticMesh = IItemDataInterface::Execute_GetStaticMesh(Data).LoadSynchronous();
+            }
         }
     }
 
