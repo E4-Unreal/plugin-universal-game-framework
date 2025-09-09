@@ -17,5 +17,5 @@ void UStorageWidget::SetTargetActor(AActor* NewTargetActor)
 
 void UStorageWidget::OnTargetActorChanged(AActor* OldTargetActor, AActor* NewTargetActor)
 {
-    GetStoragePanel()->SetInventoryComponent(NewTargetActor->GetComponentByClass<UInventoryComponent>());
+    //GetStoragePanel()->SetInventoryComponent(NewTargetActor->GetComponentByClass<UInventoryComponent>());
 }

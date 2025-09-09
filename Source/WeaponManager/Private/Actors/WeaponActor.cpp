@@ -3,10 +3,10 @@
 
 #include "Actors/WeaponActor.h"
 
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
-#include "Objects/SlotContent.h"
 
 const FName AWeaponActor::RootSceneName(TEXT("RootScene"));
 const FName AWeaponActor::StaticMeshName(TEXT("StaticMesh"));
@@ -63,9 +63,9 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 }
 #endif
 
-void AWeaponActor::SetInstance_Implementation(USlotContent* NewInstance)
+void AWeaponActor::SetInstance_Implementation(UDataInstanceBase* NewInstance)
 {
-    USlotContent* OldWeaponInstance = Instance;
+    UDataInstanceBase* OldWeaponInstance = Instance;
     Instance = NewInstance;
 
     OnInstanceChanged(OldWeaponInstance, Instance);
@@ -92,17 +92,14 @@ void AWeaponActor::ApplyWeaponData()
     }
 }
 
-void AWeaponActor::OnInstanceChanged(USlotContent* OldInstance, USlotContent* NewInstance)
+void AWeaponActor::OnInstanceChanged(UDataInstanceBase* OldInstance, UDataInstanceBase* NewInstance)
 {
-    if (NewInstance && NewInstance->Implements<UWeaponInstanceInterface>())
-    {
-        Data = IWeaponInstanceInterface::Execute_GetData(Instance);
-    }
+    Data = NewInstance ? NewInstance->GetData() : nullptr;
 
     ApplyWeaponData();
 }
 
-void AWeaponActor::OnRep_Instance(USlotContent* OldInstance)
+void AWeaponActor::OnRep_Instance(UDataInstanceBase* OldInstance)
 {
     OnInstanceChanged(OldInstance, Instance);
 }

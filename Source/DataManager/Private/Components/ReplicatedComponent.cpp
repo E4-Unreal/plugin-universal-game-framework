@@ -18,19 +18,6 @@ void UReplicatedComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProp
     DOREPLIFETIME(ThisClass, ReplicatedObjects);
 }
 
-UReplicatedObject* UReplicatedComponent::CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass)
-{
-    UReplicatedObject* ReplicatedObject = nullptr;
-
-    if (GetOwner()->HasAuthority() && ReplicatedObjectClass)
-    {
-        ReplicatedObject = NewObject<UReplicatedObject>(this, ReplicatedObjectClass);
-        AddReplicatedObject(ReplicatedObject);
-    }
-
-    return ReplicatedObject;
-}
-
 void UReplicatedComponent::AddReplicatedObject(UReplicatedObject* ReplicatedObject)
 {
     if (GetOwner()->HasAuthority() && ReplicatedObject && !ReplicatedObjects.Contains(ReplicatedObject))
@@ -49,4 +36,16 @@ void UReplicatedComponent::RemoveReplicatedObject(UReplicatedObject* ReplicatedO
 
         ReplicatedObjects.RemoveSingleSwap(ReplicatedObject);
     }
+}
+
+UReplicatedObject* UReplicatedComponent::CreateReplicatedObject(TSubclassOf<UReplicatedObject> ReplicatedObjectClass)
+{
+    UReplicatedObject* ReplicatedObject = nullptr;
+
+    if (GetOwner()->HasAuthority() && ReplicatedObjectClass)
+    {
+        ReplicatedObject = NewObject<UReplicatedObject>(this, ReplicatedObjectClass);
+    }
+
+    return ReplicatedObject;
 }

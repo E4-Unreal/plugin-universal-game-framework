@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "WeaponActorInterface.generated.h"
-
-class UDataInstanceBase;
+#include "ItemInstanceInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UWeaponActorInterface : public UInterface
+class UItemInstanceInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -17,14 +15,14 @@ class UWeaponActorInterface : public UInterface
 /**
  *
  */
-class WEAPONMANAGER_API IWeaponActorInterface
+class INVENTORYSYSTEM_API IItemInstanceInterface
 {
     GENERATED_BODY()
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataInstanceBase* GetInstance() const;
+    int32 GetQuantity() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetInstance(UDataInstanceBase* NewInstance);
+    void SetQuantity(int32 NewQuantity);
 };

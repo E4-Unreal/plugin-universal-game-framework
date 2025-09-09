@@ -38,6 +38,10 @@ public:
 
     virtual void InitializeComponent() override;
 
+    /* SlotManagerComponentBase */
+
+    virtual int32 GetEmptySlotIndex(UDataInstanceBase* NewContent) const override;
+
     /* API */
 
     UFUNCTION(BlueprintCallable)
@@ -52,21 +56,13 @@ public:
     UFUNCTION(BlueprintCallable, Server, Reliable)
     void SetSlotIndex(int32 NewSlotIndex, bool bForce = false);
 
-    UFUNCTION(BlueprintPure)
-    virtual bool CanAddWeaponFromData(UDataAsset* NewData) const;
-
-    UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    void AddWeaponFromData(UDataAsset* NewData);
-
 protected:
     /* SlotManagerComponentBase */
 
     virtual void CreateSlots() override;
     virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
-    virtual bool CheckContent(USlotContent* Content) const override;
-    virtual bool CheckContentClass(TSubclassOf<USlotContent> ContentClass) const override;
     virtual bool CheckData(UDataAsset* Data) const override;
-    virtual void HandleOnSlotUpdated(int32 Index, USlotContent* OldContent, USlotContent* NewContent) override;
+    virtual void HandleOnSlotUpdated(int32 Index) override;
 
     /* API */
 
@@ -75,14 +71,13 @@ protected:
     virtual void FindMesh();
 
     virtual bool DoesSocketExist(FName SocketName) const;
-    virtual bool DoesEmptySlotExist(FGameplayTag SlotType) const;
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
-    virtual AActor* SpawnActorFromData(UDataAsset* Data) { return SpawnActorFromContent(CreateContentFromData(Data)); }
-    virtual AActor* SpawnActorFromContent(USlotContent* Content);
+    virtual AActor* SpawnActorFromData(UDataAsset* Data);
+    virtual AActor* SpawnActorFromContent(UDataInstanceBase* Content);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
 
-    virtual void Equip(USlotContent* Content);
-    virtual void UnEquip(USlotContent* Content);
+    virtual void Equip(UDataInstanceBase* Content);
+    virtual void UnEquip(UDataInstanceBase* Content);
 };

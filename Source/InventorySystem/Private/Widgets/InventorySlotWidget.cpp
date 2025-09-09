@@ -3,56 +3,25 @@
 
 #include "Widgets/InventorySlotWidget.h"
 
-#include "Blueprint/WidgetBlueprintLibrary.h"
-#include "Components/Image.h"
+#include "Components/SlotManagerComponentBase.h"
 #include "Components/TextBlock.h"
-#include "Components/InventoryComponent.h"
+#include "Data/DataInstanceBase.h"
+#include "Interfaces/ItemInstanceInterface.h"
 #include "Widgets/DraggedInventorySlotWidget.h"
 
-FReply UInventorySlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+void UInventorySlotWidget::Refresh_Implementation()
 {
-    if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton) && !GetInventoryComponent()->IsSlotEmpty(SlotIndex))
+    Super::Refresh_Implementation();
+
+    if (SlotManager.IsValid())
     {
-        FEventReply EventReply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
-        return EventReply.NativeReply;
+        auto Content = SlotManager->GetContent(SlotIndex);
+        if (Content && Content->Implements<UItemInstanceInterface>())
+        {
+            const int32 Quantity = IItemInstanceInterface::Execute_GetQuantity(Content);
+            SetQuantityTextBlock(Quantity);
+        }
     }
-
-    return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-}
-
-void UInventorySlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent,
-    UDragDropOperation*& OutOperation)
-{
-    if (DraggedWidgetClass)
-    {
-        auto DraggedWidget = CreateWidget<UInventorySlotWidgetBase>(this, DraggedWidgetClass);
-        DraggedWidget->SetSlotIndex(SlotIndex);
-
-        auto DragAndDropOperation = NewObject<UDragDropOperation>(this, UDragDropOperation::StaticClass());
-        DragAndDropOperation->DefaultDragVisual = DraggedWidget;
-
-        OutOperation = DragAndDropOperation;
-    }
-    else
-    {
-        Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
-    }
-}
-
-void UInventorySlotWidget::OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget)
-{
-    Super::OnInventorySlotWidgetDrop(InventorySlotWidget);
-
-    auto SourceInventoryComponent = InventorySlotWidget->GetInventoryComponent();
-    int32 SourceIndex = InventorySlotWidget->GetSlotIndex();
-    SourceInventoryComponent->SwapOrFillInventorySlots(SourceIndex, SlotIndex, GetInventoryComponent());
-}
-
-void UInventorySlotWidget::UpdateInventorySlot(const FInventorySlot& InventorySlot)
-{
-    Super::UpdateInventorySlot(InventorySlot);
-
-    SetQuantityTextBlock(InventorySlot.GetQuantity());
 }
 
 void UInventorySlotWidget::Clear()

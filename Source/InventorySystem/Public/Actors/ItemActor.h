@@ -5,10 +5,9 @@
 #include "CoreMinimal.h"
 #include "Actors/InteractableActor.h"
 #include "Interfaces/ItemActorInterface.h"
-#include "Types/ItemInstance.h"
 #include "ItemActor.generated.h"
 
-struct FInventoryItemData;
+class UDataInstanceBase;
 
 UCLASS()
 class INVENTORYSYSTEM_API AItemActor : public AInteractableActor, public IItemActorInterface
@@ -16,8 +15,8 @@ class INVENTORYSYSTEM_API AItemActor : public AInteractableActor, public IItemAc
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ShowOnlyInnerProperties))
-    TArray<FItemInstance> InventoryItems;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced)
+    TArray<TObjectPtr<UDataInstanceBase>> ItemInstances;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UStaticMesh> DefaultStaticMesh;
@@ -28,9 +27,9 @@ public:
 public:
     AItemActor(const FObjectInitializer& ObjectInitializer);
 
-    /* IItemActorInterface */
+    /* ItemActorInterface */
 
-    virtual void SetInventoryItems_Implementation(const TArray<FItemInstance>& NewInventoryItems) override;
+    virtual void SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances) override;
 
     /* Actor */
 

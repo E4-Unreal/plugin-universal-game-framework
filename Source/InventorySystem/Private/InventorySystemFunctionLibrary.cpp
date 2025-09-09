@@ -6,9 +6,9 @@
 #include "Interfaces/ItemActorInterface.h"
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                     const TArray<FItemInstance>& InventoryItems, const FVector& Offset)
+                                                     const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
 {
-    if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && !InventoryItems.IsEmpty(); !bCanSpawn) return nullptr;
+    if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && !ItemInstances.IsEmpty(); !bCanSpawn) return nullptr;
 
     UWorld* World = Owner->GetWorld();
     if (!World) return nullptr;
@@ -16,7 +16,7 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
     FTransform SpawnTransform = Owner->GetActorTransform();
     SpawnTransform.SetLocation(SpawnTransform.GetLocation() + Owner->GetActorRotation().RotateVector(Offset));
     AActor* SpawnedItemActor = World->SpawnActorDeferred<AActor>(ItemActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    IItemActorInterface::Execute_SetInventoryItems(SpawnedItemActor, InventoryItems);
+    IItemActorInterface::Execute_SetItemInstances(SpawnedItemActor, ItemInstances);
     SpawnedItemActor->FinishSpawning(SpawnTransform);
 
     return SpawnedItemActor;

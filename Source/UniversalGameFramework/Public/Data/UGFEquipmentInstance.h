@@ -3,25 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataInstanceBase.h"
+#include "UGFItemInstance.h"
 #include "Interfaces/WeaponInstanceInterface.h"
-#include "WeaponInstance.generated.h"
-
-class IWeaponDataInterface;
+#include "UGFEquipmentInstance.generated.h"
 
 /**
  *
  */
 UCLASS()
-class WEAPONMANAGER_API UWeaponInstance : public UDataInstanceBase, public IWeaponInstanceInterface
+class UNIVERSALGAMEFRAMEWORK_API UUGFEquipmentInstance : public UUGFItemInstance,
+    public IWeaponInstanceInterface
 {
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Transient, Replicated)
     TWeakObjectPtr<AActor> Actor;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, Replicated)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Transient, Replicated)
     int32 Durability;
 
 public:

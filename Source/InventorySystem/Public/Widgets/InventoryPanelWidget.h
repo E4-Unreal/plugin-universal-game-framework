@@ -3,48 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventoryWidgetBase.h"
+#include "Widgets/SlotPanelWidgetBase.h"
 #include "InventoryPanelWidget.generated.h"
-
-class UUniformGridPanel;
-class UInventorySlotWidget;
 
 /**
  *
  */
 UCLASS(Abstract)
-class INVENTORYSYSTEM_API UInventoryPanelWidget : public UInventoryWidgetBase
+class INVENTORYSYSTEM_API UInventoryPanelWidget : public USlotPanelWidgetBase
 {
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UInventorySlotWidget> SlotWidgetClass;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 1))
-    int32 PreviewSlotNum = 1;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 1))
-    int32 MaxSlotRow = 1;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 1))
-    int32 MaxSlotColumn = 1;
-
-protected:
-    UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UUniformGridPanel> InventoryPanel;
-
-    UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "State")
-    TMap<int32, TObjectPtr<UInventorySlotWidget>> SlotWidgetMap;
-
-protected:
-    virtual void NativePreConstruct() override;
-
-    virtual void OnInventoryComponentChanged(UInventoryComponent* OldInventoryComponent, UInventoryComponent* NewInventoryComponent) override;
-
-    UFUNCTION(BlueprintCallable)
-    virtual void CreateSlotWidgets();
-
-    UFUNCTION(BlueprintCallable)
-    virtual void OnInventoryUpdated(int32 SlotIndex);
+    UInventoryPanelWidget(const FObjectInitializer& ObjectInitializer);
 };

@@ -5,8 +5,8 @@
 
 #include "Components/Image.h"
 #include "Components/SlotManagerComponentBase.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/SlotDataInterface.h"
-#include "Objects/SlotContent.h"
 
 void USlotWidgetBase::SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager)
 {
@@ -23,9 +23,9 @@ void USlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (USlotContent* Content = SlotManager->GetContent(SlotIndex))
+        if (UDataAsset* Data = SlotManager->GetData(SlotIndex))
         {
-            ApplyData(Content->GetData());
+            ApplyData(Data);
         }
         else
         {
@@ -47,7 +47,7 @@ void USlotWidgetBase::NativePreConstruct()
 
 bool USlotWidgetBase::CanDrag() const
 {
-    return Super::CanDrag() && SlotManager.IsValid() && !SlotManager->IsEmpty(SlotIndex);
+    return Super::CanDrag() && SlotManager.IsValid() && !SlotManager->IsSlotEmpty(SlotIndex);
 }
 
 void USlotWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)

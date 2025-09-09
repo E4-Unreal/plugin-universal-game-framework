@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "ItemActorInterface.generated.h"
 
-struct FItemInstance;
+class UDataInstanceBase;
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType, Blueprintable)
@@ -25,5 +25,5 @@ class INVENTORYSYSTEM_API IItemActorInterface
     // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetInventoryItems(const TArray<FItemInstance>& NewInventoryItems);
+    void SetItemInstances(const TArray<UDataInstanceBase*>& NewItemsInstances);
 };

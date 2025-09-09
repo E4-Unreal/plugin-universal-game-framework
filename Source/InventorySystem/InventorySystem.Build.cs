@@ -15,7 +15,9 @@ public class InventorySystem : ModuleRules
                 "CommonUI",
                 "InputCore",
                 "UniversalUtilities",
-                "InteractionSystem"
+                "InteractionSystem",
+                "DataManager",
+                "SlotManager",
             }
         );
 
