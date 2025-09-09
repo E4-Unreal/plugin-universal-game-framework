@@ -57,6 +57,11 @@ UDataInstanceBase* USlotManagerComponentBase::GetContent(int32 Index) const
     return SlotMap.FindRef(Index);
 }
 
+UDataAsset* USlotManagerComponentBase::GetData(int32 Index) const
+{
+    return GetDataFromContent(GetContent(Index));
+}
+
 int32 USlotManagerComponentBase::GetEmptySlotIndex(UDataInstanceBase* NewContent) const
 {
     int32 EmptyIndex = -1;

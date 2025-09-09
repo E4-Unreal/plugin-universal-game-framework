@@ -23,9 +23,8 @@ void USlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (auto Content = SlotManager->GetContent(SlotIndex))
+        if (UDataAsset* Data = SlotManager->GetData(SlotIndex))
         {
-            UDataAsset* Data = Content->GetData();
             ApplyData(Data);
         }
         else

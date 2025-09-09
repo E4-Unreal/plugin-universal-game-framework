@@ -60,6 +60,9 @@ public:
     virtual UDataInstanceBase* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
+    virtual UDataAsset* GetData(int32 Index) const;
+
+    UFUNCTION(BlueprintPure)
     virtual int32 GetEmptySlotIndex(UDataInstanceBase* NewContent) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
