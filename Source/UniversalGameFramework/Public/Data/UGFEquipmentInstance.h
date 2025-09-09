@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataInstanceBase.h"
+#include "UGFItemInstance.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "UGFEquipmentInstance.generated.h"
 
@@ -11,7 +11,7 @@
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API UUGFEquipmentInstance : public UDataInstanceBase,
+class UNIVERSALGAMEFRAMEWORK_API UUGFEquipmentInstance : public UUGFItemInstance,
     public IWeaponInstanceInterface
 {
     GENERATED_BODY()

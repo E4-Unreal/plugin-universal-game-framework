@@ -21,12 +21,6 @@ class INVENTORYSYSTEM_API IItemInstanceInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataAsset* GetData() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetData(UDataAsset* NewData);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     int32 GetQuantity() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
