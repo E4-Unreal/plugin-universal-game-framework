@@ -34,7 +34,7 @@ protected:
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
-    int32 MaxStack = 1;
+    int32 MaxStack;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Item"))
     FGameplayTag ItemType;

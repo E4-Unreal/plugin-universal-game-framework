@@ -3,13 +3,17 @@
 
 #include "Data/UGFEquipmentDefinition.h"
 
+#include "GameplayTags/InventoryGameplayTags.h"
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Actors/WeaponActor.h"
-#include "Data/WeaponInstance.h"
+#include "Data/UGFEquipmentInstance.h"
 
 UUGFEquipmentDefinition::UUGFEquipmentDefinition()
 {
-    InstanceClass = UWeaponInstance::StaticClass();
+    InstanceClass = UUGFEquipmentInstance::StaticClass();
+
+    MaxStack = 1;
+    ItemType = Item::Equipment::Root;
 
     SlotType = Weapon::Slot::Primary;
     ActorClass = AWeaponActor::StaticClass();

@@ -3,11 +3,16 @@
 
 #include "Data/UGFItemDefinition.h"
 
-#include "Data/ItemInstance.h"
+#include "Data/UGFItemInstance.h"
 #include "GameplayTags/CurrencyGameplayTags.h"
+#include "GameplayTags/InventoryGameplayTags.h"
 
 UUGFItemDefinition::UUGFItemDefinition()
 {
-    InstanceClass = UItemInstance::StaticClass();
+    InstanceClass = UUGFItemInstance::StaticClass();
+
+    MaxStack = 10;
+    ItemType = Item::Root;
+
     CurrencyType = Currency::Default;
 }
