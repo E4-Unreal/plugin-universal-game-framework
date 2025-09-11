@@ -9,6 +9,8 @@ UInteractionSystemComponent::UInteractionSystemComponent(const FObjectInitialize
     : Super(ObjectInitializer)
 {
     bWantsInitializeComponent = true;
+
+    Range = 128.0f;
 }
 
 void UInteractionSystemComponent::InitializeComponent()
@@ -17,7 +19,7 @@ void UInteractionSystemComponent::InitializeComponent()
 
     if (!OverlapSphere.IsValid())
     {
-        OverlapSphere = GetOwner()->GetComponentByClass<USphereComponent>();
+        SetOverlapSphere(GetOwner()->GetComponentByClass<USphereComponent>());
     }
 }
 
@@ -46,39 +48,102 @@ void UInteractionSystemComponent::OnComponentDestroyed(bool bDestroyingHierarchy
 void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapSphere)
 {
     OverlapSphere = NewOverlapSphere;
-}
 
-void UInteractionSystemComponent::AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget)
-{
-    if (!NewTarget.GetInterface()) return;
-
-    AvailableTargets.AddUnique(NewTarget);
-
-    RefreshTarget();
-}
-
-void UInteractionSystemComponent::RemoveTarget(const TScriptInterface<IInteractableInterface>& OldTarget)
-{
-    if (!OldTarget.GetInterface()) return;
-
-    AvailableTargets.RemoveSingleSwap(OldTarget);
-
-    RefreshTarget();
-}
-
-void UInteractionSystemComponent::TryInteract()
-{
-    if (CurrentTarget && IInteractableInterface::Execute_CanInteract(CurrentTarget.GetObject(), GetOwner()))
+    if (OverlapSphere.IsValid())
     {
-        IInteractableInterface::Execute_Interact(CurrentTarget.GetObject(), GetOwner());
+        OverlapSphere->SetSphereRadius(Range);
     }
+}
+
+void UInteractionSystemComponent::AddTarget(AActor* NewTarget)
+{
+    if (NewTarget && NewTarget->Implements<UInteractableInterface>() && !AvailableTargets.Contains(NewTarget))
+    {
+        AvailableTargets.Emplace(NewTarget);
+
+        SelectTargets();
+    }
+}
+
+void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
+{
+    if (OldTarget && AvailableTargets.Contains(OldTarget))
+    {
+        AvailableTargets.RemoveSingleSwap(OldTarget);
+
+        SelectTargets();
+    }
+}
+
+void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
+{
+    if (NewTarget && AvailableTargets.Contains(NewTarget) && !SelectedTargets.Contains(NewTarget))
+    {
+        if (bForce)
+        {
+            for (const auto& SelectedTarget : SelectedTargets)
+            {
+                DeselectTarget(SelectedTarget.Get());
+            }
+        }
+
+        SelectedTargets.Emplace(NewTarget);
+
+        IInteractableInterface::Execute_OnFocus(NewTarget, GetOwner());
+    }
+}
+
+void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget)
+{
+    if (OldTarget && SelectedTargets.Contains(OldTarget))
+    {
+        SelectedTargets.RemoveSingleSwap(OldTarget);
+
+        IInteractableInterface::Execute_OnUnFocus(OldTarget, GetOwner());
+    }
+}
+
+void UInteractionSystemComponent::SetRange(float NewRange)
+{
+    Range = NewRange;
+
+    if (OverlapSphere.IsValid())
+    {
+        OverlapSphere->SetSphereRadius(Range);
+    }
+}
+
+bool UInteractionSystemComponent::TryInteract()
+{
+    if (SelectedTargets.IsEmpty()) return false;
+
+    bool bResult = true;
+
+    for (const auto& SelectedTarget : SelectedTargets)
+    {
+        if (SelectedTarget.IsValid() && IInteractableInterface::Execute_CanInteract(SelectedTarget.Get(), GetOwner()))
+        {
+            IInteractableInterface::Execute_Interact(SelectedTarget.Get(), GetOwner());
+        }
+        else
+        {
+            bResult = false;
+        }
+    }
+
+    return bResult;
 }
 
 void UInteractionSystemComponent::CancelInteract()
 {
-    if (CurrentTarget)
+    if (SelectedTargets.IsEmpty()) return;
+
+    for (const auto& SelectedTarget : SelectedTargets)
     {
-        IInteractableInterface::Execute_CancelInteract(CurrentTarget.GetObject(), GetOwner());
+        if (SelectedTarget.IsValid())
+        {
+            IInteractableInterface::Execute_CancelInteract(SelectedTarget.Get(), GetOwner());
+        }
     }
 }
 
@@ -95,21 +160,28 @@ void UInteractionSystemComponent::OnOverlapSphereEndOverlap(UPrimitiveComponent*
     RemoveTarget(OtherActor);
 }
 
-void UInteractionSystemComponent::RefreshTarget()
+void UInteractionSystemComponent::SelectTargets()
 {
-    if (AvailableTargets.IsEmpty())
+    // 초기화
+    for (const auto& SelectedTarget : SelectedTargets)
     {
-        CurrentTarget = nullptr;
-        return;
+        DeselectTarget(SelectedTarget.Get());
     }
+    SelectedTargets.Reset();
 
+    // 유효성 검사
+    if (AvailableTargets.IsEmpty()) return;
+
+    // 가장 가까운 액터 선택
     float MinDistance = MAX_flt;
     int32 MinIndex = 0;
 
     for (int32 Index = 0; Index < AvailableTargets.Num(); ++Index)
     {
-        const auto& Target = AvailableTargets[Index];
-        float Distance = CalculateTargetDistance(Target);
+        const auto& AvailableTarget = AvailableTargets[Index];
+        if (!AvailableTarget.IsValid()) continue;
+
+        float Distance = GetDistanceToTarget(AvailableTarget.Get());
         if (Distance < MinDistance)
         {
             MinDistance = Distance;
@@ -117,15 +189,15 @@ void UInteractionSystemComponent::RefreshTarget()
         }
     }
 
-    CurrentTarget = AvailableTargets[MinIndex];
+    SelectTarget(AvailableTargets[MinIndex].Get());
 }
 
-float UInteractionSystemComponent::CalculateTargetDistance(const TScriptInterface<IInteractableInterface>& Target) const
+float UInteractionSystemComponent::GetDistanceToTarget(AActor* Target) const
 {
-    if (AActor* TargetActor = Cast<AActor>(Target.GetObject()))
+    if (Target)
     {
         FVector OwnerLocation = GetOwner()->GetActorLocation();
-        FVector TargetLocation = TargetActor->GetActorLocation();
+        FVector TargetLocation = Target->GetActorLocation();
 
         return FVector::Dist(OwnerLocation, TargetLocation);
     }

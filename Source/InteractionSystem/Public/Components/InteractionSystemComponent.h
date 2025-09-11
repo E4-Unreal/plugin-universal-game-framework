@@ -7,25 +7,29 @@
 #include "Components/SphereComponent.h"
 #include "InteractionSystemComponent.generated.h"
 
-class IInteractableInterface;
-
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INTERACTIONSYSTEM_API UInteractionSystemComponent : public UActorComponent
 {
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    float Range;
+
+protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<USphereComponent> OverlapSphere;
 
-    UPROPERTY(VisibleAnywhere, Transient, Category = "State")
-    TArray<TScriptInterface<IInteractableInterface>> AvailableTargets;
+    UPROPERTY(VisibleAnywhere, Category = "State", Transient)
+    TArray<TWeakObjectPtr<AActor>> AvailableTargets;
 
-    UPROPERTY(VisibleAnywhere, Transient, Category = "State")
-    TScriptInterface<IInteractableInterface> CurrentTarget;
+    UPROPERTY(VisibleAnywhere, Category = "State", Transient)
+    TArray<TWeakObjectPtr<AActor>> SelectedTargets;
 
 public:
     UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer);
+
+    /* ActorComponent */
 
     virtual void InitializeComponent() override;
     virtual void BeginPlay() override;
@@ -36,26 +40,40 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SetOverlapSphere(USphereComponent* NewOverlapSphere);
 
-    UFUNCTION(BlueprintCallable)
-    virtual void AddTarget(const TScriptInterface<IInteractableInterface>& NewTarget);
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE float GetRange() const { return Range; }
 
     UFUNCTION(BlueprintCallable)
-    virtual void RemoveTarget(const TScriptInterface<IInteractableInterface>& OldTarget);
+    virtual void SetRange(float NewRange);
 
     UFUNCTION(BlueprintCallable)
-    virtual void TryInteract();
+    void AddTarget(AActor* NewTarget);
+
+    UFUNCTION(BlueprintCallable)
+    void RemoveTarget(AActor* OldTarget);
+
+    UFUNCTION(BlueprintCallable)
+    void SelectTarget(AActor* NewTarget, bool bForce = false);
+
+    UFUNCTION(BlueprintCallable)
+    void DeselectTarget(AActor* OldTarget);
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool TryInteract();
 
     UFUNCTION(BlueprintCallable)
     virtual void CancelInteract();
 
 protected:
+    /* API */
+
     UFUNCTION()
     virtual void OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION()
     virtual void OnOverlapSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-    virtual void RefreshTarget();
+    virtual void SelectTargets();
 
-    float CalculateTargetDistance(const TScriptInterface<IInteractableInterface>& Target) const;
+    float GetDistanceToTarget(AActor* Target) const;
 };
