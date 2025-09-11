@@ -13,19 +13,12 @@ class INTERACTIONSYSTEM_API AInteractableActorBase : public AActor, public IInte
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
-    FGameplayTag InteractionType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FText InteractionText;
-
-public:
     AInteractableActorBase(const FObjectInitializer& ObjectInitializer);
 
     /* InteractableInterface */
 
-    virtual FGameplayTag GetInteractionType_Implementation() const override { return InteractionType; }
-    virtual FText GetInteractionText_Implementation() const override { return InteractionText; }
+    virtual FGameplayTag GetInteractionType_Implementation() const override;
+    virtual FText GetInteractionText_Implementation() const override;
     virtual bool CanInteract_Implementation(AActor* Interactor) override { return true; }
     virtual void Interact_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;

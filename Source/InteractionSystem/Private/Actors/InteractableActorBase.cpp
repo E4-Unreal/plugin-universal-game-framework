@@ -3,12 +3,23 @@
 
 #include "Actors/InteractableActorBase.h"
 
+#include "GameplayTags/InteractionGameplaytags.h"
 #include "Logging.h"
 
 AInteractableActorBase::AInteractableActorBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
 
+}
+
+FGameplayTag AInteractableActorBase::GetInteractionType_Implementation() const
+{
+    return Interaction::Root;
+}
+
+FText AInteractableActorBase::GetInteractionText_Implementation() const
+{
+    return NSLOCTEXT("InteractionSystem", "Interact", "Interact");
 }
 
 void AInteractableActorBase::Interact_Implementation(AActor* Interactor)

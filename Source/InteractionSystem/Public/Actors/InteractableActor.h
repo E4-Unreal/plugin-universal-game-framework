@@ -23,6 +23,13 @@ private:
     TObjectPtr<UStaticMeshComponent> DisplayMesh;
 
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
+    FGameplayTag InteractionType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText InteractionText;
+
+public:
     AInteractableActor(const FObjectInitializer& ObjectInitializer);
 
     /* InteractableInterface */
