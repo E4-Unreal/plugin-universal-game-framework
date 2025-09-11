@@ -3,6 +3,8 @@
 
 #include "Actors/InteractableActor.h"
 
+#include "Components/InteractionSystemComponent.h"
+
 FName AInteractableActor::DefaultSceneName(TEXT("DefaultScene"));
 FName AInteractableActor::DisplayMeshName(TEXT("DisplayMesh"));
 
@@ -18,6 +20,32 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
     DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(DisplayMeshName);
     GetDisplayMesh()->SetupAttachment(GetRootComponent());
+}
+
+void AInteractableActor::NotifyActorBeginCursorOver()
+{
+    Super::NotifyActorBeginCursorOver();
+
+    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    {
+        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        {
+            InteractionSystem->SelectTarget(this);
+        }
+    }
+}
+
+void AInteractableActor::NotifyActorEndCursorOver()
+{
+    Super::NotifyActorEndCursorOver();
+
+    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    {
+        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        {
+            InteractionSystem->DeselectTarget(this);
+        }
+    }
 }
 
 void AInteractableActor::SetFocus_Implementation(AActor* Interactor)

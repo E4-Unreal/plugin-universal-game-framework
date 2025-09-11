@@ -32,11 +32,17 @@ public:
 public:
     AInteractableActor(const FObjectInitializer& ObjectInitializer);
 
+    /* Actor */
+
+    virtual void NotifyActorBeginCursorOver() override;
+    virtual void NotifyActorEndCursorOver() override;
+
     /* InteractableInterface */
 
     virtual void SetFocus_Implementation(AActor* Interactor) override;
     virtual void ClearFocus_Implementation(AActor* Interactor) override;
 
+public:
     FORCEINLINE USceneComponent* GetDefaultScene() const { return DefaultScene; }
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
 };
