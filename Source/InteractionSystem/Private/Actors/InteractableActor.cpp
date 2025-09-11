@@ -3,22 +3,39 @@
 
 #include "Actors/InteractableActor.h"
 
-#include "Components/SphereComponent.h"
+FName AInteractableActor::DefaultSceneName(TEXT("DefaultScene"));
+FName AInteractableActor::DisplayMeshName(TEXT("DisplayMesh"));
 
 AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer
-        .SetDefaultSubobjectClass<UStaticMeshComponent>(DisplayMeshName)
-        .SetDefaultSubobjectClass<USphereComponent>(OverlapShapeName)
-        )
+    : Super(ObjectInitializer)
 {
-    /* DisplayStaticMesh */
-    auto DisplayStaticMesh = GetDisplayStaticMesh();
-    ConstructorHelpers::FObjectFinder<UStaticMesh> DisplayMeshFinder(TEXT("/Engine/BasicShapes/Cube"));
-    if (DisplayMeshFinder.Succeeded()) DisplayStaticMesh->SetStaticMesh(DisplayMeshFinder.Object);
-    ConstructorHelpers::FObjectFinder<UMaterial> DisplayMeshMaterialFinder(TEXT("/Engine/BasicShapes/BasicShapeMaterial"));
-    if (DisplayMeshMaterialFinder.Succeeded()) DisplayStaticMesh->SetMaterial(0, DisplayMeshMaterialFinder.Object);
+    /* DefaultScene */
 
-    /* OverlapSphere */
-    auto OverlapSphere = GetOverlapSphere();
-    OverlapSphere->InitSphereRadius(128.0f);
+    DefaultScene = CreateDefaultSubobject<USceneComponent>(DefaultSceneName);
+    SetRootComponent(GetDefaultScene());
+
+    /* DisplayMesh */
+
+    DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(DisplayMeshName);
+    GetDisplayMesh()->SetupAttachment(GetRootComponent());
+}
+
+void AInteractableActor::SetFocus_Implementation(AActor* Interactor)
+{
+    Super::SetFocus_Implementation(Interactor);
+
+    if (Interactor)
+    {
+        GetDisplayMesh()->SetRenderCustomDepth(true);
+    }
+}
+
+void AInteractableActor::ClearFocus_Implementation(AActor* Interactor)
+{
+    Super::ClearFocus_Implementation(Interactor);
+
+    if (Interactor)
+    {
+        GetDisplayMesh()->SetRenderCustomDepth(false);
+    }
 }

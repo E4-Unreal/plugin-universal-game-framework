@@ -7,45 +7,28 @@
 #include "Interfaces/InteractableInterface.h"
 #include "InteractableActorBase.generated.h"
 
-class UInteractableComponent;
-
 UCLASS(Abstract)
 class INTERACTIONSYSTEM_API AInteractableActorBase : public AActor, public IInteractableInterface
 {
     GENERATED_BODY()
 
-protected:
-    static FName DisplayMeshName;
-    static FName OverlapShapeName;
-    static FName InteractableComponentName;
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
+    FGameplayTag InteractionType;
 
-private:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UMeshComponent> DisplayMesh;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UShapeComponent> OverlapShape;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInteractableComponent> InteractableComponent;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText InteractionText;
 
 public:
     AInteractableActorBase(const FObjectInitializer& ObjectInitializer);
 
-    virtual void BeginPlay() override;
-
     /* InteractableInterface */
 
-    virtual bool CanInteract_Implementation(AActor* Interactor) override;
+    virtual FGameplayTag GetInteractionType_Implementation() const override { return InteractionType; }
+    virtual FText GetInteractionText_Implementation() const override { return InteractionText; }
+    virtual bool CanInteract_Implementation(AActor* Interactor) override { return true; }
     virtual void Interact_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;
-
-protected:
-    UFUNCTION(BlueprintNativeEvent)
-    void OnInteractionTriggered(AActor* Interactor);
-
-public:
-    FORCEINLINE UMeshComponent* GetDisplayMesh() const { return DisplayMesh.Get(); }
-    FORCEINLINE UShapeComponent* GetOverlapShape() const { return OverlapShape.Get(); }
-    FORCEINLINE UInteractableComponent* GetInteractableComponent() const { return InteractableComponent.Get(); }
+    virtual void SetFocus_Implementation(AActor* Interactor) override;
+    virtual void ClearFocus_Implementation(AActor* Interactor) override;
 };

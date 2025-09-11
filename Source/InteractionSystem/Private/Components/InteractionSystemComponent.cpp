@@ -89,7 +89,7 @@ void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
 
         SelectedTargets.Emplace(NewTarget);
 
-        IInteractableInterface::Execute_OnFocus(NewTarget, GetOwner());
+        IInteractableInterface::Execute_SetFocus(NewTarget, GetOwner());
     }
 }
 
@@ -99,7 +99,7 @@ void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget)
     {
         SelectedTargets.RemoveSingleSwap(OldTarget);
 
-        IInteractableInterface::Execute_OnUnFocus(OldTarget, GetOwner());
+        IInteractableInterface::Execute_ClearFocus(OldTarget, GetOwner());
     }
 }
 

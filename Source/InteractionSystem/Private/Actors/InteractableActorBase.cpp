@@ -3,52 +3,42 @@
 
 #include "Actors/InteractableActorBase.h"
 
-#include "Components/InteractableComponent.h"
-#include "Components/SphereComponent.h"
-
-FName AInteractableActorBase::DisplayMeshName(TEXT("DisplayMesh"));
-FName AInteractableActorBase::OverlapShapeName(TEXT("OverlapShape"));
-FName AInteractableActorBase::InteractableComponentName(TEXT("InteractableComponent"));
+#include "Logging.h"
 
 AInteractableActorBase::AInteractableActorBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    /* DisplayMesh */
-    DisplayMesh = CreateDefaultSubobject<UMeshComponent>(DisplayMeshName);
-    if (DisplayMesh) SetRootComponent(DisplayMesh);
 
-    /* OverlapShape */
-    OverlapShape = CreateDefaultSubobject<UShapeComponent>(OverlapShapeName);
-    if (OverlapShape) OverlapShape->SetupAttachment(RootComponent);
-
-    /* InteractableComponent */
-    InteractableComponent = CreateDefaultSubobject<UInteractableComponent>(InteractableComponentName);
-    if (OverlapShape) InteractableComponent->SetOverlapShape(OverlapShape);
-}
-
-void AInteractableActorBase::BeginPlay()
-{
-    Super::BeginPlay();
-
-    InteractableComponent->OnInteractionTriggered.AddDynamic(this, &ThisClass::OnInteractionTriggered);
-}
-
-bool AInteractableActorBase::CanInteract_Implementation(AActor* Interactor)
-{
-    return Execute_CanInteract(InteractableComponent, Interactor);
 }
 
 void AInteractableActorBase::Interact_Implementation(AActor* Interactor)
 {
-    Execute_Interact(InteractableComponent, Interactor);
+    if (Interactor)
+    {
+        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+    }
 }
 
 void AInteractableActorBase::CancelInteract_Implementation(AActor* Interactor)
 {
-    Execute_CancelInteract(InteractableComponent, Interactor);
+    if (Interactor)
+    {
+        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+    }
 }
 
-void AInteractableActorBase::OnInteractionTriggered_Implementation(AActor* Interactor)
+void AInteractableActorBase::SetFocus_Implementation(AActor* Interactor)
 {
+    if (Interactor)
+    {
+        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+    }
+}
 
+void AInteractableActorBase::ClearFocus_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+    }
 }

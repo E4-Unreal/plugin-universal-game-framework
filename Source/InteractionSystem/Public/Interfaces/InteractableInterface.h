@@ -28,17 +28,17 @@ public:
     FText GetInteractionText() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool CanInteract(AActor* Instigator);
+    bool CanInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void Interact(AActor* Instigator);
+    void Interact(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void CancelInteract(AActor* Instigator);
+    void CancelInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void OnFocus(AActor* Instigator);
+    void SetFocus(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void OnUnFocus(AActor* Instigator);
+    void ClearFocus(AActor* Interactor);
 };

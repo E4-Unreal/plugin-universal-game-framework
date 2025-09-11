@@ -10,8 +10,22 @@
 AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    auto DisplayStaticMesh = GetDisplayStaticMesh();
-    DisplayStaticMesh->SetSimulatePhysics(true);
+    GetDisplayMesh()->SetSimulatePhysics(true);
+}
+
+void AItemActor::Interact_Implementation(AActor* Interactor)
+{
+    Super::Interact_Implementation(Interactor);
+
+    if (auto InventoryComponent = Interactor->GetComponentByClass<UInventoryComponent>())
+    {
+        for (const auto& InventoryItem : ItemInstances)
+        {
+            if (InventoryItem) InventoryComponent->AddContent(InventoryItem);
+        }
+
+        if (bAutoDestroy) Destroy();
+    }
 }
 
 void AItemActor::SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances)
@@ -56,24 +70,9 @@ void AItemActor::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyCh
 }
 #endif
 
-void AItemActor::OnInteractionTriggered_Implementation(AActor* Interactor)
-{
-    Super::OnInteractionTriggered_Implementation(Interactor);
-
-    if (auto InventoryComponent = Interactor->GetComponentByClass<UInventoryComponent>())
-    {
-        for (const auto& InventoryItem : ItemInstances)
-        {
-            if (InventoryItem) InventoryComponent->AddContent(InventoryItem);
-        }
-
-        if (bAutoDestroy) Destroy();
-    }
-}
-
 void AItemActor::Refresh()
 {
-    GetDisplayStaticMesh()->SetStaticMesh(GetStaticMesh());
+    GetDisplayMesh()->SetStaticMesh(GetStaticMesh());
 }
 
 UStaticMesh* AItemActor::GetStaticMesh() const
