@@ -4,9 +4,11 @@
 #include "Actors/InteractableActor.h"
 
 #include "Components/InteractionSystemComponent.h"
+#include "Components/WidgetComponent.h"
 
 FName AInteractableActor::DefaultSceneName(TEXT("DefaultScene"));
 FName AInteractableActor::DisplayMeshName(TEXT("DisplayMesh"));
+FName AInteractableActor::WidgetComponentName(TEXT("WidgetComponent"));
 
 AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -20,6 +22,13 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
     DisplayMesh = CreateDefaultSubobject<UStaticMeshComponent>(DisplayMeshName);
     GetDisplayMesh()->SetupAttachment(GetRootComponent());
+
+    /* WidgetComponent */
+
+    WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(WidgetComponentName);
+    GetWidgetComponent()->SetupAttachment(GetRootComponent());
+    GetWidgetComponent()->SetWidgetSpace(EWidgetSpace::Screen);
+    GetWidgetComponent()->SetDrawAtDesiredSize(true);
 }
 
 void AInteractableActor::NotifyActorBeginCursorOver()
@@ -55,6 +64,7 @@ void AInteractableActor::SetFocus_Implementation(AActor* Interactor)
     if (Interactor)
     {
         GetDisplayMesh()->SetRenderCustomDepth(true);
+        GetWidgetComponent()->SetVisibility(true);
     }
 }
 
@@ -65,5 +75,6 @@ void AInteractableActor::ClearFocus_Implementation(AActor* Interactor)
     if (Interactor)
     {
         GetDisplayMesh()->SetRenderCustomDepth(false);
+        GetWidgetComponent()->SetVisibility(false);
     }
 }

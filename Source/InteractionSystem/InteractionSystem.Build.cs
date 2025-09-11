@@ -12,7 +12,8 @@ public class InteractionSystem : ModuleRules
                 "Core",
                 "UniversalUtilities",
                 "EnhancedInputBinder",
-                "GameplayTags"
+                "GameplayTags",
+                "UMG"
             }
         );
 
