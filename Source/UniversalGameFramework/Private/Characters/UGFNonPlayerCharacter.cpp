@@ -9,7 +9,7 @@
 AUGFNonPlayerCharacter::AUGFNonPlayerCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-
+    GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 }
 
 bool AUGFNonPlayerCharacter::CanInteract_Implementation(AActor* Interactor)
