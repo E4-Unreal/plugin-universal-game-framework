@@ -5,125 +5,231 @@
 
 #include "Components/InteractionSystemComponent.h"
 #include "Components/ShapeComponent.h"
-#include "Logging.h"
+#include "Components/WidgetComponent.h"
+#include "GameFramework/Character.h"
+#include "GameplayTags/InteractionGameplaytags.h"
+
+UInteractableComponent::UInteractableComponent()
+{
+    bWantsInitializeComponent = true;
+
+    InteractionType = Interaction::Root;
+    bPlayerOnly = true;
+    bUseCursorEvent = true;
+    bUseRenderCustomDepth = true;
+}
+
+void UInteractableComponent::InitializeComponent()
+{
+    Super::InitializeComponent();
+
+    FindDisplayMesh();
+    FindWidgetComponent();
+    FindOverlapShape();
+}
 
 void UInteractableComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    // Find OverlapShape
-    if (!GetOverlapShape()) SetOverlapShape(GetOwner()->FindComponentByClass<UShapeComponent>());
-
-    // Bind Events
-    if (GetOverlapShape())
-    {
-        GetOverlapShape()->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeBeginOverlap);
-        GetOverlapShape()->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeEndOverlap);
-    }
+    BindOverlapShapeEvents();
+    BindActorEvents();
 }
 
 void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
-    ClearAllInteractionTimers();
+    UnbindOverlapShapeEvents();
+    UnbindActorEvents();
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-void UInteractableComponent::Interact_Implementation(AActor* Interactor)
+void UInteractableComponent::SetDisplayMesh(UMeshComponent* NewDisplayMesh)
 {
-    if (!Execute_CanInteract(this, Interactor)) return;
-
-    LOG_ACTOR_COMPONENT(Log, TEXT("%s try interact."), *Interactor->GetName())
-    SetInteractionTimer(Interactor);
+    DisplayMesh = NewDisplayMesh;
 }
 
-void UInteractableComponent::CancelInteract_Implementation(AActor* Interactor)
+void UInteractableComponent::SetWidgetComponent(UWidgetComponent* NewWidgetComponent)
 {
-    if (!IsInteracting(Interactor)) return;
-
-    LOG_ACTOR_COMPONENT(Log, TEXT("%s cancel interact."), *Interactor->GetName())
-    ClearInteractionTimer(Interactor);
+    WidgetComponent = NewWidgetComponent;
 }
 
-void UInteractableComponent::SetInteractionTimer(AActor* Interactor)
+void UInteractableComponent::SetOverlapShape(UShapeComponent* NewOverlapShape)
 {
-    ClearInteractionTimer(Interactor);
+    OverlapShape = NewOverlapShape;
+}
 
-    if (InteractionTime < 0 || FMath::IsNearlyZero(InteractionTime))
+void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
+{
+    if (Interactor)
     {
-        TriggerInteraction(Interactor);
+        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
+        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
+    }
+}
+
+void UInteractableComponent::DeactivateFocusEffects(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
+        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);
+    }
+}
+
+UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
+{
+    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    {
+        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        {
+            return InteractionSystem;
+        }
+    }
+
+    return nullptr;
+}
+
+void UInteractableComponent::FindDisplayMesh()
+{
+    if (DisplayMesh.IsValid()) return;
+
+    if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
+    {
+        DisplayMesh = OwningCharacter->GetMesh();
     }
     else
     {
-        FTimerHandle Timer;
-        FTimerDelegate TimerDelegate;
-        TimerDelegate.BindUObject(this, &ThisClass::TriggerInteraction, Interactor);
-        GetOwner()->GetWorldTimerManager().SetTimer(Timer, TimerDelegate, InteractionTime, false);
-
-        InteractionTimerMap.Emplace(Interactor, Timer);
+        DisplayMesh = GetOwner()->GetComponentByClass<UMeshComponent>();
     }
 }
 
-void UInteractableComponent::ClearInteractionTimer(AActor* Interactor)
+void UInteractableComponent::FindWidgetComponent()
 {
-    if (InteractionTimerMap.Contains(Interactor))
+    if (WidgetComponent.IsValid()) return;
+
+    WidgetComponent = GetOwner()->GetComponentByClass<UWidgetComponent>();
+}
+
+void UInteractableComponent::FindOverlapShape()
+{
+    if (OverlapShape.IsValid()) return;
+
+    OverlapShape = GetOwner()->GetComponentByClass<UShapeComponent>();
+}
+
+void UInteractableComponent::BindOverlapShapeEvents()
+{
+    if (OverlapShape.IsValid())
     {
-        GetOwner()->GetWorldTimerManager().ClearTimer(InteractionTimerMap[Interactor]);
-        InteractionTimerMap.Remove(Interactor);
+        OverlapShape->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeBeginOverlap);
+        OverlapShape->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeEndOverlap);
     }
 }
 
-void UInteractableComponent::ClearAllInteractionTimers()
+void UInteractableComponent::UnbindOverlapShapeEvents()
 {
-    for (const auto& [Interactor, Timer] : InteractionTimerMap)
+    if (OverlapShape.IsValid())
     {
-        ClearInteractionTimer(Interactor);
+        OverlapShape->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnOverlapShapeBeginOverlap);
+        OverlapShape->OnComponentEndOverlap.RemoveDynamic(this, &ThisClass::OnOverlapShapeEndOverlap);
     }
 }
 
-void UInteractableComponent::TriggerInteraction(AActor* Interactor)
+void UInteractableComponent::BindActorEvents()
 {
-    ClearInteractionTimer(Interactor);
-
-    if (Execute_CanInteract(this, Interactor))
+    if (GetOwner())
     {
-        if (bCanInteractOnlyOnce)
+        GetOwner()->OnBeginCursorOver.AddDynamic(this, &ThisClass::OnBeginCursorOver);
+        GetOwner()->OnEndCursorOver.AddDynamic(this, &ThisClass::OnEndCursorOver);
+        GetOwner()->OnClicked.AddDynamic(this, &ThisClass::OnClicked);
+    }
+}
+
+void UInteractableComponent::UnbindActorEvents()
+{
+    if (GetOwner())
+    {
+        GetOwner()->OnBeginCursorOver.RemoveDynamic(this, &ThisClass::OnBeginCursorOver);
+        GetOwner()->OnEndCursorOver.RemoveDynamic(this, &ThisClass::OnEndCursorOver);
+        GetOwner()->OnClicked.RemoveDynamic(this, &ThisClass::OnClicked);
+    }
+}
+
+void UInteractableComponent::Shrink()
+{
+    for (int32 Index = OverlappingActors.Num() - 1; Index >= 0; --Index)
+    {
+        if (!OverlappingActors[Index].IsValid())
         {
-            bCanInteract = false;
-            ClearAllInteractionTimers();
+            OverlappingActors.RemoveAt(Index, EAllowShrinking::No);
         }
+    }
 
-        LOG_ACTOR_COMPONENT(Log, TEXT("%s trigger interaction."), *Interactor->GetName(), *GetOwner()->GetName())
-        OnInteractionTriggered.Broadcast(Interactor);
+    OverlappingActors.Shrink();
+}
+
+void UInteractableComponent::AddOverlappingActor(AActor* NewActor)
+{
+    if (NewActor)
+    {
+        Shrink();
+
+        if (!OverlappingActors.Contains(NewActor)) OverlappingActors.Emplace(NewActor);
+    }
+}
+
+void UInteractableComponent::RemoveOverlappingActor(AActor* OldActor)
+{
+    if (OldActor)
+    {
+        Shrink();
+
+        if (OverlappingActors.Contains(OldActor)) OverlappingActors.RemoveSingleSwap(OldActor);
     }
 }
 
 void UInteractableComponent::OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponent>())
-    {
-        OnInteractorBeginOverlap(OtherActor, InteractionSystem);
-    }
+    AddOverlappingActor(OtherActor);
 }
 
 void UInteractableComponent::OnOverlapShapeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponent>())
+    RemoveOverlappingActor(OtherActor);
+}
+
+void UInteractableComponent::OnBeginCursorOver(AActor* TouchedActor)
+{
+    if (bUseCursorEvent)
     {
-        OnInteractorEndOverlap(OtherActor, InteractionSystem);
+        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
+        {
+            PlayerInteractionSystem->SelectTarget(GetOwner(), true);
+        }
     }
 }
 
-void UInteractableComponent::OnInteractorBeginOverlap_Implementation(AActor* Interactor,
-    UInteractionSystemComponent* InteractionSystem)
+void UInteractableComponent::OnEndCursorOver(AActor* TouchedActor)
 {
-    InteractionSystem->AddTarget(GetOwner());
+    if (bUseCursorEvent)
+    {
+        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
+        {
+            PlayerInteractionSystem->DeselectTarget(GetOwner(), true);
+        }
+    }
 }
 
-void UInteractableComponent::OnInteractorEndOverlap_Implementation(AActor* Interactor,
-    UInteractionSystemComponent* InteractionSystem)
+void UInteractableComponent::OnClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
-    InteractionSystem->RemoveTarget(GetOwner());
+    if (bUseCursorEvent)
+    {
+        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
+        {
+            PlayerInteractionSystem->TryInteract();
+        }
+    }
 }
