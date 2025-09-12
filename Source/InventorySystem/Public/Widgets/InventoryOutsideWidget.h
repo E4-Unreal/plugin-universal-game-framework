@@ -15,5 +15,11 @@ class INVENTORYSYSTEM_API UInventoryOutsideWidget : public UDraggableWidgetBase
     GENERATED_BODY()
 
 protected:
+    /* UserWidget */
+
+    virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+    /* DraggableWidgetBase */
+
     virtual void OnWidgetDrop(UUserWidget* DropWidget) override;
 };

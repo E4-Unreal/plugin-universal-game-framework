@@ -3,10 +3,19 @@
 
 #include "Widgets/InventoryOutsideWidget.h"
 
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/InventoryComponent.h"
 #include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
 #include "Widgets/SlotWidgetBase.h"
+
+void UInventoryOutsideWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+    Super::NativeTick(MyGeometry, InDeltaTime);
+
+    ESlateVisibility NewVisibility = UWidgetBlueprintLibrary::IsDragDropping() ? ESlateVisibility::Visible : ESlateVisibility::HitTestInvisible;
+    SetVisibility(NewVisibility);
+}
 
 void UInventoryOutsideWidget::OnWidgetDrop(UUserWidget* DropWidget)
 {
