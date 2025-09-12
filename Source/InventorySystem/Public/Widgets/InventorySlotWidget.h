@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InventorySlotWidgetBase.h"
+#include "Widgets/SlotWidgetBase.h"
 #include "InventorySlotWidget.generated.h"
 
 class UTextBlock;
@@ -13,7 +13,7 @@ struct FInventorySlot;
  *
  */
 UCLASS(Abstract)
-class INVENTORYSYSTEM_API UInventorySlotWidget : public UInventorySlotWidgetBase
+class INVENTORYSYSTEM_API UInventorySlotWidget : public USlotWidgetBase
 {
     GENERATED_BODY()
 

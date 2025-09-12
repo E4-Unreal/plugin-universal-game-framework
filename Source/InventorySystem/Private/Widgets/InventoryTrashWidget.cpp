@@ -3,12 +3,9 @@
 
 #include "Widgets/InventoryTrashWidget.h"
 
-#include "Components/InventoryComponent.h"
-#include "Widgets/InventorySlotWidgetBase.h"
-
-void UInventoryTrashWidget::OnInventorySlotWidgetDrop(UInventorySlotWidgetBase* InventorySlotWidget)
+void UInventoryTrashWidget::OnWidgetDrop(UUserWidget* DropWidget)
 {
-    Super::OnInventorySlotWidgetDrop(InventorySlotWidget);
+    Super::OnWidgetDrop(DropWidget);
 
-    //GetInventoryComponent()->RemoveInventorySlot(InventorySlotWidget->GetSlotIndex());
+    //GetInventoryComponent()->ClearSlot(InventorySlotWidget->GetSlotIndex());
 }
