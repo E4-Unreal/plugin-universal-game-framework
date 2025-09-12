@@ -63,7 +63,7 @@ void UInteractionSystemComponent::FindOverlapSphere()
 
 void UInteractionSystemComponent::FindOverlapCapsule()
 {
-    if (OverlapSphere.IsValid()) return;
+    if (OverlapCapsule.IsValid()) return;
 
     if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
     {
@@ -71,7 +71,7 @@ void UInteractionSystemComponent::FindOverlapCapsule()
     }
     else
     {
-        SetOverlapSphere(GetOwner()->GetComponentByClass<USphereComponent>());
+        SetOverlapCapsule(GetOwner()->GetComponentByClass<UCapsuleComponent>());
     }
 }
 
