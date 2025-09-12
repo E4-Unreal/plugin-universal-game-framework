@@ -29,6 +29,7 @@ public:
 
     /* InteractableInterface */
 
+    virtual FText GetInteractionMessage_Implementation() const override;
     virtual void Interact_Implementation(AActor* Interactor) override;
 
 protected:

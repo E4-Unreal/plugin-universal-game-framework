@@ -6,14 +6,22 @@
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/CommonWidgetManagerSubsystem.h"
 #include "Widgets/Popup/CommonPopupWidgetBase.h"
+#include "GameplayTags/UGFGameplayTags.h"
 
 
 AUGFLevelPortal::AUGFLevelPortal(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    InteractionType = Interaction::Move;
+
     LevelName = NSLOCTEXT("UGF", "LevelName", "Destination");
     ConfirmTitle = NSLOCTEXT("UGF", "MoveConfirmTitle", "Notice");
     ConfirmMessage = NSLOCTEXT("UGF", "MoveConfirmMessage", "Do you want to move to {0}");
+}
+
+FText AUGFLevelPortal::GetInteractionMessage_Implementation() const
+{
+    return LevelName;
 }
 
 void AUGFLevelPortal::Interact_Implementation(AActor* Interactor)
