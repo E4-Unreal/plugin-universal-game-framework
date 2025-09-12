@@ -14,6 +14,7 @@ AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectIniti
     /* APlayerController */
 
     bEnableMouseOverEvents = true;
+    bEnableClickEvents = true;
 
     /* WidgetManager */
 
