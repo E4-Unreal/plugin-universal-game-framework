@@ -168,6 +168,7 @@ void UInteractableComponent::InitWidgetComponent() const
     WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
     WidgetComponent->SetDrawAtDesiredSize(true);
     WidgetComponent->SetWidgetClass(InteractionWidgetClass);
+    WidgetComponent->InitWidget();
 
     if (auto InteractionWidget = WidgetComponent->GetWidget())
     {
