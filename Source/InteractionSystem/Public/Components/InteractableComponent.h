@@ -77,6 +77,12 @@ public:
     UFUNCTION(BlueprintPure)
     virtual bool CanInteract(AActor* Interactor) const;
 
+    UFUNCTION(BlueprintCallable)
+    virtual void Interact(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void CancelInteract(AActor* Interactor);
+
     UFUNCTION(BlueprintPure)
     virtual bool CanSelect(AActor* Interactor) const;
 

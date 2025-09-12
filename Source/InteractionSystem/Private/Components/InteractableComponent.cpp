@@ -10,6 +10,7 @@
 #include "GameplayTags/InteractionGameplaytags.h"
 #include "Interfaces/InteractableInterface.h"
 #include "Interfaces/InteractionWidgetInterface.h"
+#include "Logging.h"
 
 UInteractableComponent::UInteractableComponent()
 {
@@ -70,6 +71,22 @@ bool UInteractableComponent::CanInteract(AActor* Interactor) const
     return Interactor && !GetOwner()->IsHidden();
 }
 
+void UInteractableComponent::Interact(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+    }
+}
+
+void UInteractableComponent::CancelInteract(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+    }
+}
+
 bool UInteractableComponent::CanSelect(AActor* Interactor) const
 {
     if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
@@ -79,18 +96,24 @@ bool UInteractableComponent::CanSelect(AActor* Interactor) const
 
 void UInteractableComponent::Select(AActor* Interactor)
 {
-    if (Interactor == nullptr) return;
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-    if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
-    if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
+        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
+        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
+    }
 }
 
 void UInteractableComponent::Deselect(AActor* Interactor)
 {
-    if (Interactor == nullptr) return;
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-    if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
-    if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);
+        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
+        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);
+    }
 }
 
 UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const

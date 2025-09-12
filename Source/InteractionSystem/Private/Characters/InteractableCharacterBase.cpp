@@ -3,7 +3,6 @@
 
 #include "Characters/InteractableCharacterBase.h"
 
-#include "Logging.h"
 #include "Components/InteractableComponent.h"
 
 FName AInteractableCharacterBase::InteractableComponentName(TEXT("InteractableComponent"));
@@ -33,18 +32,12 @@ bool AInteractableCharacterBase::CanInteract_Implementation(AActor* Interactor)
 
 void AInteractableCharacterBase::Interact_Implementation(AActor* Interactor)
 {
-    if (Interactor)
-    {
-        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-    }
+    GetInteractableComponent()->Interact(Interactor);
 }
 
 void AInteractableCharacterBase::CancelInteract_Implementation(AActor* Interactor)
 {
-    if (Interactor)
-    {
-        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-    }
+    GetInteractableComponent()->CancelInteract(Interactor);
 }
 
 bool AInteractableCharacterBase::CanSelect_Implementation(AActor* Interactor)
@@ -54,20 +47,10 @@ bool AInteractableCharacterBase::CanSelect_Implementation(AActor* Interactor)
 
 void AInteractableCharacterBase::Select_Implementation(AActor* Interactor)
 {
-    if (Interactor)
-    {
-        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        GetInteractableComponent()->Select(Interactor);
-    }
+    GetInteractableComponent()->Select(Interactor);
 }
 
 void AInteractableCharacterBase::Deselect_Implementation(AActor* Interactor)
 {
-    if (Interactor)
-    {
-        LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        GetInteractableComponent()->Deselect(Interactor);
-    }
+    GetInteractableComponent()->Deselect(Interactor);
 }
