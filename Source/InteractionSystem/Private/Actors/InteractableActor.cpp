@@ -47,8 +47,8 @@ void AInteractableActor::BeginPlay()
         {
             if (Widget->Implements<UInteractionWidgetInterface>())
             {
-                IInteractionWidgetInterface::Execute_SetInteractionType(Widget, InteractionType);
-                IInteractionWidgetInterface::Execute_SetInteractionMessage(Widget, InteractionMessage);
+                IInteractionWidgetInterface::Execute_SetInteractionType(Widget, Execute_GetInteractionType(this));
+                IInteractionWidgetInterface::Execute_SetInteractionMessage(Widget, Execute_GetInteractionMessage(this));
             }
         }
     }

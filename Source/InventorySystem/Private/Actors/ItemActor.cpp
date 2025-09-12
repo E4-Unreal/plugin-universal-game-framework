@@ -14,11 +14,29 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     /* Config */
 
     InteractionType = Interaction::Item;
-    InteractionMessage = NSLOCTEXT("InventorySystem", "Item", "Item");
+
+    // 아이템 외 5개
+    InteractionMessage = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}");
 
     /* DisplayMesh */
 
     GetDisplayMesh()->SetSimulatePhysics(true);
+}
+
+FText AItemActor::GetInteractionMessage_Implementation() const
+{
+    if (!ItemInstances.IsEmpty())
+    {
+        auto Data = ItemInstances[0]->GetData();
+        if (Data && Data->Implements<UItemDataInterface>())
+        {
+            FText ItemDisplayName = IItemDataInterface::Execute_GetDisplayNameText(Data);
+
+            return ItemInstances.Num() == 1 ? ItemDisplayName : FText::Format(InteractionMessage, ItemDisplayName, FText::FromString(FString::FromInt(ItemInstances.Num() - 1)));
+        }
+    }
+
+    return FText::GetEmpty();
 }
 
 void AItemActor::Interact_Implementation(AActor* Interactor)
