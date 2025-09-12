@@ -5,6 +5,8 @@
 
 #include "Components/InteractionSystemComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameplayTags/InteractionGameplaytags.h"
+#include "Interfaces/InteractionWidgetInterface.h"
 
 FName AInteractableActor::DefaultSceneName(TEXT("DefaultScene"));
 FName AInteractableActor::DisplayMeshName(TEXT("DisplayMesh"));
@@ -13,6 +15,10 @@ FName AInteractableActor::WidgetComponentName(TEXT("WidgetComponent"));
 AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    /* Config */
+
+    InteractionType = Interaction::Root;
+
     /* DefaultScene */
 
     DefaultScene = CreateDefaultSubobject<USceneComponent>(DefaultSceneName);
@@ -29,6 +35,23 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
     GetWidgetComponent()->SetupAttachment(GetRootComponent());
     GetWidgetComponent()->SetWidgetSpace(EWidgetSpace::Screen);
     GetWidgetComponent()->SetDrawAtDesiredSize(true);
+}
+
+void AInteractableActor::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (GetWidgetComponent())
+    {
+        if (auto Widget = GetWidgetComponent()->GetWidget())
+        {
+            if (Widget->Implements<UInteractionWidgetInterface>())
+            {
+                IInteractionWidgetInterface::Execute_SetInteractionType(Widget, InteractionType);
+                IInteractionWidgetInterface::Execute_SetInteractionMessage(Widget, InteractionMessage);
+            }
+        }
+    }
 }
 
 void AInteractableActor::NotifyActorBeginCursorOver()

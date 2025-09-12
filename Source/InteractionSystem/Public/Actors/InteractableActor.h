@@ -33,18 +33,21 @@ public:
     FGameplayTag InteractionType;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FText InteractionText;
+    FText InteractionMessage;
 
 public:
     AInteractableActor(const FObjectInitializer& ObjectInitializer);
 
     /* Actor */
 
+    virtual void BeginPlay() override;
     virtual void NotifyActorBeginCursorOver() override;
     virtual void NotifyActorEndCursorOver() override;
 
     /* InteractableInterface */
 
+    virtual FGameplayTag GetInteractionType_Implementation() const override { return InteractionType; }
+    virtual FText GetInteractionMessage_Implementation() const override { return InteractionMessage; }
     virtual void SetFocus_Implementation(AActor* Interactor) override;
     virtual void ClearFocus_Implementation(AActor* Interactor) override;
 

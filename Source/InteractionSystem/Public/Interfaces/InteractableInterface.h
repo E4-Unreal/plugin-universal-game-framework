@@ -25,7 +25,7 @@ public:
     FGameplayTag GetInteractionType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FText GetInteractionText() const;
+    FText GetInteractionMessage() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanInteract(AActor* Interactor);

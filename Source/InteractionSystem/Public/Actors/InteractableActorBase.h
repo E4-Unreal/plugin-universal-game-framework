@@ -18,7 +18,7 @@ public:
     /* InteractableInterface */
 
     virtual FGameplayTag GetInteractionType_Implementation() const override;
-    virtual FText GetInteractionText_Implementation() const override;
+    virtual FText GetInteractionMessage_Implementation() const override;
     virtual bool CanInteract_Implementation(AActor* Interactor) override { return true; }
     virtual void Interact_Implementation(AActor* Interactor) override;
     virtual void CancelInteract_Implementation(AActor* Interactor) override;

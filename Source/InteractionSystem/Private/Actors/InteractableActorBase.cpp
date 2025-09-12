@@ -17,9 +17,9 @@ FGameplayTag AInteractableActorBase::GetInteractionType_Implementation() const
     return Interaction::Root;
 }
 
-FText AInteractableActorBase::GetInteractionText_Implementation() const
+FText AInteractableActorBase::GetInteractionMessage_Implementation() const
 {
-    return NSLOCTEXT("InteractionSystem", "Interact", "Interact");
+    return FText::GetEmpty();
 }
 
 void AInteractableActorBase::Interact_Implementation(AActor* Interactor)
