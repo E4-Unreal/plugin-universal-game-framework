@@ -70,10 +70,16 @@ bool UInteractableComponent::CanInteract(AActor* Interactor) const
     return Interactor && !GetOwner()->IsHidden();
 }
 
+bool UInteractableComponent::CanSelect(AActor* Interactor) const
+{
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+
+    return true;
+}
+
 void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
 {
     if (Interactor == nullptr) return;
-    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return;
 
     if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
     if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
@@ -82,7 +88,6 @@ void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
 void UInteractableComponent::DeactivateFocusEffects(AActor* Interactor)
 {
     if (Interactor == nullptr) return;
-    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return;
 
     if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
     if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);

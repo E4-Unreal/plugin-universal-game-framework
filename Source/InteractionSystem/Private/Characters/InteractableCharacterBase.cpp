@@ -18,17 +18,17 @@ AInteractableCharacterBase::AInteractableCharacterBase(const FObjectInitializer&
 
 FGameplayTag AInteractableCharacterBase::GetInteractionType_Implementation() const
 {
-    return InteractableComponent->InteractionType;
+    return GetInteractableComponent()->InteractionType;
 }
 
 FText AInteractableCharacterBase::GetInteractionMessage_Implementation() const
 {
-    return InteractableComponent->InteractionMessage;
+    return GetInteractableComponent()->InteractionMessage;
 }
 
 bool AInteractableCharacterBase::CanInteract_Implementation(AActor* Interactor)
 {
-    return InteractableComponent->CanInteract(Interactor);
+    return GetInteractableComponent()->CanInteract(Interactor);
 }
 
 void AInteractableCharacterBase::Interact_Implementation(AActor* Interactor)
@@ -47,28 +47,27 @@ void AInteractableCharacterBase::CancelInteract_Implementation(AActor* Interacto
     }
 }
 
-void AInteractableCharacterBase::SetFocus_Implementation(AActor* Interactor)
+bool AInteractableCharacterBase::CanSelect_Implementation(AActor* Interactor)
+{
+    return GetInteractableComponent()->CanSelect(Interactor);
+}
+
+void AInteractableCharacterBase::Select_Implementation(AActor* Interactor)
 {
     if (Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        if (GetInteractableComponent())
-        {
-            GetInteractableComponent()->ActivateFocusEffects(Interactor);
-        }
+        GetInteractableComponent()->ActivateFocusEffects(Interactor);
     }
 }
 
-void AInteractableCharacterBase::ClearFocus_Implementation(AActor* Interactor)
+void AInteractableCharacterBase::Deselect_Implementation(AActor* Interactor)
 {
     if (Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        if (GetInteractableComponent())
-        {
-            GetInteractableComponent()->DeactivateFocusEffects(Interactor);
-        }
+        GetInteractableComponent()->ActivateFocusEffects(Interactor);
     }
 }

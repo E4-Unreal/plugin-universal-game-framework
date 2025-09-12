@@ -77,6 +77,9 @@ public:
     UFUNCTION(BlueprintPure)
     virtual bool CanInteract(AActor* Interactor) const;
 
+    UFUNCTION(BlueprintPure)
+    virtual bool CanSelect(AActor* Interactor) const;
+
     UFUNCTION(BlueprintCallable)
     virtual void ActivateFocusEffects(AActor* Interactor);
 
