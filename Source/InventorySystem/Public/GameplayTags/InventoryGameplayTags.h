@@ -2,11 +2,11 @@
 
 #include "NativeGameplayTags.h"
 
-namespace InventoryGameplayTags
+namespace InventorySystem
 {
     namespace Interaction
     {
-        INVENTORYSYSTEM_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Item)
+        INVENTORYSYSTEM_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Pickup)
     }
 
     namespace Item
@@ -30,4 +30,4 @@ namespace InventoryGameplayTags
     }
 }
 
-using namespace InventoryGameplayTags;
+using namespace InventorySystem;

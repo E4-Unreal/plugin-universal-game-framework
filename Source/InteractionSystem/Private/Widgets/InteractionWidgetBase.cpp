@@ -10,6 +10,7 @@ UInteractionWidgetBase::UInteractionWidgetBase(const FObjectInitializer& ObjectI
     : Super(ObjectInitializer)
 {
     InteractionTypeTextMap.Emplace(Interaction::Root, NSLOCTEXT("InteractionSystem", "Interact", "Interact"));
+    InteractionTypeTextMap.Emplace(Interaction::Talk, NSLOCTEXT("InteractionSystem", "Talk", "Talk"));
 }
 
 void UInteractionWidgetBase::SetInteractionType_Implementation(FGameplayTag NewInteractionType)

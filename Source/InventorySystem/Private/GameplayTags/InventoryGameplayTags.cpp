@@ -1,10 +1,10 @@
 ﻿#include "GameplayTags/InventoryGameplayTags.h"
 
-namespace InventoryGameplayTags
+namespace InventorySystem
 {
     namespace Interaction
     {
-        UE_DEFINE_GAMEPLAY_TAG(Item, "Interaction.Item")
+        UE_DEFINE_GAMEPLAY_TAG(Pickup, "Interaction.Pickup")
     }
 
     namespace Item

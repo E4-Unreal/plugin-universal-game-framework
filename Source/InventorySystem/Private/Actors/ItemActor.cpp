@@ -13,7 +13,7 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
 {
     /* Config */
 
-    InteractionType = Interaction::Item;
+    InteractionType = Interaction::Pickup;
 
     // 아이템 외 5개
     InteractionMessage = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}");
