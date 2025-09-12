@@ -5,11 +5,19 @@
 
 #include "Components/InventoryComponent.h"
 #include "Data/ItemInstance.h"
+#include "GameplayTags/InventoryGameplayTags.h"
 #include "Interfaces/ItemDataInterface.h"
 
 AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    /* Config */
+
+    InteractionType = Interaction::Item;
+    InteractionMessage = NSLOCTEXT("InventorySystem", "Item", "Item");
+
+    /* DisplayMesh */
+
     GetDisplayMesh()->SetSimulatePhysics(true);
 }
 

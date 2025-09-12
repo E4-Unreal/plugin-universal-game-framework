@@ -4,6 +4,11 @@
 
 namespace InventoryGameplayTags
 {
+    namespace Interaction
+    {
+        INVENTORYSYSTEM_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Item)
+    }
+
     namespace Item
     {
         INVENTORYSYSTEM_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Root)
