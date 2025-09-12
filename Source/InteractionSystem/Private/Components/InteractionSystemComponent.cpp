@@ -143,7 +143,7 @@ void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
 
 void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
 {
-    if (NewTarget)
+    if (NewTarget && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
     {
         // ex) BeginCursorOver
 

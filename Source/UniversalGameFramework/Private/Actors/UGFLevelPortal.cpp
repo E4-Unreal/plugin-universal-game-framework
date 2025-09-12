@@ -40,7 +40,7 @@ void AUGFLevelPortal::Interact_Implementation(AActor* Interactor)
 
 bool AUGFLevelPortal::CanSelect_Implementation(AActor* Interactor)
 {
-    if (ConfirmPopupWidget.IsValid() && ConfirmPopupWidget->IsInViewport()) return false;
+    if (ConfirmPopupWidget.IsValid() && ConfirmPopupWidget->IsVisible()) return false;
 
     return Super::CanSelect_Implementation(Interactor);
 }
