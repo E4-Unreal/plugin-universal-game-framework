@@ -33,6 +33,7 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
     WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(WidgetComponentName);
     GetWidgetComponent()->SetupAttachment(GetRootComponent());
+    GetWidgetComponent()->SetVisibility(false);
     GetWidgetComponent()->SetWidgetSpace(EWidgetSpace::Screen);
     GetWidgetComponent()->SetDrawAtDesiredSize(true);
 }
