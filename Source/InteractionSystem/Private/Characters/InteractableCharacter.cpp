@@ -15,7 +15,8 @@ AInteractableCharacter::AInteractableCharacter(const FObjectInitializer& ObjectI
 {
     /* Config */
 
-    bUseCursorOverEvent = true;
+    bUseCursorEvent = true;
+    bUseRenderCustomDepth = true;
     InteractionType = Interaction::Talk;
 
     /* WidgetComponent */
@@ -48,14 +49,11 @@ void AInteractableCharacter::NotifyActorBeginCursorOver()
 {
     Super::NotifyActorBeginCursorOver();
 
-    if (bUseCursorOverEvent)
+    if (bUseCursorEvent)
     {
-        if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
         {
-            if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
-            {
-                InteractionSystem->SelectTarget(this, true);
-            }
+            PlayerInteractionSystem->SelectTarget(this, true);
         }
     }
 }
@@ -64,14 +62,24 @@ void AInteractableCharacter::NotifyActorEndCursorOver()
 {
     Super::NotifyActorEndCursorOver();
 
-    if (bUseCursorOverEvent)
+    if (bUseCursorEvent)
     {
-        if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
         {
-            if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
-            {
-                InteractionSystem->DeselectTarget(this, true);
-            }
+            PlayerInteractionSystem->DeselectTarget(this, true);
+        }
+    }
+}
+
+void AInteractableCharacter::NotifyActorOnClicked(FKey ButtonPressed)
+{
+    Super::NotifyActorOnClicked(ButtonPressed);
+
+    if (bUseCursorEvent)
+    {
+        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
+        {
+            PlayerInteractionSystem->TryInteract();
         }
     }
 }
@@ -82,7 +90,7 @@ void AInteractableCharacter::SetFocus_Implementation(AActor* Interactor)
 
     if (Interactor)
     {
-        GetMesh()->SetRenderCustomDepth(true);
+        if (bUseRenderCustomDepth) GetMesh()->SetRenderCustomDepth(true);
         GetWidgetComponent()->SetVisibility(true);
     }
 }
@@ -93,7 +101,20 @@ void AInteractableCharacter::ClearFocus_Implementation(AActor* Interactor)
 
     if (Interactor)
     {
-        GetMesh()->SetRenderCustomDepth(false);
+        if (bUseRenderCustomDepth) GetMesh()->SetRenderCustomDepth(false);
         GetWidgetComponent()->SetVisibility(false);
     }
+}
+
+UInteractionSystemComponent* AInteractableCharacter::GetPlayerInteractionSystem() const
+{
+    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    {
+        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        {
+            return InteractionSystem;
+        }
+    }
+
+    return nullptr;
 }
