@@ -29,6 +29,9 @@ private:
     TObjectPtr<UWidgetComponent> WidgetComponent;
 
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseCursorOverEvent;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
     FGameplayTag InteractionType;
 

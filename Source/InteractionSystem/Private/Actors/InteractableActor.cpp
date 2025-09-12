@@ -17,6 +17,7 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 {
     /* Config */
 
+    bUseCursorOverEvent = true;
     InteractionType = Interaction::Root;
 
     /* DefaultScene */
@@ -59,11 +60,14 @@ void AInteractableActor::NotifyActorBeginCursorOver()
 {
     Super::NotifyActorBeginCursorOver();
 
-    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    if (bUseCursorOverEvent)
     {
-        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
         {
-            InteractionSystem->SelectTarget(this, true);
+            if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+            {
+                InteractionSystem->SelectTarget(this, true);
+            }
         }
     }
 }
@@ -72,11 +76,14 @@ void AInteractableActor::NotifyActorEndCursorOver()
 {
     Super::NotifyActorEndCursorOver();
 
-    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    if (bUseCursorOverEvent)
     {
-        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
         {
-            InteractionSystem->DeselectTarget(this, true);
+            if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+            {
+                InteractionSystem->DeselectTarget(this, true);
+            }
         }
     }
 }
