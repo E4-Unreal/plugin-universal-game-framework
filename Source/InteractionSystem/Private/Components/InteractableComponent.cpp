@@ -63,6 +63,13 @@ void UInteractableComponent::SetOverlapShape(UShapeComponent* NewOverlapShape)
     OverlapShape = NewOverlapShape;
 }
 
+bool UInteractableComponent::CanInteract(AActor* Interactor) const
+{
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+
+    return Interactor && bCanInteract && GetOwner()->IsHidden();
+}
+
 void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
 {
     if (Interactor)
@@ -124,7 +131,7 @@ void UInteractableComponent::FindOverlapShape()
 
 void UInteractableComponent::BindOverlapShapeEvents()
 {
-    if (OverlapShape.IsValid())
+    if (bUseOverlapShape && OverlapShape.IsValid())
     {
         OverlapShape->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeBeginOverlap);
         OverlapShape->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapShapeEndOverlap);
@@ -133,7 +140,7 @@ void UInteractableComponent::BindOverlapShapeEvents()
 
 void UInteractableComponent::UnbindOverlapShapeEvents()
 {
-    if (OverlapShape.IsValid())
+    if (bUseOverlapShape && OverlapShape.IsValid())
     {
         OverlapShape->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnOverlapShapeBeginOverlap);
         OverlapShape->OnComponentEndOverlap.RemoveDynamic(this, &ThisClass::OnOverlapShapeEndOverlap);
@@ -220,12 +227,22 @@ void UInteractableComponent::OnOverlapShapeBeginOverlap(UPrimitiveComponent* Ove
                                                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
     AddOverlappingActor(OtherActor);
+
+    if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponent>())
+    {
+        InteractionSystem->AddTarget(GetOwner());
+    }
 }
 
 void UInteractableComponent::OnOverlapShapeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
     UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
     RemoveOverlappingActor(OtherActor);
+
+    if (auto InteractionSystem = OtherActor->GetComponentByClass<UInteractionSystemComponent>())
+    {
+        InteractionSystem->RemoveTarget(GetOwner());
+    }
 }
 
 void UInteractableComponent::OnBeginCursorOver(AActor* TouchedActor)

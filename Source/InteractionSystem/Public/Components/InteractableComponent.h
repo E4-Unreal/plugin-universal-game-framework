@@ -41,6 +41,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bUseRenderCustomDepth;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseOverlapShape;
+
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
     TWeakObjectPtr<UMeshComponent> DisplayMesh;
@@ -78,7 +81,7 @@ public:
     virtual void SetOverlapShape(UShapeComponent* NewOverlapShape);
 
     UFUNCTION(BlueprintPure)
-    virtual bool CanInteract(AActor* Interactor) const { return Interactor && bCanInteract && GetOwner()->IsHidden(); }
+    virtual bool CanInteract(AActor* Interactor) const;
 
     UFUNCTION(BlueprintCallable)
     virtual void ActivateFocusEffects(AActor* Interactor);
