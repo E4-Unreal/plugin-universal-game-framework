@@ -7,6 +7,7 @@
 #include "InteractableActor.generated.h"
 
 class UWidgetComponent;
+class USphereComponent;
 
 UCLASS()
 class INTERACTIONSYSTEM_API AInteractableActor : public AInteractableActorBase
@@ -17,6 +18,7 @@ protected:
     static FName DefaultSceneName;
     static FName DisplayMeshName;
     static FName WidgetComponentName;
+    static FName OverlapSphereName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -28,6 +30,9 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UWidgetComponent> WidgetComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<USphereComponent> OverlapSphere;
+
 public:
     AInteractableActor(const FObjectInitializer& ObjectInitializer);
 
@@ -35,4 +40,5 @@ public:
     FORCEINLINE USceneComponent* GetDefaultScene() const { return DefaultScene; }
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
     FORCEINLINE UWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
+    FORCEINLINE USphereComponent* GetOverlapSphere() const { return OverlapSphere; }
 };

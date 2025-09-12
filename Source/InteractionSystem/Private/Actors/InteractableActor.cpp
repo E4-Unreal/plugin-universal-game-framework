@@ -3,11 +3,13 @@
 
 #include "Actors/InteractableActor.h"
 
+#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 
 FName AInteractableActor::DefaultSceneName(TEXT("DefaultScene"));
 FName AInteractableActor::DisplayMeshName(TEXT("DisplayMesh"));
 FName AInteractableActor::WidgetComponentName(TEXT("WidgetComponent"));
+FName AInteractableActor::OverlapSphereName(TEXT("OverlapSphere"));
 
 AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -26,4 +28,9 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
     WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(WidgetComponentName);
     GetWidgetComponent()->SetupAttachment(GetRootComponent());
+
+    /* OverlapSphere */
+
+    OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
+    GetOverlapSphere()->SetupAttachment(GetRootComponent());
 }
