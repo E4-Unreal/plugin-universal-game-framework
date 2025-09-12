@@ -113,7 +113,7 @@ void UInteractionSystemComponent::UnBindOverlapCapsuleEvents()
 
 void UInteractionSystemComponent::AddTarget(AActor* NewTarget)
 {
-    if (NewTarget && NewTarget->Implements<UInteractableInterface>())
+    if (NewTarget && NewTarget->Implements<UInteractableInterface>() && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
     {
         ShrinkTargets(AvailableTargets);
 
@@ -143,7 +143,7 @@ void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
 
 void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
 {
-    if (NewTarget)
+    if (NewTarget && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
     {
         // ex) BeginCursorOver
 
@@ -164,7 +164,7 @@ void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
         {
             SelectedTargets.Emplace(NewTarget);
 
-            IInteractableInterface::Execute_SetFocus(NewTarget, GetOwner());
+            IInteractableInterface::Execute_Select(NewTarget, GetOwner());
         }
     }
 }
@@ -181,7 +181,7 @@ void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget, bool bForce)
         {
             SelectedTargets.RemoveSingleSwap(OldTarget);
 
-            IInteractableInterface::Execute_ClearFocus(OldTarget, GetOwner());
+            IInteractableInterface::Execute_Deselect(OldTarget, GetOwner());
         }
 
         // es) EndCursorOver

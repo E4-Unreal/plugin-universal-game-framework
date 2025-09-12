@@ -37,8 +37,11 @@ public:
     void CancelInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetFocus(AActor* Interactor);
+    bool CanSelect(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void ClearFocus(AActor* Interactor);
+    void Select(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Deselect(AActor* Interactor);
 };

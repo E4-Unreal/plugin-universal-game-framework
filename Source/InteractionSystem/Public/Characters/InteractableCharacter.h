@@ -3,30 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractableActorBase.h"
-#include "InteractableActor.generated.h"
+#include "InteractableCharacterBase.h"
+#include "InteractableCharacter.generated.h"
 
 class UWidgetComponent;
 class USphereComponent;
 
-UCLASS()
-class INTERACTIONSYSTEM_API AInteractableActor : public AInteractableActorBase
+UCLASS(Abstract)
+class INTERACTIONSYSTEM_API AInteractableCharacter : public AInteractableCharacterBase
 {
     GENERATED_BODY()
 
 protected:
-    static FName DefaultSceneName;
-    static FName DisplayMeshName;
     static FName WidgetComponentName;
     static FName OverlapSphereName;
 
 private:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<USceneComponent> DefaultScene;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UStaticMeshComponent> DisplayMesh;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UWidgetComponent> WidgetComponent;
 
@@ -34,11 +26,13 @@ private:
     TObjectPtr<USphereComponent> OverlapSphere;
 
 public:
-    AInteractableActor(const FObjectInitializer& ObjectInitializer);
+    AInteractableCharacter(const FObjectInitializer& ObjectInitializer);
+
+    /* Actor */
+
+    virtual void PreInitializeComponents() override;
 
 public:
-    FORCEINLINE USceneComponent* GetDefaultScene() const { return DefaultScene; }
-    FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
     FORCEINLINE UWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
     FORCEINLINE USphereComponent* GetOverlapSphere() const { return OverlapSphere; }
 };

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "Interfaces/InteractableInterface.h"
-#include "InteractableActorBase.generated.h"
+#include "InteractableCharacterBase.generated.h"
 
 class UInteractableComponent;
 
 UCLASS(Abstract)
-class INTERACTIONSYSTEM_API AInteractableActorBase : public AActor, public IInteractableInterface
+class INTERACTIONSYSTEM_API AInteractableCharacterBase : public ACharacter, public IInteractableInterface
 {
     GENERATED_BODY()
 
@@ -22,7 +22,7 @@ private:
     TObjectPtr<UInteractableComponent> InteractableComponent;
 
 public:
-    AInteractableActorBase(const FObjectInitializer& ObjectInitializer);
+    AInteractableCharacterBase(const FObjectInitializer& ObjectInitializer);
 
     /* InteractableInterface */
 

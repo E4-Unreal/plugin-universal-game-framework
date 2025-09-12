@@ -3,66 +3,115 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
-#include "Interfaces/InteractableInterface.h"
 #include "InteractableComponent.generated.h"
 
-class UInteractableComponent;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInteractionTriggeredSignature, AActor*, Interactor);
-
+class UWidgetComponent;
+class UShapeComponent;
 class UInteractionSystemComponent;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent, public IInteractableInterface
+class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent
 {
     GENERATED_BODY()
 
-    TWeakObjectPtr<UShapeComponent> OverlapShape;
-
 public:
-    UPROPERTY(BlueprintAssignable)
-    FInteractionTriggeredSignature OnInteractionTriggered;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "InteractionWidgetInterface"))
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
+    FGameplayTag InteractionType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText InteractionMessage;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    float InteractionTime;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bPlayerOnly;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseCursorEvent;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseRenderCustomDepth;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseOverlapShape;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    bool bCanInteractOnlyOnce = true;
+    UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
+    TWeakObjectPtr<UMeshComponent> DisplayMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    float InteractionTime = -1.0f;
+    UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
+    TWeakObjectPtr<UWidgetComponent> WidgetComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    bool bCanInteract = true;
+    UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
+    TWeakObjectPtr<UShapeComponent> OverlapShape;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<TObjectPtr<AActor>, FTimerHandle> InteractionTimerMap;
+    UPROPERTY(VisibleAnywhere, Category = "State", Transient)
+    TArray<TWeakObjectPtr<AActor>> OverlappingActors;
 
 public:
-    /* InteractableInterface */
-
-    virtual bool CanInteract_Implementation(AActor* Interactor) override { return bCanInteract && Interactor && !GetOwner()->IsHidden() && !IsInteracting(Interactor); }
-    virtual void Interact_Implementation(AActor* Interactor) override;
-    virtual void CancelInteract_Implementation(AActor* Interactor) override;
+    UInteractableComponent();
 
     /* ActorComponent */
 
+    virtual void InitializeComponent() override;
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
-    /* InteractableComponent */
+    /* API */
 
-    UFUNCTION(BlueprintPure, Category = "Reference")
-    FORCEINLINE UShapeComponent* GetOverlapShape() const { return OverlapShape.Get(); }
+    UFUNCTION(BlueprintCallable)
+    virtual void SetDisplayMesh(UMeshComponent* NewDisplayMesh);
 
-    UFUNCTION(BlueprintCallable, Category = "Reference")
-    void SetOverlapShape(UShapeComponent* NewOverlapShape) { if (OverlapShape != NewOverlapShape) OverlapShape = NewOverlapShape; }
+    UFUNCTION(BlueprintCallable)
+    virtual void SetWidgetComponent(UWidgetComponent* NewWidgetComponent);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetOverlapShape(UShapeComponent* NewOverlapShape);
+
+    UFUNCTION(BlueprintPure)
+    virtual bool CanInteract(AActor* Interactor) const;
+
+    UFUNCTION(BlueprintCallable)
+    virtual void Interact(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void CancelInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintPure)
+    virtual bool CanSelect(AActor* Interactor) const;
+
+    UFUNCTION(BlueprintCallable)
+    virtual void Select(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void Deselect(AActor* Interactor);
 
 protected:
-    virtual void SetInteractionTimer(AActor* Interactor);
-    virtual void ClearInteractionTimer(AActor* Interactor);
-    virtual void ClearAllInteractionTimers();
-    virtual void TriggerInteraction(AActor* Interactor);
+    /* API */
 
-    virtual bool IsInteracting(AActor* Interactor) { return Interactor && InteractionTimerMap.Contains(Interactor); }
+    UInteractionSystemComponent* GetPlayerInteractionSystem() const;
+
+    virtual void FindDisplayMesh();
+    virtual void FindWidgetComponent();
+    virtual void FindOverlapShape();
+
+    virtual void BindOverlapShapeEvents();
+    virtual void UnbindOverlapShapeEvents();
+
+    virtual void BindActorEvents();
+    virtual void UnbindActorEvents();
+
+    virtual void InitWidgetComponent() const;
+
+    virtual void Shrink();
+    virtual void AddOverlappingActor(AActor* NewActor);
+    virtual void RemoveOverlappingActor(AActor* OldActor);
 
     UFUNCTION()
     virtual void OnOverlapShapeBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -70,9 +119,12 @@ protected:
     UFUNCTION()
     virtual void OnOverlapShapeEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-    UFUNCTION(BlueprintNativeEvent)
-    void OnInteractorBeginOverlap(AActor* Interactor, UInteractionSystemComponent* InteractionSystem);
+    UFUNCTION()
+    virtual void OnBeginCursorOver(AActor* TouchedActor);
 
-    UFUNCTION(BlueprintNativeEvent)
-    void OnInteractorEndOverlap(AActor* Interactor,UInteractionSystemComponent* InteractionSystem);
+    UFUNCTION()
+    virtual void OnEndCursorOver(AActor* TouchedActor);
+
+    UFUNCTION()
+    virtual void OnClicked(AActor* TouchedActor, FKey ButtonPressed);
 };

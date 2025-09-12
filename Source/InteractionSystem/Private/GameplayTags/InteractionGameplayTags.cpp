@@ -5,5 +5,7 @@ namespace InteractionSystem
     namespace Interaction
     {
         UE_DEFINE_GAMEPLAY_TAG(Root, "Interaction")
+
+        UE_DEFINE_GAMEPLAY_TAG(Talk, "Interaction.Talk")
     }
 }
