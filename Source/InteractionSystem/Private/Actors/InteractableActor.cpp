@@ -39,7 +39,7 @@ void AInteractableActor::NotifyActorBeginCursorOver()
     {
         if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
         {
-            InteractionSystem->SelectTarget(this);
+            InteractionSystem->SelectTarget(this, true);
         }
     }
 }
@@ -52,7 +52,7 @@ void AInteractableActor::NotifyActorEndCursorOver()
     {
         if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
         {
-            InteractionSystem->DeselectTarget(this);
+            InteractionSystem->DeselectTarget(this, true);
         }
     }
 }

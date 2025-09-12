@@ -55,16 +55,19 @@ public:
     virtual void SetRange(float NewRange);
 
     UFUNCTION(BlueprintCallable)
-    void AddTarget(AActor* NewTarget);
+    virtual void AddTarget(AActor* NewTarget);
 
     UFUNCTION(BlueprintCallable)
-    void RemoveTarget(AActor* OldTarget);
+    virtual void RemoveTarget(AActor* OldTarget);
 
     UFUNCTION(BlueprintCallable)
-    void SelectTarget(AActor* NewTarget, bool bForce = false);
+    virtual void SelectTarget(AActor* NewTarget, bool bForce = false);
 
     UFUNCTION(BlueprintCallable)
-    void DeselectTarget(AActor* OldTarget);
+    virtual void DeselectTarget(AActor* OldTarget, bool bForce = false);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void RefreshTargets();
 
     UFUNCTION(BlueprintCallable)
     virtual bool TryInteract();
@@ -74,6 +77,9 @@ public:
 
 protected:
     /* API */
+
+    static void ShrinkTargets(TArray<TWeakObjectPtr<AActor>>& InTargets);
+    virtual void ShrinkAllTargets();
 
     virtual void FindOverlapSphere();
     virtual void FindOverlapCapsule();
@@ -95,8 +101,6 @@ protected:
 
     UFUNCTION()
     virtual void OnOverlapCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-    virtual void SelectTargets();
 
     float GetDistanceToTarget(AActor* Target) const;
 };

@@ -113,11 +113,16 @@ void UInteractionSystemComponent::UnBindOverlapCapsuleEvents()
 
 void UInteractionSystemComponent::AddTarget(AActor* NewTarget)
 {
-    if (NewTarget && NewTarget->Implements<UInteractableInterface>() && !AvailableTargets.Contains(NewTarget))
+    if (NewTarget && NewTarget->Implements<UInteractableInterface>())
     {
-        AvailableTargets.Emplace(NewTarget);
+        ShrinkTargets(AvailableTargets);
 
-        SelectTargets();
+        if (!AvailableTargets.Contains(NewTarget))
+        {
+            AvailableTargets.Emplace(NewTarget);
+
+            RefreshTargets();
+        }
     }
 }
 
@@ -125,16 +130,23 @@ void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
 {
     if (OldTarget && AvailableTargets.Contains(OldTarget))
     {
-        AvailableTargets.RemoveSingleSwap(OldTarget);
+        ShrinkTargets(AvailableTargets);
 
-        SelectTargets();
+        if (AvailableTargets.Contains(OldTarget))
+        {
+            AvailableTargets.RemoveSingleSwap(OldTarget);
+
+            RefreshTargets();
+        }
     }
 }
 
 void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
 {
-    if (NewTarget && AvailableTargets.Contains(NewTarget) && !SelectedTargets.Contains(NewTarget))
+    if (NewTarget)
     {
+        // ex) BeginCursorOver
+
         if (bForce)
         {
             for (const auto& SelectedTarget : SelectedTargets)
@@ -143,20 +155,74 @@ void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
             }
         }
 
-        SelectedTargets.Emplace(NewTarget);
+        // Select
 
-        IInteractableInterface::Execute_SetFocus(NewTarget, GetOwner());
+        ShrinkTargets(AvailableTargets);
+        ShrinkTargets(SelectedTargets);
+
+        if (AvailableTargets.Contains(NewTarget) && !SelectedTargets.Contains(NewTarget))
+        {
+            SelectedTargets.Emplace(NewTarget);
+
+            IInteractableInterface::Execute_SetFocus(NewTarget, GetOwner());
+        }
     }
 }
 
-void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget)
+void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget, bool bForce)
 {
-    if (OldTarget && SelectedTargets.Contains(OldTarget))
+    if (OldTarget)
     {
-        SelectedTargets.RemoveSingleSwap(OldTarget);
+        // Deselect
 
-        IInteractableInterface::Execute_ClearFocus(OldTarget, GetOwner());
+        ShrinkTargets(SelectedTargets);
+
+        if (SelectedTargets.Contains(OldTarget))
+        {
+            SelectedTargets.RemoveSingleSwap(OldTarget);
+
+            IInteractableInterface::Execute_ClearFocus(OldTarget, GetOwner());
+        }
+
+        // es) EndCursorOver
+
+        if (bForce)
+        {
+            RefreshTargets();
+        }
     }
+}
+
+void UInteractionSystemComponent::RefreshTargets()
+{
+    // 초기화
+    for (const auto& SelectedTarget : SelectedTargets)
+    {
+        DeselectTarget(SelectedTarget.Get());
+    }
+    SelectedTargets.Reset();
+
+    // 유효성 검사
+    if (AvailableTargets.IsEmpty()) return;
+
+    // 가장 가까운 액터 선택
+    float MinDistance = MAX_flt;
+    int32 MinIndex = 0;
+
+    for (int32 Index = 0; Index < AvailableTargets.Num(); ++Index)
+    {
+        const auto& AvailableTarget = AvailableTargets[Index];
+        if (!AvailableTarget.IsValid()) continue;
+
+        float Distance = GetDistanceToTarget(AvailableTarget.Get());
+        if (Distance < MinDistance)
+        {
+            MinDistance = Distance;
+            MinIndex = Index;
+        }
+    }
+
+    SelectTarget(AvailableTargets[MinIndex].Get());
 }
 
 void UInteractionSystemComponent::SetRange(float NewRange)
@@ -203,9 +269,28 @@ void UInteractionSystemComponent::CancelInteract()
     }
 }
 
+void UInteractionSystemComponent::ShrinkTargets(TArray<TWeakObjectPtr<AActor>>& InTargets)
+{
+    for (int32 Index = InTargets.Num() - 1; Index >= 0; --Index)
+    {
+        if (!InTargets[Index].IsValid())
+        {
+            InTargets.RemoveAt(Index, EAllowShrinking::No);
+        }
+    }
+
+    InTargets.Shrink();
+}
+
+void UInteractionSystemComponent::ShrinkAllTargets()
+{
+    ShrinkTargets(AvailableTargets);
+    ShrinkTargets(SelectedTargets);
+}
+
 void UInteractionSystemComponent::OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent,
-    AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-    const FHitResult& SweepResult)
+                                                              AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                                              const FHitResult& SweepResult)
 {
     AddTarget(OtherActor);
 }
@@ -222,7 +307,7 @@ void UInteractionSystemComponent::OnOverlapCapsuleBeginOverlap(UPrimitiveCompone
 {
     if (OtherActor)
     {
-        SelectTargets();
+        RefreshTargets();
     }
 }
 
@@ -231,40 +316,8 @@ void UInteractionSystemComponent::OnOverlapCapsuleEndOverlap(UPrimitiveComponent
 {
     if (OtherActor)
     {
-        SelectTargets();
+        RefreshTargets();
     }
-}
-
-void UInteractionSystemComponent::SelectTargets()
-{
-    // 초기화
-    for (const auto& SelectedTarget : SelectedTargets)
-    {
-        DeselectTarget(SelectedTarget.Get());
-    }
-    SelectedTargets.Reset();
-
-    // 유효성 검사
-    if (AvailableTargets.IsEmpty()) return;
-
-    // 가장 가까운 액터 선택
-    float MinDistance = MAX_flt;
-    int32 MinIndex = 0;
-
-    for (int32 Index = 0; Index < AvailableTargets.Num(); ++Index)
-    {
-        const auto& AvailableTarget = AvailableTargets[Index];
-        if (!AvailableTarget.IsValid()) continue;
-
-        float Distance = GetDistanceToTarget(AvailableTarget.Get());
-        if (Distance < MinDistance)
-        {
-            MinDistance = Distance;
-            MinIndex = Index;
-        }
-    }
-
-    SelectTarget(AvailableTargets[MinIndex].Get());
 }
 
 float UInteractionSystemComponent::GetDistanceToTarget(AActor* Target) const
