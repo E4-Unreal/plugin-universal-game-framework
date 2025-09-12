@@ -76,6 +76,11 @@ void UInteractableComponent::Interact(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        if (GetOwner()->Implements<UInteractableInterface>())
+        {
+            IInteractableInterface::Execute_Deselect(GetOwner(), Interactor);
+        }
     }
 }
 
