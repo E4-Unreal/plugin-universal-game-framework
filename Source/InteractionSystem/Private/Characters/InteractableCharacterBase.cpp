@@ -68,6 +68,6 @@ void AInteractableCharacterBase::Deselect_Implementation(AActor* Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        GetInteractableComponent()->ActivateFocusEffects(Interactor);
+        GetInteractableComponent()->DeactivateFocusEffects(Interactor);
     }
 }
