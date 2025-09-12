@@ -46,31 +46,37 @@ UCommonPlayerWidgetManagerComponent* UCommonWidgetManagerSubsystem::GetCommonPla
     return LocalPlayerController ? LocalPlayerController->GetComponentByClass<UCommonPlayerWidgetManagerComponent>() : nullptr;
 }
 
-void UCommonWidgetManagerSubsystem::ShowAlertWidget(AActor* PlayerActor, const FText& TitleText,
+UUserWidget* UCommonWidgetManagerSubsystem::ShowAlertWidget(AActor* PlayerActor, const FText& TitleText,
                                                     const FText& MessageText)
 {
     if (UCommonPlayerWidgetManagerComponent* CommonPlayerWidgetManager = GetCommonPlayerWidgetManager(PlayerActor))
     {
-        CommonPlayerWidgetManager->ShowAlertWidget(TitleText, MessageText);
+        return CommonPlayerWidgetManager->ShowAlertWidget(TitleText, MessageText);
     }
+
+    return nullptr;
 }
 
-void UCommonWidgetManagerSubsystem::ShowConfirmWidget(AActor* PlayerActor, const FText& TitleText,
+UUserWidget* UCommonWidgetManagerSubsystem::ShowConfirmWidget(AActor* PlayerActor, const FText& TitleText,
     const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate)
 {
     if (UCommonPlayerWidgetManagerComponent* CommonPlayerWidgetManager = GetCommonPlayerWidgetManager(PlayerActor))
     {
-        CommonPlayerWidgetManager->ShowConfirmWidget(TitleText, MessageText, ConfirmButtonClickedDelegate);
+        return CommonPlayerWidgetManager->ShowConfirmWidget(TitleText, MessageText, ConfirmButtonClickedDelegate);
     }
+
+    return nullptr;
 }
 
-void UCommonWidgetManagerSubsystem::ShowPromptWidget(AActor* PlayerActor, const FText& TitleText,
+UUserWidget* UCommonWidgetManagerSubsystem::ShowPromptWidget(AActor* PlayerActor, const FText& TitleText,
     const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric, int64 MinNum, int64 MaxNum)
 {
     if (UCommonPlayerWidgetManagerComponent* CommonPlayerWidgetManager = GetCommonPlayerWidgetManager(PlayerActor))
     {
-        CommonPlayerWidgetManager->ShowPromptWidget(TitleText, MessageText, ConfirmButtonClickedDelegate, bShouldNumeric, MinNum, MaxNum);
+        return CommonPlayerWidgetManager->ShowPromptWidget(TitleText, MessageText, ConfirmButtonClickedDelegate, bShouldNumeric, MinNum, MaxNum);
     }
+
+    return nullptr;
 }
 
 UCommonActivatableWidget* UCommonWidgetManagerSubsystem::ShowLayerWidget(AActor* PlayerActor,

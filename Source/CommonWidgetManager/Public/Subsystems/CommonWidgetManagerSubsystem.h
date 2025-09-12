@@ -30,13 +30,13 @@ public:
     virtual UCommonPlayerWidgetManagerComponent* GetCommonPlayerWidgetManager(AActor* PlayerActor) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowAlertWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText);
+    virtual UUserWidget* ShowAlertWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText);
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowConfirmWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
+    virtual UUserWidget* ShowConfirmWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowPromptWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
+    virtual UUserWidget* ShowPromptWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
 
     UFUNCTION(BlueprintCallable)
     virtual UCommonActivatableWidget* ShowLayerWidget(AActor* PlayerActor, TSubclassOf<UCommonLayerWidgetBase> WidgetClass);

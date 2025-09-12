@@ -38,7 +38,7 @@ void UCommonPlayerWidgetManagerComponent::OnComponentDestroyed(bool bDestroyingH
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
-void UCommonPlayerWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, const FText& MessageText)
+UUserWidget* UCommonPlayerWidgetManagerComponent::ShowAlertWidget(const FText& TitleText, const FText& MessageText)
 {
     if (GetLayoutWidget() && AlertWidgetClass)
     {
@@ -46,11 +46,15 @@ void UCommonPlayerWidgetManagerComponent::ShowAlertWidget(const FText& TitleText
         {
             AlertWidget->SetTitleText(TitleText);
             AlertWidget->SetMessageText(MessageText);
+
+            return AlertWidget;
         }
     }
+
+    return nullptr;
 }
 
-void UCommonPlayerWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, const FText& MessageText,
+UUserWidget* UCommonPlayerWidgetManagerComponent::ShowConfirmWidget(const FText& TitleText, const FText& MessageText,
     const FButtonClickedDelegate& ConfirmButtonClickedDelegate)
 {
     if (GetLayoutWidget() && ConfirmWidgetClass)
@@ -60,11 +64,15 @@ void UCommonPlayerWidgetManagerComponent::ShowConfirmWidget(const FText& TitleTe
             ConfirmWidget->SetTitleText(TitleText);
             ConfirmWidget->SetMessageText(MessageText);
             ConfirmWidget->SetConfirmButtonClickedDelegate(ConfirmButtonClickedDelegate);
+
+            return ConfirmWidget;
         }
     }
+
+    return nullptr;
 }
 
-void UCommonPlayerWidgetManagerComponent::ShowPromptWidget(const FText& TitleText, const FText& MessageText,
+UUserWidget* UCommonPlayerWidgetManagerComponent::ShowPromptWidget(const FText& TitleText, const FText& MessageText,
     const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric, int64 MinNum, int64 MaxNum)
 {
     if (GetLayoutWidget() && PromptWidgetClass)
@@ -77,8 +85,12 @@ void UCommonPlayerWidgetManagerComponent::ShowPromptWidget(const FText& TitleTex
             PromptWidget->bShouldNumeric = bShouldNumeric;
             PromptWidget->MinNum = MinNum;
             PromptWidget->MaxNum = MaxNum;
+
+            return PromptWidget;
         }
     }
+
+    return nullptr;
 }
 
 UCommonActivatableWidget* UCommonPlayerWidgetManagerComponent::ShowLayerWidget(

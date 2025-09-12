@@ -47,13 +47,13 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowAlertWidget(const FText& TitleText, const FText& MessageText);
+    virtual UUserWidget* ShowAlertWidget(const FText& TitleText, const FText& MessageText);
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowConfirmWidget(const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
+    virtual UUserWidget* ShowConfirmWidget(const FText& TitleText, const FText& MessageText, const FButtonClickedDelegate& ConfirmButtonClickedDelegate);
 
     UFUNCTION(BlueprintCallable)
-    virtual void ShowPromptWidget(const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
+    virtual UUserWidget* ShowPromptWidget(const FText& TitleText, const FText& MessageText, const FPromptSubmittedDelegate& ConfirmButtonClickedDelegate, bool bShouldNumeric = false, int64 MinNum = 0, int64 MaxNum = 9999);
 
     UFUNCTION(BlueprintCallable)
     virtual UCommonActivatableWidget* ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
