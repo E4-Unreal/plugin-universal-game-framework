@@ -182,7 +182,7 @@ void UInteractableComponent::UnbindOverlapShapeEvents()
 
 void UInteractableComponent::BindActorEvents()
 {
-    if (GetOwner())
+    if (bUseCursorEvent && GetOwner())
     {
         GetOwner()->OnBeginCursorOver.AddDynamic(this, &ThisClass::OnBeginCursorOver);
         GetOwner()->OnEndCursorOver.AddDynamic(this, &ThisClass::OnEndCursorOver);
@@ -192,7 +192,7 @@ void UInteractableComponent::BindActorEvents()
 
 void UInteractableComponent::UnbindActorEvents()
 {
-    if (GetOwner())
+    if (bUseCursorEvent && GetOwner())
     {
         GetOwner()->OnBeginCursorOver.RemoveDynamic(this, &ThisClass::OnBeginCursorOver);
         GetOwner()->OnEndCursorOver.RemoveDynamic(this, &ThisClass::OnEndCursorOver);
@@ -277,23 +277,17 @@ void UInteractableComponent::OnOverlapShapeEndOverlap(UPrimitiveComponent* Overl
 
 void UInteractableComponent::OnBeginCursorOver(AActor* TouchedActor)
 {
-    if (bUseCursorEvent)
+    if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
     {
-        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
-        {
-            PlayerInteractionSystem->SelectTarget(GetOwner(), true);
-        }
+        PlayerInteractionSystem->SelectTarget(GetOwner(), true);
     }
 }
 
 void UInteractableComponent::OnEndCursorOver(AActor* TouchedActor)
 {
-    if (bUseCursorEvent)
+    if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
     {
-        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
-        {
-            PlayerInteractionSystem->DeselectTarget(GetOwner(), true);
-        }
+        PlayerInteractionSystem->DeselectTarget(GetOwner(), true);
     }
 }
 
