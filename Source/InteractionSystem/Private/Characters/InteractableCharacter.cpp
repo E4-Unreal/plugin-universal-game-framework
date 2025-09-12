@@ -17,6 +17,9 @@ AInteractableCharacter::AInteractableCharacter(const FObjectInitializer& ObjectI
 
     WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(WidgetComponentName);
     GetWidgetComponent()->SetupAttachment(GetRootComponent());
+    GetWidgetComponent()->SetVisibility(false);
+    GetWidgetComponent()->SetWidgetSpace(EWidgetSpace::Screen);
+    GetWidgetComponent()->SetDrawAtDesiredSize(true);
 
     /* OverlapSphere */
 

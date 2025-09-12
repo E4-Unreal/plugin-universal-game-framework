@@ -171,9 +171,6 @@ void UInteractableComponent::InitWidgetComponent() const
 {
     if (!WidgetComponent.IsValid()) return;
 
-    WidgetComponent->SetVisibility(false);
-    WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-    WidgetComponent->SetDrawAtDesiredSize(true);
     WidgetComponent->SetWidgetClass(InteractionWidgetClass);
     WidgetComponent->InitWidget();
 
