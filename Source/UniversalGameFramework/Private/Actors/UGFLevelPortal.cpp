@@ -38,6 +38,13 @@ void AUGFLevelPortal::Interact_Implementation(AActor* Interactor)
     }
 }
 
+bool AUGFLevelPortal::CanSelect_Implementation(AActor* Interactor)
+{
+    if (ConfirmPopupWidget.IsValid() && ConfirmPopupWidget->IsInViewport()) return false;
+
+    return Super::CanSelect_Implementation(Interactor);
+}
+
 void AUGFLevelPortal::RequestConfirmPopup(APlayerController* PlayerController)
 {
     if (UCommonWidgetManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
@@ -45,7 +52,7 @@ void AUGFLevelPortal::RequestConfirmPopup(APlayerController* PlayerController)
         FButtonClickedDelegate Delegate;
         Delegate.BindDynamic(this, &ThisClass::MoveToLevel);
 
-        Subsystem->ShowConfirmWidget(PlayerController, ConfirmTitle, FText::Format(ConfirmMessage, LevelName), Delegate);
+        ConfirmPopupWidget = Subsystem->ShowConfirmWidget(PlayerController, ConfirmTitle, FText::Format(ConfirmMessage, LevelName), Delegate);
     }
 }
 

@@ -24,6 +24,9 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText ConfirmMessage;
 
+    UPROPERTY(VisibleAnywhere, Category = "State", Transient)
+    TWeakObjectPtr<UUserWidget> ConfirmPopupWidget;
+
 public:
     AUGFLevelPortal(const FObjectInitializer& ObjectInitializer);
 
@@ -31,6 +34,7 @@ public:
 
     virtual FText GetInteractionMessage_Implementation() const override;
     virtual void Interact_Implementation(AActor* Interactor) override;
+    virtual bool CanSelect_Implementation(AActor* Interactor) override;
 
 protected:
     virtual void RequestConfirmPopup(APlayerController* PlayerController);
