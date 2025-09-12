@@ -17,6 +17,7 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 {
     /* Config */
 
+    bPlayerOnly = true;
     bUseCursorEvent = true;
     bUseRenderCustomDepth = true;
     InteractionType = Interaction::Root;
@@ -94,6 +95,24 @@ void AInteractableActor::NotifyActorOnClicked(FKey ButtonPressed)
             PlayerInteractionSystem->TryInteract();
         }
     }
+}
+
+bool AInteractableActor::CanInteract_Implementation(AActor* Interactor)
+{
+    if (bPlayerOnly)
+    {
+        if (APawn* Pawn = Cast<APawn>(Interactor))
+        {
+            if (AController* Controller = Pawn->GetController())
+            {
+                return Controller->IsLocalPlayerController();
+            }
+        }
+
+        return false;
+    }
+
+    return true;
 }
 
 void AInteractableActor::SetFocus_Implementation(AActor* Interactor)

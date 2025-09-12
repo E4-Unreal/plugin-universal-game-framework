@@ -30,16 +30,19 @@ private:
     TObjectPtr<UWidgetComponent> WidgetComponent;
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
+    bool bPlayerOnly;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
     bool bUseCursorEvent;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
     bool bUseRenderCustomDepth;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction", meta = (Categories = "Interaction"))
     FGameplayTag InteractionType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
     FText InteractionMessage;
 
 public:
@@ -56,6 +59,7 @@ public:
 
     virtual FGameplayTag GetInteractionType_Implementation() const override { return InteractionType; }
     virtual FText GetInteractionMessage_Implementation() const override { return InteractionMessage; }
+    virtual bool CanInteract_Implementation(AActor* Interactor) override;
     virtual void SetFocus_Implementation(AActor* Interactor) override;
     virtual void ClearFocus_Implementation(AActor* Interactor) override;
 
