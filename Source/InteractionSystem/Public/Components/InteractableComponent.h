@@ -81,10 +81,10 @@ public:
     virtual bool CanSelect(AActor* Interactor) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void ActivateFocusEffects(AActor* Interactor);
+    virtual void Select(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable)
-    virtual void DeactivateFocusEffects(AActor* Interactor);
+    virtual void Deselect(AActor* Interactor);
 
 protected:
     /* API */

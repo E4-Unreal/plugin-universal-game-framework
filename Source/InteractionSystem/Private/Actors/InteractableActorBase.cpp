@@ -58,7 +58,7 @@ void AInteractableActorBase::Select_Implementation(AActor* Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        GetInteractableComponent()->ActivateFocusEffects(Interactor);
+        GetInteractableComponent()->Select(Interactor);
     }
 }
 
@@ -68,6 +68,6 @@ void AInteractableActorBase::Deselect_Implementation(AActor* Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        GetInteractableComponent()->DeactivateFocusEffects(Interactor);
+        GetInteractableComponent()->Deselect(Interactor);
     }
 }

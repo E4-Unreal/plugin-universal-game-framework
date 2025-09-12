@@ -77,7 +77,7 @@ bool UInteractableComponent::CanSelect(AActor* Interactor) const
     return true;
 }
 
-void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
+void UInteractableComponent::Select(AActor* Interactor)
 {
     if (Interactor == nullptr) return;
 
@@ -85,7 +85,7 @@ void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
     if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
 }
 
-void UInteractableComponent::DeactivateFocusEffects(AActor* Interactor)
+void UInteractableComponent::Deselect(AActor* Interactor)
 {
     if (Interactor == nullptr) return;
 
