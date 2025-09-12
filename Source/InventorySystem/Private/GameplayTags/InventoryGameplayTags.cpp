@@ -2,6 +2,11 @@
 
 namespace InventoryGameplayTags
 {
+    namespace Interaction
+    {
+        UE_DEFINE_GAMEPLAY_TAG(Item, "Interaction.Item")
+    }
+
     namespace Item
     {
         UE_DEFINE_GAMEPLAY_TAG(Root, "Item")

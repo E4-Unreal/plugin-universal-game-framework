@@ -11,6 +11,10 @@ const FName AUGFPlayerController::WidgetManagerName(TEXT("WidgetManager"));
 AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    /* APlayerController */
+
+    bEnableMouseOverEvents = true;
+
     /* WidgetManager */
 
     WidgetManager = CreateDefaultSubobject<UCommonPlayerWidgetManagerComponent>(WidgetManagerName);

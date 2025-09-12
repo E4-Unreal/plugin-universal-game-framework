@@ -27,6 +27,11 @@ public:
 public:
     AItemActor(const FObjectInitializer& ObjectInitializer);
 
+    /* InteractableInterface */
+
+    virtual FText GetInteractionMessage_Implementation() const override;
+    virtual void Interact_Implementation(AActor* Interactor) override;
+
     /* ItemActorInterface */
 
     virtual void SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances) override;
@@ -40,10 +45,6 @@ public:
 #endif
 
 protected:
-    /* InteractableActor */
-
-    virtual void OnInteractionTriggered_Implementation(AActor* Interactor) override;
-
     /* ItemActor */
 
     UFUNCTION(BlueprintCallable)

@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "InteractableInterface.generated.h"
 
-// This class does not need to be modified.
 UINTERFACE(MinimalAPI, BlueprintType, Blueprintable)
 class UInteractableInterface : public UInterface
 {
@@ -20,8 +20,13 @@ class INTERACTIONSYSTEM_API IInteractableInterface
 {
     GENERATED_BODY()
 
-    // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FGameplayTag GetInteractionType() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FText GetInteractionMessage() const;
+
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanInteract(AActor* Interactor);
 
@@ -30,4 +35,10 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void CancelInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetFocus(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void ClearFocus(AActor* Interactor);
 };

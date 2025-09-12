@@ -7,7 +7,6 @@
 #include "Components/TextBlock.h"
 #include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
-#include "Widgets/DraggedInventorySlotWidget.h"
 
 void UInventorySlotWidget::Refresh_Implementation()
 {

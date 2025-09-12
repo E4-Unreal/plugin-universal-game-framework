@@ -119,11 +119,11 @@ void UInteractableComponent::OnOverlapShapeEndOverlap(UPrimitiveComponent* Overl
 void UInteractableComponent::OnInteractorBeginOverlap_Implementation(AActor* Interactor,
     UInteractionSystemComponent* InteractionSystem)
 {
-    InteractionSystem->AddTarget(this);
+    InteractionSystem->AddTarget(GetOwner());
 }
 
 void UInteractableComponent::OnInteractorEndOverlap_Implementation(AActor* Interactor,
     UInteractionSystemComponent* InteractionSystem)
 {
-    InteractionSystem->RemoveTarget(this);
+    InteractionSystem->RemoveTarget(GetOwner());
 }
