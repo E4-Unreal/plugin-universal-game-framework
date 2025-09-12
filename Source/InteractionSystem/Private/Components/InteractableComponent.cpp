@@ -67,7 +67,7 @@ bool UInteractableComponent::CanInteract(AActor* Interactor) const
 {
     if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
 
-    return Interactor && GetOwner()->IsHidden();
+    return Interactor && !GetOwner()->IsHidden();
 }
 
 void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
