@@ -3,15 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UGFCharacter.h"
-#include "Interfaces/InteractableInterface.h"
+#include "Characters/InteractableCharacter.h"
 #include "UGFNonPlayerCharacter.generated.h"
 
 class UCommonLayerWidgetBase;
 
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API AUGFNonPlayerCharacter : public AUGFCharacter,
-    public IInteractableInterface
+class UNIVERSALGAMEFRAMEWORK_API AUGFNonPlayerCharacter : public AInteractableCharacter
 {
     GENERATED_BODY()
 
