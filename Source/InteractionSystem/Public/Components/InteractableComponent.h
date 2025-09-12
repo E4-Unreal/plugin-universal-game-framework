@@ -30,9 +30,6 @@ public:
     float InteractionTime;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bCanInteractOnlyOnce;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bPlayerOnly;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
@@ -53,9 +50,6 @@ protected:
 
     UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
     TWeakObjectPtr<UShapeComponent> OverlapShape;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    bool bCanInteract;
 
     UPROPERTY(VisibleAnywhere, Category = "State", Transient)
     TArray<TWeakObjectPtr<AActor>> OverlappingActors;
