@@ -7,7 +7,7 @@
 #include "InteractableCharacter.generated.h"
 
 class UWidgetComponent;
-class UInteractionSystemComponent;
+class USphereComponent;
 
 UCLASS(Abstract)
 class INTERACTIONSYSTEM_API AInteractableCharacter : public AInteractableCharacterBase
@@ -16,44 +16,23 @@ class INTERACTIONSYSTEM_API AInteractableCharacter : public AInteractableCharact
 
 protected:
     static FName WidgetComponentName;
+    static FName OverlapSphereName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UWidgetComponent> WidgetComponent;
 
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bUseCursorEvent;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bUseRenderCustomDepth;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
-    FGameplayTag InteractionType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FText InteractionMessage;
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<USphereComponent> OverlapSphere;
 
 public:
     AInteractableCharacter(const FObjectInitializer& ObjectInitializer);
 
     /* Actor */
 
-    virtual void BeginPlay() override;
-    virtual void NotifyActorBeginCursorOver() override;
-    virtual void NotifyActorEndCursorOver() override;
-    virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
-
-    /* InteractableInterface */
-
-    virtual FGameplayTag GetInteractionType_Implementation() const override { return InteractionType; }
-    virtual FText GetInteractionMessage_Implementation() const override { return InteractionMessage; }
-    virtual void SetFocus_Implementation(AActor* Interactor) override;
-    virtual void ClearFocus_Implementation(AActor* Interactor) override;
+    virtual void PreInitializeComponents() override;
 
 public:
     FORCEINLINE UWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
-
-protected:
-    virtual UInteractionSystemComponent* GetPlayerInteractionSystem() const;
+    FORCEINLINE USphereComponent* GetOverlapSphere() const { return OverlapSphere; }
 };

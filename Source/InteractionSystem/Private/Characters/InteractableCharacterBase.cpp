@@ -3,22 +3,32 @@
 
 #include "Characters/InteractableCharacterBase.h"
 
-#include "GameplayTags/InteractionGameplaytags.h"
 #include "Logging.h"
+#include "Components/InteractableComponent.h"
+
+FName AInteractableCharacterBase::InteractableComponentName(TEXT("InteractableComponent"));
 
 AInteractableCharacterBase::AInteractableCharacterBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    /* InteractableComponent */
+
+    InteractableComponent = CreateDefaultSubobject<UInteractableComponent>(InteractableComponentName);
 }
 
 FGameplayTag AInteractableCharacterBase::GetInteractionType_Implementation() const
 {
-    return Interaction::Talk;
+    return InteractableComponent->InteractionType;
 }
 
 FText AInteractableCharacterBase::GetInteractionMessage_Implementation() const
 {
-    return FText::GetEmpty();
+    return InteractableComponent->InteractionMessage;
+}
+
+bool AInteractableCharacterBase::CanInteract_Implementation(AActor* Interactor)
+{
+    return InteractableComponent->CanInteract(Interactor);
 }
 
 void AInteractableCharacterBase::Interact_Implementation(AActor* Interactor)
@@ -42,6 +52,11 @@ void AInteractableCharacterBase::SetFocus_Implementation(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        if (GetInteractableComponent())
+        {
+            GetInteractableComponent()->ActivateFocusEffects(Interactor);
+        }
     }
 }
 
@@ -50,5 +65,10 @@ void AInteractableCharacterBase::ClearFocus_Implementation(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        if (GetInteractableComponent())
+        {
+            GetInteractableComponent()->DeactivateFocusEffects(Interactor);
+        }
     }
 }

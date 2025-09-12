@@ -3,118 +3,33 @@
 
 #include "Characters/InteractableCharacter.h"
 
-#include "Components/InteractionSystemComponent.h"
+#include "Components/InteractableComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
-#include "GameplayTags/InteractionGameplaytags.h"
-#include "Interfaces/InteractionWidgetInterface.h"
 
 FName AInteractableCharacter::WidgetComponentName(TEXT("WidgetComponent"));
+FName AInteractableCharacter::OverlapSphereName(TEXT("OverlapSphere"));
 
 AInteractableCharacter::AInteractableCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    /* Config */
-
-    bUseCursorEvent = true;
-    bUseRenderCustomDepth = true;
-    InteractionType = Interaction::Talk;
-
     /* WidgetComponent */
 
     WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(WidgetComponentName);
     GetWidgetComponent()->SetupAttachment(GetRootComponent());
-    GetWidgetComponent()->SetVisibility(false);
-    GetWidgetComponent()->SetWidgetSpace(EWidgetSpace::Screen);
-    GetWidgetComponent()->SetDrawAtDesiredSize(true);
+
+    /* OverlapSphere */
+
+    OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
+    GetOverlapSphere()->SetupAttachment(GetRootComponent());
 }
 
-void AInteractableCharacter::BeginPlay()
+void AInteractableCharacter::PreInitializeComponents()
 {
-    Super::BeginPlay();
+    Super::PreInitializeComponents();
 
-    if (GetWidgetComponent())
+    if (GetInteractableComponent())
     {
-        if (auto Widget = GetWidgetComponent()->GetWidget())
-        {
-            if (Widget->Implements<UInteractionWidgetInterface>())
-            {
-                IInteractionWidgetInterface::Execute_SetInteractionType(Widget, Execute_GetInteractionType(this));
-                IInteractionWidgetInterface::Execute_SetInteractionMessage(Widget, Execute_GetInteractionMessage(this));
-            }
-        }
+        GetInteractableComponent()->SetOverlapShape(GetOverlapSphere());
     }
-}
-
-void AInteractableCharacter::NotifyActorBeginCursorOver()
-{
-    Super::NotifyActorBeginCursorOver();
-
-    if (bUseCursorEvent)
-    {
-        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
-        {
-            PlayerInteractionSystem->SelectTarget(this, true);
-        }
-    }
-}
-
-void AInteractableCharacter::NotifyActorEndCursorOver()
-{
-    Super::NotifyActorEndCursorOver();
-
-    if (bUseCursorEvent)
-    {
-        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
-        {
-            PlayerInteractionSystem->DeselectTarget(this, true);
-        }
-    }
-}
-
-void AInteractableCharacter::NotifyActorOnClicked(FKey ButtonPressed)
-{
-    Super::NotifyActorOnClicked(ButtonPressed);
-
-    if (bUseCursorEvent)
-    {
-        if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
-        {
-            PlayerInteractionSystem->TryInteract();
-        }
-    }
-}
-
-void AInteractableCharacter::SetFocus_Implementation(AActor* Interactor)
-{
-    Super::SetFocus_Implementation(Interactor);
-
-    if (Interactor)
-    {
-        if (bUseRenderCustomDepth) GetMesh()->SetRenderCustomDepth(true);
-        GetWidgetComponent()->SetVisibility(true);
-    }
-}
-
-void AInteractableCharacter::ClearFocus_Implementation(AActor* Interactor)
-{
-    Super::ClearFocus_Implementation(Interactor);
-
-    if (Interactor)
-    {
-        if (bUseRenderCustomDepth) GetMesh()->SetRenderCustomDepth(false);
-        GetWidgetComponent()->SetVisibility(false);
-    }
-}
-
-UInteractionSystemComponent* AInteractableCharacter::GetPlayerInteractionSystem() const
-{
-    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
-    {
-        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
-        {
-            return InteractionSystem;
-        }
-    }
-
-    return nullptr;
 }
