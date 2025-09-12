@@ -7,7 +7,6 @@
 #include "InteractableActor.generated.h"
 
 class UWidgetComponent;
-class UInteractionSystemComponent;
 
 UCLASS()
 class INTERACTIONSYSTEM_API AInteractableActor : public AInteractableActorBase
@@ -30,44 +29,10 @@ private:
     TObjectPtr<UWidgetComponent> WidgetComponent;
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
-    bool bPlayerOnly;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
-    bool bUseCursorEvent;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
-    bool bUseRenderCustomDepth;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction", meta = (Categories = "Interaction"))
-    FGameplayTag InteractionType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Interaction")
-    FText InteractionMessage;
-
-public:
     AInteractableActor(const FObjectInitializer& ObjectInitializer);
-
-    /* Actor */
-
-    virtual void BeginPlay() override;
-    virtual void NotifyActorBeginCursorOver() override;
-    virtual void NotifyActorEndCursorOver() override;
-    virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
-
-    /* InteractableInterface */
-
-    virtual FGameplayTag GetInteractionType_Implementation() const override { return InteractionType; }
-    virtual FText GetInteractionMessage_Implementation() const override { return InteractionMessage; }
-    virtual bool CanInteract_Implementation(AActor* Interactor) override;
-    virtual void SetFocus_Implementation(AActor* Interactor) override;
-    virtual void ClearFocus_Implementation(AActor* Interactor) override;
 
 public:
     FORCEINLINE USceneComponent* GetDefaultScene() const { return DefaultScene; }
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
     FORCEINLINE UWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
-
-protected:
-    virtual UInteractionSystemComponent* GetPlayerInteractionSystem() const;
 };

@@ -3,6 +3,7 @@
 
 #include "Actors/UGFLevelPortal.h"
 
+#include "Components/InteractableComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Subsystems/CommonWidgetManagerSubsystem.h"
 #include "Widgets/Popup/CommonPopupWidgetBase.h"
@@ -12,7 +13,7 @@
 AUGFLevelPortal::AUGFLevelPortal(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    InteractionType = Interaction::Move;
+    GetInteractableComponent()->InteractionType = Interaction::Move;
 
     LevelName = NSLOCTEXT("UGF", "LevelName", "Destination");
     ConfirmTitle = NSLOCTEXT("UGF", "MoveConfirmTitle", "Notice");

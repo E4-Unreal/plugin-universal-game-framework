@@ -17,6 +17,9 @@ class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "InteractionWidgetInterface"))
+    TSubclassOf<UUserWidget> InteractionWidgetClass;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
     FGameplayTag InteractionType;
 
@@ -97,6 +100,8 @@ protected:
 
     virtual void BindActorEvents();
     virtual void UnbindActorEvents();
+
+    virtual void InitWidgetComponent() const;
 
     virtual void Shrink();
     virtual void AddOverlappingActor(AActor* NewActor);

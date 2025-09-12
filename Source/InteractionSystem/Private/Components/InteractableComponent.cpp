@@ -8,6 +8,8 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "GameplayTags/InteractionGameplaytags.h"
+#include "Interfaces/InteractableInterface.h"
+#include "Interfaces/InteractionWidgetInterface.h"
 
 UInteractableComponent::UInteractableComponent()
 {
@@ -34,6 +36,8 @@ void UInteractableComponent::BeginPlay()
 
     BindOverlapShapeEvents();
     BindActorEvents();
+
+    InitWidgetComponent();
 }
 
 void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
@@ -153,6 +157,28 @@ void UInteractableComponent::UnbindActorEvents()
         GetOwner()->OnBeginCursorOver.RemoveDynamic(this, &ThisClass::OnBeginCursorOver);
         GetOwner()->OnEndCursorOver.RemoveDynamic(this, &ThisClass::OnEndCursorOver);
         GetOwner()->OnClicked.RemoveDynamic(this, &ThisClass::OnClicked);
+    }
+}
+
+void UInteractableComponent::InitWidgetComponent() const
+{
+    if (!WidgetComponent.IsValid()) return;
+
+    WidgetComponent->SetVisibility(false);
+    WidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+    WidgetComponent->SetDrawAtDesiredSize(true);
+    WidgetComponent->SetWidgetClass(InteractionWidgetClass);
+
+    if (auto InteractionWidget = WidgetComponent->GetWidget())
+    {
+        if (InteractionWidget->Implements<UInteractionWidgetInterface>())
+        {
+            if (GetOwner()->Implements<UInteractableInterface>())
+            {
+                IInteractionWidgetInterface::Execute_SetInteractionType(InteractionWidget, IInteractableInterface::Execute_GetInteractionType(GetOwner()));
+                IInteractionWidgetInterface::Execute_SetInteractionMessage(InteractionWidget, IInteractableInterface::Execute_GetInteractionMessage(GetOwner()));
+            }
+        }
     }
 }
 

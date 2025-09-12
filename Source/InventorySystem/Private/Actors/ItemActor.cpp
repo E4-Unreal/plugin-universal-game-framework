@@ -3,6 +3,7 @@
 
 #include "Actors/ItemActor.h"
 
+#include "Components/InteractableComponent.h"
 #include "Components/InventoryComponent.h"
 #include "Data/ItemInstance.h"
 #include "GameplayTags/InventoryGameplayTags.h"
@@ -13,10 +14,10 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
 {
     /* Config */
 
-    InteractionType = Interaction::Pickup;
+    GetInteractableComponent()->InteractionType = Interaction::Pickup;
 
     // 아이템 외 5개
-    InteractionMessage = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}");
+    GetInteractableComponent()->InteractionMessage = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}");
 
     /* DisplayMesh */
 
@@ -32,7 +33,7 @@ FText AItemActor::GetInteractionMessage_Implementation() const
         {
             FText ItemDisplayName = IItemDataInterface::Execute_GetDisplayNameText(Data);
 
-            return ItemInstances.Num() == 1 ? ItemDisplayName : FText::Format(InteractionMessage, ItemDisplayName, FText::FromString(FString::FromInt(ItemInstances.Num() - 1)));
+            return ItemInstances.Num() == 1 ? ItemDisplayName : FText::Format(GetInteractableComponent()->InteractionMessage, ItemDisplayName, FText::FromString(FString::FromInt(ItemInstances.Num() - 1)));
         }
     }
 
