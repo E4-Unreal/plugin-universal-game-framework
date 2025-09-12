@@ -5,7 +5,6 @@
 
 #include "Components/Image.h"
 #include "Components/SlotManagerComponentBase.h"
-#include "Data/DataInstanceBase.h"
 #include "Interfaces/SlotDataInterface.h"
 
 void USlotWidgetBase::SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager)
