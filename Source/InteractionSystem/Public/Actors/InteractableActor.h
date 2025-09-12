@@ -7,6 +7,7 @@
 #include "InteractableActor.generated.h"
 
 class UWidgetComponent;
+class UInteractionSystemComponent;
 
 UCLASS()
 class INTERACTIONSYSTEM_API AInteractableActor : public AInteractableActorBase
@@ -30,7 +31,10 @@ private:
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bUseCursorOverEvent;
+    bool bUseCursorEvent;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseRenderCustomDepth;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
     FGameplayTag InteractionType;
@@ -46,6 +50,7 @@ public:
     virtual void BeginPlay() override;
     virtual void NotifyActorBeginCursorOver() override;
     virtual void NotifyActorEndCursorOver() override;
+    virtual void NotifyActorOnClicked(FKey ButtonPressed) override;
 
     /* InteractableInterface */
 
@@ -58,4 +63,7 @@ public:
     FORCEINLINE USceneComponent* GetDefaultScene() const { return DefaultScene; }
     FORCEINLINE UStaticMeshComponent* GetDisplayMesh() const { return DisplayMesh; }
     FORCEINLINE UWidgetComponent* GetWidgetComponent() const { return WidgetComponent; }
+
+protected:
+    virtual UInteractionSystemComponent* GetPlayerInteractionSystem() const;
 };
