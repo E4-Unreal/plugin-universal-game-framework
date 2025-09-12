@@ -3,6 +3,8 @@
 
 #include "Components/InteractionSystemComponent.h"
 
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/Character.h"
 #include "Interfaces/InteractableInterface.h"
 
 UInteractionSystemComponent::UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer)
@@ -17,32 +19,24 @@ void UInteractionSystemComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
-    if (!OverlapSphere.IsValid())
-    {
-        SetOverlapSphere(GetOwner()->GetComponentByClass<USphereComponent>());
-    }
+    FindOverlapSphere();
+    FindOverlapCapsule();
 }
 
 void UInteractionSystemComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (OverlapSphere.IsValid())
-    {
-        OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
-        OverlapSphere->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
-    }
+    BindOverlapSphereEvents();
+    BindOverlapCapsuleEvents();
 }
 
 void UInteractionSystemComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 
-    if (OverlapSphere.IsValid())
-    {
-        OverlapSphere->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
-        OverlapSphere->OnComponentEndOverlap.RemoveDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
-    }
+    UnBindOverlapSphereEvents();
+    UnBindOverlapCapsuleEvents();
 }
 
 void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapSphere)
@@ -52,6 +46,68 @@ void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapS
     if (OverlapSphere.IsValid())
     {
         OverlapSphere->SetSphereRadius(Range);
+    }
+}
+
+void UInteractionSystemComponent::SetOverlapCapsule(UCapsuleComponent* NewOverlapCapsule)
+{
+    OverlapCapsule = NewOverlapCapsule;
+}
+
+void UInteractionSystemComponent::FindOverlapSphere()
+{
+    if (OverlapSphere.IsValid()) return;
+
+    SetOverlapSphere(GetOwner()->GetComponentByClass<USphereComponent>());
+}
+
+void UInteractionSystemComponent::FindOverlapCapsule()
+{
+    if (OverlapSphere.IsValid()) return;
+
+    if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
+    {
+        SetOverlapCapsule(OwningCharacter->GetCapsuleComponent());
+    }
+    else
+    {
+        SetOverlapSphere(GetOwner()->GetComponentByClass<USphereComponent>());
+    }
+}
+
+void UInteractionSystemComponent::BindOverlapSphereEvents()
+{
+    if (OverlapSphere.IsValid())
+    {
+        OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
+        OverlapSphere->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
+    }
+}
+
+void UInteractionSystemComponent::UnBindOverlapSphereEvents()
+{
+    if (OverlapSphere.IsValid())
+    {
+        OverlapSphere->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnOverlapSphereBeginOverlap);
+        OverlapSphere->OnComponentEndOverlap.RemoveDynamic(this, &ThisClass::OnOverlapSphereEndOverlap);
+    }
+}
+
+void UInteractionSystemComponent::BindOverlapCapsuleEvents()
+{
+    if (OverlapCapsule.IsValid())
+    {
+        OverlapCapsule->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::OnOverlapCapsuleBeginOverlap);
+        OverlapCapsule->OnComponentEndOverlap.AddDynamic(this, &ThisClass::OnOverlapCapsuleEndOverlap);
+    }
+}
+
+void UInteractionSystemComponent::UnBindOverlapCapsuleEvents()
+{
+    if (OverlapCapsule.IsValid())
+    {
+        OverlapCapsule->OnComponentBeginOverlap.RemoveDynamic(this, &ThisClass::OnOverlapCapsuleBeginOverlap);
+        OverlapCapsule->OnComponentEndOverlap.RemoveDynamic(this, &ThisClass::OnOverlapCapsuleEndOverlap);
     }
 }
 
@@ -158,6 +214,25 @@ void UInteractionSystemComponent::OnOverlapSphereEndOverlap(UPrimitiveComponent*
     AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
     RemoveTarget(OtherActor);
+}
+
+void UInteractionSystemComponent::OnOverlapCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+    const FHitResult& SweepResult)
+{
+    if (OtherActor)
+    {
+        SelectTargets();
+    }
+}
+
+void UInteractionSystemComponent::OnOverlapCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent,
+    AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+    if (OtherActor)
+    {
+        SelectTargets();
+    }
 }
 
 void UInteractionSystemComponent::SelectTargets()

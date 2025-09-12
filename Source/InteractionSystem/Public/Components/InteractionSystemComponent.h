@@ -7,6 +7,8 @@
 #include "Components/SphereComponent.h"
 #include "InteractionSystemComponent.generated.h"
 
+class UCapsuleComponent;
+
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INTERACTIONSYSTEM_API UInteractionSystemComponent : public UActorComponent
 {
@@ -19,6 +21,9 @@ protected:
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<USphereComponent> OverlapSphere;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    TWeakObjectPtr<UCapsuleComponent> OverlapCapsule;
 
     UPROPERTY(VisibleAnywhere, Category = "State", Transient)
     TArray<TWeakObjectPtr<AActor>> AvailableTargets;
@@ -39,6 +44,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void SetOverlapSphere(USphereComponent* NewOverlapSphere);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetOverlapCapsule(UCapsuleComponent* NewOverlapCapsule);
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE float GetRange() const { return Range; }
@@ -67,11 +75,26 @@ public:
 protected:
     /* API */
 
+    virtual void FindOverlapSphere();
+    virtual void FindOverlapCapsule();
+
+    virtual void BindOverlapSphereEvents();
+    virtual void UnBindOverlapSphereEvents();
+
+    virtual void BindOverlapCapsuleEvents();
+    virtual void UnBindOverlapCapsuleEvents();
+
     UFUNCTION()
     virtual void OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
     UFUNCTION()
     virtual void OnOverlapSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+    UFUNCTION()
+    virtual void OnOverlapCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+    UFUNCTION()
+    virtual void OnOverlapCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
     virtual void SelectTargets();
 
