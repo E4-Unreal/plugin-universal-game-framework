@@ -72,20 +72,20 @@ bool UInteractableComponent::CanInteract(AActor* Interactor) const
 
 void UInteractableComponent::ActivateFocusEffects(AActor* Interactor)
 {
-    if (Interactor)
-    {
-        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
-        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
-    }
+    if (Interactor == nullptr) return;
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return;
+
+    if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
+    if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
 }
 
 void UInteractableComponent::DeactivateFocusEffects(AActor* Interactor)
 {
-    if (Interactor)
-    {
-        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
-        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);
-    }
+    if (Interactor == nullptr) return;
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return;
+
+    if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
+    if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);
 }
 
 UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
