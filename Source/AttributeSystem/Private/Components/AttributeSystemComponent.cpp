@@ -8,7 +8,22 @@
 
 UAttributeSystemComponent::UAttributeSystemComponent()
 {
+    bWantsInitializeComponent = true;
+
     AttributeConfigMap.Emplace(Attribute::Health, 100);
+}
+
+void UAttributeSystemComponent::InitializeComponent()
+{
+    Super::InitializeComponent();
+
+    for (const auto& [AttributeType, MaxValue] : AttributeConfigMap)
+    {
+        if (AttributeType.IsValid() && MaxValue >= 0)
+        {
+            AttributeValueMap.Emplace(AttributeType, MaxValue);
+        }
+    }
 }
 
 void UAttributeSystemComponent::SetAttributeValue(FGameplayTag AttributeType, float NewValue)

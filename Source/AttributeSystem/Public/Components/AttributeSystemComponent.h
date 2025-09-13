@@ -19,7 +19,7 @@ public:
     FOnAttributeValueChanged OnAttributeValueChanged;
 
     // TMap<AttributeType, MaxValue>
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Attribute"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Attribute", ClampMin = 0))
     TMap<FGameplayTag, float> AttributeConfigMap;
 
 protected:
@@ -29,6 +29,10 @@ protected:
 
 public:
     UAttributeSystemComponent();
+
+    /* ActorComponent */
+
+    virtual void InitializeComponent() override;
 
     /* API */
 
