@@ -28,7 +28,7 @@ void UAttributeSystemComponent::InitializeComponent()
 
 void UAttributeSystemComponent::SetAttributeValue(FGameplayTag AttributeType, float NewValue)
 {
-    if (HasAttribute(AttributeType)) return;
+    if (!HasAttribute(AttributeType)) return;
 
     const float MinValue = 0;
     const float MaxValue = GetMaxAttributeValue(AttributeType);

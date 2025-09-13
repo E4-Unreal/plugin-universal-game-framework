@@ -37,7 +37,7 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE bool HasAttribute(FGameplayTag AttributeType) const { return AttributeConfigMap.Contains(AttributeType); }
+    FORCEINLINE bool HasAttribute(FGameplayTag AttributeType) const { return AttributeValueMap.Contains(AttributeType); }
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE float GetMaxAttributeValue(FGameplayTag AttributeType) const { return AttributeConfigMap.FindRef(AttributeType); }
