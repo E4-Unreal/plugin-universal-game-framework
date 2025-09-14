@@ -8,6 +8,10 @@
 #include "AttributeSystemComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnAttributeValueChanged, FGameplayTag, AttributeType, float, OldValue, float, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamaged, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealed, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRevived);
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class ATTRIBUTESYSTEM_API UAttributeSystemComponent : public UActorComponent
@@ -17,6 +21,18 @@ class ATTRIBUTESYSTEM_API UAttributeSystemComponent : public UActorComponent
 public:
     UPROPERTY(BlueprintAssignable)
     FOnAttributeValueChanged OnAttributeValueChanged;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnDamaged OnDamaged;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnHealed OnHealed;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnDead OnDead;
+
+    UPROPERTY(BlueprintAssignable)
+    FOnRevived OnRevived;
 
     // TMap<AttributeType, MaxValue>
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Attribute", ClampMin = 0))
@@ -54,8 +70,15 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void RemoveAttributeValue(FGameplayTag AttributeType, float ValueToRemove);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void TakeDamage(float ActualDamage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser);
+
 protected:
     /* API */
 
     virtual void HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
+    virtual void HandleOnDamaged(float Value);
+    virtual void HandleOnHealed(float Value);
+    virtual void HandleOnDead();
+    virtual void HandleOnRevived();
 };

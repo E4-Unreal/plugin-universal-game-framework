@@ -5,7 +5,6 @@
 
 #include "Components/AttributeSystemComponent.h"
 #include "GameplayTags/AttributeGameplayTags.h"
-#include "Logging.h"
 
 const FName ADamageableActorBase::AttributeSystemName(TEXT("AttributeSystem"));
 
@@ -23,7 +22,11 @@ void ADamageableActorBase::PostInitializeComponents()
 
     if (GetAttributeSystem())
     {
-        GetAttributeSystem()->OnAttributeValueChanged.AddDynamic(this, &ThisClass::HandleOnAttributeValueChanged);
+        GetAttributeSystem()->OnAttributeValueChanged.AddDynamic(this, &ThisClass::OnAttributeValueChanged);
+        GetAttributeSystem()->OnDamaged.AddDynamic(this, &ThisClass::OnDamaged);
+        GetAttributeSystem()->OnHealed.AddDynamic(this, &ThisClass::OnHealed);
+        GetAttributeSystem()->OnDead.AddDynamic(this, &ThisClass::OnDead);
+        GetAttributeSystem()->OnRevived.AddDynamic(this, &ThisClass::OnRevived);
     }
 }
 
@@ -32,50 +35,32 @@ float ADamageableActorBase::TakeDamage(float DamageAmount, struct FDamageEvent c
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-    GetAttributeSystem()->RemoveAttributeValue(Attribute::Health, ActualDamage);
+    GetAttributeSystem()->TakeDamage(ActualDamage, DamageEvent, EventInstigator, DamageCauser);
 
     return ActualDamage;
 }
 
+void ADamageableActorBase::OnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue)
+{
+
+}
+
 void ADamageableActorBase::OnDamaged(float Value)
 {
-    LOG_ACTOR(Log, TEXT("Value: %f"), Value)
+
 }
 
 void ADamageableActorBase::OnHealed(float Value)
 {
-    LOG_ACTOR(Log, TEXT("Value: %f"), Value)
+
 }
 
 void ADamageableActorBase::OnDead()
 {
-    LOG_ACTOR(Log, TEXT(""))
+
 }
 
 void ADamageableActorBase::OnRevived()
 {
-    LOG_ACTOR(Log, TEXT(""))
-}
 
-void ADamageableActorBase::HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue)
-{
-    if (AttributeType == Attribute::Health)
-    {
-        if (FMath::IsNearlyZero(NewValue))
-        {
-            OnDead();
-        }
-        else if (FMath::IsNearlyZero(OldValue))
-        {
-            OnRevived();
-        }
-        else if (OldValue > NewValue)
-        {
-            OnDamaged(OldValue - NewValue);
-        }
-        else
-        {
-            OnHealed(NewValue - OldValue);
-        }
-    }
 }

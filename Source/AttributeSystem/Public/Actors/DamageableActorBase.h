@@ -35,11 +35,18 @@ public:
 protected:
     /* API */
 
-    virtual void OnDamaged(float Value);
-    virtual void OnHealed(float Value);
-    virtual void OnDead();
-    virtual void OnRevived();
+    UFUNCTION()
+    virtual void OnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
 
     UFUNCTION()
-    virtual void HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
+    virtual void OnDamaged(float Value);
+
+    UFUNCTION()
+    virtual void OnHealed(float Value);
+
+    UFUNCTION()
+    virtual void OnDead();
+
+    UFUNCTION()
+    virtual void OnRevived();
 };

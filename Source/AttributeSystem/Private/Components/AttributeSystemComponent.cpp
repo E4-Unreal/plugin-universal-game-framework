@@ -63,8 +63,60 @@ void UAttributeSystemComponent::RemoveAttributeValue(FGameplayTag AttributeType,
     SetAttributeValue(AttributeType, NewValue);
 }
 
+void UAttributeSystemComponent::TakeDamage(float ActualDamage, FDamageEvent const& DamageEvent,
+    AController* EventInstigator, AActor* DamageCauser)
+{
+    RemoveAttributeValue(Attribute::Health, ActualDamage);
+}
+
 void UAttributeSystemComponent::HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue,
                                                               float NewValue)
 {
     LOG_ACTOR_COMPONENT(Log, TEXT("AttributeType: %s, OldValue: %f, NewValue: %f"), *AttributeType.GetTagName().ToString(), OldValue, NewValue)
+
+    if (AttributeType == Attribute::Health)
+    {
+        if (FMath::IsNearlyZero(NewValue))
+        {
+            HandleOnDead();
+            OnDead.Broadcast();
+        }
+        else if (FMath::IsNearlyZero(OldValue))
+        {
+            HandleOnRevived();
+            OnRevived.Broadcast();
+        }
+        else if (OldValue > NewValue)
+        {
+            const float Damage = OldValue - NewValue;
+            HandleOnDamaged(Damage);
+            OnDamaged.Broadcast(Damage);
+        }
+        else
+        {
+            const float Heal = NewValue - OldValue;
+            HandleOnHealed(Heal);
+            OnHealed.Broadcast(Heal);
+        }
+    }
+}
+
+void UAttributeSystemComponent::HandleOnDamaged(float Value)
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT("Value: %f"), Value)
+}
+
+void UAttributeSystemComponent::HandleOnHealed(float Value)
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT("Value: %f"), Value)
+}
+
+void UAttributeSystemComponent::HandleOnDead()
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT(""))
+}
+
+void UAttributeSystemComponent::HandleOnRevived()
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT(""))
 }
