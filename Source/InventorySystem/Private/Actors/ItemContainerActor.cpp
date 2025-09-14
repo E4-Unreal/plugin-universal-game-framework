@@ -12,10 +12,6 @@ const FName AItemContainerActor::ItemContainerName(TEXT("ItemContainer"));
 AItemContainerActor::AItemContainerActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    /* DisplayMesh */
-
-    GetDisplayMesh()->SetSimulatePhysics(true);
-
     /* InteractableComponent */
 
     GetInteractableComponent()->InteractionType = Interaction::Open::Box;
