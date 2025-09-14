@@ -26,6 +26,18 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText ItemNameFormat;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Spawn", meta = (MustImplement = "ItemActorInterface"))
+    TSubclassOf<AActor> ItemActorClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Spawn")
+    FVector SpawnOffset;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Spawn", meta = (ClampMin = 0, ClampMax = 90))
+    float ImpulseAngle;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config|Spawn", meta = (ClampMin = 0))
+    float ImpulseStrength;
+
 protected:
     UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
     TWeakObjectPtr<UStaticMeshComponent> DisplayMesh;
@@ -68,7 +80,13 @@ public:
     virtual void Refresh();
 
     UFUNCTION(BlueprintCallable)
+    virtual void Clear();
+
+    UFUNCTION(BlueprintCallable)
     virtual void TransferItemsToInventory(AActor* TargetActor);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SpawnItems();
 
 protected:
     /* API */
