@@ -4,6 +4,7 @@
 #include "AnimNotifies/AnimNotify_Interaction.h"
 
 #include "Components/InteractionSystemComponent.h"
+#include "Interfaces/InteractableInterface.h"
 
 void UAnimNotify_Interaction::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                      const FAnimNotifyEventReference& EventReference)
@@ -14,7 +15,18 @@ void UAnimNotify_Interaction::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
     {
         if (auto InteractionSystem = Owner->GetComponentByClass<UInteractionSystemComponent>())
         {
-            InteractionSystem->TryInteract();
+            const auto& SelectedTargets = InteractionSystem->GetSelectedTargets();
+            for (const auto& SelectedTarget : SelectedTargets)
+            {
+                if (SelectedTarget && SelectedTarget->Implements<UInteractableInterface>() && IInteractableInterface::Execute_CanInteract(SelectedTarget, Owner))
+                {
+                    const auto& TargetInteractionType = IInteractableInterface::Execute_GetInteractionType(SelectedTarget);
+                    if (TargetInteractionType == InteractionType)
+                    {
+                        IInteractableInterface::Execute_Interact(SelectedTarget, Owner);
+                    }
+                }
+            }
         }
     }
 }

@@ -4,15 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
+#include "GameplayTagContainer.h"
 #include "AnimNotify_Interaction.generated.h"
 
 /**
  *
  */
-UCLASS()
+UCLASS(Const, hideCategories = Object, collapseCategories, Meta = (DisplayName = "Interaction"))
 class INTERACTIONSYSTEM_API UAnimNotify_Interaction : public UAnimNotify
 {
     GENERATED_BODY()
+
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
+    FGameplayTag InteractionType;
 
 public:
     /* AnimNotify */
