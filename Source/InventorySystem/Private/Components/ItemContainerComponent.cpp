@@ -14,9 +14,9 @@ UItemContainerComponent::UItemContainerComponent(const FObjectInitializer& Objec
 
     bAutoDestroy = true;
 
-    SpawnOffset = FVector(0, 0, 100);
+    SpawnOffset = FVector(0, 0, 50);
     ImpulseAngle = 90;
-    ImpulseStrength = 2000;
+    ImpulseStrength = 1000;
 }
 
 void UItemContainerComponent::BeginPlay()
