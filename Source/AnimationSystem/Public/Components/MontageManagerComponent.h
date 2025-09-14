@@ -14,22 +14,25 @@ class ANIMATIONSYSTEM_API UMontageManagerComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    // TMap<MontageType, Montage>
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Montage"))
     TMap<FGameplayTag, TObjectPtr<UAnimMontage>> MontageMap;
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TWeakObjectPtr<USkeletalMeshComponent> Mesh;
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
+    TWeakObjectPtr<USkeletalMeshComponent> SkeletalMesh;
 
 public:
     UMontageManagerComponent(const FObjectInitializer& ObjectInitializer);
+
+    /* Actor Component */
 
     virtual void InitializeComponent() override;
 
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetMesh(USkeletalMeshComponent* NewMesh);
+    virtual void SetSkeletalMesh(USkeletalMeshComponent* NewSkeletalMesh);
 
     UFUNCTION(BlueprintCallable)
     virtual void PlayMontage(UAnimMontage* Montage);
@@ -39,4 +42,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void PlayMontageByTag(const FGameplayTag& Tag);
+
+protected:
+    virtual void FindSkeletalMesh();
 };

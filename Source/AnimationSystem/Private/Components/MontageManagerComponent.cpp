@@ -16,29 +16,35 @@ void UMontageManagerComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
-    if (!Mesh.IsValid())
-    {
-        if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
-        {
-            Mesh = OwningCharacter->GetMesh();
-        }
-        else
-        {
-            Mesh = GetOwner()->GetComponentByClass<USkeletalMeshComponent>();
-        }
-    }
+    FindSkeletalMesh();
 }
 
-void UMontageManagerComponent::SetMesh(USkeletalMeshComponent* NewMesh)
+void UMontageManagerComponent::SetSkeletalMesh(USkeletalMeshComponent* NewSkeletalMesh)
 {
-    Mesh = NewMesh;
+    if (SkeletalMesh == NewSkeletalMesh) return;
+
+    SkeletalMesh = NewSkeletalMesh;
+}
+
+void UMontageManagerComponent::FindSkeletalMesh()
+{
+    if (SkeletalMesh.IsValid()) return;
+
+    if (ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner()))
+    {
+        SetSkeletalMesh(OwnerCharacter->GetMesh());
+    }
+    else
+    {
+        SetSkeletalMesh(GetOwner()->GetComponentByClass<USkeletalMeshComponent>());
+    }
 }
 
 void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage)
 {
-    if (Montage && Mesh.IsValid())
+    if (Montage && SkeletalMesh.IsValid())
     {
-        if (UAnimInstance* AnimInstance = Mesh->GetAnimInstance())
+        if (UAnimInstance* AnimInstance = SkeletalMesh->GetAnimInstance())
         {
             AnimInstance->Montage_Play(Montage);
         }
