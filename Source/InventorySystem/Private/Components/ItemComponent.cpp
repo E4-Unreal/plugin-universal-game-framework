@@ -3,8 +3,6 @@
 
 #include "Components/ItemComponent.h"
 
-#include "InventorySystemFunctionLibrary.h"
-#include "Components/InventoryComponent.h"
 #include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemDataInterface.h"
 
@@ -12,15 +10,24 @@
 UItemComponent::UItemComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    bWantsInitializeComponent = true;
-
-    bAutoDestroy = true;
     ItemNameFormat = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}"); // 아이템 외 5개
-
-    SpawnOffset = FVector(0, 0, 100);
-    ImpulseAngle = 90;
-    ImpulseStrength = 2000;
 }
+
+#if WITH_EDITOR
+void UItemComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+{
+    Super::PostEditChangeProperty(PropertyChangedEvent);
+
+    FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DefaultStaticMesh) ||
+        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, ItemInstances)
+        )
+    {
+        Refresh();
+    }
+}
+#endif
 
 void UItemComponent::InitializeComponent()
 {
@@ -28,18 +35,6 @@ void UItemComponent::InitializeComponent()
 
     FindDisplayMesh();
     Refresh();
-}
-
-void UItemComponent::BeginPlay()
-{
-    if (ItemInstances.IsEmpty())
-    {
-        GetOwner()->Destroy();
-    }
-    else
-    {
-        Super::BeginPlay();
-    }
 }
 
 void UItemComponent::SetDisplayMesh(UStaticMeshComponent* NewDisplayMesh)
@@ -72,66 +67,16 @@ FText UItemComponent::GetItemName() const
 
 void UItemComponent::SetItems(const TArray<UDataInstanceBase*>& NewItemInstances)
 {
-    ItemInstances = NewItemInstances;
+    Super::SetItems(NewItemInstances);
 
     Refresh();
 }
-
-#if WITH_EDITOR
-void UItemComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
-{
-    Super::PostEditChangeProperty(PropertyChangedEvent);
-
-    FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
-
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DefaultStaticMesh) ||
-        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, ItemInstances)
-        )
-    {
-        Refresh();
-    }
-}
-#endif
 
 void UItemComponent::Refresh()
 {
     if (DisplayMesh.IsValid())
     {
         DisplayMesh->SetStaticMesh(GetStaticMesh());
-    }
-}
-
-void UItemComponent::Clear()
-{
-    ItemInstances.Empty();
-
-    if (bAutoDestroy) GetOwner()->Destroy();
-}
-
-void UItemComponent::TransferItemsToInventory(AActor* TargetActor)
-{
-    if (auto InventoryComponent = TargetActor->GetComponentByClass<UInventoryComponent>())
-    {
-        for (const auto& InventoryItem : ItemInstances)
-        {
-            if (InventoryItem) InventoryComponent->AddContent(InventoryItem);
-        }
-
-        Clear();
-    }
-}
-
-void UItemComponent::SpawnItems()
-{
-    if (ItemActorClass && !ItemInstances.IsEmpty())
-    {
-        const auto& SpawnedItemActors = UInventorySystemFunctionLibrary::SpawnItemActors(GetOwner(), ItemActorClass, ItemInstances, SpawnOffset);
-        for (const auto& SpawnedItemActor : SpawnedItemActors)
-        {
-            UInventorySystemFunctionLibrary::ImpulseActor(SpawnedItemActor, ImpulseAngle, ImpulseStrength);
-        }
-
-        Clear();
     }
 }
 
