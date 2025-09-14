@@ -6,6 +6,11 @@
 #include "Components/InteractionSystemComponent.h"
 #include "Interfaces/InteractableInterface.h"
 
+UAnimNotify_Interaction::UAnimNotify_Interaction()
+{
+    EndSectionName = FName("End");
+}
+
 void UAnimNotify_Interaction::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
                                      const FAnimNotifyEventReference& EventReference)
 {
@@ -26,6 +31,11 @@ void UAnimNotify_Interaction::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
                         IInteractableInterface::Execute_Interact(SelectedTarget, Owner);
                     }
                 }
+            }
+
+            if (InteractionSystem->GetSelectedTargets().IsEmpty())
+            {
+                MeshComp->GetAnimInstance()->Montage_SetNextSection(MeshComp->GetAnimInstance()->Montage_GetCurrentSection(), EndSectionName);
             }
         }
     }

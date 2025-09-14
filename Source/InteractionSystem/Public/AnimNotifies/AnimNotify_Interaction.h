@@ -19,7 +19,12 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
     FGameplayTag InteractionType;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FName EndSectionName;
+
 public:
+    UAnimNotify_Interaction();
+
     /* AnimNotify */
 
     virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference) override;
