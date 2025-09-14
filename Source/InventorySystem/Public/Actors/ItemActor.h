@@ -7,22 +7,19 @@
 #include "Interfaces/ItemActorInterface.h"
 #include "ItemActor.generated.h"
 
-class UDataInstanceBase;
+class UItemComponent;
 
 UCLASS()
 class INVENTORYSYSTEM_API AItemActor : public AInteractableActor, public IItemActorInterface
 {
     GENERATED_BODY()
 
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced)
-    TArray<TObjectPtr<UDataInstanceBase>> ItemInstances;
+protected:
+    const static FName ItemComponentName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSoftObjectPtr<UStaticMesh> DefaultStaticMesh;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bAutoDestroy = true;
+private:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UItemComponent> ItemComponent;
 
 public:
     AItemActor(const FObjectInitializer& ObjectInitializer);
@@ -36,20 +33,8 @@ public:
 
     virtual void SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances) override;
 
-    /* Actor */
+public:
+    /* Component */
 
-    virtual void PostInitializeComponents() override;
-    virtual void BeginPlay() override;
-#if WITH_EDITOR
-    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-#endif
-
-protected:
-    /* ItemActor */
-
-    UFUNCTION(BlueprintCallable)
-    virtual void Refresh();
-
-    UFUNCTION(BlueprintPure)
-    virtual UStaticMesh* GetStaticMesh() const;
+    FORCEINLINE UItemComponent* GetItemComponent() const { return ItemComponent; }
 };
