@@ -39,6 +39,20 @@ void UInteractionSystemComponent::OnComponentDestroyed(bool bDestroyingHierarchy
     UnBindOverlapCapsuleEvents();
 }
 
+TArray<AActor*> UInteractionSystemComponent::GetSelectedTargets()
+{
+    ShrinkTargets(SelectedTargets);
+
+    TArray<AActor*> OutSelectedTargets;
+    OutSelectedTargets.Reserve(SelectedTargets.Num());
+    for (const auto& SelectedTarget : SelectedTargets)
+    {
+        OutSelectedTargets.Emplace(SelectedTarget.Get());
+    }
+
+    return OutSelectedTargets;
+}
+
 void UInteractionSystemComponent::SetOverlapSphere(USphereComponent* NewOverlapSphere)
 {
     OverlapSphere = NewOverlapSphere;

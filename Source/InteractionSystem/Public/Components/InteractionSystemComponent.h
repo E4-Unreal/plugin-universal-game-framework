@@ -42,6 +42,9 @@ public:
 
     /* API */
 
+    UFUNCTION(BlueprintPure)
+    TArray<AActor*> GetSelectedTargets();
+
     UFUNCTION(BlueprintCallable)
     virtual void SetOverlapSphere(USphereComponent* NewOverlapSphere);
 
