@@ -40,27 +40,27 @@ float ADamageableCharacterBase::TakeDamage(float DamageAmount, struct FDamageEve
     return ActualDamage;
 }
 
-void ADamageableCharacterBase::OnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue)
+void ADamageableCharacterBase::OnAttributeValueChanged_Implementation(FGameplayTag AttributeType, float OldValue, float NewValue)
 {
 
 }
 
-void ADamageableCharacterBase::OnDamaged(float Value)
+void ADamageableCharacterBase::OnDamaged_Implementation(float Value)
 {
 
 }
 
-void ADamageableCharacterBase::OnHealed(float Value)
+void ADamageableCharacterBase::OnHealed_Implementation(float Value)
 {
 
 }
 
-void ADamageableCharacterBase::OnDead()
+void ADamageableCharacterBase::OnDead_Implementation()
 {
 
 }
 
-void ADamageableCharacterBase::OnRevived()
+void ADamageableCharacterBase::OnRevived_Implementation()
 {
 
 }

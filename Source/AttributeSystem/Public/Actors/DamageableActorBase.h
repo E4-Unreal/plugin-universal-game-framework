@@ -35,18 +35,18 @@ public:
 protected:
     /* API */
 
-    UFUNCTION()
-    virtual void OnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
+    UFUNCTION(BlueprintNativeEvent)
+    void OnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
 
-    UFUNCTION()
-    virtual void OnDamaged(float Value);
+    UFUNCTION(BlueprintNativeEvent)
+    void OnDamaged(float Value);
 
-    UFUNCTION()
-    virtual void OnHealed(float Value);
+    UFUNCTION(BlueprintNativeEvent)
+    void OnHealed(float Value);
 
-    UFUNCTION()
-    virtual void OnDead();
+    UFUNCTION(BlueprintNativeEvent)
+    void OnDead();
 
-    UFUNCTION()
-    virtual void OnRevived();
+    UFUNCTION(BlueprintNativeEvent)
+    void OnRevived();
 };

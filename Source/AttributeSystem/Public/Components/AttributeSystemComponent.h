@@ -76,9 +76,18 @@ public:
 protected:
     /* API */
 
-    virtual void HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
-    virtual void HandleOnDamaged(float Value);
-    virtual void HandleOnHealed(float Value);
-    virtual void HandleOnDead();
-    virtual void HandleOnRevived();
+    UFUNCTION(BlueprintNativeEvent)
+    void HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue, float NewValue);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void HandleOnDamaged(float Value);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void HandleOnHealed(float Value);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void HandleOnDead();
+
+    UFUNCTION(BlueprintNativeEvent)
+    void HandleOnRevived();
 };

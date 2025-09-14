@@ -69,7 +69,7 @@ void UAttributeSystemComponent::TakeDamage(float ActualDamage, FDamageEvent cons
     RemoveAttributeValue(Attribute::Health, ActualDamage);
 }
 
-void UAttributeSystemComponent::HandleOnAttributeValueChanged(FGameplayTag AttributeType, float OldValue,
+void UAttributeSystemComponent::HandleOnAttributeValueChanged_Implementation(FGameplayTag AttributeType, float OldValue,
                                                               float NewValue)
 {
     LOG_ACTOR_COMPONENT(Log, TEXT("AttributeType: %s, OldValue: %f, NewValue: %f"), *AttributeType.GetTagName().ToString(), OldValue, NewValue)
@@ -101,22 +101,22 @@ void UAttributeSystemComponent::HandleOnAttributeValueChanged(FGameplayTag Attri
     }
 }
 
-void UAttributeSystemComponent::HandleOnDamaged(float Value)
+void UAttributeSystemComponent::HandleOnDamaged_Implementation(float Value)
 {
     LOG_ACTOR_COMPONENT(Log, TEXT("Value: %f"), Value)
 }
 
-void UAttributeSystemComponent::HandleOnHealed(float Value)
+void UAttributeSystemComponent::HandleOnHealed_Implementation(float Value)
 {
     LOG_ACTOR_COMPONENT(Log, TEXT("Value: %f"), Value)
 }
 
-void UAttributeSystemComponent::HandleOnDead()
+void UAttributeSystemComponent::HandleOnDead_Implementation()
 {
     LOG_ACTOR_COMPONENT(Log, TEXT(""))
 }
 
-void UAttributeSystemComponent::HandleOnRevived()
+void UAttributeSystemComponent::HandleOnRevived_Implementation()
 {
     LOG_ACTOR_COMPONENT(Log, TEXT(""))
 }
