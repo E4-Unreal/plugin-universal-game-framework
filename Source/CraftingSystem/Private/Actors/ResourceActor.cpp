@@ -1,13 +1,13 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/DamageableActorBase.h"
+#include "Actors/ResourceActor.h"
 
 #include "Components/AttributeSystemComponent.h"
 
-const FName ADamageableActorBase::AttributeSystemName(TEXT("AttributeSystem"));
+const FName AResourceActor::AttributeSystemName(TEXT("AttributeSystem"));
 
-ADamageableActorBase::ADamageableActorBase(const FObjectInitializer& ObjectInitializer)
+AResourceActor::AResourceActor(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     /* SocketManager */
@@ -15,7 +15,14 @@ ADamageableActorBase::ADamageableActorBase(const FObjectInitializer& ObjectIniti
     AttributeSystem = CreateDefaultSubobject<UAttributeSystemComponent>(AttributeSystemName);
 }
 
-void ADamageableActorBase::PostInitializeComponents()
+void AResourceActor::Interact_Implementation(AActor* Interactor)
+{
+    Super::Interact_Implementation(Interactor);
+
+    // TODO 캐릭터 애니메이션 재생 > 애님 노티파이로 TakeDamage
+}
+
+void AResourceActor::PostInitializeComponents()
 {
     Super::PostInitializeComponents();
 
@@ -29,7 +36,7 @@ void ADamageableActorBase::PostInitializeComponents()
     }
 }
 
-float ADamageableActorBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+float AResourceActor::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
                                        class AController* EventInstigator, AActor* DamageCauser)
 {
     float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -39,27 +46,27 @@ float ADamageableActorBase::TakeDamage(float DamageAmount, struct FDamageEvent c
     return ActualDamage;
 }
 
-void ADamageableActorBase::OnAttributeValueChanged_Implementation(FGameplayTag AttributeType, float OldValue, float NewValue)
+void AResourceActor::OnAttributeValueChanged_Implementation(FGameplayTag AttributeType, float OldValue, float NewValue)
 {
 
 }
 
-void ADamageableActorBase::OnDamaged_Implementation(float Value)
+void AResourceActor::OnDamaged_Implementation(float Value)
 {
 
 }
 
-void ADamageableActorBase::OnHealed_Implementation(float Value)
+void AResourceActor::OnHealed_Implementation(float Value)
 {
 
 }
 
-void ADamageableActorBase::OnDead_Implementation()
+void AResourceActor::OnDead_Implementation()
 {
 
 }
 
-void ADamageableActorBase::OnRevived_Implementation()
+void AResourceActor::OnRevived_Implementation()
 {
 
 }

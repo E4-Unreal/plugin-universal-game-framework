@@ -10,7 +10,11 @@ public class CraftingSystem : ModuleRules
             new string[]
             {
                 "Core",
-                "UniversalUtilities"
+                "GameplayTags",
+
+                "UniversalUtilities",
+                "InteractionSystem",
+                "AttributeSystem"
             }
         );
 
