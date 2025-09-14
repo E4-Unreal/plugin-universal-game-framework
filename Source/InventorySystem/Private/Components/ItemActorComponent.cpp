@@ -1,20 +1,20 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/ItemComponent.h"
+#include "Components/ItemActorComponent.h"
 
 #include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemDataInterface.h"
 
 
-UItemComponent::UItemComponent(const FObjectInitializer& ObjectInitializer)
+UItemActorComponent::UItemActorComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     ItemNameFormat = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}"); // 아이템 외 5개
 }
 
 #if WITH_EDITOR
-void UItemComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
+void UItemActorComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
     Super::PostEditChangeProperty(PropertyChangedEvent);
 
@@ -29,7 +29,7 @@ void UItemComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Proper
 }
 #endif
 
-void UItemComponent::InitializeComponent()
+void UItemActorComponent::InitializeComponent()
 {
     Super::InitializeComponent();
 
@@ -37,19 +37,19 @@ void UItemComponent::InitializeComponent()
     Refresh();
 }
 
-void UItemComponent::SetDisplayMesh(UStaticMeshComponent* NewDisplayMesh)
+void UItemActorComponent::SetDisplayMesh(UStaticMeshComponent* NewDisplayMesh)
 {
     DisplayMesh = NewDisplayMesh;
 }
 
-void UItemComponent::FindDisplayMesh()
+void UItemActorComponent::FindDisplayMesh()
 {
     if (DisplayMesh.IsValid()) return;
 
     DisplayMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
 }
 
-FText UItemComponent::GetItemName() const
+FText UItemActorComponent::GetItemName() const
 {
     if (!ItemInstances.IsEmpty())
     {
@@ -65,14 +65,14 @@ FText UItemComponent::GetItemName() const
     return FText::GetEmpty();
 }
 
-void UItemComponent::SetItems(const TArray<UDataInstanceBase*>& NewItemInstances)
+void UItemActorComponent::SetItems(const TArray<UDataInstanceBase*>& NewItemInstances)
 {
     Super::SetItems(NewItemInstances);
 
     Refresh();
 }
 
-void UItemComponent::Refresh()
+void UItemActorComponent::Refresh()
 {
     if (DisplayMesh.IsValid())
     {
@@ -80,7 +80,7 @@ void UItemComponent::Refresh()
     }
 }
 
-UStaticMesh* UItemComponent::GetStaticMesh() const
+UStaticMesh* UItemActorComponent::GetStaticMesh() const
 {
     UStaticMesh* StaticMesh = nullptr;
 

@@ -5,7 +5,7 @@
 
 #include "Components/InteractableComponent.h"
 #include "GameplayTags/InventoryGameplayTags.h"
-#include "Components/ItemComponent.h"
+#include "Components/ItemActorComponent.h"
 
 const FName AItemActor::ItemComponentName(TEXT("ItemComponent"));
 
@@ -22,7 +22,7 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
 
     /* ItemComponent */
 
-    ItemComponent = CreateDefaultSubobject<UItemComponent>(ItemComponentName);
+    ItemComponent = CreateDefaultSubobject<UItemActorComponent>(ItemComponentName);
 }
 
 FText AItemActor::GetInteractionMessage_Implementation() const
