@@ -9,7 +9,7 @@
 
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class UNIVERSALGAMEFRAMEWORK_API UMontageManagerComponent : public UActorComponent
+class ANIMATIONSYSTEM_API UMontageManagerComponent : public UActorComponent
 {
     GENERATED_BODY()
 

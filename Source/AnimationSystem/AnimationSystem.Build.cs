@@ -10,6 +10,7 @@ public class AnimationSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "GameplayTags",
 
                 "UniversalUtilities"
             }
