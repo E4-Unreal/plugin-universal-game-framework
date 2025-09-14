@@ -44,5 +44,16 @@ public:
     virtual void PlayMontageByTag(const FGameplayTag& Tag);
 
 protected:
+    /* API */
+
     virtual void FindSkeletalMesh();
+
+    UFUNCTION()
+    virtual void BindAnimInstanceEvents();
+
+    UFUNCTION()
+    virtual void OnPlayMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
+
+    UFUNCTION()
+    virtual void OnPlayMontageNotifyEnd(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 };

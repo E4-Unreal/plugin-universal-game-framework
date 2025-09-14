@@ -4,7 +4,8 @@
 #include "Components/MontageManagerComponent.h"
 
 #include "GameFramework/Character.h"
-
+#include "Logging.h"
+#include "Misc/MapErrors.h"
 
 UMontageManagerComponent::UMontageManagerComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -21,9 +22,11 @@ void UMontageManagerComponent::InitializeComponent()
 
 void UMontageManagerComponent::SetSkeletalMesh(USkeletalMeshComponent* NewSkeletalMesh)
 {
-    if (SkeletalMesh == NewSkeletalMesh) return;
-
+    if (SkeletalMesh.IsValid() || NewSkeletalMesh == nullptr) return;
     SkeletalMesh = NewSkeletalMesh;
+
+    BindAnimInstanceEvents();
+    SkeletalMesh->OnAnimInitialized.AddDynamic(this, &ThisClass::BindAnimInstanceEvents);
 }
 
 void UMontageManagerComponent::FindSkeletalMesh()
@@ -70,4 +73,29 @@ UAnimMontage* UMontageManagerComponent::GetMontageByTag(const FGameplayTag& Tag)
 void UMontageManagerComponent::PlayMontageByTag(const FGameplayTag& Tag)
 {
     PlayMontage(GetMontageByTag(Tag));
+}
+
+
+void UMontageManagerComponent::BindAnimInstanceEvents()
+{
+    if (SkeletalMesh.IsValid())
+    {
+        if (auto AnimInstance = SkeletalMesh->GetAnimInstance())
+        {
+            AnimInstance->OnPlayMontageNotifyBegin.AddDynamic(this, &UMontageManagerComponent::OnPlayMontageNotifyBegin);
+            AnimInstance->OnPlayMontageNotifyEnd.AddDynamic(this, &UMontageManagerComponent::OnPlayMontageNotifyEnd);
+        }
+    }
+}
+
+void UMontageManagerComponent::OnPlayMontageNotifyBegin(FName NotifyName,
+    const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT("NotifyName: %s"), *NotifyName.ToString())
+}
+
+void UMontageManagerComponent::OnPlayMontageNotifyEnd(FName NotifyName,
+    const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+    LOG_ACTOR_COMPONENT(Log, TEXT("NotifyName: %s"), *NotifyName.ToString())
 }
