@@ -4,6 +4,9 @@
 #include "Actors/ResourceActor.h"
 
 #include "Components/AttributeSystemComponent.h"
+#include "Components/InteractableComponent.h"
+#include "Components/ItemContainerComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 const FName AResourceActor::AttributeSystemName(TEXT("AttributeSystem"));
 
@@ -17,9 +20,10 @@ AResourceActor::AResourceActor(const FObjectInitializer& ObjectInitializer)
 
 void AResourceActor::Interact_Implementation(AActor* Interactor)
 {
-    Super::Interact_Implementation(Interactor);
+    GetInteractableComponent()->Interact(Interactor);
 
-    // TODO 캐릭터 애니메이션 재생 > 애님 노티파이로 TakeDamage
+    // TODO 캐릭터 애니메이션 재생 > 애님 노티파이로 ApplyDamage
+    UGameplayStatics::ApplyDamage(this, 50, Interactor->GetInstigator()->GetController(), Interactor, nullptr);
 }
 
 void AResourceActor::PostInitializeComponents()
@@ -63,7 +67,7 @@ void AResourceActor::OnHealed_Implementation(float Value)
 
 void AResourceActor::OnDead_Implementation()
 {
-
+    GetItemContainer()->SpawnItems();
 }
 
 void AResourceActor::OnRevived_Implementation()

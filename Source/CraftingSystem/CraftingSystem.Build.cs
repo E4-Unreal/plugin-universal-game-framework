@@ -14,6 +14,7 @@ public class CraftingSystem : ModuleRules
 
                 "UniversalUtilities",
                 "InteractionSystem",
+                "InventorySystem",
                 "AttributeSystem"
             }
         );
