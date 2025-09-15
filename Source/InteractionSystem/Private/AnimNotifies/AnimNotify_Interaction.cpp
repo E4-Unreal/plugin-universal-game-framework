@@ -4,10 +4,11 @@
 #include "AnimNotifies/AnimNotify_Interaction.h"
 
 #include "Components/InteractionSystemComponent.h"
-#include "Interfaces/InteractableInterface.h"
 
 UAnimNotify_Interaction::UAnimNotify_Interaction()
 {
+    bLoop = true;
+    LoopSectionName = FName("Loop");
     EndSectionName = FName("End");
 }
 
@@ -20,23 +21,16 @@ void UAnimNotify_Interaction::Notify(USkeletalMeshComponent* MeshComp, UAnimSequ
     {
         if (auto InteractionSystem = Owner->GetComponentByClass<UInteractionSystemComponent>())
         {
-            const auto& SelectedTargets = InteractionSystem->GetSelectedTargets();
-            for (const auto& SelectedTarget : SelectedTargets)
+            // 현재 선택된 상호작용 종류가 애니메이션의 상호작용 종류와 일치할 경우 상호작용 실행
+            if (InteractionSystem->GetSelectedInteractionType() == InteractionType)
             {
-                if (SelectedTarget && SelectedTarget->Implements<UInteractableInterface>() && IInteractableInterface::Execute_CanInteract(SelectedTarget, Owner))
-                {
-                    const auto& TargetInteractionType = IInteractableInterface::Execute_GetInteractionType(SelectedTarget);
-                    if (TargetInteractionType == InteractionType)
-                    {
-                        IInteractableInterface::Execute_Interact(SelectedTarget, Owner);
-                    }
-                }
+                InteractionSystem->TryInteract();
             }
 
-            if (InteractionSystem->GetSelectedTargets().IsEmpty())
-            {
-                MeshComp->GetAnimInstance()->Montage_SetNextSection(MeshComp->GetAnimInstance()->Montage_GetCurrentSection(), EndSectionName);
-            }
+            // 더이상 일치하지 않을 경우 애니메이션 종료
+            FName CurrentSectionName = MeshComp->GetAnimInstance()->Montage_GetCurrentSection();
+            FName NextSectionName = bLoop && InteractionSystem->GetSelectedInteractionType() == InteractionType ? LoopSectionName : EndSectionName;
+            MeshComp->GetAnimInstance()->Montage_SetNextSection(CurrentSectionName, NextSectionName);
         }
     }
 }
