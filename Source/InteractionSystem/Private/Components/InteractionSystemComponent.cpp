@@ -6,6 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/InteractableInterface.h"
+#include "Logging.h"
 
 UInteractionSystemComponent::UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -155,71 +156,106 @@ void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
     }
 }
 
-void UInteractionSystemComponent::SelectTarget(AActor* NewTarget, bool bForce)
+void UInteractionSystemComponent::SelectTarget(AActor* NewTarget)
 {
-    if (NewTarget && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
+    if (NewTarget
+        && AvailableTargets.Contains(NewTarget)
+        && NewTarget->Implements<UInteractableInterface>()
+        && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
     {
-        // ex) BeginCursorOver
+        // 기존에 선택된 액터들 비활성화
 
-        if (bForce)
+        DeselectTargets();
+
+        // 새로 선택된 액터 활성화
+
+        IInteractableInterface::Execute_Select(NewTarget, GetOwner());
+        SelectedTargets.Emplace(NewTarget);
+    }
+}
+
+void UInteractionSystemComponent::SelectTargets(const TArray<AActor*>& NewTargets)
+{
+    // 유효성 검사
+
+    if (NewTargets.IsEmpty())
+    {
+        LOG_ACTOR_COMPONENT(Warning, TEXT("No Targets To Select."))
+        return;
+    }
+
+    AActor* FirstSelectedTarget = NewTargets[0];
+    if (!FirstSelectedTarget->Implements<UInteractableInterface>())
+    {
+        LOG_ACTOR_COMPONENT(Warning, TEXT("%s doesn't implement the InteractableInterface."), *FirstSelectedTarget->GetName())
+        return;
+    }
+
+    SelectedInteractionType = IInteractableInterface::Execute_GetInteractionType(FirstSelectedTarget);
+    if (!SelectedInteractionType.IsValid())
+    {
+        LOG_ACTOR_COMPONENT(Warning, TEXT("%s's interaction type is not valid."), *FirstSelectedTarget->GetName())
+        return;
+    }
+
+    // 기존에 선택된 액터들 비활성화
+
+    DeselectTargets();
+
+    // 새로 선택된 액터들 활성화
+
+    SelectedTargets.Reserve(NewTargets.Num());
+    for (AActor* NewTarget : NewTargets)
+    {
+        if (NewTarget
+            && AvailableTargets.Contains(NewTarget)
+            && NewTarget->Implements<UInteractableInterface>()
+            && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner())
+            && SelectedInteractionType == IInteractableInterface::Execute_GetInteractionType(NewTarget))
         {
-            for (const auto& SelectedTarget : SelectedTargets)
-            {
-                DeselectTarget(SelectedTarget.Get());
-            }
-        }
-
-        // Select
-
-        ShrinkTargets(AvailableTargets);
-        ShrinkTargets(SelectedTargets);
-
-        if (AvailableTargets.Contains(NewTarget) && !SelectedTargets.Contains(NewTarget))
-        {
-            SelectedTargets.Emplace(NewTarget);
-
             IInteractableInterface::Execute_Select(NewTarget, GetOwner());
+            SelectedTargets.Emplace(NewTarget);
         }
     }
 }
 
-void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget, bool bForce)
+void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget)
 {
-    if (OldTarget)
+    if (OldTarget && SelectedTargets.Contains(OldTarget) && OldTarget->Implements<UInteractableInterface>())
     {
-        // Deselect
+        IInteractableInterface::Execute_Deselect(OldTarget, GetOwner());
 
-        ShrinkTargets(SelectedTargets);
+        SelectedTargets.RemoveSingleSwap(OldTarget);
+        if (SelectedTargets.IsEmpty()) SelectedInteractionType = FGameplayTag::EmptyTag;
+    }
+}
 
-        if (SelectedTargets.Contains(OldTarget))
+void UInteractionSystemComponent::DeselectTargets()
+{
+    for (const auto& SelectedTarget : SelectedTargets)
+    {
+        if (SelectedTarget.IsValid() && SelectedTarget->Implements<UInteractableInterface>())
         {
-            SelectedTargets.RemoveSingleSwap(OldTarget);
-
-            IInteractableInterface::Execute_Deselect(OldTarget, GetOwner());
-        }
-
-        // es) EndCursorOver
-
-        if (bForce)
-        {
-            RefreshTargets();
+            IInteractableInterface::Execute_Deselect(SelectedTarget.Get(), GetOwner());
         }
     }
+
+    SelectedTargets.Empty();
+    SelectedInteractionType = FGameplayTag::EmptyTag;
 }
 
 void UInteractionSystemComponent::RefreshTargets()
 {
-    // 초기화
-    for (const auto& SelectedTarget : SelectedTargets)
-    {
-        DeselectTarget(SelectedTarget.Get());
-    }
-    SelectedTargets.Reset();
-
     // 유효성 검사
+
     if (AvailableTargets.IsEmpty()) return;
 
+    // 기존에 선택된 액터들 비활성화
+
+    DeselectTargets();
+
     // 가장 가까운 액터 선택
+    
     float MinDistance = MAX_flt;
     int32 MinIndex = 0;
 
@@ -319,19 +355,13 @@ void UInteractionSystemComponent::OnOverlapCapsuleBeginOverlap(UPrimitiveCompone
     AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
     const FHitResult& SweepResult)
 {
-    if (OtherActor)
-    {
-        RefreshTargets();
-    }
+    RefreshTargets();
 }
 
 void UInteractionSystemComponent::OnOverlapCapsuleEndOverlap(UPrimitiveComponent* OverlappedComponent,
     AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    if (OtherActor)
-    {
-        RefreshTargets();
-    }
+    RefreshTargets();
 }
 
 float UInteractionSystemComponent::GetDistanceToTarget(AActor* Target) const

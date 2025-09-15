@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "Components/SphereComponent.h"
 #include "InteractionSystemComponent.generated.h"
@@ -31,6 +32,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "State", Transient)
     TArray<TWeakObjectPtr<AActor>> SelectedTargets;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    FGameplayTag SelectedInteractionType;
+
 public:
     UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer);
 
@@ -43,12 +47,15 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
+    const FORCEINLINE FGameplayTag& GetSelectedInteractionType() const { return SelectedInteractionType; }
+
+    UFUNCTION(BlueprintPure)
     TArray<AActor*> GetSelectedTargets();
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapSphere(USphereComponent* NewOverlapSphere);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapCapsule(UCapsuleComponent* NewOverlapCapsule);
 
     UFUNCTION(BlueprintPure)
@@ -64,10 +71,16 @@ public:
     virtual void RemoveTarget(AActor* OldTarget);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SelectTarget(AActor* NewTarget, bool bForce = false);
+    virtual void SelectTarget(AActor* NewTarget);
 
     UFUNCTION(BlueprintCallable)
-    virtual void DeselectTarget(AActor* OldTarget, bool bForce = false);
+    virtual void SelectTargets(const TArray<AActor*>& NewTargets);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void DeselectTarget(AActor* OldTarget);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void DeselectTargets();
 
     UFUNCTION(BlueprintCallable)
     virtual void RefreshTargets();

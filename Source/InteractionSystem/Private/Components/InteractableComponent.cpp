@@ -279,7 +279,7 @@ void UInteractableComponent::OnBeginCursorOver(AActor* TouchedActor)
 {
     if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
     {
-        PlayerInteractionSystem->SelectTarget(GetOwner(), true);
+        PlayerInteractionSystem->SelectTarget(GetOwner());
     }
 }
 
@@ -287,7 +287,8 @@ void UInteractableComponent::OnEndCursorOver(AActor* TouchedActor)
 {
     if (auto PlayerInteractionSystem = GetPlayerInteractionSystem())
     {
-        PlayerInteractionSystem->DeselectTarget(GetOwner(), true);
+        PlayerInteractionSystem->DeselectTarget(GetOwner());
+        PlayerInteractionSystem->RefreshTargets();
     }
 }
 
