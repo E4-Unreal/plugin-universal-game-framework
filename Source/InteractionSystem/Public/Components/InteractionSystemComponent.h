@@ -94,9 +94,6 @@ public:
 protected:
     /* API */
 
-    static void ShrinkTargets(TArray<TWeakObjectPtr<AActor>>& InTargets);
-    virtual void ShrinkAllTargets();
-
     virtual void FindOverlapSphere();
     virtual void FindOverlapCapsule();
 

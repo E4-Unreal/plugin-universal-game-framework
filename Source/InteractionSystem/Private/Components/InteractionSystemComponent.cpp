@@ -42,8 +42,6 @@ void UInteractionSystemComponent::OnComponentDestroyed(bool bDestroyingHierarchy
 
 TArray<AActor*> UInteractionSystemComponent::GetSelectedTargets()
 {
-    ShrinkTargets(SelectedTargets);
-
     TArray<AActor*> OutSelectedTargets;
     OutSelectedTargets.Reserve(SelectedTargets.Num());
     for (const auto& SelectedTarget : SelectedTargets)
@@ -288,11 +286,11 @@ bool UInteractionSystemComponent::TryInteract()
 
     bool bResult = true;
 
-    for (const auto& SelectedTarget : SelectedTargets)
+    for (const auto& SelectedTarget : GetSelectedTargets())
     {
-        if (SelectedTarget.IsValid() && IInteractableInterface::Execute_CanInteract(SelectedTarget.Get(), GetOwner()))
+        if (SelectedTarget && IInteractableInterface::Execute_CanInteract(SelectedTarget, GetOwner()))
         {
-            IInteractableInterface::Execute_Interact(SelectedTarget.Get(), GetOwner());
+            IInteractableInterface::Execute_Interact(SelectedTarget, GetOwner());
         }
         else
         {
@@ -314,25 +312,6 @@ void UInteractionSystemComponent::CancelInteract()
             IInteractableInterface::Execute_CancelInteract(SelectedTarget.Get(), GetOwner());
         }
     }
-}
-
-void UInteractionSystemComponent::ShrinkTargets(TArray<TWeakObjectPtr<AActor>>& InTargets)
-{
-    for (int32 Index = InTargets.Num() - 1; Index >= 0; --Index)
-    {
-        if (!InTargets[Index].IsValid())
-        {
-            InTargets.RemoveAt(Index, EAllowShrinking::No);
-        }
-    }
-
-    InTargets.Shrink();
-}
-
-void UInteractionSystemComponent::ShrinkAllTargets()
-{
-    ShrinkTargets(AvailableTargets);
-    ShrinkTargets(SelectedTargets);
 }
 
 void UInteractionSystemComponent::OnOverlapSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent,
