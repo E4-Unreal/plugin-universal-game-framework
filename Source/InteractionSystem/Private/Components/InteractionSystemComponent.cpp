@@ -241,6 +241,8 @@ void UInteractionSystemComponent::DeselectTargets()
 
 void UInteractionSystemComponent::RefreshTargets()
 {
+    LOG_ACTOR_COMPONENT(Log, TEXT(""))
+
     // 유효성 검사
 
     if (AvailableTargets.IsEmpty()) return;
