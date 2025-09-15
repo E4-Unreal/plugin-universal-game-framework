@@ -128,31 +128,27 @@ void UInteractionSystemComponent::UnBindOverlapCapsuleEvents()
 
 void UInteractionSystemComponent::AddTarget(AActor* NewTarget)
 {
-    if (NewTarget && NewTarget->Implements<UInteractableInterface>() && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
+    if (NewTarget
+        && !AvailableTargets.Contains(NewTarget)
+        && NewTarget->Implements<UInteractableInterface>())
     {
-        ShrinkTargets(AvailableTargets);
+        AvailableTargets.Emplace(NewTarget);
 
-        if (!AvailableTargets.Contains(NewTarget))
-        {
-            AvailableTargets.Emplace(NewTarget);
-
-            RefreshTargets();
-        }
+        RefreshTargets();
     }
 }
 
 void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
 {
-    if (OldTarget && AvailableTargets.Contains(OldTarget))
+    if (OldTarget
+        && AvailableTargets.Contains(OldTarget)
+        && OldTarget->Implements<UInteractableInterface>())
     {
-        ShrinkTargets(AvailableTargets);
+        DeselectTarget(OldTarget);
 
-        if (AvailableTargets.Contains(OldTarget))
-        {
-            AvailableTargets.RemoveSingleSwap(OldTarget);
+        AvailableTargets.RemoveSingleSwap(OldTarget);
 
-            RefreshTargets();
-        }
+        RefreshTargets();
     }
 }
 
@@ -171,6 +167,7 @@ void UInteractionSystemComponent::SelectTarget(AActor* NewTarget)
 
         IInteractableInterface::Execute_Select(NewTarget, GetOwner());
         SelectedTargets.Emplace(NewTarget);
+        SelectedInteractionType = IInteractableInterface::Execute_GetInteractionType(NewTarget);
     }
 }
 
@@ -255,7 +252,7 @@ void UInteractionSystemComponent::RefreshTargets()
     DeselectTargets();
 
     // 가장 가까운 액터 선택
-    
+
     float MinDistance = MAX_flt;
     int32 MinIndex = 0;
 
