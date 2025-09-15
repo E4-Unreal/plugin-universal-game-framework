@@ -43,36 +43,24 @@ void UMontageManagerComponent::FindSkeletalMesh()
     }
 }
 
-void UMontageManagerComponent::PlayMontage(UAnimMontage* Montage)
+bool UMontageManagerComponent::PlayMontage(UAnimMontage* Montage)
 {
     if (Montage && SkeletalMesh.IsValid())
     {
         if (UAnimInstance* AnimInstance = SkeletalMesh->GetAnimInstance())
         {
             AnimInstance->Montage_Play(Montage);
-        }
-    }
-}
 
-UAnimMontage* UMontageManagerComponent::GetMontageByTag(const FGameplayTag& Tag) const
-{
-    UAnimMontage* Montage = nullptr;
-    FGameplayTagContainer TagContainer = Tag.GetGameplayTagParents();
-    for (const FGameplayTag& ParentTag : TagContainer)
-    {
-        if (MontageMap.Contains(ParentTag))
-        {
-            Montage = MontageMap[ParentTag];
-            break;
+            return true;
         }
     }
 
-    return Montage;
+    return false;
 }
 
-void UMontageManagerComponent::PlayMontageByTag(const FGameplayTag& Tag)
+bool UMontageManagerComponent::PlayMontageByTag(const FGameplayTag& Tag)
 {
-    PlayMontage(GetMontageByTag(Tag));
+    return PlayMontage(GetMontageByTag(Tag));
 }
 
 

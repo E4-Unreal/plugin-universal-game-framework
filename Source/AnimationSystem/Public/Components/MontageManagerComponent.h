@@ -31,17 +31,20 @@ public:
 
     /* API */
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetSkeletalMesh(USkeletalMeshComponent* NewSkeletalMesh);
 
-    UFUNCTION(BlueprintCallable)
-    virtual void PlayMontage(UAnimMontage* Montage);
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE bool HasMontageByTag(const FGameplayTag& Tag) const { return MontageMap.Contains(Tag); }
 
     UFUNCTION(BlueprintPure)
-    virtual UAnimMontage* GetMontageByTag(const FGameplayTag& Tag) const;
+    FORCEINLINE UAnimMontage* GetMontageByTag(const FGameplayTag& Tag) const { return MontageMap.FindRef(Tag); }
 
     UFUNCTION(BlueprintCallable)
-    virtual void PlayMontageByTag(const FGameplayTag& Tag);
+    virtual bool PlayMontage(UAnimMontage* Montage);
+
+    UFUNCTION(BlueprintCallable)
+    virtual bool PlayMontageByTag(const FGameplayTag& Tag);
 
 protected:
     /* API */
