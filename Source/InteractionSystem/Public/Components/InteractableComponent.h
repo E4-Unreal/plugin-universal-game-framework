@@ -36,7 +36,7 @@ public:
     bool bUseCursorEvent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bUseRenderCustomDepth;
+    bool bUseOutlineEffect;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bUseOverlapShape;
@@ -65,13 +65,13 @@ public:
 
     /* API */
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetDisplayMesh(UMeshComponent* NewDisplayMesh);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetWidgetComponent(UWidgetComponent* NewWidgetComponent);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapShape(UShapeComponent* NewOverlapShape);
 
     UFUNCTION(BlueprintPure)
@@ -91,6 +91,18 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void Deselect(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ActivateOutlineEffect();
+
+    UFUNCTION(BlueprintCallable)
+    virtual void DeactivateOutlineEffect();
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowInteractionWidget();
+
+    UFUNCTION(BlueprintCallable)
+    virtual void HideInteractionWidget();
 
 protected:
     /* API */

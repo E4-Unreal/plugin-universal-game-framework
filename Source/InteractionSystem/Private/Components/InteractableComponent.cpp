@@ -19,7 +19,7 @@ UInteractableComponent::UInteractableComponent()
     InteractionType = Interaction::Root;
     bPlayerOnly = true;
     bUseCursorEvent = true;
-    bUseRenderCustomDepth = true;
+    bUseOutlineEffect = true;
 }
 
 void UInteractableComponent::InitializeComponent()
@@ -76,11 +76,6 @@ void UInteractableComponent::Interact(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        if (GetOwner()->Implements<UInteractableInterface>())
-        {
-            IInteractableInterface::Execute_Deselect(GetOwner(), Interactor);
-        }
     }
 }
 
@@ -105,8 +100,8 @@ void UInteractableComponent::Select(AActor* Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(true);
-        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(true);
+        ActivateOutlineEffect();
+        ShowInteractionWidget();
     }
 }
 
@@ -116,8 +111,40 @@ void UInteractableComponent::Deselect(AActor* Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        if (bUseRenderCustomDepth && DisplayMesh.IsValid()) DisplayMesh->SetRenderCustomDepth(false);
-        if (WidgetComponent.IsValid()) WidgetComponent->SetVisibility(false);
+        DeactivateOutlineEffect();
+        HideInteractionWidget();
+    }
+}
+
+void UInteractableComponent::ActivateOutlineEffect()
+{
+    if (bUseOutlineEffect && DisplayMesh.IsValid())
+    {
+        DisplayMesh->SetRenderCustomDepth(true);
+    }
+}
+
+void UInteractableComponent::DeactivateOutlineEffect()
+{
+    if (bUseOutlineEffect && DisplayMesh.IsValid())
+    {
+        DisplayMesh->SetRenderCustomDepth(false);
+    }
+}
+
+void UInteractableComponent::ShowInteractionWidget()
+{
+    if (WidgetComponent.IsValid())
+    {
+        WidgetComponent->SetVisibility(true);
+    }
+}
+
+void UInteractableComponent::HideInteractionWidget()
+{
+    if (WidgetComponent.IsValid())
+    {
+        WidgetComponent->SetVisibility(false);
     }
 }
 

@@ -14,6 +14,7 @@ AUGFLevelPortal::AUGFLevelPortal(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     GetInteractableComponent()->InteractionType = Interaction::Move;
+    GetInteractableComponent()->bUseOutlineEffect = false;
 
     LevelName = NSLOCTEXT("UGF", "LevelName", "Destination");
     ConfirmTitle = NSLOCTEXT("UGF", "MoveConfirmTitle", "Notice");
@@ -34,6 +35,7 @@ void AUGFLevelPortal::Interact_Implementation(AActor* Interactor)
         if (APlayerController* PlayerController = Cast<APlayerController>(Pawn->GetController()))
         {
             RequestConfirmPopup(PlayerController);
+            GetInteractableComponent()->HideInteractionWidget();
         }
     }
 }
