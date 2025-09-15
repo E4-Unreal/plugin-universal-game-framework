@@ -7,6 +7,11 @@ namespace InventorySystem
     namespace Interaction
     {
         INVENTORYSYSTEM_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Pickup)
+
+        namespace Open
+        {
+            INVENTORYSYSTEM_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Box)
+        }
     }
 
     namespace Item

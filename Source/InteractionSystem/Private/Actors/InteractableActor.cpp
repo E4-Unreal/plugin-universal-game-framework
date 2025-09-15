@@ -36,4 +36,5 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
     OverlapSphere = CreateDefaultSubobject<USphereComponent>(OverlapSphereName);
     GetOverlapSphere()->SetupAttachment(GetRootComponent());
+    GetOverlapSphere()->SetSphereRadius(128.0f);
 }

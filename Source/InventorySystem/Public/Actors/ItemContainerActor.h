@@ -5,28 +5,27 @@
 #include "CoreMinimal.h"
 #include "Actors/InteractableActor.h"
 #include "Interfaces/ItemActorInterface.h"
-#include "ItemActor.generated.h"
+#include "ItemContainerActor.generated.h"
 
-class UItemActorComponent;
+class UItemContainerComponent;
 
 UCLASS()
-class INVENTORYSYSTEM_API AItemActor : public AInteractableActor, public IItemActorInterface
+class INVENTORYSYSTEM_API AItemContainerActor : public AInteractableActor, public IItemActorInterface
 {
     GENERATED_BODY()
 
 protected:
-    const static FName ItemComponentName;
+    const static FName ItemContainerName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UItemActorComponent> ItemComponent;
+    TObjectPtr<UItemContainerComponent> ItemContainer;
 
 public:
-    AItemActor(const FObjectInitializer& ObjectInitializer);
+    AItemContainerActor(const FObjectInitializer& ObjectInitializer);
 
     /* InteractableInterface */
 
-    virtual FText GetInteractionMessage_Implementation() const override;
     virtual void Interact_Implementation(AActor* Interactor) override;
 
     /* ItemActorInterface */
@@ -36,5 +35,5 @@ public:
 public:
     /* Component */
 
-    FORCEINLINE UItemActorComponent* GetItemComponent() const { return ItemComponent; }
+    FORCEINLINE UItemContainerComponent* GetItemContainer() const { return ItemContainer; }
 };
