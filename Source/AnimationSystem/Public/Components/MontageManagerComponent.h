@@ -15,7 +15,7 @@ class ANIMATIONSYSTEM_API UMontageManagerComponent : public UActorComponent
 
 public:
     // TMap<MontageType, Montage>
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Montage"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TMap<FGameplayTag, TObjectPtr<UAnimMontage>> MontageMap;
 
 protected:
