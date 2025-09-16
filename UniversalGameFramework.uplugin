@@ -131,10 +131,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "StructUtils",
-			"Enabled": true
-		},
-		{
 			"Name": "EditorScriptingUtilities",
 			"Enabled": true
 		},
@@ -144,10 +140,6 @@
 		},
 		{
 			"Name": "UniversalUtilities",
-			"Enabled": true
-		},
-		{
-			"Name": "DynamicData",
 			"Enabled": true
 		}
 	]

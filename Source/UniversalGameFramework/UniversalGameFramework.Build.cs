@@ -19,7 +19,6 @@ public class UniversalGameFramework : ModuleRules
                 "InteractionSystem",
                 "InventorySystem",
                 "EquipmentManager",
-                "DynamicData",
                 "ShopSystem",
                 "SocketManager",
                 "QuickSlotManager",
