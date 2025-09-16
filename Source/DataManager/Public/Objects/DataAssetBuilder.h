@@ -14,9 +14,27 @@ class DATAMANAGER_API UDataAssetBuilder : public UObject
 {
     GENERATED_BODY()
 
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataDefinitionInterface"))
+    TSubclassOf<UDataAsset> DataClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UDataTable> DataTable;
+
 public:
     /* API */
 
-    virtual TSubclassOf<UDataAsset> GetDataClass() const { return nullptr; }
-    virtual bool UpdateData(UDataTable* DataTable, int32 ID, UDataAsset* DataAsset) { return false; }
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE TSubclassOf<UDataAsset> GetDataClass() const { return DataClass; }
+
+    UFUNCTION(BlueprintPure)
+    FORCEINLINE TSoftObjectPtr<UDataTable> GetDataTable() const { return DataTable; }
+
+    UFUNCTION(BlueprintCallable)
+    bool UpdateData(UDataAsset* Data);
+
+protected:
+    /* API */
+
+    bool OnUpdateData(UDataAsset* Data, FTableRowBase* TableRow);
 };

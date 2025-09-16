@@ -19,9 +19,6 @@ class DATAMANAGER_API UDataAssetRegistry : public UPrimaryDataAsset
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSoftObjectPtr<UDataTable> DataTableToBuild;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UDataAssetBuilder> BuilderClass;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")

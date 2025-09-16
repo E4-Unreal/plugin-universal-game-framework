@@ -7,6 +7,7 @@
 #include "EditorAssetLibrary.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/DataAssetRegistry.h"
+#include "Interfaces/DataDefinitionInterface.h"
 #include "Objects/DataAssetBuilder.h"
 #include "UObject/SavePackage.h"
 
@@ -30,11 +31,11 @@ void UDataAssetRegistryAssetAction::Build()
 
 void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegistry) const
 {
-    if (DataAssetRegistry && !DataAssetRegistry->DataTableToBuild.IsNull() && DataAssetRegistry->BuilderClass)
+    if (DataAssetRegistry && DataAssetRegistry->BuilderClass)
     {
         auto Builder = Cast<UDataAssetBuilder>(DataAssetRegistry->BuilderClass->GetDefaultObject());
-        DataAssetRegistry->DataTable = DataAssetRegistry->DataTableToBuild;
         DataAssetRegistry->DataClass = Builder->GetDataClass();
+        DataAssetRegistry->DataTable = Builder->GetDataTable();
 
         UDataTable* DataTable = DataAssetRegistry->DataTable.LoadSynchronous();
         TSubclassOf<UDataAsset> DataClass = DataAssetRegistry->DataClass;
@@ -69,7 +70,7 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
 
             if (DataToUpdate->GetClass() == DataClass)
             {
-                if (Builder->UpdateData(DataTable, IDToUpdate, DataToUpdate))
+                if (Builder->UpdateData(DataToUpdate))
                 {
                     DataToUpdate->MarkPackageDirty();
                 }
@@ -88,7 +89,7 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
         {
             if (UDataAsset* NewData = CreateData(DataClass, IDToCreate, DataAssetRegistry->GetPathName() + "/" + DataClass->GetName()))
             {
-                if (Builder->UpdateData(DataTable, IDToCreate, NewData))
+                if (Builder->UpdateData(NewData))
                 {
                     NewData->MarkPackageDirty();
                     DataAssetRegistry->DataMap.Emplace(IDToCreate, NewData);
@@ -136,7 +137,7 @@ int32 UDataAssetRegistryAssetAction::ConvertRowNameToID(FName RowName)
 
 UDataAsset* UDataAssetRegistryAssetAction::CreateData(TSubclassOf<UDataAsset> DataClass, int32 ID, FString AssetPath)
 {
-    if (DataClass == nullptr || ID < 0) return nullptr;
+    if (DataClass == nullptr || !DataClass->ImplementsInterface(UDataDefinitionInterface::StaticClass()) || ID < 0) return nullptr;
 
     // 패키지 생성
     FString AssetName = "DA_" + DataClass->GetName() + "_" + FString::FromInt(ID);
@@ -147,6 +148,7 @@ UDataAsset* UDataAssetRegistryAssetAction::CreateData(TSubclassOf<UDataAsset> Da
 
     // 에셋 생성
     UDataAsset* NewData = NewObject<UDataAsset>(Package, DataClass, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
+    IDataDefinitionInterface::Execute_SetID(NewData, ID);
 
     Package->MarkPackageDirty();
     FAssetRegistryModule::AssetCreated(NewData);

@@ -23,6 +23,12 @@ class DATAMANAGER_API IDataDefinitionInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    int32 GetID() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetID(int32 NewID);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UDataInstanceBase* CreateInstance() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
