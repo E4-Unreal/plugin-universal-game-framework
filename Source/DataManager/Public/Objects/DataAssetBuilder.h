@@ -36,5 +36,5 @@ public:
 protected:
     /* API */
 
-    bool OnUpdateData(UDataAsset* Data, FTableRowBase* TableRow);
+    virtual bool OnUpdateData(UDataAsset* Data, FTableRowBase* TableRow);
 };
