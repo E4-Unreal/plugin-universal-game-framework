@@ -29,5 +29,17 @@ public:
     void SetID(int32 NewID);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FText GetDisplayName() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetDisplayName(const FText& NewDisplayName);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FText GetDescription() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetDescription(const FText& NewDescription);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UObject* CreateDataInstance() const;
 };
