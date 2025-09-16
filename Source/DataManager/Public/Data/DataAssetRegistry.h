@@ -21,8 +21,11 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<UDataAssetBuilder> BuilderClass;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UDataTable> DataTable;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+    TSoftObjectPtr<UDataTable> CurrentDataTable;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     TSubclassOf<UDataAsset> DataClass;

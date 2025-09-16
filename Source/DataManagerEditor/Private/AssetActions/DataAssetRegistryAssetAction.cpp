@@ -36,9 +36,9 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
         auto BuilderClass = DataAssetRegistry->BuilderClass;
         auto Builder = Cast<UDataAssetBuilder>(BuilderClass->GetDefaultObject());
         DataAssetRegistry->DataClass = Builder->GetDataClass();
-        DataAssetRegistry->DataTable = Builder->GetDataTable();
+        DataAssetRegistry->CurrentDataTable = DataAssetRegistry->DataTable;
 
-        UDataTable* DataTable = DataAssetRegistry->DataTable.LoadSynchronous();
+        UDataTable* DataTable = DataAssetRegistry->CurrentDataTable.LoadSynchronous();
         TSubclassOf<UDataAsset> DataClass = DataAssetRegistry->DataClass;
 
         TArray<int32> OldIDList;
@@ -71,7 +71,7 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
 
             if (DataToUpdate->GetClass() == DataClass)
             {
-                if (Builder->UpdateData(DataToUpdate))
+                if (Builder->UpdateData(DataToUpdate, GetTableRow(DataTable, IDToUpdate)))
                 {
                     DataToUpdate->MarkPackageDirty();
                 }
@@ -90,7 +90,7 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
         {
             if (UDataAsset* NewData = CreateData(DataClass, IDToCreate, DataAssetRegistry->GetPackage()->GetPathName()))
             {
-                if (Builder->UpdateData(NewData))
+                if (Builder->UpdateData(NewData, GetTableRow(DataTable, IDToCreate)))
                 {
                     NewData->MarkPackageDirty();
                     DataAssetRegistry->DataMap.Emplace(IDToCreate, NewData);
@@ -165,4 +165,14 @@ UDataAsset* UDataAssetRegistryAssetAction::CreateData(TSubclassOf<UDataAsset> Da
     UPackage::SavePackage(Package, NewData, *PackageFileName, SavePackageArgs);
 
     return NewData;
+}
+
+FTableRowBase* UDataAssetRegistryAssetAction::GetTableRow(UDataTable* DataTable, int32 ID)
+{
+    if (DataTable && ID >= 0)
+    {
+        return DataTable->FindRow<FTableRowBase>(FName(FString::FromInt(ID)), "");
+    }
+
+    return nullptr;
 }

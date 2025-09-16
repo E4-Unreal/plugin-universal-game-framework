@@ -27,4 +27,5 @@ protected:
     static TSet<int32> GetIDSet(UDataTable* DataTable);
     static int32 ConvertRowNameToID(FName RowName);
     static UDataAsset* CreateData(TSubclassOf<UDataAsset> DataClass, int32 ID, FString AssetPath);
+    static FTableRowBase* GetTableRow(UDataTable* DataTable, int32 ID);
 };

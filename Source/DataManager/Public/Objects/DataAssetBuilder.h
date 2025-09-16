@@ -18,23 +18,11 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataDefinitionInterface"))
     TSubclassOf<UDataAsset> DataClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSoftObjectPtr<UDataTable> DataTable;
-
 public:
     /* API */
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE TSubclassOf<UDataAsset> GetDataClass() const { return DataClass; }
 
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE TSoftObjectPtr<UDataTable> GetDataTable() const { return DataTable; }
-
-    UFUNCTION(BlueprintCallable)
-    bool UpdateData(UDataAsset* Data);
-
-protected:
-    /* API */
-
-    virtual bool OnUpdateData(UDataAsset* Data, FTableRowBase* TableRow);
+    virtual bool UpdateData(UDataAsset* Data, FTableRowBase* TableRow) { return false; }
 };
