@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(Abstract)
+UCLASS(Abstract, Blueprintable)
 class DATAMANAGER_API UDataAssetBuilder : public UObject
 {
     GENERATED_BODY()

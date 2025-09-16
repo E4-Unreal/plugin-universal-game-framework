@@ -33,7 +33,8 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
 {
     if (DataAssetRegistry && DataAssetRegistry->BuilderClass)
     {
-        auto Builder = Cast<UDataAssetBuilder>(DataAssetRegistry->BuilderClass->GetDefaultObject());
+        auto BuilderClass = DataAssetRegistry->BuilderClass;
+        auto Builder = Cast<UDataAssetBuilder>(BuilderClass->GetDefaultObject());
         DataAssetRegistry->DataClass = Builder->GetDataClass();
         DataAssetRegistry->DataTable = Builder->GetDataTable();
 
@@ -87,7 +88,7 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
 
         for (int32 IDToCreate : IDSetToCreate)
         {
-            if (UDataAsset* NewData = CreateData(DataClass, IDToCreate, DataAssetRegistry->GetPathName() + "/" + DataClass->GetName()))
+            if (UDataAsset* NewData = CreateData(DataClass, IDToCreate, DataAssetRegistry->GetPackage()->GetPathName()))
             {
                 if (Builder->UpdateData(NewData))
                 {
