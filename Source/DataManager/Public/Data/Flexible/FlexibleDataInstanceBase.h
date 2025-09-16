@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/ReplicatedObject.h"
+#include "Data/DataInstanceBase.h"
 #include "FlexibleDataInstanceBase.generated.h"
 
 class UDataInstanceFragment;
@@ -12,13 +12,9 @@ class UDataInstanceFragment;
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UFlexibleDataInstanceBase : public UReplicatedObject
+class DATAMANAGER_API UFlexibleDataInstanceBase : public UDataInstanceBase
 {
     GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 0))
-    TObjectPtr<UDataAsset> Data;
 
 public:
     /* API */

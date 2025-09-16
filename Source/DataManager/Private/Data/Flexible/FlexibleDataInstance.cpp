@@ -4,6 +4,14 @@
 #include "Data/Flexible/FlexibleDataInstance.h"
 
 #include "Data/Flexible/DataInstanceFragment.h"
+#include "Net/UnrealNetwork.h"
+
+void UFlexibleDataInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, Fragments)
+}
 
 UDataInstanceFragment* UFlexibleDataInstance::GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const
 {

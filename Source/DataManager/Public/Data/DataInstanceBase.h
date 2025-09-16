@@ -16,7 +16,7 @@ class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject, public IData
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Replicated)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Replicated, meta = (DisplayPriority = 0))
     TObjectPtr<UDataAsset> Data;
 
 public:
