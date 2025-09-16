@@ -22,7 +22,11 @@ TSoftObjectPtr<UDataAsset> UDataAssetRegistrySubsystem::GetDataByClass(TSubclass
         {
             if (DataAssetRegistry->IsChildOf(DataAssetClass))
             {
-                return DataAssetRegistry->GetDataByID(ID);
+                TSoftObjectPtr<UDataAsset> Data = DataAssetRegistry->GetDataByID(ID);
+                if (!Data.IsNull())
+                {
+                    return Data;
+                }
             }
         }
     }
@@ -38,7 +42,11 @@ TSoftObjectPtr<UDataAsset> UDataAssetRegistrySubsystem::GetDataByInterface(TSubc
         {
             if (DataAssetRegistry->Implements(InterfaceClass))
             {
-                return DataAssetRegistry->GetDataByID(ID);
+                TSoftObjectPtr<UDataAsset> Data = DataAssetRegistry->GetDataByID(ID);
+                if (!Data.IsNull())
+                {
+                    return Data;
+                }
             }
         }
     }
