@@ -15,6 +15,8 @@ class DATAMANAGER_API UDataAssetRegistry : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
+    friend class UDataAssetRegistryAssetAction;
+
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UDataTable> DataTableToBuild;

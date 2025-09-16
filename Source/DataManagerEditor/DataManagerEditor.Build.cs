@@ -10,6 +10,8 @@ public class DataManagerEditor : ModuleRules
             new string[]
             {
                 "Core",
+                "Blutility",
+                "DataManager"
             }
         );
 
@@ -19,7 +21,9 @@ public class DataManagerEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "UnrealEd",
+                "EditorScriptingUtilities"
             }
         );
     }

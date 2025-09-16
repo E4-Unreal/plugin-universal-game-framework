@@ -17,7 +17,6 @@ class DATAMANAGER_API UDataAssetBuilder : public UObject
 public:
     /* API */
 
-    virtual TSubclassOf<UDataAsset> GetDataAssetClass() const { return nullptr; }
-    virtual UDataAsset* CreateDataAsset(UDataTable* DataTable, int32 ID) { return nullptr; }
-    virtual bool UpdateDataAsset(UDataTable* DataTable, int32 ID, UDataAsset* DataAsset) { return false; }
+    virtual TSubclassOf<UDataAsset> GetDataClass() const { return nullptr; }
+    virtual bool UpdateData(UDataTable* DataTable, int32 ID, UDataAsset* DataAsset) { return false; }
 };
