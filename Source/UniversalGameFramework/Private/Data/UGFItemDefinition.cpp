@@ -9,7 +9,7 @@
 
 UUGFItemDefinition::UUGFItemDefinition()
 {
-    InstanceClass = UUGFItemInstance::StaticClass();
+    DataInstanceClass = UUGFItemInstance::StaticClass();
 
     MaxStack = 10;
     ItemType = Item::Root;

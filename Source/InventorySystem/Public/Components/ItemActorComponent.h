@@ -37,7 +37,7 @@ public:
 
     /* ItemContainerComponent */
 
-    virtual void SetItems(const TArray<UDataInstanceBase*>& NewItemInstances) override;
+    virtual void SetItems(const TArray<UObject*>& NewItemInstances) override;
 
     /* API */
 

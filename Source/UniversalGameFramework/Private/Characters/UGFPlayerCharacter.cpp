@@ -116,12 +116,12 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
     auto Data = Product.GetObject();
     if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataInterface::Execute_CreateInstance(Data);
-        if (auto ItemInstance = Instance->GetDataInstanceByInterface(UItemInstanceInterface::StaticClass()))
+        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
+        if (Instance && Instance->Implements<UItemInstanceInterface>())
         {
-            IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
 
-            return GetInventory()->AddContent(ItemInstance);
+            return GetInventory()->AddContent(Instance);
         }
     }
 
@@ -133,12 +133,12 @@ bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IP
     auto Data = Product.GetObject();
     if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataInterface::Execute_CreateInstance(Data);
-        if (auto ItemInstance = Instance->GetDataInstanceByInterface(UItemInstanceInterface::StaticClass()))
+        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
+        if (Instance && Instance->Implements<UItemInstanceInterface>())
         {
-            IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
 
-            return GetInventory()->RemoveContent(ItemInstance);
+            return GetInventory()->RemoveContent(Instance);
         }
     }
 

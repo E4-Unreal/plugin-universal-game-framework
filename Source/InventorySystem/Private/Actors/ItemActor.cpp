@@ -37,7 +37,7 @@ void AItemActor::Interact_Implementation(AActor* Interactor)
     GetItemComponent()->TransferItemsToInventory(Interactor);
 }
 
-void AItemActor::SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances)
+void AItemActor::SetItemInstances_Implementation(const TArray<UObject*>& NewItemsInstances)
 {
     GetItemComponent()->SetItems(NewItemsInstances);
 }

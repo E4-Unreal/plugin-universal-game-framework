@@ -31,7 +31,7 @@ public:
 
     /* ItemActorInterface */
 
-    virtual void SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances) override;
+    virtual void SetItemInstances_Implementation(const TArray<UObject*>& NewItemsInstances) override;
 
 public:
     /* Component */

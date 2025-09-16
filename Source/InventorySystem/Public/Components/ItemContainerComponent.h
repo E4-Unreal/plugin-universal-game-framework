@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ItemContainerComponent.generated.h"
 
-class UDataInstanceBase;
+class UObject;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UItemContainerComponent : public UActorComponent
@@ -18,7 +18,7 @@ public:
     bool bAutoDestroy;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced)
-    TArray<TObjectPtr<UDataInstanceBase>> ItemInstances;
+    TArray<TObjectPtr<UObject>> ItemInstances;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemActorInterface"))
     TSubclassOf<AActor> ItemActorClass;
@@ -45,10 +45,10 @@ public:
     FORCEINLINE int32 GetItemCount() const { return ItemInstances.Num(); }
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE TArray<UDataInstanceBase*> GetItems() const { return ItemInstances; }
+    FORCEINLINE TArray<UObject*> GetItems() const { return ItemInstances; }
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetItems(const TArray<UDataInstanceBase*>& NewItemInstances);
+    virtual void SetItems(const TArray<UObject*>& NewItemInstances);
 
     UFUNCTION(BlueprintCallable)
     virtual void Clear();

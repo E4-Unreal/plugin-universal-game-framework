@@ -29,8 +29,5 @@ public:
     void SetID(int32 NewID);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataInstanceBase* CreateInstance() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+    UObject* CreateDataInstance() const;
 };

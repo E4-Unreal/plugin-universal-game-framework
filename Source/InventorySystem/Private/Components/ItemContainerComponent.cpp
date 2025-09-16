@@ -31,7 +31,7 @@ void UItemContainerComponent::BeginPlay()
     }
 }
 
-void UItemContainerComponent::SetItems(const TArray<UDataInstanceBase*>& NewItemInstances)
+void UItemContainerComponent::SetItems(const TArray<UObject*>& NewItemInstances)
 {
     ItemInstances = NewItemInstances;
 }

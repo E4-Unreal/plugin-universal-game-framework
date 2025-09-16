@@ -22,7 +22,6 @@ public class UniversalGameFrameworkEditor : ModuleRules
                 "Engine",
                 "Slate",
                 "SlateCore",
-                "StructUtils",
                 "UniversalGameFramework",
                 "InventorySystem",
                 "GameplayTags",

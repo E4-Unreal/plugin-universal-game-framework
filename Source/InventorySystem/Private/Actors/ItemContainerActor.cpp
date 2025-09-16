@@ -28,7 +28,7 @@ void AItemContainerActor::Interact_Implementation(AActor* Interactor)
     GetItemContainer()->SpawnItems();
 }
 
-void AItemContainerActor::SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances)
+void AItemContainerActor::SetItemInstances_Implementation(const TArray<UObject*>& NewItemsInstances)
 {
     GetItemContainer()->SetItems(NewItemsInstances);
 }

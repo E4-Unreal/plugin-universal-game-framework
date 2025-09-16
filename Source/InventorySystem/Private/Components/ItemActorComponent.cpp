@@ -4,6 +4,7 @@
 #include "Components/ItemActorComponent.h"
 
 #include "Data/DataInstanceBase.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/ItemDataInterface.h"
 
 
@@ -53,7 +54,7 @@ FText UItemActorComponent::GetItemName() const
 {
     if (!ItemInstances.IsEmpty())
     {
-        auto Data = ItemInstances[0]->GetData();
+        auto Data = IDataInstanceInterface::Execute_GetData(ItemInstances[0]);
         if (Data && Data->Implements<UItemDataInterface>())
         {
             FText ItemDisplayName = IItemDataInterface::Execute_GetDisplayNameText(Data);
@@ -65,7 +66,7 @@ FText UItemActorComponent::GetItemName() const
     return FText::GetEmpty();
 }
 
-void UItemActorComponent::SetItems(const TArray<UDataInstanceBase*>& NewItemInstances)
+void UItemActorComponent::SetItems(const TArray<UObject*>& NewItemInstances)
 {
     Super::SetItems(NewItemInstances);
 
@@ -88,7 +89,7 @@ UStaticMesh* UItemActorComponent::GetStaticMesh() const
     {
         if (auto ItemInstance = ItemInstances.Last())
         {
-            if (UDataAsset* Data = ItemInstance->GetData())
+            if (UDataAsset* Data = IDataInstanceInterface::Execute_GetData(ItemInstance))
             {
                 if (Data->Implements<UItemDataInterface>())
                 {
