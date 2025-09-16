@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class ItemSystemEditor : ModuleRules
+public class ItemManager : ModuleRules
 {
-    public ItemSystemEditor(ReadOnlyTargetRules Target) : base(Target)
+    public ItemManager(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,9 +10,6 @@ public class ItemSystemEditor : ModuleRules
             new string[]
             {
                 "Core",
-                "Blutility",
-                "UniversalUtilities",
-                "ItemSystem"
             }
         );
 
@@ -22,9 +19,7 @@ public class ItemSystemEditor : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore",
-                "UnrealEd",
-                "EditorScriptingUtilities"
+                "SlateCore"
             }
         );
     }
