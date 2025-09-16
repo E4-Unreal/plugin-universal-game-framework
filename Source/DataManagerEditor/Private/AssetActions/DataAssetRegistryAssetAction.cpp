@@ -7,7 +7,7 @@
 #include "EditorAssetLibrary.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/DataAssetRegistry.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "Objects/DataAssetBuilder.h"
 #include "UObject/SavePackage.h"
 
@@ -138,7 +138,7 @@ int32 UDataAssetRegistryAssetAction::ConvertRowNameToID(FName RowName)
 
 UDataAsset* UDataAssetRegistryAssetAction::CreateData(TSubclassOf<UDataAsset> DataClass, int32 ID, FString AssetPath)
 {
-    if (DataClass == nullptr || !DataClass->ImplementsInterface(UDataDefinitionInterface::StaticClass()) || ID < 0) return nullptr;
+    if (DataClass == nullptr || !DataClass->ImplementsInterface(UDataInterface::StaticClass()) || ID < 0) return nullptr;
 
     // 패키지 생성
     FString AssetName = "DA_" + DataClass->GetName() + "_" + FString::FromInt(ID);
@@ -149,7 +149,7 @@ UDataAsset* UDataAssetRegistryAssetAction::CreateData(TSubclassOf<UDataAsset> Da
 
     // 에셋 생성
     UDataAsset* NewData = NewObject<UDataAsset>(Package, DataClass, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
-    IDataDefinitionInterface::Execute_SetID(NewData, ID);
+    IDataInterface::Execute_SetID(NewData, ID);
 
     Package->MarkPackageDirty();
     FAssetRegistryModule::AssetCreated(NewData);

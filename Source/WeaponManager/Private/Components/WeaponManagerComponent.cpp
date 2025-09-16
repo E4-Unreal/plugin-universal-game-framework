@@ -5,7 +5,7 @@
 
 #include "Data/WeaponInstance.h"
 #include "GameplayTags/WeaponGameplayTags.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 
@@ -170,7 +170,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
 {
     if (CheckData(Data))
     {
-        UDataInstanceBase* NewContent = IDataDefinitionInterface::Execute_CreateInstance(Data);
+        UDataInstanceBase* NewContent = IDataInterface::Execute_CreateInstance(Data);
         return SpawnActorFromContent(NewContent);
     }
 

@@ -6,7 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Logging.h"
 #include "Data/DataInstanceBase.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
 {
@@ -115,7 +115,7 @@ bool USlotManagerComponentBase::AddContentByData(UDataAsset* NewData)
 {
     if (CheckData(NewData))
     {
-        UDataInstanceBase* NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
+        UDataInstanceBase* NewContent = IDataInterface::Execute_CreateInstance(NewData);
         return AddContent(NewContent);
     }
 
@@ -221,7 +221,7 @@ bool USlotManagerComponentBase::CheckContent(UDataInstanceBase* Content) const
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 {
-    if (Data == nullptr || !Data->Implements<UDataDefinitionInterface>()) return false;
+    if (Data == nullptr || !Data->Implements<UDataInterface>()) return false;
 
     for (auto UsingDataInterface : UsingDataInterfaces)
     {

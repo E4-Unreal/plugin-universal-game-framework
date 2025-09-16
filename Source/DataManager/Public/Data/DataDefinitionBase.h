@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "DataDefinitionBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDataDefinitionInterface
+class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDataInterface
 {
     GENERATED_BODY()
 

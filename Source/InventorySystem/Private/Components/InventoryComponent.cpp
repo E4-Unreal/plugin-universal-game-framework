@@ -5,7 +5,7 @@
 
 #include "InventorySystemFunctionLibrary.h"
 #include "Data/ItemInstance.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
 
 UInventoryComponent::UInventoryComponent()
@@ -69,7 +69,7 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        auto NewContent = IDataDefinitionInterface::Execute_CreateInstance(InData);
+        auto NewContent = IDataInterface::Execute_CreateInstance(InData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
@@ -137,7 +137,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 {
     if (CheckData(NewData))
     {
-        auto NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
+        auto NewContent = IDataInterface::Execute_CreateInstance(NewData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
@@ -175,7 +175,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 
     if (SlotQuantity < Quantity) return;
 
-    auto NewItemInstance = IDataDefinitionInterface::Execute_CreateInstance(Data);
+    auto NewItemInstance = IDataInterface::Execute_CreateInstance(Data);
     IItemInstanceInterface::Execute_SetQuantity(NewItemInstance, Quantity);
 
     TArray<UDataInstanceBase*> InventoryItemsToDrop = { NewItemInstance };
