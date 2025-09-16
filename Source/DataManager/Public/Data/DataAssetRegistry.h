@@ -25,6 +25,9 @@ protected:
     TSoftObjectPtr<UDataTable> DataTable;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
+    TSubclassOf<UDataAssetBuilder> CurrentBuilderClass;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
     TSoftObjectPtr<UDataTable> CurrentDataTable;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")

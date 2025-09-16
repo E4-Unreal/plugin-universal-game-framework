@@ -33,10 +33,10 @@ void UDataAssetRegistryAssetAction::BuildData(UDataAssetRegistry* DataAssetRegis
 {
     if (DataAssetRegistry && DataAssetRegistry->BuilderClass)
     {
-        auto BuilderClass = DataAssetRegistry->BuilderClass;
-        auto Builder = Cast<UDataAssetBuilder>(BuilderClass->GetDefaultObject());
-        DataAssetRegistry->DataClass = Builder->GetDataClass();
+        DataAssetRegistry->CurrentBuilderClass = DataAssetRegistry->BuilderClass;
         DataAssetRegistry->CurrentDataTable = DataAssetRegistry->DataTable;
+        auto Builder = Cast<UDataAssetBuilder>(DataAssetRegistry->CurrentBuilderClass->GetDefaultObject());
+        DataAssetRegistry->DataClass = Builder->GetDataClass();
 
         UDataTable* DataTable = DataAssetRegistry->CurrentDataTable.LoadSynchronous();
         TSubclassOf<UDataAsset> DataClass = DataAssetRegistry->DataClass;
