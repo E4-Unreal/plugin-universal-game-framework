@@ -5,7 +5,7 @@
 
 #include "Components/InteractableComponent.h"
 #include "GameplayTags/InventoryGameplayTags.h"
-#include "Components/ItemActorComponent.h"
+#include "Components/ItemComponent.h"
 
 const FName AItemContainerActor::ItemContainerName(TEXT("ItemContainer"));
 

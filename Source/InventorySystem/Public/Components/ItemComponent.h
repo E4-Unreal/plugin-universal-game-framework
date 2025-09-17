@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "ItemContainerComponent.h"
-#include "ItemActorComponent.generated.h"
+#include "ItemComponent.generated.h"
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INVENTORYSYSTEM_API UItemActorComponent : public UItemContainerComponent
+class INVENTORYSYSTEM_API UItemComponent : public UItemContainerComponent
 {
     GENERATED_BODY()
 
@@ -23,7 +23,7 @@ protected:
     TWeakObjectPtr<UStaticMeshComponent> DisplayMesh;
 
 public:
-    UItemActorComponent(const FObjectInitializer& ObjectInitializer);
+    UItemComponent(const FObjectInitializer& ObjectInitializer);
 
     /* Object */
 
