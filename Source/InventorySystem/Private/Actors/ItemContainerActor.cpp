@@ -18,7 +18,7 @@ AItemContainerActor::AItemContainerActor(const FObjectInitializer& ObjectInitial
 
     /* ItemContainer */
 
-    ItemContainer = CreateDefaultSubobject<UItemContainerComponent>(ItemContainerName);
+    ItemContainer = CreateDefaultSubobject<UItemDropComponent>(ItemContainerName);
 }
 
 void AItemContainerActor::Interact_Implementation(AActor* Interactor)

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemContainerComponent.h"
+#include "ItemDropComponent.h"
 #include "ItemComponent.generated.h"
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INVENTORYSYSTEM_API UItemComponent : public UItemContainerComponent
+class INVENTORYSYSTEM_API UItemComponent : public UItemDropComponent
 {
     GENERATED_BODY()
 

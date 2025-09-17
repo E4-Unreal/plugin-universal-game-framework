@@ -1,13 +1,13 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Components/ItemContainerComponent.h"
+#include "Components/ItemDropComponent.h"
 
 #include "InventorySystemFunctionLibrary.h"
 #include "Components/InventoryComponent.h"
 #include "Data/DataInstanceBase.h"
 
-UItemContainerComponent::UItemContainerComponent(const FObjectInitializer& ObjectInitializer)
+UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     bWantsInitializeComponent = true;
@@ -19,7 +19,7 @@ UItemContainerComponent::UItemContainerComponent(const FObjectInitializer& Objec
     ImpulseStrength = 1000;
 }
 
-void UItemContainerComponent::BeginPlay()
+void UItemDropComponent::BeginPlay()
 {
     if (ItemInstances.IsEmpty())
     {
@@ -31,19 +31,19 @@ void UItemContainerComponent::BeginPlay()
     }
 }
 
-void UItemContainerComponent::SetItems(const TArray<UObject*>& NewItemInstances)
+void UItemDropComponent::SetItems(const TArray<UObject*>& NewItemInstances)
 {
     ItemInstances = NewItemInstances;
 }
 
-void UItemContainerComponent::Clear()
+void UItemDropComponent::Clear()
 {
     ItemInstances.Empty();
 
     if (bAutoDestroy) GetOwner()->Destroy();
 }
 
-void UItemContainerComponent::TransferItemsToInventory(AActor* TargetActor)
+void UItemDropComponent::TransferItemsToInventory(AActor* TargetActor)
 {
     if (auto InventoryComponent = TargetActor->GetComponentByClass<UInventoryComponent>())
     {
@@ -56,7 +56,7 @@ void UItemContainerComponent::TransferItemsToInventory(AActor* TargetActor)
     }
 }
 
-void UItemContainerComponent::SpawnItems()
+void UItemDropComponent::SpawnItems()
 {
     if (ItemActorClass && !ItemInstances.IsEmpty())
     {

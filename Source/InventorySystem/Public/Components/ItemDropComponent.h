@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "ItemContainerComponent.generated.h"
+#include "ItemDropComponent.generated.h"
 
 class UObject;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INVENTORYSYSTEM_API UItemContainerComponent : public UActorComponent
+class INVENTORYSYSTEM_API UItemDropComponent : public UActorComponent
 {
     GENERATED_BODY()
 
@@ -33,7 +33,7 @@ public:
     float ImpulseStrength;
 
 public:
-    UItemContainerComponent(const FObjectInitializer& ObjectInitializer);
+    UItemDropComponent(const FObjectInitializer& ObjectInitializer);
 
     /* ActorComponent */
 

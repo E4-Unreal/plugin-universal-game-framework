@@ -7,7 +7,7 @@
 #include "Interfaces/ItemActorInterface.h"
 #include "ItemContainerActor.generated.h"
 
-class UItemContainerComponent;
+class UItemDropComponent;
 
 UCLASS()
 class INVENTORYSYSTEM_API AItemContainerActor : public AInteractableActor, public IItemActorInterface
@@ -19,7 +19,7 @@ protected:
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UItemContainerComponent> ItemContainer;
+    TObjectPtr<UItemDropComponent> ItemContainer;
 
 public:
     AItemContainerActor(const FObjectInitializer& ObjectInitializer);
@@ -35,5 +35,5 @@ public:
 public:
     /* Component */
 
-    FORCEINLINE UItemContainerComponent* GetItemContainer() const { return ItemContainer; }
+    FORCEINLINE UItemDropComponent* GetItemContainer() const { return ItemContainer; }
 };

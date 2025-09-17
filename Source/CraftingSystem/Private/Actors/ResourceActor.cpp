@@ -5,7 +5,7 @@
 
 #include "Components/AttributeSystemComponent.h"
 #include "Components/InteractableComponent.h"
-#include "Components/ItemContainerComponent.h"
+#include "Components/ItemDropComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 const FName AResourceActor::AttributeSystemName(TEXT("AttributeSystem"));
