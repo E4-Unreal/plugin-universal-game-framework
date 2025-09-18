@@ -22,9 +22,6 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDataDefinitionBase
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FText DisplayNameText;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -61,7 +58,6 @@ public:
     virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
     virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
-    virtual FText GetDisplayNameText_Implementation() const override { return DisplayNameText; }
 
     /* ProductInterface */
 
