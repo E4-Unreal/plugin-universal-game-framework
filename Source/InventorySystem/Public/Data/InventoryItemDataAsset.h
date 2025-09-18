@@ -41,6 +41,6 @@ public:
     virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
     virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
-    virtual FText GetDisplayNameText_Implementation() const override { return DisplayNameText; }
+    virtual FText GetDisplayName_Implementation() const override { return DisplayNameText; }
     virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
 };

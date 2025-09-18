@@ -3,58 +3,67 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemDropComponent.h"
+#include "ItemComponentBase.h"
 #include "ItemComponent.generated.h"
 
+/**
+ * 단일 아이템 데이터를 관리하는 컴포넌트
+ */
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INVENTORYSYSTEM_API UItemComponent : public UItemDropComponent
+class INVENTORYSYSTEM_API UItemComponent : public UItemComponentBase
 {
     GENERATED_BODY()
 
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemInstanceInterface"), Instanced, ReplicatedUsing = OnRep_Items)
+    TArray<TObjectPtr<UObject>> Items;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSoftObjectPtr<UStaticMesh> DefaultStaticMesh;
+    TSoftObjectPtr<UStaticMesh> DefaultItemMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UStaticMesh> DefaultItemPackageMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText ItemNameFormat;
 
-protected:
-    UPROPERTY(VisibleAnywhere, Category = "Reference", Transient)
-    TWeakObjectPtr<UStaticMeshComponent> DisplayMesh;
-
 public:
-    UItemComponent(const FObjectInitializer& ObjectInitializer);
+    UItemComponent();
 
     /* Object */
 
+    virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 #if WITH_EDITOR
-    virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+    virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
-    /* ActorComponent */
-
-    virtual void InitializeComponent() override;
-
-    /* ItemContainerComponent */
-
-    virtual void SetItems(const TArray<UObject*>& NewItemInstances) override;
-
     /* API */
 
-    UFUNCTION(BlueprintPure)
-    virtual FText GetItemName() const;
+    UFUNCTION(BlueprintCallable)
+    virtual void SetItems(const TArray<UObject*> NewItems);
 
     UFUNCTION(BlueprintPure)
-    virtual UStaticMesh* GetStaticMesh() const;
+    UDataAsset* GetFirstItemData() const;
+
+    UFUNCTION(BlueprintPure)
+    FText GetItemName() const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetDisplayMesh(UStaticMeshComponent* NewDisplayMesh);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void Refresh();
+    virtual void TransferItemsToInventory(AActor* TargetActor);
 
 protected:
+    /* ItemComponentBase */
+
+    virtual UStaticMesh* GetStaticMesh() const override;
+
     /* API */
 
-    virtual void FindDisplayMesh();
+    virtual void ClearItems();
+    virtual UStaticMesh* GetDefaultItemMesh() const;
+    virtual UStaticMesh* GetDefaultItemPackageMesh() const;
+
+    /* Replication */
+
+    UFUNCTION()
+    virtual void OnRep_Items(TArray<UObject*> OldItems);
 };

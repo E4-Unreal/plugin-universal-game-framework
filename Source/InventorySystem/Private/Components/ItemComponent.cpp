@@ -3,81 +3,104 @@
 
 #include "Components/ItemComponent.h"
 
-#include "Data/DataInstanceBase.h"
+#include "Components/InventoryComponent.h"
 #include "Interfaces/DataInstanceInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
+#include "Net/UnrealNetwork.h"
 
-
-UItemComponent::UItemComponent(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+UItemComponent::UItemComponent()
 {
     ItemNameFormat = NSLOCTEXT("InventorySystem", "PickupMessage", "{0} +{1}"); // 아이템 외 5개
+}
+
+void UItemComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ThisClass, Items);
 }
 
 #if WITH_EDITOR
 void UItemComponent::PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent)
 {
-    Super::PostEditChangeProperty(PropertyChangedEvent);
-
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DefaultStaticMesh) ||
-        PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, ItemInstances)
-        )
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Items))
     {
         Refresh();
     }
+
+    Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 #endif
 
-void UItemComponent::InitializeComponent()
+void UItemComponent::SetItems(const TArray<UObject*> NewItems)
 {
-    Super::InitializeComponent();
+    ClearItems();
 
-    FindDisplayMesh();
+    Items = NewItems;
+    for (const auto& Item : Items)
+    {
+        AddReplicatedObject(Cast<UReplicatedObject>(Item));
+    }
+
     Refresh();
 }
 
-void UItemComponent::SetDisplayMesh(UStaticMeshComponent* NewDisplayMesh)
+UDataAsset* UItemComponent::GetFirstItemData() const
 {
-    DisplayMesh = NewDisplayMesh;
+    if (!Items.IsEmpty())
+    {
+        UObject* FirstItem = Items[0];
+        if (FirstItem && FirstItem->Implements<UDataInstanceInterface>())
+        {
+            UDataAsset* FirstItemData = IDataInstanceInterface::Execute_GetData(FirstItem);
+            if (FirstItemData && FirstItemData->Implements<UDataInterface>())
+            {
+                return FirstItemData;
+            }
+        }
+    }
+
+    return nullptr;
 }
 
-void UItemComponent::FindDisplayMesh()
+void UItemComponent::ClearItems()
 {
-    if (DisplayMesh.IsValid()) return;
+    for (const auto& Item : Items)
+    {
+        RemoveReplicatedObject(Cast<UReplicatedObject>(Item));
+    }
 
-    DisplayMesh = GetOwner()->FindComponentByClass<UStaticMeshComponent>();
+    Items.Empty();
+}
+
+void UItemComponent::OnRep_Items(TArray<UObject*> OldItems)
+{
+    Refresh();
 }
 
 FText UItemComponent::GetItemName() const
 {
-    if (!ItemInstances.IsEmpty())
+    if (UDataAsset* FirstItemData = GetFirstItemData())
     {
-        auto Data = IDataInstanceInterface::Execute_GetData(ItemInstances[0]);
-        if (Data && Data->Implements<UItemDataInterface>())
-        {
-            FText ItemDisplayName = IItemDataInterface::Execute_GetDisplayNameText(Data);
+        FText FirstItemName = IDataInterface::Execute_GetDisplayName(FirstItemData);
 
-            return ItemInstances.Num() == 1 ? ItemDisplayName : FText::Format(ItemNameFormat, ItemDisplayName, FText::FromString(FString::FromInt(ItemInstances.Num() - 1)));
-        }
+        return Items.Num() == 1 ? FirstItemName : FText::Format(ItemNameFormat, FirstItemName);
     }
 
     return FText::GetEmpty();
 }
 
-void UItemComponent::SetItems(const TArray<UObject*>& NewItemInstances)
+void UItemComponent::TransferItemsToInventory(AActor* TargetActor)
 {
-    Super::SetItems(NewItemInstances);
-
-    Refresh();
-}
-
-void UItemComponent::Refresh()
-{
-    if (DisplayMesh.IsValid())
+    if (auto InventoryComponent = TargetActor->GetComponentByClass<UInventoryComponent>())
     {
-        DisplayMesh->SetStaticMesh(GetStaticMesh());
+        for (const auto& Item : Items)
+        {
+            if (Item) InventoryComponent->AddContent(Item);
+        }
     }
 }
 
@@ -85,19 +108,28 @@ UStaticMesh* UItemComponent::GetStaticMesh() const
 {
     UStaticMesh* StaticMesh = nullptr;
 
-    if (ItemInstances.Num() == 1)
+    if (Items.Num() == 1)
     {
-        if (auto ItemInstance = ItemInstances.Last())
+        UDataAsset* FirstItemData = GetFirstItemData();
+        if (FirstItemData && FirstItemData->Implements<UItemDataInterface>())
         {
-            if (UDataAsset* Data = IDataInstanceInterface::Execute_GetData(ItemInstance))
-            {
-                if (Data->Implements<UItemDataInterface>())
-                {
-                    StaticMesh = IItemDataInterface::Execute_GetStaticMesh(Data).LoadSynchronous();
-                }
-            }
+            StaticMesh = IItemDataInterface::Execute_GetStaticMesh(FirstItemData).LoadSynchronous();
         }
     }
+    else if (Items.Num() > 1)
+    {
+        StaticMesh = GetDefaultItemPackageMesh();
+    }
 
-    return StaticMesh ? StaticMesh : DefaultStaticMesh.LoadSynchronous();
+    return StaticMesh ? StaticMesh : GetDefaultItemMesh();
+}
+
+UStaticMesh* UItemComponent::GetDefaultItemMesh() const
+{
+    return DefaultItemMesh.LoadSynchronous();
+}
+
+UStaticMesh* UItemComponent::GetDefaultItemPackageMesh() const
+{
+    return DefaultItemPackageMesh.LoadSynchronous();
 }
