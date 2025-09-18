@@ -32,9 +32,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetDisplayMesh(UStaticMeshComponent* NewDisplayMesh) { DisplayMesh = NewDisplayMesh; }
 
+    UFUNCTION(BlueprintCallable)
+    virtual bool AddItemsToInventory(AActor* TargetActor);
+
 protected:
     /* API */
 
     virtual void FindDisplayMesh();
     virtual UStaticMesh* GetStaticMesh() const;
+    virtual TArray<UObject*> GetItems() const { return TArray<UObject*>(); }
 };

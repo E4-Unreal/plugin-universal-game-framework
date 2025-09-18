@@ -5,7 +5,9 @@
 
 #include "InventorySystemFunctionLibrary.h"
 #include "Components/InventoryComponent.h"
-#include "Data/DataInstanceBase.h"
+#include "Data/ItemDropConfig.h"
+#include "Interfaces/DataInterface.h"
+#include "Interfaces/ItemInstanceInterface.h"
 
 UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -19,53 +21,104 @@ UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializ
     ImpulseStrength = 1000;
 }
 
-void UItemDropComponent::BeginPlay()
-{
-    if (ItemInstances.IsEmpty())
-    {
-        GetOwner()->Destroy();
-    }
-    else
-    {
-        Super::BeginPlay();
-    }
-}
-
-void UItemDropComponent::SetItems(const TArray<UObject*>& NewItemInstances)
-{
-    ItemInstances = NewItemInstances;
-}
-
-void UItemDropComponent::Clear()
-{
-    ItemInstances.Empty();
-
-    if (bAutoDestroy) GetOwner()->Destroy();
-}
-
-void UItemDropComponent::TransferItemsToInventory(AActor* TargetActor)
+bool UItemDropComponent::AddItemsToInventory(AActor* TargetActor)
 {
     if (auto InventoryComponent = TargetActor->GetComponentByClass<UInventoryComponent>())
     {
-        for (const auto& InventoryItem : ItemInstances)
+        for (const auto& Item : GetItems())
         {
-            if (InventoryItem) InventoryComponent->AddContent(InventoryItem);
+            if (Item) InventoryComponent->AddContent(Item);
         }
 
-        Clear();
+        if (bAutoDestroy) GetOwner()->Destroy();
+
+        return true;
     }
+
+    return false;
 }
 
-void UItemDropComponent::SpawnItems()
+bool UItemDropComponent::DropItems()
 {
-    if (ItemActorClass && !ItemInstances.IsEmpty())
+    if (auto LocalItemActorClass = GetItemActorClass())
     {
-        const auto& SpawnedItemActors = UInventorySystemFunctionLibrary::SpawnItemActors(GetOwner(), ItemActorClass, ItemInstances, SpawnOffset);
-        for (const auto& SpawnedItemActor : SpawnedItemActors)
+        const auto& Items = GetItems();
+        if (!Items.IsEmpty())
         {
-            UInventorySystemFunctionLibrary::ImpulseActor(SpawnedItemActor, ImpulseAngle, ImpulseStrength);
-        }
+            const auto& SpawnedItemActors = UInventorySystemFunctionLibrary::SpawnItemActors(GetOwner(), LocalItemActorClass, Items, SpawnOffset);
+            for (const auto& SpawnedItemActor : SpawnedItemActors)
+            {
+                UInventorySystemFunctionLibrary::ImpulseActor(SpawnedItemActor, ImpulseAngle, ImpulseStrength);
+            }
 
-        Clear();
+            if (bAutoDestroy) GetOwner()->Destroy();
+
+            return true;
+        }
     }
+
+    return false;
+}
+
+UItemDropConfig* UItemDropComponent::GetDropConfig() const
+{
+    return DropConfigInstance ? DropConfigInstance : DropConfig;
+}
+
+TArray<UObject*> UItemDropComponent::GetItems() const
+{
+    TArray<UObject*> Items;
+    if (auto LocalDropConfig = GetDropConfig())
+    {
+        const auto& DropDataList = LocalDropConfig->GetDataList();
+        for (const auto& DropData : DropDataList)
+        {
+            const auto& ItemData = DropData.ItemData;
+            const auto& DropChance = DropData.DropChance;
+            const auto& CountChanceMap = DropData.CountChanceMap;
+
+            // 아이템 드랍 확률 검사
+            if (ItemData && ItemData->Implements<UDataInterface>() && FMath::RandRange(0.0f, 1.0f) <= DropChance)
+            {
+                // 아이템 드랍 개수 확률 검사
+                float TotalChance = 0.0f;
+                for (const auto& [Count, Chance] : CountChanceMap)
+                {
+                    TotalChance += Chance;
+                }
+
+                float Random = FMath::RandRange(0.0f, TotalChance);
+                float AccumulatedChance = 0.0f;
+                int32 ItemCount = 0;
+                for (const auto& [Count, Chance] : CountChanceMap)
+                {
+                    AccumulatedChance += Chance;
+                    if (Random <= AccumulatedChance)
+                    {
+                        ItemCount = Count;
+                        break;
+                    }
+                }
+
+
+                if (ItemCount > 0)
+                {
+                    UObject* NewItem = IDataInterface::Execute_CreateDataInstance(ItemData);
+                    if (NewItem && NewItem->Implements<UItemInstanceInterface>())
+                    {
+                        IItemInstanceInterface::Execute_SetQuantity(NewItem, ItemCount);
+
+                        Items.Emplace(NewItem);
+                    }
+                }
+            }
+        }
+    }
+
+    return Items;
+}
+
+TSubclassOf<AActor> UItemDropComponent::GetItemActorClass() const
+{
+    return ItemActorClass;
 }

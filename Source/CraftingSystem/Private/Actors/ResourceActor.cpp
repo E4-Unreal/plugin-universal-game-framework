@@ -67,7 +67,7 @@ void AResourceActor::OnHealed_Implementation(float Value)
 
 void AResourceActor::OnDead_Implementation()
 {
-    GetItemContainer()->SpawnItems();
+    GetItemDropContainer()->DropItems();
 }
 
 void AResourceActor::OnRevived_Implementation()

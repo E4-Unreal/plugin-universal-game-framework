@@ -7,6 +7,7 @@
 #include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
+#include "Interfaces/ItemInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
 
 UItemComponent::UItemComponent()
@@ -32,6 +33,18 @@ void UItemComponent::PostEditChangeProperty(struct FPropertyChangedEvent& Proper
     }
 
     Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+
+bool UItemComponent::AddItemsToInventory(AActor* TargetActor)
+{
+    if (Super::AddItemsToInventory(TargetActor))
+    {
+        GetOwner()->Destroy();
+
+        return true;
+    }
+
+    return false;
 }
 #endif
 
@@ -91,17 +104,6 @@ FText UItemComponent::GetItemName() const
     }
 
     return FText::GetEmpty();
-}
-
-void UItemComponent::TransferItemsToInventory(AActor* TargetActor)
-{
-    if (auto InventoryComponent = TargetActor->GetComponentByClass<UInventoryComponent>())
-    {
-        for (const auto& Item : Items)
-        {
-            if (Item) InventoryComponent->AddContent(Item);
-        }
-    }
 }
 
 UStaticMesh* UItemComponent::GetStaticMesh() const

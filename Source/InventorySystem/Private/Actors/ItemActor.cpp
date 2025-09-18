@@ -34,7 +34,7 @@ void AItemActor::Interact_Implementation(AActor* Interactor)
 {
     Super::Interact_Implementation(Interactor);
 
-    GetItemComponent()->TransferItemsToInventory(Interactor);
+    GetItemComponent()->AddItemsToInventory(Interactor);
 }
 
 void AItemActor::SetItemInstances_Implementation(const TArray<UObject*>& NewItemsInstances)

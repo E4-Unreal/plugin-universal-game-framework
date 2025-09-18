@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ItemDropComponent.generated.h"
 
-class UObject;
+class UItemDropConfig;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UItemDropComponent : public UActorComponent
@@ -17,8 +17,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bAutoDestroy;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TObjectPtr<UItemDropConfig> DropConfig;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced)
-    TArray<TObjectPtr<UObject>> ItemInstances;
+    TObjectPtr<UItemDropConfig> DropConfigInstance;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemActorInterface"))
     TSubclassOf<AActor> ItemActorClass;
@@ -35,27 +38,18 @@ public:
 public:
     UItemDropComponent(const FObjectInitializer& ObjectInitializer);
 
-    /* ActorComponent */
-
-    virtual void BeginPlay() override;
-
     /* API */
 
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE int32 GetItemCount() const { return ItemInstances.Num(); }
-
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE TArray<UObject*> GetItems() const { return ItemInstances; }
+    UFUNCTION(BlueprintCallable)
+    virtual bool AddItemsToInventory(AActor* TargetActor);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetItems(const TArray<UObject*>& NewItemInstances);
+    virtual bool DropItems();
 
-    UFUNCTION(BlueprintCallable)
-    virtual void Clear();
+protected:
+    /* API */
 
-    UFUNCTION(BlueprintCallable)
-    virtual void TransferItemsToInventory(AActor* TargetActor);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SpawnItems();
+    virtual UItemDropConfig* GetDropConfig() const;
+    virtual TArray<UObject*> GetItems() const;
+    virtual TSubclassOf<AActor> GetItemActorClass() const;
 };

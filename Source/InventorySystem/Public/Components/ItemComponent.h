@@ -37,6 +37,10 @@ public:
     virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
+    /* ItemComponentBase */
+
+    virtual bool AddItemsToInventory(AActor* TargetActor) override;
+
     /* API */
 
     UFUNCTION(BlueprintCallable)
@@ -48,13 +52,11 @@ public:
     UFUNCTION(BlueprintPure)
     FText GetItemName() const;
 
-    UFUNCTION(BlueprintCallable)
-    virtual void TransferItemsToInventory(AActor* TargetActor);
-
 protected:
     /* ItemComponentBase */
 
     virtual UStaticMesh* GetStaticMesh() const override;
+    virtual TArray<UObject*> GetItems() const override { return Items; }
 
     /* API */
 

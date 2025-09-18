@@ -3,6 +3,8 @@
 
 #include "Components/ItemComponentBase.h"
 
+#include "Components/InventoryComponent.h"
+
 
 UItemComponentBase::UItemComponentBase()
 {
@@ -21,6 +23,21 @@ void UItemComponentBase::Refresh_Implementation()
     {
         DisplayMesh->SetStaticMesh(GetStaticMesh());
     }
+}
+
+bool UItemComponentBase::AddItemsToInventory(AActor* TargetActor)
+{
+    if (auto InventoryComponent = TargetActor->GetComponentByClass<UInventoryComponent>())
+    {
+        for (const auto& Item : GetItems())
+        {
+            if (Item) InventoryComponent->AddContent(Item);
+        }
+
+        return true;
+    }
+
+    return false;
 }
 
 void UItemComponentBase::FindDisplayMesh()
