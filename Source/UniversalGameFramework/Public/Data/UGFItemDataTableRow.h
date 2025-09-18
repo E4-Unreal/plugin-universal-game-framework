@@ -17,9 +17,6 @@ struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FTableRowBase
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText Description;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInstanceInterface"))
-    TSubclassOf<UObject> DataInstanceClass;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UStaticMesh> StaticMesh;
 
@@ -46,9 +43,6 @@ struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FTableRowBase
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FGameplayTag SlotType;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "WeaponActorInterface"))
-    TSubclassOf<AActor> ActorClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FName ActiveSocketName;

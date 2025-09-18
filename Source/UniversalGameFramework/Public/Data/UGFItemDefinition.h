@@ -20,7 +20,7 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDataDefinitionBase
 {
     GENERATED_BODY()
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 

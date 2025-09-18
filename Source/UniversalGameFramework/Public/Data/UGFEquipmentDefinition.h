@@ -16,7 +16,7 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFEquipmentDefinition : public UUGFItemDefini
 {
     GENERATED_BODY()
 
-protected:
+public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FGameplayTag SlotType;
 
