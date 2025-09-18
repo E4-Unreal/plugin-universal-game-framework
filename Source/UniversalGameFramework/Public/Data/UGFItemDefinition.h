@@ -21,28 +21,28 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDataDefinitionBase
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UStaticMesh> StaticMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))
     int32 MaxStack;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Item"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Item"))
     FGameplayTag ItemType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Currency"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
     FGameplayTag CurrencyType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 BuyPrice;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 SellPrice;
 
 public:
