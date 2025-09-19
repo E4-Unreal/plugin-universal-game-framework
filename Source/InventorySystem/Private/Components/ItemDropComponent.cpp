@@ -8,6 +8,7 @@
 #include "Data/ItemDropConfig.h"
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemInstanceInterface.h"
+#include "Settings/InventorySystemSettings.h"
 
 UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -120,5 +121,5 @@ TArray<UObject*> UItemDropComponent::GetItems() const
 
 TSubclassOf<AActor> UItemDropComponent::GetItemActorClass() const
 {
-    return ItemActorClass;
+    return ItemActorClass ? ItemActorClass : UInventorySystemSettings::Get()->GetDefaultItemActorClass();
 }

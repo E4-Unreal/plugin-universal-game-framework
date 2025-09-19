@@ -9,6 +9,7 @@
 #include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/ItemInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
+#include "Settings/InventorySystemSettings.h"
 
 UItemComponent::UItemComponent()
 {
@@ -128,10 +129,10 @@ UStaticMesh* UItemComponent::GetStaticMesh() const
 
 UStaticMesh* UItemComponent::GetDefaultItemMesh() const
 {
-    return DefaultItemMesh.LoadSynchronous();
+    return !DefaultItemMesh.IsNull() ? DefaultItemMesh.LoadSynchronous() : UInventorySystemSettings::Get()->GetDefaultItemMesh();
 }
 
 UStaticMesh* UItemComponent::GetDefaultItemPackageMesh() const
 {
-    return DefaultItemPackageMesh.LoadSynchronous();
+    return !DefaultItemPackageMesh.IsNull() ? DefaultItemPackageMesh.LoadSynchronous() : UInventorySystemSettings::Get()->GetDefaultItemPackageMesh();
 }

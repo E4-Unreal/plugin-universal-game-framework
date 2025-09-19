@@ -7,6 +7,7 @@
 #include "Data/ItemInstance.h"
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
+#include "Settings/InventorySystemSettings.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -180,7 +181,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 
     TArray<UObject*> InventoryItemsToDrop = { NewItemInstance };
 
-    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemPackageActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
+    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemPackageActor(GetOwner(), GetItemActorClass(), InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
 
     SetSlotQuantity(SlotIndex, SlotQuantity - Quantity);
@@ -231,4 +232,9 @@ void UInventoryComponent::AddDefaultItems()
     {
         AddContent(DefaultItem);
     }
+}
+
+TSubclassOf<AActor> UInventoryComponent::GetItemActorClass() const
+{
+    return ItemActorClass ? ItemActorClass : UInventorySystemSettings::Get()->GetDefaultItemActorClass();
 }

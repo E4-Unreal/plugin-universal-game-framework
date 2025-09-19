@@ -67,4 +67,5 @@ public:
 
 protected:
     virtual void AddDefaultItems();
+    virtual TSubclassOf<AActor> GetItemActorClass() const;
 };
