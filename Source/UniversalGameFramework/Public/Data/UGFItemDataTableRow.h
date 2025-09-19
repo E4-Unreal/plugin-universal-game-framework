@@ -52,4 +52,6 @@ struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FTableRowBase
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     float MaxDurability;
+
+    FUGFItemDataTableRow();
 };
