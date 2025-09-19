@@ -10,6 +10,8 @@ public class InputManager : ModuleRules
             new string[]
             {
                 "Core",
+                "InputCore",
+                "EnhancedInput"
             }
         );
 
