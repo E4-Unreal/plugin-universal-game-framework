@@ -3,18 +3,50 @@
 
 #include "Widgets/TargetWidgetBase.h"
 
-void UTargetWidgetBase::SetTargetActor(AActor* NewTargetActor)
+void UTargetWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
 {
     if (TargetActor == NewTargetActor) return;
 
     TargetActor = NewTargetActor;
-    TargetComponent = TargetActor.IsValid() && TargetComponentClass ? TargetActor->FindComponentByClass(TargetComponentClass) : nullptr;
+
+    if (TargetActor.IsValid())
+    {
+        TargetComponent = TargetActor->FindComponentByClass(TargetComponentClass);
+    }
+    else if (!FindComponentFromPlayer())
+    {
+        FindComponentFromPawn();
+    }
 }
 
-void UTargetWidgetBase::SetTargetComponent(UActorComponent* NewTargetComponent)
+bool UTargetWidgetBase::FindComponentFromPlayer()
 {
-    if (TargetComponent == NewTargetComponent) return;
+    if (APlayerController* OwningPlayer = GetOwningPlayer())
+    {
+        TargetComponent =  OwningPlayer->FindComponentByClass(TargetComponentClass);
+        if (TargetComponent.IsValid())
+        {
+            TargetActor = OwningPlayer;
 
-    TargetComponent = NewTargetComponent;
-    TargetActor = TargetComponent.IsValid() ? TargetComponent->GetOwner() : nullptr;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool UTargetWidgetBase::FindComponentFromPawn()
+{
+    if (APawn* OwningPawn = GetOwningPlayerPawn())
+    {
+        TargetComponent =  OwningPawn->FindComponentByClass(TargetComponentClass);
+        if (TargetComponent.IsValid())
+        {
+            TargetActor = OwningPawn;
+
+            return true;
+        }
+    }
+
+    return false;
 }
