@@ -29,7 +29,7 @@ protected:
     TArray<FContentSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<int32, TObjectPtr<UDataInstanceBase>> SlotMap;
+    TMap<int32, TObjectPtr<UObject>> SlotMap;
 
 public:
     UPROPERTY(BlueprintAssignable)
@@ -54,28 +54,28 @@ public:
     virtual bool IsSlotEmpty(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool HasContent(UDataInstanceBase* InContent) const;
+    virtual bool HasContent(UObject* InContent) const;
 
     UFUNCTION(BlueprintPure)
-    virtual UDataInstanceBase* GetContent(int32 Index) const;
+    virtual UObject* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
     virtual UDataAsset* GetData(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual int32 GetEmptySlotIndex(UDataInstanceBase* NewContent) const;
+    virtual int32 GetEmptySlotIndex(UObject* NewContent) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual void SetContent(int32 Index, UDataInstanceBase* NewContent);
+    virtual void SetContent(int32 Index, UObject* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool AddContent(UDataInstanceBase* NewContent);
+    virtual bool AddContent(UObject* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual bool AddContentByData(UDataAsset* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool RemoveContent(UDataInstanceBase* InContent);
+    virtual bool RemoveContent(UObject* InContent);
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);
@@ -95,9 +95,9 @@ protected:
 
     virtual void CreateSlots();
     virtual void MappingSlots();
-    virtual bool CheckContent(UDataInstanceBase* Content) const;
+    virtual bool CheckContent(UObject* Content) const;
     virtual bool CheckData(UDataAsset* Data) const;
-    virtual UDataAsset* GetDataFromContent(UDataInstanceBase* InContent) const;
+    virtual UDataAsset* GetDataFromContent(UObject* InContent) const;
 
     UFUNCTION()
     virtual void HandleOnSlotUpdated(int32 Index);

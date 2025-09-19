@@ -6,7 +6,7 @@
 #include "Interfaces/ItemActorInterface.h"
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-    UDataInstanceBase* ItemInstance, const FVector& Offset)
+    UObject* ItemInstance, const FVector& Offset)
 {
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && ItemInstance; !bCanSpawn) return nullptr;
 
@@ -16,7 +16,7 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
     FTransform SpawnTransform = Owner->GetActorTransform();
     SpawnTransform.SetLocation(SpawnTransform.GetLocation() + Owner->GetActorRotation().RotateVector(Offset));
     AActor* SpawnedItemActor = World->SpawnActorDeferred<AActor>(ItemActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    TArray<UDataInstanceBase*> ItemInstances = { ItemInstance };
+    TArray<UObject*> ItemInstances = { ItemInstance };
     IItemActorInterface::Execute_SetItemInstances(SpawnedItemActor, ItemInstances);
     SpawnedItemActor->FinishSpawning(SpawnTransform);
 
@@ -24,7 +24,7 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
 }
 
 TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                         const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
+                                                         const TArray<UObject*>& ItemInstances, const FVector& Offset)
 {
     TArray<AActor*> SpawnedItemActors;
     SpawnedItemActors.Reserve(ItemInstances.Num());
@@ -41,7 +41,7 @@ TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, 
 }
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemPackageActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-    const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
+    const TArray<UObject*>& ItemInstances, const FVector& Offset)
 {
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && !ItemInstances.IsEmpty(); !bCanSpawn) return nullptr;
 

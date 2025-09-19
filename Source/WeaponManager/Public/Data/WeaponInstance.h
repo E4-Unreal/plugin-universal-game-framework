@@ -29,9 +29,9 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* DataInstanceBase */
+    /* DataInstanceInterface */
 
-    virtual void SetData(UDataAsset* NewData) override;
+    virtual void SetData_Implementation(UDataAsset* NewData) override;
 
     /* WeaponInstanceInterface */
 

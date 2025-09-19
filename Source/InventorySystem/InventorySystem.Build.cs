@@ -14,6 +14,8 @@ public class InventorySystem : ModuleRules
                 "UMG",
                 "CommonUI",
                 "InputCore",
+                "DeveloperSettings",
+
                 "UniversalUtilities",
                 "InteractionSystem",
                 "DataManager",

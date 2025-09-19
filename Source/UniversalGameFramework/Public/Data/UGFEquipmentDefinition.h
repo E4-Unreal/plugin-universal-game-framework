@@ -16,20 +16,20 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFEquipmentDefinition : public UUGFItemDefini
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FGameplayTag SlotType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "WeaponActorInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "WeaponActorInterface"))
     TSubclassOf<AActor> ActorClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FName ActiveSocketName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FName InActiveSocketName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     float MaxDurability;
 
 public:

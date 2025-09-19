@@ -10,6 +10,7 @@ public class DataManager : ModuleRules
             new string[]
             {
                 "Core",
+                "DeveloperSettings"
             }
         );
 

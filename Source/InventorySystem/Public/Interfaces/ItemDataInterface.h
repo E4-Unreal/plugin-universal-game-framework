@@ -32,10 +32,4 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "UI")
-    FText GetDisplayNameText() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "UI")
-    TSoftObjectPtr<UTexture2D> GetThumbnailTexture() const;
 };

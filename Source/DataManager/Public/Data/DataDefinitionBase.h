@@ -4,24 +4,38 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "DataDefinitionBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDataDefinitionInterface
+class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDataInterface
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UDataInstanceBase> InstanceClass;
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 0))
+    int32 ID;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 1))
+    FText DisplayName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 2))
+    FText Description;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 3, MustImplement = "DataInstanceInterface"))
+    TSubclassOf<UObject> DataInstanceClass;
 
 public:
     /* DataDefinitionInterface */
 
-    virtual UDataInstanceBase* CreateInstance_Implementation() const override;
-    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual int32 GetID_Implementation() const override { return ID; }
+    virtual void SetID_Implementation(int32 NewID) override { ID = NewID; }
+    virtual FText GetDisplayName_Implementation() const override { return DisplayName; }
+    virtual void SetDisplayName_Implementation(const FText& NewDisplayName) override { DisplayName = NewDisplayName; }
+    virtual FText GetDescription_Implementation() const override { return Description; }
+    virtual void SetDescription_Implementation(const FText& NewDescription) override { Description = NewDescription; }
+    virtual UObject* CreateDataInstance_Implementation() const override;
 };

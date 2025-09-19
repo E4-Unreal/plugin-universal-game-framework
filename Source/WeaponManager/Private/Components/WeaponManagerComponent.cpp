@@ -5,7 +5,7 @@
 
 #include "Data/WeaponInstance.h"
 #include "GameplayTags/WeaponGameplayTags.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 
@@ -26,7 +26,7 @@ void UWeaponManagerComponent::InitializeComponent()
     FindMesh();
 }
 
-int32 UWeaponManagerComponent::GetEmptySlotIndex(UDataInstanceBase* NewContent) const
+int32 UWeaponManagerComponent::GetEmptySlotIndex(UObject* NewContent) const
 {
     if (CheckContent(NewContent))
     {
@@ -47,7 +47,7 @@ int32 UWeaponManagerComponent::GetEmptySlotIndex(UDataInstanceBase* NewContent) 
 
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
-    UDataInstanceBase* CurrentContent = GetContent(CurrentSlotIndex);
+    UObject* CurrentContent = GetContent(CurrentSlotIndex);
     if (CheckContent(CurrentContent))
     {
         AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
@@ -72,10 +72,10 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(int32 NewSlotIndex, bo
     int32 OldIndex = CurrentSlotIndex;
     CurrentSlotIndex = NewSlotIndex;
 
-    UDataInstanceBase* OldContent = GetContent(OldIndex);
+    UObject* OldContent = GetContent(OldIndex);
     UnEquip(OldContent);
 
-    UDataInstanceBase* NewContent = GetContent(NewSlotIndex);
+    UObject* NewContent = GetContent(NewSlotIndex);
     Equip(NewContent);
 }
 
@@ -170,14 +170,14 @@ AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
 {
     if (CheckData(Data))
     {
-        UDataInstanceBase* NewContent = IDataDefinitionInterface::Execute_CreateInstance(Data);
+        UObject* NewContent = IDataInterface::Execute_CreateDataInstance(Data);
         return SpawnActorFromContent(NewContent);
     }
 
     return nullptr;
 }
 
-AActor* UWeaponManagerComponent::SpawnActorFromContent(UDataInstanceBase* Content)
+AActor* UWeaponManagerComponent::SpawnActorFromContent(UObject* Content)
 {
     if (CheckContent(Content))
     {
@@ -224,7 +224,7 @@ bool UWeaponManagerComponent::CheckActorClass(TSubclassOf<AActor> ActorClass)
     return ActorClass && ActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass());
 }
 
-void UWeaponManagerComponent::Equip(UDataInstanceBase* Content)
+void UWeaponManagerComponent::Equip(UObject* Content)
 {
     if (CheckContent(Content))
     {
@@ -237,7 +237,7 @@ void UWeaponManagerComponent::Equip(UDataInstanceBase* Content)
     }
 }
 
-void UWeaponManagerComponent::UnEquip(UDataInstanceBase* Content)
+void UWeaponManagerComponent::UnEquip(UObject* Content)
 {
     if (CheckContent(Content))
     {

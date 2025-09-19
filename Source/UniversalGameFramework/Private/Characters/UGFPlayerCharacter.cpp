@@ -18,7 +18,7 @@
 #include "Components/WeaponManagerComponent.h"
 #include "Data/ItemInstance.h"
 #include "Data/UGFItemInstance.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -114,14 +114,14 @@ bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& Curr
 bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
     auto Data = Product.GetObject();
-    if (Data && Data->Implements<UDataDefinitionInterface>())
+    if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataDefinitionInterface::Execute_CreateInstance(Data);
-        if (auto ItemInstance = Instance->GetDataInstanceByInterface(UItemInstanceInterface::StaticClass()))
+        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
+        if (Instance && Instance->Implements<UItemInstanceInterface>())
         {
-            IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
 
-            return GetInventory()->AddContent(ItemInstance);
+            return GetInventory()->AddContent(Instance);
         }
     }
 
@@ -131,14 +131,14 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
 bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
     auto Data = Product.GetObject();
-    if (Data && Data->Implements<UDataDefinitionInterface>())
+    if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataDefinitionInterface::Execute_CreateInstance(Data);
-        if (auto ItemInstance = Instance->GetDataInstanceByInterface(UItemInstanceInterface::StaticClass()))
+        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
+        if (Instance && Instance->Implements<UItemInstanceInterface>())
         {
-            IItemInstanceInterface::Execute_SetQuantity(ItemInstance, Quantity);
+            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
 
-            return GetInventory()->RemoveContent(ItemInstance);
+            return GetInventory()->RemoveContent(Instance);
         }
     }
 

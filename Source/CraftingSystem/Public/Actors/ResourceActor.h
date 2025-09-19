@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/ItemContainerActor.h"
+#include "Actors/ItemDropActor.h"
 #include "ResourceActor.generated.h"
 
 class UAttributeSystemComponent;
 struct FGameplayTag;
 
 UCLASS()
-class CRAFTINGSYSTEM_API AResourceActor : public AItemContainerActor
+class CRAFTINGSYSTEM_API AResourceActor : public AItemDropActor
 {
     GENERATED_BODY()
 

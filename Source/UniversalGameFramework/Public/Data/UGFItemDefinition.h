@@ -20,32 +20,29 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDataDefinitionBase
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FText DisplayNameText;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UStaticMesh> StaticMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))
     int32 MaxStack;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Item"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Item"))
     FGameplayTag ItemType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Currency"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
     FGameplayTag CurrencyType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 BuyPrice;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     int32 SellPrice;
 
 public:
@@ -61,10 +58,10 @@ public:
     virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
     virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
-    virtual FText GetDisplayNameText_Implementation() const override { return DisplayNameText; }
 
     /* ProductInterface */
 
+    virtual FText GetDisplayNameText_Implementation() const override { return DisplayName; }
     virtual const FGameplayTag GetCurrencyType_Implementation() const override { return CurrencyType; }
     virtual int32 GetBuyPrice_Implementation() const override { return BuyPrice; }
     virtual int32 GetSellPrice_Implementation() const override { return SellPrice; }

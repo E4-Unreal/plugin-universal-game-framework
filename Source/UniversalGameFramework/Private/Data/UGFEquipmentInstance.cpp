@@ -14,9 +14,9 @@ void UUGFEquipmentInstance::GetLifetimeReplicatedProps(TArray<class FLifetimePro
     DOREPLIFETIME(ThisClass, Durability)
 }
 
-void UUGFEquipmentInstance::SetData(UDataAsset* NewData)
+void UUGFEquipmentInstance::SetData_Implementation(UDataAsset* NewData)
 {
-    Super::SetData(NewData);
+    Data = NewData;
 
     if (Data && Data->Implements<UWeaponDataInterface>())
     {

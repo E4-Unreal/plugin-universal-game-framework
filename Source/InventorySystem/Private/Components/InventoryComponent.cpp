@@ -5,8 +5,9 @@
 
 #include "InventorySystemFunctionLibrary.h"
 #include "Data/ItemInstance.h"
-#include "Interfaces/DataDefinitionInterface.h"
+#include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
+#include "Settings/InventorySystemSettings.h"
 
 UInventoryComponent::UInventoryComponent()
 {
@@ -20,7 +21,7 @@ void UInventoryComponent::BeginPlay()
     AddDefaultItems();
 }
 
-bool UInventoryComponent::HasContent(UDataInstanceBase* InContent) const
+bool UInventoryComponent::HasContent(UObject* InContent) const
 {
     if (CheckContent(InContent))
     {
@@ -33,7 +34,7 @@ bool UInventoryComponent::HasContent(UDataInstanceBase* InContent) const
     return false;
 }
 
-bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
+bool UInventoryComponent::AddContent(UObject* InContent)
 {
     // 실행 가능 여부 확인
     if (!CheckContent(InContent)) return false;
@@ -69,7 +70,7 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        auto NewContent = IDataDefinitionInterface::Execute_CreateInstance(InData);
+        auto NewContent = IDataInterface::Execute_CreateDataInstance(InData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
@@ -77,7 +78,7 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
     return true;
 }
 
-bool UInventoryComponent::RemoveContent(UDataInstanceBase* InContent)
+bool UInventoryComponent::RemoveContent(UObject* InContent)
 {
     // 실행 가능 여부 확인
     if (!HasContent(InContent)) return false;
@@ -137,7 +138,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 {
     if (CheckData(NewData))
     {
-        auto NewContent = IDataDefinitionInterface::Execute_CreateInstance(NewData);
+        auto NewContent = IDataInterface::Execute_CreateDataInstance(NewData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
@@ -175,12 +176,12 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 
     if (SlotQuantity < Quantity) return;
 
-    auto NewItemInstance = IDataDefinitionInterface::Execute_CreateInstance(Data);
+    auto NewItemInstance = IDataInterface::Execute_CreateDataInstance(Data);
     IItemInstanceInterface::Execute_SetQuantity(NewItemInstance, Quantity);
 
-    TArray<UDataInstanceBase*> InventoryItemsToDrop = { NewItemInstance };
+    TArray<UObject*> InventoryItemsToDrop = { NewItemInstance };
 
-    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemPackageActor(GetOwner(), ItemActorClass, InventoryItemsToDrop, DropItemOffset);
+    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemPackageActor(GetOwner(), GetItemActorClass(), InventoryItemsToDrop, DropItemOffset);
     if (!SpawnedItemActor) return;
 
     SetSlotQuantity(SlotIndex, SlotQuantity - Quantity);
@@ -231,4 +232,9 @@ void UInventoryComponent::AddDefaultItems()
     {
         AddContent(DefaultItem);
     }
+}
+
+TSubclassOf<AActor> UInventoryComponent::GetItemActorClass() const
+{
+    return ItemActorClass ? ItemActorClass : UInventorySystemSettings::Get()->GetDefaultItemActorClass();
 }

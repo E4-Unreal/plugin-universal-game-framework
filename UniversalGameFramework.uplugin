@@ -21,16 +21,6 @@
 			"LoadingPhase": "Default"
 		},
 		{
-			"Name": "ItemSystem",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
-		},
-		{
-			"Name": "ItemSystemEditor",
-			"Type": "Editor",
-			"LoadingPhase": "PreDefault"
-		},
-		{
 			"Name": "SocketManager",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
@@ -114,6 +104,16 @@
 			"Name": "AnimationSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "DataManagerEditor",
+			"Type": "Editor",
+			"LoadingPhase": "PreDefault"
+		},
+		{
+			"Name": "ItemManager",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -126,10 +126,6 @@
 			"Enabled": true
 		},
 		{
-			"Name": "StructUtils",
-			"Enabled": true
-		},
-		{
 			"Name": "EditorScriptingUtilities",
 			"Enabled": true
 		},
@@ -139,10 +135,6 @@
 		},
 		{
 			"Name": "UniversalUtilities",
-			"Enabled": true
-		},
-		{
-			"Name": "DynamicData",
 			"Enabled": true
 		}
 	]
