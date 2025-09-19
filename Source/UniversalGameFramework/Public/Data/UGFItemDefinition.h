@@ -61,6 +61,7 @@ public:
 
     /* ProductInterface */
 
+    virtual FText GetDisplayNameText_Implementation() const override { return DisplayName; }
     virtual const FGameplayTag GetCurrencyType_Implementation() const override { return CurrencyType; }
     virtual int32 GetBuyPrice_Implementation() const override { return BuyPrice; }
     virtual int32 GetSellPrice_Implementation() const override { return SellPrice; }
