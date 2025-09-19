@@ -3,12 +3,12 @@
 
 #include "Widgets/Layer/CommonGameOverlayWidgetBase.h"
 
-#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
+#include "GameplayTags/WidgetManagerGameplayTags.h"
 
 UCommonGameOverlayWidgetBase::UCommonGameOverlayWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     bIsBackHandler = false;
     bIsModal = false;
-    LayerTag = CommonWidgetManager::UI::Layer::Game::Overlay;
+    LayerTag = WidgetManager::UI::Layer::Game::Overlay;
 }

@@ -1,6 +1,6 @@
-﻿#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
+﻿#include "GameplayTags/WidgetManagerGameplayTags.h"
 
-namespace CommonWidgetManager
+namespace WidgetManager
 {
     namespace UI
     {

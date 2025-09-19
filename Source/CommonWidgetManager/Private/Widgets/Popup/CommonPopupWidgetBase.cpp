@@ -4,12 +4,12 @@
 #include "Widgets/Popup/CommonPopupWidgetBase.h"
 
 #include "CommonTextBlock.h"
-#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
+#include "GameplayTags/WidgetManagerGameplayTags.h"
 
 UCommonPopupWidgetBase::UCommonPopupWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    LayerTag = CommonWidgetManager::UI::Layer::System::Popup;
+    LayerTag = WidgetManager::UI::Layer::System::Popup;
 
     UIInputConfig = FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
     UIInputConfig.bIgnoreLookInput = true;
