@@ -14,7 +14,9 @@ public class WidgetManager : ModuleRules
                 "InputCore",
                 "EnhancedInput",
                 "GameplayTags",
-                "DeveloperSettings"
+                "DeveloperSettings",
+
+                "InputManager",
             }
         );
 
