@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interfaces/PopupWidgetInterface.h"
-#include "Subsystems/LocalPlayerSubsystem.h"
+#include "Subsystems/GameInstanceSubsystem.h"
 #include "WidgetManagerSubsystem.generated.h"
 
 class UPlayerWidgetManagerComponent;
@@ -16,7 +16,7 @@ class FOnPromptSubmitted;
  *
  */
 UCLASS()
-class WIDGETMANAGER_API UWidgetManagerSubsystem : public ULocalPlayerSubsystem
+class WIDGETMANAGER_API UWidgetManagerSubsystem : public UGameInstanceSubsystem
 {
     GENERATED_BODY()
 

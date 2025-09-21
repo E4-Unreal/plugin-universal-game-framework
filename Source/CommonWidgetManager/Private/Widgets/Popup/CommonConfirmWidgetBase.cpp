@@ -11,37 +11,31 @@ void UCommonConfirmWidgetBase::NativeOnInitialized()
 
     if (GetConfirmButton())
     {
-        GetConfirmButton()->OnClicked().AddUObject(this, &ThisClass::OnConfirmButtonClicked);
+        GetConfirmButton()->OnClicked().AddUObject(this, &ThisClass::HandleOnConfirmButtonClicked);
     }
 
     if (GetCancelButton())
     {
-        GetCancelButton()->OnClicked().AddUObject(this, &ThisClass::OnCancelButtonClicked);
+        GetCancelButton()->OnClicked().AddUObject(this, &ThisClass::HandleOnCancelButtonClicked);
     }
 }
 
-void UCommonConfirmWidgetBase::OnConfirmButtonClicked_Implementation()
+void UCommonConfirmWidgetBase::HandleOnConfirmButtonClicked_Implementation()
 {
     DeactivateWidget();
 
-    if (ConfirmButtonClickedDelegate.IsBound())
+    if (OnConfirmButtonClicked.IsBound())
     {
-        ConfirmButtonClickedDelegate.Execute();
-        ConfirmButtonClickedDelegate.Clear();
+        OnConfirmButtonClicked.Execute();
+        OnConfirmButtonClicked.Clear();
     }
 
     ConfirmButtonClickedEvent.Broadcast();
 }
 
-void UCommonConfirmWidgetBase::OnCancelButtonClicked_Implementation()
+void UCommonConfirmWidgetBase::HandleOnCancelButtonClicked_Implementation()
 {
     DeactivateWidget();
-
-    if (CancelButtonClickedDelegate.IsBound())
-    {
-        CancelButtonClickedDelegate.Execute();
-        CancelButtonClickedDelegate.Clear();
-    }
 
     CancelButtonClickedEvent.Broadcast();
 }

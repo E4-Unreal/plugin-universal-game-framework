@@ -3,14 +3,14 @@
 
 #include "Widgets/Button/CommonToggleWidgetButtonBase.h"
 
-#include "Subsystems/CommonWidgetManagerSubsystem.h"
+#include "Subsystems/WidgetManagerSubsystem.h"
 
 void UCommonToggleWidgetButtonBase::NativeOnClicked()
 {
     Super::NativeOnClicked();
 
-    if (UCommonWidgetManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
+    if (auto Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->ToggleLayerWidget(GetOwningPlayer(), LayerWidgetClass);
+        Subsystem->ToggleWidget(GetOwningPlayer(), WidgetClass);
     }
 }

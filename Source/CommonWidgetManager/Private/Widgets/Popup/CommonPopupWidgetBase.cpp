@@ -16,6 +16,13 @@ UCommonPopupWidgetBase::UCommonPopupWidgetBase(const FObjectInitializer& ObjectI
     UIInputConfig.bIgnoreMoveInput = true;
 }
 
+void UCommonPopupWidgetBase::NativeOnDeactivated()
+{
+    OnWidgetHidden.ExecuteIfBound();
+
+    Super::NativeOnDeactivated();
+}
+
 void UCommonPopupWidgetBase::SetTitleText_Implementation(const FText& TitleText)
 {
     if (GetTitleTextBlock())

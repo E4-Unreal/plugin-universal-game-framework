@@ -3,7 +3,7 @@
 
 #include "Characters/UGFNonPlayerCharacter.h"
 
-#include "Subsystems/CommonWidgetManagerSubsystem.h"
+#include "Subsystems/WidgetManagerSubsystem.h"
 
 
 AUGFNonPlayerCharacter::AUGFNonPlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -26,9 +26,9 @@ void AUGFNonPlayerCharacter::Interact_Implementation(AActor* Interactor)
 {
     if (!Execute_CanInteract(this, Interactor)) return;
 
-    if (UCommonWidgetManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
+    if (auto Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->ShowLayerWidget(Interactor, MenuWidgetClass);
+        Subsystem->ShowWidget(Interactor, MenuWidgetClass);
     }
 }
 

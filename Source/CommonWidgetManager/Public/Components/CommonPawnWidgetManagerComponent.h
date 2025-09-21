@@ -19,10 +19,10 @@ class COMMONWIDGETMANAGER_API UCommonPawnWidgetManagerComponent : public UActorC
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UCommonLayerWidgetBase> HUDWidgetClass;
+    TSubclassOf<UUserWidget> HUDWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TMap<TObjectPtr<UInputAction>, TSubclassOf<UCommonLayerWidgetBase>> ToggleableLayerWidgetMap;
+    TMap<TObjectPtr<UInputAction>, TSubclassOf<UUserWidget>> ToggleableWidgetMap;
 
 public:
     /* ActorComponent */
@@ -31,7 +31,7 @@ public:
 
 protected:
     virtual void BindEvents();
-    virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> LayerWidgetClass);
+    virtual void ToggleWidget(TSubclassOf<UUserWidget> LayerWidgetClass);
     virtual void ShowHUDWidget(AActor* PlayerActor);
     virtual void HideHUDWidget(AActor* PlayerActor);
 

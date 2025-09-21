@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
+#include "Interfaces/LayerWidgetInterface.h"
 #include "CommonLayerWidgetBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatableWidget
+class COMMONWIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatableWidget, public ILayerWidgetInterface
 {
     GENERATED_BODY()
 
@@ -29,8 +30,7 @@ public:
 
     virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
-    /* API */
+    /* LayerWidgetInterface */
 
-    UFUNCTION(BlueprintPure)
-    FGameplayTag GetLayerTag() const { return LayerTag; }
+    virtual FGameplayTag GetLayerTag_Implementation() const override { return LayerTag; }
 };

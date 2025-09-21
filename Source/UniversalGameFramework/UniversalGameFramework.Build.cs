@@ -28,7 +28,8 @@ public class UniversalGameFramework : ModuleRules
                 "WeaponManager",
                 "DataManager",
                 "SlotManager",
-                "AnimationSystem"
+                "AnimationSystem",
+                "WidgetManager"
             }
         );
 

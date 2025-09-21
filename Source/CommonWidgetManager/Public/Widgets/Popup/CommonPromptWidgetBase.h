@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "CommonPopupWidgetBase.h"
 #include "Components/Button.h"
+#include "Interfaces/PromptWidgetInterface.h"
 #include "CommonPromptWidgetBase.generated.h"
 
 class UEditableTextBox;
-DECLARE_DYNAMIC_DELEGATE_OneParam(FPromptSubmittedDelegate, const FText&, InputText);
 
 /**
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonPromptWidgetBase : public UCommonPopupWidgetBase
+class COMMONWIDGETMANAGER_API UCommonPromptWidgetBase : public UCommonPopupWidgetBase, public IPromptWidgetInterface
 {
     GENERATED_BODY()
 
@@ -29,12 +29,6 @@ private:
     TObjectPtr<UCommonButtonBase> CancelButton;
 
 public:
-    UPROPERTY(BlueprintAssignable)
-    FOnButtonClickedEvent ConfirmButtonClickedEvent;
-
-    UPROPERTY(BlueprintAssignable)
-    FOnButtonClickedEvent CancelButtonClickedEvent;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bShouldNumeric;
 
@@ -45,17 +39,19 @@ public:
     int64 MinNum;
 
 protected:
-    FPromptSubmittedDelegate ConfirmButtonClickedDelegate;
-    FButtonClickedDelegate CancelButtonClickedDelegate;
+    FOnPromptSubmitted OnPromptSubmitted;
 
 public:
     UCommonPromptWidgetBase(const FObjectInitializer& ObjectInitializer);
 
-    UFUNCTION(BlueprintCallable)
-    FORCEINLINE void SetConfirmButtonClickedDelegate(const FPromptSubmittedDelegate& NewDelegate) { ConfirmButtonClickedDelegate = NewDelegate; }
+    /* PromptWidgetInterface */
 
-    UFUNCTION(BlueprintCallable)
-    FORCEINLINE void SetCancelButtonClickedDelegate(const FButtonClickedDelegate& NewDelegate) { CancelButtonClickedDelegate = NewDelegate; }
+    virtual void BindOnPromptSubmitted_Implementation(const FOnPromptSubmitted& NewDelegate) override { OnPromptSubmitted = NewDelegate; }
+    virtual void SetNumeric_Implementation(bool bNewNumeric) override { bShouldNumeric = bNewNumeric; }
+    virtual void SetMaxValue_Implementation(float NewMaxValue) override { MaxNum = NewMaxValue; }
+    virtual void SetMinValue_Implementation(float NewMinValue) override { MinNum = NewMinValue; }
+
+    /* Components */
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE UEditableTextBox* GetInputTextBox() const { return InputTextBox; }

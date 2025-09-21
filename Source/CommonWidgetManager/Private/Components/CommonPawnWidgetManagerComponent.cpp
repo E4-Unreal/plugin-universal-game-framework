@@ -5,7 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "Components/CommonPlayerWidgetManagerComponent.h"
-#include "Subsystems/CommonWidgetManagerSubsystem.h"
+#include "Subsystems/WidgetManagerSubsystem.h"
 
 void UCommonPawnWidgetManagerComponent::BeginPlay()
 {
@@ -24,35 +24,35 @@ void UCommonPawnWidgetManagerComponent::BindEvents()
 
         if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(OwningPawn->InputComponent))
         {
-            for (const auto& [InputAction, LayerWidgetClass] : ToggleableLayerWidgetMap)
+            for (const auto& [InputAction, LayerWidgetClass] : ToggleableWidgetMap)
             {
-                EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ThisClass::ToggleLayerWidget, LayerWidgetClass);
+                EnhancedInputComponent->BindAction(InputAction, ETriggerEvent::Triggered, this, &ThisClass::ToggleWidget, LayerWidgetClass);
             }
         }
     }
 }
 
-void UCommonPawnWidgetManagerComponent::ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> LayerWidgetClass)
+void UCommonPawnWidgetManagerComponent::ToggleWidget(TSubclassOf<UUserWidget> LayerWidgetClass)
 {
-    if (UCommonWidgetManagerSubsystem* Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
+    if (auto Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->ToggleLayerWidget(GetOwner(), LayerWidgetClass);
+        Subsystem->ToggleWidget(GetOwner(), LayerWidgetClass);
     }
 }
 
 void UCommonPawnWidgetManagerComponent::ShowHUDWidget(AActor* PlayerActor)
 {
-    if (UCommonWidgetManagerSubsystem* Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
+    if (auto Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->ShowLayerWidget(PlayerActor, HUDWidgetClass);
+        Subsystem->ShowWidget(PlayerActor, HUDWidgetClass);
     }
 }
 
 void UCommonPawnWidgetManagerComponent::HideHUDWidget(AActor* PlayerActor)
 {
-    if (UCommonWidgetManagerSubsystem* Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
+    if (auto Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->HideLayerWidget(PlayerActor, HUDWidgetClass);
+        Subsystem->HideWidget(PlayerActor, HUDWidgetClass);
     }
 }
 

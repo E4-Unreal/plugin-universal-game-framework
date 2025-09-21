@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
+#include "Interfaces/LayoutWidgetInterface.h"
 #include "Types/LayerConfig.h"
 #include "CommonLayoutWidgetBase.generated.h"
 
@@ -18,7 +19,7 @@ class UOverlay;
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatableWidget
+class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatableWidget, public ILayoutWidgetInterface
 {
     GENERATED_BODY()
 
@@ -31,7 +32,7 @@ protected:
     FUIInputConfig UIInputConfig;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UCommonLayerWidgetBase> EscapeMenuWidgetClass;
+    TSubclassOf<UUserWidget> EscapeMenuWidgetClass;
 
     // TMap<LayerTag, bIsOverlay>
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
@@ -53,28 +54,17 @@ public:
     virtual bool NativeOnHandleBackAction() override;
     virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
 
+    /* LayoutWidgetInterface */
+
+    virtual UUserWidget* ShowWidget_Implementation(TSubclassOf<UUserWidget> WidgetClass) override;
+    virtual bool HideWidget_Implementation(TSubclassOf<UUserWidget> WidgetClass) override;
+    virtual void ToggleWidget_Implementation(TSubclassOf<UUserWidget> WidgetClass) override;
+    virtual void ExecuteBackAction_Implementation() override;
+
     /* API */
 
     UFUNCTION(BlueprintPure, meta = (Categories = "UI.Layer"))
     FORCEINLINE ULayerStack* GetLayer(FGameplayTag LayerTag) const { return LayerMap.FindRef(LayerTag); }
-
-    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
-    virtual UCommonActivatableWidget* ShowWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
-
-    UFUNCTION(BlueprintCallable)
-    virtual UCommonActivatableWidget* ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
-
-    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
-    virtual bool HideWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
-
-    UFUNCTION(BlueprintCallable)
-    virtual bool HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
-
-    UFUNCTION(BlueprintCallable, meta = (Categories = "UI.Layer"))
-    virtual void ToggleWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass);
 
     /* Getter */
 

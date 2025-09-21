@@ -5,13 +5,14 @@
 #include "CoreMinimal.h"
 #include "CommonPopupWidgetBase.h"
 #include "Components/Button.h"
+#include "Interfaces/ConfirmWidgetInterface.h"
 #include "CommonConfirmWidgetBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonConfirmWidgetBase : public UCommonPopupWidgetBase
+class COMMONWIDGETMANAGER_API UCommonConfirmWidgetBase : public UCommonPopupWidgetBase, public IConfirmWidgetInterface
 {
     GENERATED_BODY()
 
@@ -30,15 +31,12 @@ public:
     FOnButtonClickedEvent CancelButtonClickedEvent;
 
 protected:
-    FButtonClickedDelegate ConfirmButtonClickedDelegate;
-    FButtonClickedDelegate CancelButtonClickedDelegate;
+    FOnButtonClicked OnConfirmButtonClicked;
 
 public:
-    UFUNCTION(BlueprintCallable)
-    FORCEINLINE void SetConfirmButtonClickedDelegate(const FButtonClickedDelegate& NewDelegate) { ConfirmButtonClickedDelegate = NewDelegate; }
+    /* ConfirmWidgetInterface */
 
-    UFUNCTION(BlueprintCallable)
-    FORCEINLINE void SetCancelButtonClickedDelegate(const FButtonClickedDelegate& NewDelegate) { CancelButtonClickedDelegate = NewDelegate; }
+    virtual void BindOnConfirmButtonClicked_Implementation(const FOnButtonClicked& NewDelegate) override { OnConfirmButtonClicked = NewDelegate; }
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE UCommonButtonBase* GetConfirmButton() const { return ConfirmButton; }
@@ -50,8 +48,8 @@ protected:
     virtual void NativeOnInitialized() override;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void OnConfirmButtonClicked();
+    void HandleOnConfirmButtonClicked();
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void OnCancelButtonClicked();
+    void HandleOnCancelButtonClicked();
 };

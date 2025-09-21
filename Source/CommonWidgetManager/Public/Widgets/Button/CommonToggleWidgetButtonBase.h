@@ -17,8 +17,8 @@ class COMMONWIDGETMANAGER_API UCommonToggleWidgetButtonBase : public UCommonButt
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UCommonLayerWidgetBase> LayerWidgetClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "LayerWidgetInterface"))
+    TSubclassOf<UUserWidget> WidgetClass;
 
 protected:
     virtual void NativeOnClicked() override;

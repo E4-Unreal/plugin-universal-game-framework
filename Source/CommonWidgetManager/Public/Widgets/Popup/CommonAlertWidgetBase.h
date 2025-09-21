@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "CommonPopupWidgetBase.h"
+#include "Interfaces/AlertWidgetInterface.h"
 #include "CommonAlertWidgetBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonAlertWidgetBase : public UCommonPopupWidgetBase
+class COMMONWIDGETMANAGER_API UCommonAlertWidgetBase : public UCommonPopupWidgetBase, public IAlertWidgetInterface
 {
     GENERATED_BODY()
 
@@ -23,8 +24,12 @@ public:
     FORCEINLINE UCommonButtonBase* GetConfirmButton() const { return ConfirmButton; }
 
 protected:
+    /* UserWidget */
+
     virtual void NativeOnInitialized() override;
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    /* API */
+
+    UFUNCTION(BlueprintNativeEvent)
     void OnConfirmButtonClicked();
 };
