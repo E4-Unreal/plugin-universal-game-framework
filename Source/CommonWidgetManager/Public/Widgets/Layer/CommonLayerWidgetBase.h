@@ -6,13 +6,16 @@
 #include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
 #include "Interfaces/LayerWidgetInterface.h"
+#include "Interfaces/TargetWidgetInterface.h"
 #include "CommonLayerWidgetBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatableWidget, public ILayerWidgetInterface
+class COMMONWIDGETMANAGER_API UCommonLayerWidgetBase : public UCommonActivatableWidget,
+    public ILayerWidgetInterface,
+    public ITargetWidgetInterface
 {
     GENERATED_BODY()
 
@@ -33,4 +36,8 @@ public:
     /* LayerWidgetInterface */
 
     virtual FGameplayTag GetLayerTag_Implementation() const override { return LayerTag; }
+
+    /* TargetWidgetInterface */
+
+    virtual void SetTargetActor_Implementation(AActor* NewTargetActor) override { }
 };

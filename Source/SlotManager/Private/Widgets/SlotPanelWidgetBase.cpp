@@ -48,6 +48,7 @@ void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotMana
     SlotManager = NewSlotManager;
 
     BindSlotManagerEvents();
+    CreateSlotWidgets();
 }
 
 void USlotPanelWidgetBase::ClearSlotWidgets()
