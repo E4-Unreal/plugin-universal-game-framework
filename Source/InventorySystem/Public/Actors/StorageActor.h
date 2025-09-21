@@ -17,16 +17,22 @@ class INVENTORYSYSTEM_API AStorageActor : public AInteractableActor
 protected:
     const static FName InventoryName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UUserWidget> StorageWidgetClass;
-
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInventoryComponent> Inventory;
 
 public:
-    AStorageActor(const FObjectInitializer& ObjectInitializer);
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSubclassOf<UUserWidget> StorageWidgetClass;
 
 public:
+    AStorageActor(const FObjectInitializer& ObjectInitializer);
+
+    /* InteractableInterface */
+
+    virtual void Interact_Implementation(AActor* Interactor) override;
+
+    /* Components */
+
     FORCEINLINE UInventoryComponent* GetInventory() const { return Inventory; }
 };

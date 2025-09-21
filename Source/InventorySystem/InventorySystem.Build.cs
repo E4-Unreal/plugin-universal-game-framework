@@ -20,6 +20,7 @@ public class InventorySystem : ModuleRules
                 "InteractionSystem",
                 "DataManager",
                 "SlotManager",
+                "WidgetManager"
             }
         );
 
