@@ -65,6 +65,8 @@ protected:
     virtual void FindSlotManager();
 
     virtual void CreateSlotWidgets();
+    virtual void UpdateSlotWidgets();
+    virtual void InitializeSlotWidget(UUserWidget* SlotWidget, USlotManagerComponentBase* InSlotManager, int32 InSlotIndex);
 
     virtual void BindSlotManagerEvents();
     virtual void UnBindSlotManagerEvents();

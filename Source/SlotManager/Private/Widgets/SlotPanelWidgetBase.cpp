@@ -48,6 +48,7 @@ void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotMana
     SlotManager = NewSlotManager;
 
     CreateSlotWidgets();
+    UpdateSlotWidgets();
     BindSlotManagerEvents();
 }
 
@@ -77,11 +78,7 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
         for (int32 Index = OldSlotNum; Index < NewSlotNum; ++Index)
         {
             UUserWidget* SlotWidget = CreateWidget<UUserWidget>(this, SlotWidgetClass);
-            if (SlotWidget && SlotWidget->Implements<USlotWidgetInterface>())
-            {
-                ISlotWidgetInterface::Execute_SetSlotManager(SlotWidget, SlotManager.Get());
-                ISlotWidgetInterface::Execute_SetSlotIndex(SlotWidget, Index);
-            }
+            InitializeSlotWidget(SlotWidget, SlotManager.Get(), Index);
 
             int32 SlotColumn = Index % MaxSlotColumn;
             int32 SlotRow = Index / MaxSlotColumn;
@@ -97,6 +94,24 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
             SlotPanel->RemoveChildAt(Index);
             SlotWidgetMap.Remove(Index);
         }
+    }
+}
+
+void USlotPanelWidgetBase::UpdateSlotWidgets()
+{
+    for (const auto& [Index, SlotWidget] : SlotWidgetMap)
+    {
+        InitializeSlotWidget(SlotWidget, SlotManager.Get(), Index);
+    }
+}
+
+void USlotPanelWidgetBase::InitializeSlotWidget(UUserWidget* SlotWidget, USlotManagerComponentBase* InSlotManager,
+    int32 InSlotIndex)
+{
+    if (SlotWidget && SlotWidget->Implements<USlotWidgetInterface>())
+    {
+        ISlotWidgetInterface::Execute_SetSlotManager(SlotWidget, InSlotManager);
+        ISlotWidgetInterface::Execute_SetSlotIndex(SlotWidget, InSlotIndex);
     }
 }
 
