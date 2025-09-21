@@ -74,24 +74,14 @@ void UCommonPromptWidgetBase::OnConfirmButtonClicked_Implementation()
 {
     DeactivateWidget();
 
-    if (ConfirmButtonClickedDelegate.IsBound())
+    if (OnPromptSubmitted.IsBound())
     {
-        ConfirmButtonClickedDelegate.Execute(GetInputTextBox()->GetText());
-        ConfirmButtonClickedDelegate.Clear();
+        OnPromptSubmitted.Execute(GetInputTextBox()->GetText());
+        OnPromptSubmitted.Clear();
     }
-
-    ConfirmButtonClickedEvent.Broadcast();
 }
 
 void UCommonPromptWidgetBase::OnCancelButtonClicked_Implementation()
 {
     DeactivateWidget();
-
-    if (CancelButtonClickedDelegate.IsBound())
-    {
-        CancelButtonClickedDelegate.Execute();
-        CancelButtonClickedDelegate.Clear();
-    }
-
-    CancelButtonClickedEvent.Broadcast();
 }

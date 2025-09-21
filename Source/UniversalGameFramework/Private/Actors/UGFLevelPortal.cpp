@@ -5,9 +5,10 @@
 
 #include "Components/InteractableComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Subsystems/CommonWidgetManagerSubsystem.h"
+#include "Subsystems/WidgetManagerSubsystem.h"
 #include "Widgets/Popup/CommonPopupWidgetBase.h"
 #include "GameplayTags/UGFGameplayTags.h"
+#include "Interfaces/ConfirmWidgetInterface.h"
 
 
 AUGFLevelPortal::AUGFLevelPortal(const FObjectInitializer& ObjectInitializer)
@@ -49,12 +50,13 @@ bool AUGFLevelPortal::CanSelect_Implementation(AActor* Interactor)
 
 void AUGFLevelPortal::RequestConfirmPopup(APlayerController* PlayerController)
 {
-    if (UCommonWidgetManagerSubsystem* Subsystem = GetGameInstance()->GetSubsystem<UCommonWidgetManagerSubsystem>())
+    if (auto* Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        FButtonClickedDelegate Delegate;
-        Delegate.BindDynamic(this, &ThisClass::MoveToLevel);
+        FOnWidgetHidden WidgetHiddenDelegate;
+        FOnButtonClicked ConfirmButtonClickedDelegate;
+        ConfirmButtonClickedDelegate.BindDynamic(this, &ThisClass::MoveToLevel);
 
-        ConfirmPopupWidget = Subsystem->ShowConfirmWidget(PlayerController, ConfirmTitle, FText::Format(ConfirmMessage, LevelName), Delegate);
+        ConfirmPopupWidget = Subsystem->ShowConfirmWidget(PlayerController, ConfirmTitle, FText::Format(ConfirmMessage, LevelName), WidgetHiddenDelegate, ConfirmButtonClickedDelegate);
     }
 }
 

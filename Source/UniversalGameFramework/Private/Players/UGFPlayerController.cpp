@@ -3,9 +3,9 @@
 
 #include "Players/UGFPlayerController.h"
 
-#include "Components/CommonPlayerWidgetManagerComponent.h"
+#include "Components/PlayerWidgetManagerComponent.h"
 
-const FName AUGFPlayerController::WidgetManagerName(TEXT("WidgetManager"));
+const FName AUGFPlayerController::PlayerWidgetManagerName(TEXT("PlayerWidgetManager"));
 
 
 AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectInitializer)
@@ -16,7 +16,7 @@ AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectIniti
     bEnableMouseOverEvents = true;
     bEnableClickEvents = true;
 
-    /* WidgetManager */
+    /* PlayerWidgetManager */
 
-    WidgetManager = CreateDefaultSubobject<UCommonPlayerWidgetManagerComponent>(WidgetManagerName);
+    PlayerWidgetManager = CreateDefaultSubobject<UPlayerWidgetManagerComponent>(PlayerWidgetManagerName);
 }

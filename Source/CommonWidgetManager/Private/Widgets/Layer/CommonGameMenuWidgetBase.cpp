@@ -3,10 +3,10 @@
 
 #include "Widgets/Layer/CommonGameMenuWidgetBase.h"
 
-#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
+#include "GameplayTags/WidgetManagerGameplayTags.h"
 
 UCommonGameMenuWidgetBase::UCommonGameMenuWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    LayerTag = CommonWidgetManager::UI::Layer::Game::Menu;
+    LayerTag = WidgetManager::UI::Layer::Game::Menu;
 }

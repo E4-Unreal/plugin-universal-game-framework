@@ -5,6 +5,7 @@
 
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
+#include "Interfaces/LayerWidgetInterface.h"
 #include "Objects/LayerStack.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 #include "Widgets/CustomActivatableWidgetStack.h"
@@ -47,7 +48,7 @@ bool UCommonLayoutWidgetBase::NativeOnHandleBackAction()
         {
             if (EscapeMenuWidgetClass)
             {
-                ToggleLayerWidget(EscapeMenuWidgetClass);
+                Execute_ToggleWidget(this, EscapeMenuWidgetClass);
             }
         }
 
@@ -67,54 +68,55 @@ TOptional<FUIInputConfig> UCommonLayoutWidgetBase::GetDesiredInputConfig() const
     return UIInputConfig;
 }
 
-UCommonActivatableWidget* UCommonLayoutWidgetBase::ShowWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
+UUserWidget* UCommonLayoutWidgetBase::ShowWidget_Implementation(TSubclassOf<UUserWidget> WidgetClass)
 {
-    UCommonActivatableWidget* Widget = nullptr;
+    if (WidgetClass == nullptr) return nullptr;
 
-    if (ULayerStack* Layer = GetLayer(LayerTag))
+    if (WidgetClass->ImplementsInterface(ULayerWidgetInterface::StaticClass()))
     {
-        Widget = Layer->ShowWidget(WidgetClass);
+        FGameplayTag LayerTag = ILayerWidgetInterface::Execute_GetLayerTag(WidgetClass->GetDefaultObject());
+        if (ULayerStack* Layer = GetLayer(LayerTag))
+        {
+            return Layer->ShowWidget(WidgetClass.Get());
+        }
     }
 
-    return Widget;
+    return nullptr;
 }
 
-UCommonActivatableWidget* UCommonLayoutWidgetBase::ShowLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+bool UCommonLayoutWidgetBase::HideWidget_Implementation(TSubclassOf<UUserWidget> WidgetClass)
 {
-    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
-    return ShowWidget(LayerWidget->GetLayerTag(), WidgetClass);
-}
+    if (WidgetClass == nullptr) return false;
 
-bool UCommonLayoutWidgetBase::HideWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
-{
-    bool bResult = false;
-
-    if (ULayerStack* Layer = GetLayer(LayerTag))
+    if (WidgetClass->ImplementsInterface(ULayerWidgetInterface::StaticClass()))
     {
-        bResult = Layer->HideWidget(WidgetClass);
+        FGameplayTag LayerTag = ILayerWidgetInterface::Execute_GetLayerTag(WidgetClass->GetDefaultObject());
+        if (ULayerStack* Layer = GetLayer(LayerTag))
+        {
+            return Layer->HideWidget(WidgetClass.Get());
+        }
     }
 
-    return bResult;
+    return false;
 }
 
-bool UCommonLayoutWidgetBase::HideLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+void UCommonLayoutWidgetBase::ToggleWidget_Implementation(TSubclassOf<UUserWidget> WidgetClass)
 {
-    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
-    return HideWidget(LayerWidget->GetLayerTag(), WidgetClass);
-}
+    if (WidgetClass == nullptr) return;
 
-void UCommonLayoutWidgetBase::ToggleWidget(FGameplayTag LayerTag, TSubclassOf<UCommonActivatableWidget> WidgetClass)
-{
-    if (ULayerStack* Layer = GetLayer(LayerTag))
+    if (WidgetClass->ImplementsInterface(ULayerWidgetInterface::StaticClass()))
     {
-        Layer->ToggleWidget(WidgetClass);
+        FGameplayTag LayerTag = ILayerWidgetInterface::Execute_GetLayerTag(WidgetClass->GetDefaultObject());
+        if (ULayerStack* Layer = GetLayer(LayerTag))
+        {
+            return Layer->ToggleWidget(WidgetClass.Get());
+        }
     }
 }
 
-void UCommonLayoutWidgetBase::ToggleLayerWidget(TSubclassOf<UCommonLayerWidgetBase> WidgetClass)
+void UCommonLayoutWidgetBase::ExecuteBackAction_Implementation()
 {
-    UCommonLayerWidgetBase* LayerWidget = WidgetClass->GetDefaultObject<UCommonLayerWidgetBase>();
-    ToggleWidget(LayerWidget->GetLayerTag(), WidgetClass);
+    // NativeOnHandleBackAction에서 BackAction 자체 처리
 }
 
 void UCommonLayoutWidgetBase::CreateLayerMap()

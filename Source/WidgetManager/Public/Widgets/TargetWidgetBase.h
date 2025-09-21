@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/TargetWidgetInterface.h"
 #include "TargetWidgetBase.generated.h"
 
 /**
  * 플레이어가 아닌 다른 액터의 정보를 표시하기 위한 위젯 클래스
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UTargetWidgetBase : public UUserWidget
+class WIDGETMANAGER_API UTargetWidgetBase : public UUserWidget, public ITargetWidgetInterface
 {
     GENERATED_BODY()
 
@@ -25,15 +26,13 @@ protected:
     TWeakObjectPtr<UActorComponent> TargetComponent;
 
 public:
-    UFUNCTION(BlueprintPure)
-    AActor* GetTargetActor() const { return TargetActor.Get(); }
+    /* TargetWidgetInterface */
 
-    UFUNCTION(BlueprintCallable)
-    virtual void SetTargetActor(AActor* NewTargetActor);
+    virtual void SetTargetActor_Implementation(AActor* NewTargetActor) override;
 
-    UFUNCTION(BlueprintPure)
-    UActorComponent* GetTargetComponent() const { return TargetComponent.Get(); }
+protected:
+    /* API */
 
-    UFUNCTION(BlueprintCallable)
-    virtual void SetTargetComponent(UActorComponent* NewTargetComponent);
+    virtual bool FindComponentFromPlayer();
+    virtual bool FindComponentFromPawn();
 };

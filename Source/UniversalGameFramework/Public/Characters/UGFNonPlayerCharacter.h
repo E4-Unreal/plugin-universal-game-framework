@@ -14,8 +14,8 @@ class UNIVERSALGAMEFRAMEWORK_API AUGFNonPlayerCharacter : public AInteractableCh
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UCommonLayerWidgetBase> MenuWidgetClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "LayerWidgetInterface"))
+    TSubclassOf<UUserWidget> MenuWidgetClass;
 
 public:
     AUGFNonPlayerCharacter(const FObjectInitializer& ObjectInitializer);

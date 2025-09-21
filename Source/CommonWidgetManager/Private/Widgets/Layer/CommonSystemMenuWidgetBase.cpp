@@ -3,12 +3,12 @@
 
 #include "Widgets/Layer/CommonSystemMenuWidgetBase.h"
 
-#include "GameplayTags/CommonWidgetManagerGameplayTags.h"
+#include "GameplayTags/WidgetManagerGameplayTags.h"
 
 UCommonSystemMenuWidgetBase::UCommonSystemMenuWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    LayerTag = CommonWidgetManager::UI::Layer::System::Menu;
+    LayerTag = WidgetManager::UI::Layer::System::Menu;
 
     UIInputConfig = FUIInputConfig(ECommonInputMode::Menu, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
     UIInputConfig.bIgnoreLookInput = true;

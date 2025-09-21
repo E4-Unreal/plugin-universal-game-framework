@@ -3,19 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Interfaces/PopupWidgetInterface.h"
 #include "Widgets/Layer/CommonLayerWidgetBase.h"
 #include "CommonPopupWidgetBase.generated.h"
 
 class UCommonTextBlock;
 class UCommonButtonBase;
 
-DECLARE_DYNAMIC_DELEGATE(FButtonClickedDelegate);
-
 /**
  *
  */
 UCLASS(Abstract)
-class COMMONWIDGETMANAGER_API UCommonPopupWidgetBase : public UCommonLayerWidgetBase
+class COMMONWIDGETMANAGER_API UCommonPopupWidgetBase : public UCommonLayerWidgetBase, public IPopupWidgetInterface
 {
     GENERATED_BODY()
 
@@ -26,14 +25,23 @@ private:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UCommonTextBlock> MessageTextBlock;
 
+protected:
+    FOnWidgetHidden OnWidgetHidden;
+
 public:
     UCommonPopupWidgetBase(const FObjectInitializer& ObjectInitializer);
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetTitleText(const FText& TitleText);
+    /* CommonActivatableWidget */
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetMessageText(const FText& MessageText);
+    virtual void NativeOnDeactivated() override;
+
+    /* PopupWidgetInterface */
+
+    virtual void SetTitleText_Implementation(const FText& NewTitleText) override;
+    virtual void SetMessageText_Implementation(const FText& NewMessageText) override;
+    virtual void BindOnWidgetHidden_Implementation(const FOnWidgetHidden& NewDelegate) override { OnWidgetHidden = NewDelegate; }
+
+    /* Components */
 
     UFUNCTION(BlueprintPure)
     FORCEINLINE UCommonTextBlock* GetTitleTextBlock() const { return TitleTextBlock; }
