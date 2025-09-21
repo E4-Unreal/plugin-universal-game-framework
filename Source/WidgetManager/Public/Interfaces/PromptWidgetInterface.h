@@ -26,7 +26,7 @@ public:
     void BindOnPromptSubmitted(const FOnPromptSubmitted& NewDelegate);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetIsNumeric(bool bNewIsNumeric);
+    void SetNumeric(bool bNewNumeric);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void SetMinValue(float NewMinValue);
