@@ -7,6 +7,7 @@
 #include "Interfaces/TargetWidgetInterface.h"
 #include "SlotPanelWidgetBase.generated.h"
 
+class UTextBlock;
 class USlotManagerComponentBase;
 class UUniformGridPanel;
 class UDataInstanceBase;
@@ -19,7 +20,14 @@ class SLOTMANAGER_API USlotPanelWidgetBase : public UUserWidget, public ITargetW
 {
     GENERATED_BODY()
 
+private:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidgetOptional))
+    TObjectPtr<UTextBlock> PanelNameTextBlock;
+
 public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText PanelName;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSubclassOf<USlotManagerComponentBase> SlotManagerClass;
 
@@ -52,6 +60,10 @@ public:
 
     virtual void SetTargetActor_Implementation(AActor* NewTargetActor) override;
 
+    /* Components */
+
+    FORCEINLINE UTextBlock* GetPanelNameTextBlock() const { return PanelNameTextBlock; }
+
 protected:
     /* UserWidget */
 
@@ -60,6 +72,8 @@ protected:
     virtual void NativeDestruct() override;
 
     /* API */
+
+    virtual void SetPanelName(const FText& NewPanelName);
 
     virtual void SetSlotManager(USlotManagerComponentBase* NewSlotManager);
     virtual void FindSlotManager();
@@ -71,9 +85,9 @@ protected:
     virtual void BindSlotManagerEvents();
     virtual void UnBindSlotManagerEvents();
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UFUNCTION(BlueprintNativeEvent)
     void OnSlotIndexChanged(int32 OldSlotIndex, int32 NewSlotIndex);
 
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UFUNCTION(BlueprintNativeEvent)
     void OnSlotUpdated(int32 Index);
 };

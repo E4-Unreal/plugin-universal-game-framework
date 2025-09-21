@@ -4,6 +4,7 @@
 #include "Widgets/SlotPanelWidgetBase.h"
 
 #include "Components/SlotManagerComponentBase.h"
+#include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "Interfaces/SlotWidgetInterface.h"
 
@@ -31,6 +32,7 @@ void USlotPanelWidgetBase::NativePreConstruct()
 {
     Super::NativePreConstruct();
 
+    SetPanelName(PanelName);
     CreateSlotWidgets();
 }
 
@@ -39,6 +41,14 @@ void USlotPanelWidgetBase::NativeDestruct()
     UnBindSlotManagerEvents();
 
     Super::NativeDestruct();
+}
+
+void USlotPanelWidgetBase::SetPanelName(const FText& NewPanelName)
+{
+    if (GetPanelNameTextBlock())
+    {
+        GetPanelNameTextBlock()->SetText(NewPanelName);
+    }
 }
 
 void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotManager)
