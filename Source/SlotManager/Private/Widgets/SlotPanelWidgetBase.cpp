@@ -3,8 +3,8 @@
 
 #include "Widgets/SlotPanelWidgetBase.h"
 
-#include "LandscapeGizmoActiveActor.h"
 #include "Components/SlotManagerComponentBase.h"
+#include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
 #include "Interfaces/SlotWidgetInterface.h"
 
@@ -14,18 +14,25 @@ USlotPanelWidgetBase::USlotPanelWidgetBase(const FObjectInitializer& ObjectIniti
 
 }
 
+void USlotPanelWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
+{
+    TargetActor = NewTargetActor ? NewTargetActor : GetOwningPlayerPawn();
+
+    if (TargetActor.IsValid()) SetSlotManager(Cast<USlotManagerComponentBase>(TargetActor->GetComponentByClass(SlotManagerClass)));
+}
+
 void USlotPanelWidgetBase::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 
     FindSlotManager();
-    BindSlotManagerEvents();
 }
 
 void USlotPanelWidgetBase::NativePreConstruct()
 {
     Super::NativePreConstruct();
 
+    SetPanelName(PanelName);
     CreateSlotWidgets();
 }
 
@@ -36,62 +43,52 @@ void USlotPanelWidgetBase::NativeDestruct()
     Super::NativeDestruct();
 }
 
-void USlotPanelWidgetBase::FindSlotManager()
+void USlotPanelWidgetBase::SetPanelName(const FText& NewPanelName)
 {
-    if (!SlotManagerClass) return;
-
-    // Find SlotManager From PlayerController
-    if (SlotManager.IsValid()) return;
-
-    if (APlayerController* PlayerController = GetOwningPlayer())
+    if (GetPanelNameTextBlock())
     {
-        if (USlotManagerComponentBase* FoundComponent = Cast<USlotManagerComponentBase>(PlayerController->GetComponentByClass(SlotManagerClass)))
-        {
-            SlotManager = FoundComponent;
-        }
-    }
-
-    // Find SlotManager From PlayerPawn
-    if (SlotManager.IsValid()) return;
-
-    if (APawn* PlayerPawn = GetOwningPlayerPawn())
-    {
-        if (USlotManagerComponentBase* FoundComponent = Cast<USlotManagerComponentBase>(PlayerPawn->GetComponentByClass(SlotManagerClass.Get())))
-        {
-            SlotManager = FoundComponent;
-        }
+        GetPanelNameTextBlock()->SetText(NewPanelName);
     }
 }
 
-void USlotPanelWidgetBase::ClearSlotWidgets()
+void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotManager)
 {
-    for (int32 Index = 0; Index < SlotWidgetMap.Num(); ++Index)
+    UnBindSlotManagerEvents();
+
+    SlotManager = NewSlotManager;
+
+    CreateSlotWidgets();
+    UpdateSlotWidgets();
+    BindSlotManagerEvents();
+}
+
+void USlotPanelWidgetBase::FindSlotManager()
+{
+    if (SlotManagerClass == nullptr) return;
+
+    if (APawn* Pawn = GetOwningPlayerPawn())
     {
-        UUserWidget* SlotWidget = SlotWidgetMap[Index];
-        SlotWidget->RemoveFromParent();
-        SlotPanel->RemoveChildAt(Index);
+        SetSlotManager(Cast<USlotManagerComponentBase>(Pawn->GetComponentByClass(SlotManagerClass)));
     }
-    SlotWidgetMap.Reset();
 }
 
 void USlotPanelWidgetBase::CreateSlotWidgets()
 {
-    ClearSlotWidgets();
+    // 유효성 검사
+    if (SlotWidgetClass == nullptr) return;
 
-    if (SlotWidgetClass)
+    // 슬롯 수가 변경되지 않은 경우 무시
+    const int32 OldSlotNum = SlotWidgetMap.Num();
+    const int32 NewSlotNum  = SlotManager.IsValid() ? SlotManager->GetMaxSlotNum() : PreviewSlotNum;
+    if (OldSlotNum == NewSlotNum) return;
+
+    // 슬롯 위젯 생성
+    if (OldSlotNum < NewSlotNum)
     {
-        // Get SlotNum
-        int32 SlotNum  = SlotManager.IsValid() ? SlotManager->GetMaxSlotNum() : PreviewSlotNum;
-
-        // Create SlotWidgets
-        for (int32 Index = 0; Index < SlotNum; ++Index)
+        for (int32 Index = OldSlotNum; Index < NewSlotNum; ++Index)
         {
             UUserWidget* SlotWidget = CreateWidget<UUserWidget>(this, SlotWidgetClass);
-            if (SlotWidget && SlotWidget->Implements<USlotWidgetInterface>())
-            {
-                ISlotWidgetInterface::Execute_SetSlotManager(SlotWidget, SlotManager.Get());
-                ISlotWidgetInterface::Execute_SetSlotIndex(SlotWidget, Index);
-            }
+            InitializeSlotWidget(SlotWidget, SlotManager.Get(), Index);
 
             int32 SlotColumn = Index % MaxSlotColumn;
             int32 SlotRow = Index / MaxSlotColumn;
@@ -99,6 +96,32 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
 
             SlotWidgetMap.Emplace(Index, SlotWidget);
         }
+    }
+    else
+    {
+        for (int32 Index = OldSlotNum - 1; Index >= NewSlotNum; --Index)
+        {
+            SlotPanel->RemoveChildAt(Index);
+            SlotWidgetMap.Remove(Index);
+        }
+    }
+}
+
+void USlotPanelWidgetBase::UpdateSlotWidgets()
+{
+    for (const auto& [Index, SlotWidget] : SlotWidgetMap)
+    {
+        InitializeSlotWidget(SlotWidget, SlotManager.Get(), Index);
+    }
+}
+
+void USlotPanelWidgetBase::InitializeSlotWidget(UUserWidget* SlotWidget, USlotManagerComponentBase* InSlotManager,
+    int32 InSlotIndex)
+{
+    if (SlotWidget && SlotWidget->Implements<USlotWidgetInterface>())
+    {
+        ISlotWidgetInterface::Execute_SetSlotManager(SlotWidget, InSlotManager);
+        ISlotWidgetInterface::Execute_SetSlotIndex(SlotWidget, InSlotIndex);
     }
 }
 

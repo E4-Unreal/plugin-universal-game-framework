@@ -12,8 +12,10 @@ public class SlotManager : ModuleRules
                 "Core",
                 "UMG",
                 "InputCore",
+
                 "UniversalUtilities",
-                "DataManager"
+                "DataManager",
+                "WidgetManager"
             }
         );
 

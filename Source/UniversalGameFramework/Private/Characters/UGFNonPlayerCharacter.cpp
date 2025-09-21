@@ -3,6 +3,8 @@
 
 #include "Characters/UGFNonPlayerCharacter.h"
 
+#include "Blueprint/UserWidget.h"
+#include "Interfaces/TargetWidgetInterface.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
 
 
@@ -28,7 +30,11 @@ void AUGFNonPlayerCharacter::Interact_Implementation(AActor* Interactor)
 
     if (auto Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->ShowWidget(Interactor, MenuWidgetClass);
+        UUserWidget* MenuWidget = Subsystem->ShowWidget(Interactor, MenuWidgetClass);
+        if (MenuWidget && MenuWidget->Implements<UTargetWidgetInterface>())
+        {
+            ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, this);
+        }
     }
 }
 
