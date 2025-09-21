@@ -6,5 +6,5 @@
 UInventorySystemSettings::UInventorySystemSettings()
 {
     CategoryName = "Plugins";
-    SectionName = "UniversalGameFramework";
+    SectionName = "InventorySystem";
 }
