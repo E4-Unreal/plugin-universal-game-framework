@@ -16,7 +16,7 @@ class UInputBinderComponent;
 class USphereComponent;
 class USpringArmComponent;
 class UCameraComponent;
-class UCommonPawnWidgetManagerComponent;
+class UPawnWidgetManagerComponent;
 class UWeaponManagerComponent;
 
 UCLASS()
@@ -34,7 +34,7 @@ protected:
     const static FName CurrencyManagerName;
     const static FName InventoryName;
     const static FName EquipmentManagerName;
-    const static FName CommonPawnWidgetManagerName;
+    const static FName PawnWidgetManagerName;
     const static FName WeaponManagerName;
 
 private:
@@ -63,7 +63,7 @@ private:
     TObjectPtr<UEquipmentManagerComponent> EquipmentManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UCommonPawnWidgetManagerComponent> CommonPawnWidgetManager;
+    TObjectPtr<UPawnWidgetManagerComponent> PawnWidgetManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UWeaponManagerComponent> WeaponManager;
@@ -91,7 +91,7 @@ public:
     FORCEINLINE UInventoryComponent* GetInventory() const { return Inventory; }
     FORCEINLINE UCurrencyManagerComponent* GetCurrencyManager() const { return CurrencyManager; }
     FORCEINLINE UEquipmentManagerComponent* GetEquipmentManager() const { return EquipmentManager; }
-    FORCEINLINE UCommonPawnWidgetManagerComponent* GetCommonPawnWidgetManager() const { return CommonPawnWidgetManager; }
+    FORCEINLINE UPawnWidgetManagerComponent* GetPawnWidgetManager() const { return PawnWidgetManager; }
     FORCEINLINE UWeaponManagerComponent* GetWeaponManager() const { return WeaponManager; }
 
 protected:

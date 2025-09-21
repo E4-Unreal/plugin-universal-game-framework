@@ -15,7 +15,6 @@ public class CommonWidgetManager : ModuleRules
                 "GameplayTags",
                 "EnhancedInput",
 
-                "InputManager",
                 "WidgetManager"
             }
         );

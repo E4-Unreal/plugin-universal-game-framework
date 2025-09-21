@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "UGFPlayerController.generated.h"
 
-class UCommonPlayerWidgetManagerComponent;
+class UPlayerWidgetManagerComponent;
 
 /**
  *
@@ -17,14 +17,14 @@ class UNIVERSALGAMEFRAMEWORK_API AUGFPlayerController : public APlayerController
     GENERATED_BODY()
 
 protected:
-    const static FName WidgetManagerName;
+    const static FName PlayerWidgetManagerName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UCommonPlayerWidgetManagerComponent> WidgetManager;
+    TObjectPtr<UPlayerWidgetManagerComponent> PlayerWidgetManager;
 
 public:
     AUGFPlayerController(const FObjectInitializer& ObjectInitializer);
 
-    FORCEINLINE UCommonPlayerWidgetManagerComponent* GetWidgetManager() const { return WidgetManager; }
+    FORCEINLINE UPlayerWidgetManagerComponent* GetPlayerWidgetManager() const { return PlayerWidgetManager; }
 };

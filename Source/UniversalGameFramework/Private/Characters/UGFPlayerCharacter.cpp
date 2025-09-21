@@ -6,7 +6,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/CommonPawnWidgetManagerComponent.h"
+#include "Components/PawnWidgetManagerComponent.h"
 #include "Components/CurrencyManagerComponent.h"
 #include "Components/InputBinderComponent.h"
 #include "Components/InteractionSystemComponent.h"
@@ -16,7 +16,6 @@
 #include "Games/UGFSaveGame.h"
 #include "Subsystems/DataManagerSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
-#include "Data/ItemInstance.h"
 #include "Data/UGFItemInstance.h"
 #include "Interfaces/DataInterface.h"
 
@@ -28,7 +27,7 @@ const FName AUGFPlayerCharacter::InteractionSystemName(TEXT("InteractionSystem")
 const FName AUGFPlayerCharacter::CurrencyManagerName(TEXT("CurrencyManager"));
 const FName AUGFPlayerCharacter::InventoryName(TEXT("Inventory"));
 const FName AUGFPlayerCharacter::EquipmentManagerName(TEXT("EquipmentManager"));
-const FName AUGFPlayerCharacter::CommonPawnWidgetManagerName(TEXT("CommonPawnWidgetManager"));
+const FName AUGFPlayerCharacter::PawnWidgetManagerName(TEXT("PawnWidgetManager"));
 const FName AUGFPlayerCharacter::WeaponManagerName(TEXT("WeaponManager"));
 
 AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitializer)
@@ -74,9 +73,9 @@ AUGFPlayerCharacter::AUGFPlayerCharacter(const FObjectInitializer& ObjectInitial
 
     EquipmentManager = CreateOptionalDefaultSubobject<UEquipmentManagerComponent>(EquipmentManagerName);
 
-    /* CommonPawnWidgetManager */
+    /* PawnWidgetManager */
 
-    CommonPawnWidgetManager = CreateDefaultSubobject<UCommonPawnWidgetManagerComponent>(CommonPawnWidgetManagerName);
+    PawnWidgetManager = CreateDefaultSubobject<UPawnWidgetManagerComponent>(PawnWidgetManagerName);
 
     /* WeaponManager */
 
