@@ -62,8 +62,8 @@ protected:
     /* API */
 
     virtual void SetSlotManager(USlotManagerComponentBase* NewSlotManager);
+    virtual void FindSlotManager();
 
-    virtual void ClearSlotWidgets();
     virtual void CreateSlotWidgets();
 
     virtual void BindSlotManagerEvents();

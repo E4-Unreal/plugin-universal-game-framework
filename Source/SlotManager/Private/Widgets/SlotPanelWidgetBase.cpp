@@ -24,7 +24,7 @@ void USlotPanelWidgetBase::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 
-    Execute_SetTargetActor(this, nullptr);
+    FindSlotManager();
 }
 
 void USlotPanelWidgetBase::NativePreConstruct()
@@ -47,32 +47,34 @@ void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotMana
 
     SlotManager = NewSlotManager;
 
-    BindSlotManagerEvents();
     CreateSlotWidgets();
+    BindSlotManagerEvents();
 }
 
-void USlotPanelWidgetBase::ClearSlotWidgets()
+void USlotPanelWidgetBase::FindSlotManager()
 {
-    for (int32 Index = 0; Index < SlotWidgetMap.Num(); ++Index)
+    if (SlotManagerClass == nullptr) return;
+
+    if (APawn* Pawn = GetOwningPlayerPawn())
     {
-        UUserWidget* SlotWidget = SlotWidgetMap[Index];
-        SlotWidget->RemoveFromParent();
-        SlotPanel->RemoveChildAt(Index);
+        SetSlotManager(Cast<USlotManagerComponentBase>(Pawn->GetComponentByClass(SlotManagerClass)));
     }
-    SlotWidgetMap.Reset();
 }
 
 void USlotPanelWidgetBase::CreateSlotWidgets()
 {
-    ClearSlotWidgets();
+    // 유효성 검사
+    if (SlotWidgetClass == nullptr) return;
 
-    if (SlotWidgetClass)
+    // 슬롯 수가 변경되지 않은 경우 무시
+    const int32 OldSlotNum = SlotWidgetMap.Num();
+    const int32 NewSlotNum  = SlotManager.IsValid() ? SlotManager->GetMaxSlotNum() : PreviewSlotNum;
+    if (OldSlotNum == NewSlotNum) return;
+
+    // 슬롯 위젯 생성
+    if (OldSlotNum < NewSlotNum)
     {
-        // Get SlotNum
-        int32 SlotNum  = SlotManager.IsValid() ? SlotManager->GetMaxSlotNum() : PreviewSlotNum;
-
-        // Create SlotWidgets
-        for (int32 Index = 0; Index < SlotNum; ++Index)
+        for (int32 Index = OldSlotNum; Index < NewSlotNum; ++Index)
         {
             UUserWidget* SlotWidget = CreateWidget<UUserWidget>(this, SlotWidgetClass);
             if (SlotWidget && SlotWidget->Implements<USlotWidgetInterface>())
@@ -86,6 +88,14 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
             SlotPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
 
             SlotWidgetMap.Emplace(Index, SlotWidget);
+        }
+    }
+    else
+    {
+        for (int32 Index = OldSlotNum - 1; Index >= NewSlotNum; --Index)
+        {
+            SlotPanel->RemoveChildAt(Index);
+            SlotWidgetMap.Remove(Index);
         }
     }
 }
