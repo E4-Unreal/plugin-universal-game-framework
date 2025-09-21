@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/TargetWidgetInterface.h"
 #include "SlotPanelWidgetBase.generated.h"
 
 class USlotManagerComponentBase;
@@ -14,7 +15,7 @@ class UDataInstanceBase;
  *
  */
 UCLASS(Abstract)
-class SLOTMANAGER_API USlotPanelWidgetBase : public UUserWidget
+class SLOTMANAGER_API USlotPanelWidgetBase : public UUserWidget, public ITargetWidgetInterface
 {
     GENERATED_BODY()
 
@@ -35,7 +36,10 @@ protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UUniformGridPanel> SlotPanel;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
+    TWeakObjectPtr<AActor> TargetActor;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
     TWeakObjectPtr<USlotManagerComponentBase> SlotManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
@@ -44,12 +48,20 @@ protected:
 public:
     USlotPanelWidgetBase(const FObjectInitializer& ObjectInitializer);
 
+    /* TargetWidgetInterface */
+
+    virtual void SetTargetActor_Implementation(AActor* NewTargetActor) override;
+
 protected:
+    /* UserWidget */
+
     virtual void NativeOnInitialized() override;
     virtual void NativePreConstruct() override;
     virtual void NativeDestruct() override;
 
-    virtual void FindSlotManager();
+    /* API */
+
+    virtual void SetSlotManager(USlotManagerComponentBase* NewSlotManager);
 
     virtual void ClearSlotWidgets();
     virtual void CreateSlotWidgets();

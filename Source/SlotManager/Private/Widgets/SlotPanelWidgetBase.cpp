@@ -3,7 +3,6 @@
 
 #include "Widgets/SlotPanelWidgetBase.h"
 
-#include "LandscapeGizmoActiveActor.h"
 #include "Components/SlotManagerComponentBase.h"
 #include "Components/UniformGridPanel.h"
 #include "Interfaces/SlotWidgetInterface.h"
@@ -14,12 +13,18 @@ USlotPanelWidgetBase::USlotPanelWidgetBase(const FObjectInitializer& ObjectIniti
 
 }
 
+void USlotPanelWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
+{
+    TargetActor = NewTargetActor ? NewTargetActor : GetOwningPlayerPawn();
+
+    if (TargetActor.IsValid()) SetSlotManager(Cast<USlotManagerComponentBase>(TargetActor->GetComponentByClass(SlotManagerClass)));
+}
+
 void USlotPanelWidgetBase::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
 
-    FindSlotManager();
-    BindSlotManagerEvents();
+    Execute_SetTargetActor(this, nullptr);
 }
 
 void USlotPanelWidgetBase::NativePreConstruct()
@@ -36,31 +41,13 @@ void USlotPanelWidgetBase::NativeDestruct()
     Super::NativeDestruct();
 }
 
-void USlotPanelWidgetBase::FindSlotManager()
+void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotManager)
 {
-    if (!SlotManagerClass) return;
+    UnBindSlotManagerEvents();
 
-    // Find SlotManager From PlayerController
-    if (SlotManager.IsValid()) return;
+    SlotManager = NewSlotManager;
 
-    if (APlayerController* PlayerController = GetOwningPlayer())
-    {
-        if (USlotManagerComponentBase* FoundComponent = Cast<USlotManagerComponentBase>(PlayerController->GetComponentByClass(SlotManagerClass)))
-        {
-            SlotManager = FoundComponent;
-        }
-    }
-
-    // Find SlotManager From PlayerPawn
-    if (SlotManager.IsValid()) return;
-
-    if (APawn* PlayerPawn = GetOwningPlayerPawn())
-    {
-        if (USlotManagerComponentBase* FoundComponent = Cast<USlotManagerComponentBase>(PlayerPawn->GetComponentByClass(SlotManagerClass.Get())))
-        {
-            SlotManager = FoundComponent;
-        }
-    }
+    BindSlotManagerEvents();
 }
 
 void USlotPanelWidgetBase::ClearSlotWidgets()
