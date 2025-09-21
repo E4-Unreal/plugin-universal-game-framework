@@ -31,6 +31,7 @@ void UPawnInputManagerComponentBase::BindInputActions()
     EnhancedInputComponent = Cast<UEnhancedInputComponent>(CastChecked<APawn>(GetOwner())->InputComponent);
     if (EnhancedInputComponent.IsValid())
     {
+        const auto& InputActionConfigs = GetInputActionConfigs();
         InputActionBindingHandles.Reserve(InputActionConfigs.Num());
         for (const auto& [InputAction, TriggerEvents] : InputActionConfigs)
         {

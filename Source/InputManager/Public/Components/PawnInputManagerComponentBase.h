@@ -17,10 +17,6 @@ class INPUTMANAGER_API UPawnInputManagerComponentBase : public UActorComponent
 {
     GENERATED_BODY()
 
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TArray<FInputActionConfigData> InputActionConfigs;
-
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
     TWeakObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
@@ -38,6 +34,8 @@ public:
 
 protected:
     /* API */
+
+    virtual TArray<FInputActionConfigData> GetInputActionConfigs() { return TArray<FInputActionConfigData>(); }
 
     virtual void BindInputActions();
     virtual void UnBindInputActions();
