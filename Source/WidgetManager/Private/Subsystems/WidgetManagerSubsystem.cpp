@@ -59,9 +59,9 @@ UUserWidget* UWidgetManagerSubsystem::ShowAlertWidget(AActor* PlayerActor, const
     {
         if (UUserWidget* Widget = PlayerWidgetManager->ShowWidget(WidgetClass))
         {
-            IAlertWidgetInterface::Execute_SetTitleText(Widget, TitleText);
-            IAlertWidgetInterface::Execute_SetMessageText(Widget, MessageText);
-            IAlertWidgetInterface::Execute_BindOnWidgetHidden(Widget, WidgetHiddenDelegate);
+            IPopupWidgetInterface::Execute_SetTitleText(Widget, TitleText);
+            IPopupWidgetInterface::Execute_SetMessageText(Widget, MessageText);
+            IPopupWidgetInterface::Execute_BindOnWidgetHidden(Widget, WidgetHiddenDelegate);
 
             return Widget;
         }
@@ -81,9 +81,10 @@ UUserWidget* UWidgetManagerSubsystem::ShowConfirmWidget(AActor* PlayerActor, con
     {
         if (UUserWidget* Widget = PlayerWidgetManager->ShowWidget(WidgetClass))
         {
-            IConfirmWidgetInterface::Execute_SetTitleText(Widget, TitleText);
-            IConfirmWidgetInterface::Execute_SetMessageText(Widget, MessageText);
-            IConfirmWidgetInterface::Execute_BindOnWidgetHidden(Widget, WidgetHiddenDelegate);
+            IPopupWidgetInterface::Execute_SetTitleText(Widget, TitleText);
+            IPopupWidgetInterface::Execute_SetMessageText(Widget, MessageText);
+            IPopupWidgetInterface::Execute_BindOnWidgetHidden(Widget, WidgetHiddenDelegate);
+
             IConfirmWidgetInterface::Execute_BindOnConfirmButtonClicked(Widget, ConfirmButtonClickedDelegate);
 
             return Widget;
@@ -105,9 +106,10 @@ UUserWidget* UWidgetManagerSubsystem::ShowPromptWidget(AActor* PlayerActor, cons
     {
         if (UUserWidget* Widget = PlayerWidgetManager->ShowWidget(WidgetClass))
         {
-            IPromptWidgetInterface::Execute_SetTitleText(Widget, TitleText);
-            IPromptWidgetInterface::Execute_SetMessageText(Widget, MessageText);
-            IPromptWidgetInterface::Execute_BindOnWidgetHidden(Widget, WidgetHiddenDelegate);
+            IPopupWidgetInterface::Execute_SetTitleText(Widget, TitleText);
+            IPopupWidgetInterface::Execute_SetMessageText(Widget, MessageText);
+            IPopupWidgetInterface::Execute_BindOnWidgetHidden(Widget, WidgetHiddenDelegate);
+
             IPromptWidgetInterface::Execute_BindOnPromptSubmitted(Widget, PromptSubmittedDelegate);
             IPromptWidgetInterface::Execute_SetNumeric(Widget, bNumeric);
             IPromptWidgetInterface::Execute_SetMinValue(Widget, MinValue);

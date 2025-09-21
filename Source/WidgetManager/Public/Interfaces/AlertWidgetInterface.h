@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PopupWidgetInterface.h"
+#include "UObject/Interface.h"
 #include "AlertWidgetInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UAlertWidgetInterface : public UPopupWidgetInterface
+class UAlertWidgetInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -15,7 +15,7 @@ class UAlertWidgetInterface : public UPopupWidgetInterface
 /**
  *
  */
-class WIDGETMANAGER_API IAlertWidgetInterface : public IPopupWidgetInterface
+class WIDGETMANAGER_API IAlertWidgetInterface
 {
     GENERATED_BODY()
 

@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PopupWidgetInterface.h"
+#include "UObject/Interface.h"
 #include "ConfirmWidgetInterface.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE(FOnButtonClicked);
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UConfirmWidgetInterface : public UPopupWidgetInterface
+class UConfirmWidgetInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -17,7 +17,7 @@ class UConfirmWidgetInterface : public UPopupWidgetInterface
 /**
  *
  */
-class WIDGETMANAGER_API IConfirmWidgetInterface : public IPopupWidgetInterface
+class WIDGETMANAGER_API IConfirmWidgetInterface
 {
     GENERATED_BODY()
 

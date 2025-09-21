@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PopupWidgetInterface.h"
+#include "UObject/Interface.h"
 #include "PromptWidgetInterface.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnPromptSubmitted, const FText&, SubmittedText);
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UPromptWidgetInterface : public UPopupWidgetInterface
+class UPromptWidgetInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -17,7 +17,7 @@ class UPromptWidgetInterface : public UPopupWidgetInterface
 /**
  *
  */
-class WIDGETMANAGER_API IPromptWidgetInterface : public IPopupWidgetInterface
+class WIDGETMANAGER_API IPromptWidgetInterface
 {
     GENERATED_BODY()
 
