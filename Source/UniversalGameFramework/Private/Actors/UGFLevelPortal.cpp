@@ -36,7 +36,7 @@ void AUGFLevelPortal::Interact_Implementation(AActor* Interactor)
         if (APlayerController* PlayerController = Cast<APlayerController>(Pawn->GetController()))
         {
             RequestConfirmPopup(PlayerController);
-            GetInteractableComponent()->HideInteractionWidget();
+            GetInteractableComponent()->Deselect(Interactor);
         }
     }
 }

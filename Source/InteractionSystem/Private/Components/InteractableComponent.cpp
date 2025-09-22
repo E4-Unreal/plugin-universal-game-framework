@@ -11,6 +11,7 @@
 #include "Interfaces/InteractableInterface.h"
 #include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
+#include "Subsystems/WidgetManagerSubsystem.h"
 
 UInteractableComponent::UInteractableComponent()
 {
@@ -76,6 +77,8 @@ void UInteractableComponent::Interact(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnInteract(Interactor);
     }
 }
 
@@ -84,6 +87,8 @@ void UInteractableComponent::CancelInteract(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnCancelInteract(Interactor);
     }
 }
 
@@ -100,8 +105,7 @@ void UInteractableComponent::Select(AActor* Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        ActivateOutlineEffect();
-        ShowInteractionWidget();
+        OnSelect(Interactor);
     }
 }
 
@@ -111,9 +115,30 @@ void UInteractableComponent::Deselect(AActor* Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        DeactivateOutlineEffect();
-        HideInteractionWidget();
+        OnDeselect(Interactor);
     }
+}
+
+void UInteractableComponent::OnInteract_Implementation(AActor* Interactor)
+{
+    ShowMenuWidget(Interactor);
+}
+
+void UInteractableComponent::OnCancelInteract_Implementation(AActor* Interactor)
+{
+
+}
+
+void UInteractableComponent::OnSelect_Implementation(AActor* Interactor)
+{
+    ActivateOutlineEffect();
+    ShowInteractionWidget();
+}
+
+void UInteractableComponent::OnDeselect_Implementation(AActor* Interactor)
+{
+    DeactivateOutlineEffect();
+    HideInteractionWidget();
 }
 
 void UInteractableComponent::ActivateOutlineEffect()
@@ -146,6 +171,26 @@ void UInteractableComponent::HideInteractionWidget()
     {
         WidgetComponent->SetVisibility(false);
     }
+}
+
+UUserWidget* UInteractableComponent::ShowMenuWidget(AActor* PlayerActor)
+{
+    if (PlayerActor && MenuWidgetClass)
+    {
+        return GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->ShowWidget(PlayerActor, MenuWidgetClass);
+    }
+
+    return nullptr;
+}
+
+bool UInteractableComponent::HideMenuWidget(AActor* PlayerActor)
+{
+    if (PlayerActor && MenuWidgetClass)
+    {
+        return GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->HideWidget(PlayerActor, MenuWidgetClass);
+    }
+
+    return false;
 }
 
 UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
@@ -247,36 +292,19 @@ void UInteractableComponent::InitWidgetComponent() const
     }
 }
 
-void UInteractableComponent::Shrink()
-{
-    for (int32 Index = OverlappingActors.Num() - 1; Index >= 0; --Index)
-    {
-        if (!OverlappingActors[Index].IsValid())
-        {
-            OverlappingActors.RemoveAt(Index, EAllowShrinking::No);
-        }
-    }
-
-    OverlappingActors.Shrink();
-}
-
 void UInteractableComponent::AddOverlappingActor(AActor* NewActor)
 {
-    if (NewActor)
+    if (NewActor && !OverlappingActors.Contains(NewActor))
     {
-        Shrink();
-
-        if (!OverlappingActors.Contains(NewActor)) OverlappingActors.Emplace(NewActor);
+        OverlappingActors.Emplace(NewActor);
     }
 }
 
 void UInteractableComponent::RemoveOverlappingActor(AActor* OldActor)
 {
-    if (OldActor)
+    if (OldActor && OverlappingActors.Contains(OldActor))
     {
-        Shrink();
-
-        if (OverlappingActors.Contains(OldActor)) OverlappingActors.RemoveSingleSwap(OldActor);
+        OverlappingActors.RemoveSingleSwap(OldActor);
     }
 }
 
