@@ -3,6 +3,7 @@
 
 #include "Actors/InteractableActor.h"
 
+#include "Components/InteractionWidgetComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 
@@ -12,7 +13,8 @@ FName AInteractableActor::WidgetComponentName(TEXT("WidgetComponent"));
 FName AInteractableActor::OverlapSphereName(TEXT("OverlapSphere"));
 
 AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+    : Super(ObjectInitializer
+        .SetDefaultSubobjectClass(WidgetComponentName, UInteractionWidgetComponent::StaticClass()))
 {
     /* DefaultScene */
 
@@ -28,9 +30,6 @@ AInteractableActor::AInteractableActor(const FObjectInitializer& ObjectInitializ
 
     WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(WidgetComponentName);
     GetWidgetComponent()->SetupAttachment(GetRootComponent());
-    GetWidgetComponent()->SetVisibility(false);
-    GetWidgetComponent()->SetWidgetSpace(EWidgetSpace::Screen);
-    GetWidgetComponent()->SetDrawAtDesiredSize(true);
 
     /* OverlapSphere */
 
