@@ -90,6 +90,11 @@ public:
     void Deselect(AActor* Interactor);
 
 protected:
+    /* Getter */
+
+    TSubclassOf<UUserWidget> GetInteractionWidgetClass() const;
+    UInteractionSystemComponent* GetPlayerInteractionSystem() const;
+
     /* API */
 
     UFUNCTION(BlueprintNativeEvent)
@@ -112,8 +117,6 @@ protected:
 
     virtual UUserWidget* ShowMenuWidget(AActor* PlayerActor);
     virtual bool HideMenuWidget(AActor* PlayerActor);
-
-    UInteractionSystemComponent* GetPlayerInteractionSystem() const;
 
     virtual void FindDisplayMesh();
     virtual void FindWidgetComponent();

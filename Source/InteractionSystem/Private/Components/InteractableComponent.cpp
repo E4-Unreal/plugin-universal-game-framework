@@ -12,6 +12,7 @@
 #include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
 #include "Interfaces/TargetWidgetInterface.h"
+#include "Settings/InteractionSystemSettings.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
 
 UInteractableComponent::UInteractableComponent()
@@ -119,6 +120,24 @@ void UInteractableComponent::Deselect(AActor* Interactor)
     }
 }
 
+TSubclassOf<UUserWidget> UInteractableComponent::GetInteractionWidgetClass() const
+{
+    return InteractionWidgetClass ? InteractionWidgetClass : UInteractionSystemSettings::Get()->GetDefaultInteractionWidgetClass();
+}
+
+UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
+{
+    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    {
+        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        {
+            return InteractionSystem;
+        }
+    }
+
+    return nullptr;
+}
+
 void UInteractableComponent::OnInteract_Implementation(AActor* Interactor)
 {
     ShowMenuWidget(Interactor);
@@ -197,19 +216,6 @@ bool UInteractableComponent::HideMenuWidget(AActor* PlayerActor)
     }
 
     return false;
-}
-
-UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
-{
-    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
-    {
-        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
-        {
-            return InteractionSystem;
-        }
-    }
-
-    return nullptr;
 }
 
 void UInteractableComponent::FindDisplayMesh()

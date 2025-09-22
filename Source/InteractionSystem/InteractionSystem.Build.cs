@@ -15,6 +15,7 @@ public class InteractionSystem : ModuleRules
                 "GameplayTags",
                 "UMG",
                 "InputCore",
+                "DeveloperSettings",
 
                 // UniversalGameFramework
                 "WidgetManager"
