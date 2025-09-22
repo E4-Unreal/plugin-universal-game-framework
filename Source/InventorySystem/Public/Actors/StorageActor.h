@@ -22,15 +22,7 @@ private:
     TObjectPtr<UInventoryComponent> Inventory;
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UUserWidget> StorageWidgetClass;
-
-public:
     AStorageActor(const FObjectInitializer& ObjectInitializer);
-
-    /* InteractableInterface */
-
-    virtual void Interact_Implementation(AActor* Interactor) override;
 
     /* Components */
 

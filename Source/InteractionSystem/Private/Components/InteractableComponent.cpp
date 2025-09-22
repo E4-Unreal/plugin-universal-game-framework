@@ -11,6 +11,7 @@
 #include "Interfaces/InteractableInterface.h"
 #include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
+#include "Interfaces/TargetWidgetInterface.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
 
 UInteractableComponent::UInteractableComponent()
@@ -176,7 +177,13 @@ UUserWidget* UInteractableComponent::ShowMenuWidget(AActor* PlayerActor)
 {
     if (PlayerActor && MenuWidgetClass)
     {
-        return GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->ShowWidget(PlayerActor, MenuWidgetClass);
+        UUserWidget* MenuWidget = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->ShowWidget(PlayerActor, MenuWidgetClass);
+        if (MenuWidget && MenuWidget->Implements<UTargetWidgetInterface>())
+        {
+            ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, GetOwner());
+        }
+
+        return MenuWidget;
     }
 
     return nullptr;
