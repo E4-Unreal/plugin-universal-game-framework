@@ -18,7 +18,6 @@ UInteractableComponent::UInteractableComponent()
     bWantsInitializeComponent = true;
 
     InteractionType = Interaction::Root;
-    bPlayerOnly = true;
     bUseCursorEvent = true;
     bUseOutlineEffect = true;
 }

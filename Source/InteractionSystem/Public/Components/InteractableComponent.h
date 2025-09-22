@@ -30,12 +30,6 @@ public:
     FText InteractionMessage;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    float InteractionTime;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bPlayerOnly;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bUseCursorEvent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
