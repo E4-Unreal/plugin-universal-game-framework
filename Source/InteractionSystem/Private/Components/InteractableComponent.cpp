@@ -288,7 +288,7 @@ void UInteractableComponent::InitWidgetComponent() const
 {
     if (!WidgetComponent.IsValid()) return;
 
-    WidgetComponent->SetWidgetClass(InteractionWidgetClass);
+    WidgetComponent->SetWidgetClass(GetInteractionWidgetClass());
     WidgetComponent->InitWidget();
 
     if (auto InteractionWidget = WidgetComponent->GetWidget())
