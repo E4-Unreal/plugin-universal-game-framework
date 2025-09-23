@@ -11,13 +11,15 @@
 #include "Interfaces/InteractableInterface.h"
 #include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
+#include "Interfaces/TargetWidgetInterface.h"
+#include "Settings/InteractionSystemSettings.h"
+#include "Subsystems/WidgetManagerSubsystem.h"
 
 UInteractableComponent::UInteractableComponent()
 {
     bWantsInitializeComponent = true;
 
     InteractionType = Interaction::Root;
-    bPlayerOnly = true;
     bUseCursorEvent = true;
     bUseOutlineEffect = true;
 }
@@ -76,6 +78,8 @@ void UInteractableComponent::Interact(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnInteract(Interactor);
     }
 }
 
@@ -84,6 +88,8 @@ void UInteractableComponent::CancelInteract(AActor* Interactor)
     if (Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnCancelInteract(Interactor);
     }
 }
 
@@ -100,8 +106,7 @@ void UInteractableComponent::Select(AActor* Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        ActivateOutlineEffect();
-        ShowInteractionWidget();
+        OnSelect(Interactor);
     }
 }
 
@@ -111,9 +116,48 @@ void UInteractableComponent::Deselect(AActor* Interactor)
     {
         LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
 
-        DeactivateOutlineEffect();
-        HideInteractionWidget();
+        OnDeselect(Interactor);
     }
+}
+
+TSubclassOf<UUserWidget> UInteractableComponent::GetInteractionWidgetClass() const
+{
+    return InteractionWidgetClass ? InteractionWidgetClass : UInteractionSystemSettings::Get()->GetDefaultInteractionWidgetClass();
+}
+
+UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
+{
+    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    {
+        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        {
+            return InteractionSystem;
+        }
+    }
+
+    return nullptr;
+}
+
+void UInteractableComponent::OnInteract_Implementation(AActor* Interactor)
+{
+    ShowMenuWidget(Interactor);
+}
+
+void UInteractableComponent::OnCancelInteract_Implementation(AActor* Interactor)
+{
+
+}
+
+void UInteractableComponent::OnSelect_Implementation(AActor* Interactor)
+{
+    ActivateOutlineEffect();
+    ShowInteractionWidget();
+}
+
+void UInteractableComponent::OnDeselect_Implementation(AActor* Interactor)
+{
+    DeactivateOutlineEffect();
+    HideInteractionWidget();
 }
 
 void UInteractableComponent::ActivateOutlineEffect()
@@ -148,17 +192,30 @@ void UInteractableComponent::HideInteractionWidget()
     }
 }
 
-UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem() const
+UUserWidget* UInteractableComponent::ShowMenuWidget(AActor* PlayerActor)
 {
-    if (APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn())
+    if (PlayerActor && MenuWidgetClass)
     {
-        if (auto InteractionSystem = PlayerPawn->GetComponentByClass<UInteractionSystemComponent>())
+        UUserWidget* MenuWidget = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->ShowWidget(PlayerActor, MenuWidgetClass);
+        if (MenuWidget && MenuWidget->Implements<UTargetWidgetInterface>())
         {
-            return InteractionSystem;
+            ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, GetOwner());
         }
+
+        return MenuWidget;
     }
 
     return nullptr;
+}
+
+bool UInteractableComponent::HideMenuWidget(AActor* PlayerActor)
+{
+    if (PlayerActor && MenuWidgetClass)
+    {
+        return GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->HideWidget(PlayerActor, MenuWidgetClass);
+    }
+
+    return false;
 }
 
 void UInteractableComponent::FindDisplayMesh()
@@ -231,7 +288,7 @@ void UInteractableComponent::InitWidgetComponent() const
 {
     if (!WidgetComponent.IsValid()) return;
 
-    WidgetComponent->SetWidgetClass(InteractionWidgetClass);
+    WidgetComponent->SetWidgetClass(GetInteractionWidgetClass());
     WidgetComponent->InitWidget();
 
     if (auto InteractionWidget = WidgetComponent->GetWidget())
@@ -247,36 +304,19 @@ void UInteractableComponent::InitWidgetComponent() const
     }
 }
 
-void UInteractableComponent::Shrink()
-{
-    for (int32 Index = OverlappingActors.Num() - 1; Index >= 0; --Index)
-    {
-        if (!OverlappingActors[Index].IsValid())
-        {
-            OverlappingActors.RemoveAt(Index, EAllowShrinking::No);
-        }
-    }
-
-    OverlappingActors.Shrink();
-}
-
 void UInteractableComponent::AddOverlappingActor(AActor* NewActor)
 {
-    if (NewActor)
+    if (NewActor && !OverlappingActors.Contains(NewActor))
     {
-        Shrink();
-
-        if (!OverlappingActors.Contains(NewActor)) OverlappingActors.Emplace(NewActor);
+        OverlappingActors.Emplace(NewActor);
     }
 }
 
 void UInteractableComponent::RemoveOverlappingActor(AActor* OldActor)
 {
-    if (OldActor)
+    if (OldActor && OverlappingActors.Contains(OldActor))
     {
-        Shrink();
-
-        if (OverlappingActors.Contains(OldActor)) OverlappingActors.RemoveSingleSwap(OldActor);
+        OverlappingActors.RemoveSingleSwap(OldActor);
     }
 }
 

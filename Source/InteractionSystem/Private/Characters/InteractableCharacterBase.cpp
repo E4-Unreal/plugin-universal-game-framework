@@ -4,6 +4,7 @@
 #include "Characters/InteractableCharacterBase.h"
 
 #include "Components/InteractableComponent.h"
+#include "GameplayTags/InteractionGameplaytags.h"
 
 FName AInteractableCharacterBase::InteractableComponentName(TEXT("InteractableComponent"));
 
@@ -13,6 +14,8 @@ AInteractableCharacterBase::AInteractableCharacterBase(const FObjectInitializer&
     /* InteractableComponent */
 
     InteractableComponent = CreateDefaultSubobject<UInteractableComponent>(InteractableComponentName);
+    GetInteractableComponent()->InteractionType = Interaction::Talk;
+    GetInteractableComponent()->InteractionMessage = NSLOCTEXT("InteractionSystem", "Villager", "Villager");
 }
 
 FGameplayTag AInteractableCharacterBase::GetInteractionType_Implementation() const

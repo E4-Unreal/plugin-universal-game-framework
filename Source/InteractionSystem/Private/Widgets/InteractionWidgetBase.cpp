@@ -10,6 +10,8 @@ UInteractionWidgetBase::UInteractionWidgetBase(const FObjectInitializer& ObjectI
     : Super(ObjectInitializer)
 {
     InteractionTypeTextMap.Emplace(Interaction::Root, NSLOCTEXT("InteractionSystem", "Interact", "Interact"));
+    InteractionTypeTextMap.Emplace(Interaction::Open, NSLOCTEXT("InteractionSystem", "Open", "Open"));
+    InteractionTypeTextMap.Emplace(Interaction::Pickup, NSLOCTEXT("InteractionSystem", "Pickup", "Pickup"));
     InteractionTypeTextMap.Emplace(Interaction::Talk, NSLOCTEXT("InteractionSystem", "Talk", "Talk"));
 }
 

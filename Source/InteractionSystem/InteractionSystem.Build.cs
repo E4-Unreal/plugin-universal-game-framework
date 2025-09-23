@@ -14,7 +14,11 @@ public class InteractionSystem : ModuleRules
                 "EnhancedInputBinder",
                 "GameplayTags",
                 "UMG",
-                "InputCore"
+                "InputCore",
+                "DeveloperSettings",
+
+                // UniversalGameFramework
+                "WidgetManager"
             }
         );
 

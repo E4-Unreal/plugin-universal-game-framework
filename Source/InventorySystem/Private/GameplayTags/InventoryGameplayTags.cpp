@@ -2,16 +2,6 @@
 
 namespace InventorySystem
 {
-    namespace Interaction
-    {
-        UE_DEFINE_GAMEPLAY_TAG(Pickup, "Interaction.Pickup")
-
-        namespace Open
-        {
-            UE_DEFINE_GAMEPLAY_TAG(Box, "Interaction.Open.Box")
-        }
-    }
-
     namespace Item
     {
         UE_DEFINE_GAMEPLAY_TAG(Root, "Item")

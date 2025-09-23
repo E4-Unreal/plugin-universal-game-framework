@@ -20,17 +20,14 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "InteractionWidgetInterface"))
     TSubclassOf<UUserWidget> InteractionWidgetClass;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "TargetWidgetInterface"))
+    TSubclassOf<UUserWidget> MenuWidgetClass;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))
     FGameplayTag InteractionType;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText InteractionMessage;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    float InteractionTime;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    bool bPlayerOnly;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bUseCursorEvent;
@@ -78,36 +75,48 @@ public:
     virtual bool CanInteract(AActor* Interactor) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void Interact(AActor* Interactor);
+    void Interact(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable)
-    virtual void CancelInteract(AActor* Interactor);
+    void CancelInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintPure)
     virtual bool CanSelect(AActor* Interactor) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void Select(AActor* Interactor);
+    void Select(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable)
-    virtual void Deselect(AActor* Interactor);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void ActivateOutlineEffect();
-
-    UFUNCTION(BlueprintCallable)
-    virtual void DeactivateOutlineEffect();
-
-    UFUNCTION(BlueprintCallable)
-    virtual void ShowInteractionWidget();
-
-    UFUNCTION(BlueprintCallable)
-    virtual void HideInteractionWidget();
+    void Deselect(AActor* Interactor);
 
 protected:
+    /* Getter */
+
+    TSubclassOf<UUserWidget> GetInteractionWidgetClass() const;
+    UInteractionSystemComponent* GetPlayerInteractionSystem() const;
+
     /* API */
 
-    UInteractionSystemComponent* GetPlayerInteractionSystem() const;
+    UFUNCTION(BlueprintNativeEvent)
+    void OnInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnCancelInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnSelect(AActor* Interactor);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnDeselect(AActor* Interactor);
+
+    virtual void ActivateOutlineEffect();
+    virtual void DeactivateOutlineEffect();
+
+    virtual void ShowInteractionWidget();
+    virtual void HideInteractionWidget();
+
+    virtual UUserWidget* ShowMenuWidget(AActor* PlayerActor);
+    virtual bool HideMenuWidget(AActor* PlayerActor);
 
     virtual void FindDisplayMesh();
     virtual void FindWidgetComponent();
@@ -121,7 +130,6 @@ protected:
 
     virtual void InitWidgetComponent() const;
 
-    virtual void Shrink();
     virtual void AddOverlappingActor(AActor* NewActor);
     virtual void RemoveOverlappingActor(AActor* OldActor);
 

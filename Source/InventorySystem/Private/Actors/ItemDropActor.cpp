@@ -5,7 +5,7 @@
 
 #include "Components/InteractableComponent.h"
 #include "Components/ItemDropComponent.h"
-#include "GameplayTags/InventoryGameplayTags.h"
+#include "GameplayTags/InteractionGameplayTags.h"
 
 const FName AItemDropActor::ItemDropComponentName(TEXT("ItemDropComponent"));
 
@@ -14,7 +14,7 @@ AItemDropActor::AItemDropActor(const FObjectInitializer& ObjectInitializer)
 {
     /* InteractableComponent */
 
-    GetInteractableComponent()->InteractionType = Interaction::Open::Box;
+    GetInteractableComponent()->InteractionType = Interaction::Open;
 
     /* ItemContainer */
 
