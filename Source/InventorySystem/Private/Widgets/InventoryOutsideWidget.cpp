@@ -5,7 +5,7 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/InventoryComponent.h"
-#include "Data/DataInstanceBase.h"
+#include "Data/DataObjectBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
 #include "Widgets/SlotWidgetBase.h"
 

@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "DataInterface.generated.h"
 
-class UDataInstanceBase;
+class UDataObjectBase;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UDataInterface : public UInterface

@@ -5,8 +5,8 @@
 
 #include "Net/UnrealNetwork.h"
 #include "Logging.h"
-#include "Data/DataInstanceBase.h"
-#include "Interfaces/DataInstanceInterface.h"
+#include "Data/DataObjectBase.h"
+#include "Interfaces/DataObjectInterface.h"
 #include "Interfaces/DataInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
@@ -204,7 +204,7 @@ void USlotManagerComponentBase::MappingSlots()
 
 bool USlotManagerComponentBase::CheckContent(UObject* Content) const
 {
-    if (Content == nullptr || !Content->Implements<UDataInstanceInterface>()) return false;
+    if (Content == nullptr || !Content->Implements<UDataObjectInterface>()) return false;
 
     UDataAsset* Data = GetDataFromContent(Content);
     if (!CheckData(Data)) return false;
@@ -237,7 +237,7 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 
 UDataAsset* USlotManagerComponentBase::GetDataFromContent(UObject* InContent) const
 {
-    return InContent && InContent->Implements<UDataInstanceInterface>() ? IDataInstanceInterface::Execute_GetData(InContent) : nullptr;
+    return InContent && InContent->Implements<UDataObjectInterface>() ? IDataObjectInterface::Execute_GetData(InContent) : nullptr;
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)

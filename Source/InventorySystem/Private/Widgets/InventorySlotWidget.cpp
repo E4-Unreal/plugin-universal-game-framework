@@ -5,7 +5,7 @@
 
 #include "Components/SlotManagerComponentBase.h"
 #include "Components/TextBlock.h"
-#include "Data/DataInstanceBase.h"
+#include "Data/DataObjectBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
 
 void UInventorySlotWidget::Refresh_Implementation()

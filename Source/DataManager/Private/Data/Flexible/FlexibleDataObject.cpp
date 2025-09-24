@@ -1,19 +1,19 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/Flexible/FlexibleDataInstance.h"
+#include "Data/Flexible/FlexibleDataObject.h"
 
-#include "Data/Flexible/DataInstanceFragment.h"
+#include "Data/Flexible/DataObjectFragment.h"
 #include "Net/UnrealNetwork.h"
 
-void UFlexibleDataInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+void UFlexibleDataObject::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ThisClass, Fragments)
 }
 
-UDataInstanceFragment* UFlexibleDataInstance::GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const
+UDataObjectFragment* UFlexibleDataObject::GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const
 {
     if (InterfaceClass)
     {

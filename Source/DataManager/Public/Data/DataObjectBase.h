@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "ReplicatedObject.h"
-#include "Interfaces/DataInstanceInterface.h"
-#include "DataInstanceBase.generated.h"
+#include "Interfaces/DataObjectInterface.h"
+#include "DataObjectBase.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract, EditInlineNew)
-class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject, public IDataInstanceInterface
+class DATAMANAGER_API UDataObjectBase : public UReplicatedObject, public IDataObjectInterface
 {
     GENERATED_BODY()
 
