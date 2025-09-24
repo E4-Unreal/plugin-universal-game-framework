@@ -16,3 +16,8 @@ UUGFItemDefinition::UUGFItemDefinition()
 
     CurrencyType = Currency::Default;
 }
+
+FPrimaryAssetId UUGFItemDefinition::GetPrimaryAssetId() const
+{
+    return FPrimaryAssetId("Item", FName(FString::FromInt(ID)));
+}
