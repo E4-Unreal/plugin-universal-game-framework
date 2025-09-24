@@ -1,17 +1,17 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Subsystems/DataManagerSubsystem.h"
+#include "Subsystems/SaveGameSubsystem.h"
 
 #include "GameFramework/SaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
-UDataManagerSubsystem::UDataManagerSubsystem()
+USaveGameSubsystem::USaveGameSubsystem()
 {
     DefaultSlotName = "Save";
 }
 
-bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+bool USaveGameSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
     TArray<UClass*> ChildClasses;
     GetDerivedClasses(GetClass(), ChildClasses, false);
@@ -19,7 +19,7 @@ bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
     return ChildClasses.Num() == 0;
 }
 
-void UDataManagerSubsystem::SaveDataToSlot(FString SlotName, int32 SlotIndex)
+void USaveGameSubsystem::SaveDataToSlot(FString SlotName, int32 SlotIndex)
 {
     if (SaveGameClass == nullptr) return;
 
@@ -31,7 +31,7 @@ void UDataManagerSubsystem::SaveDataToSlot(FString SlotName, int32 SlotIndex)
     UGameplayStatics::SaveGameToSlot(SaveGame, GetSaveName(SlotName, SlotIndex), 0);
 }
 
-void UDataManagerSubsystem::LoadDataFromSlot(FString SlotName, int32 SlotIndex)
+void USaveGameSubsystem::LoadDataFromSlot(FString SlotName, int32 SlotIndex)
 {
     if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
     {
@@ -41,17 +41,17 @@ void UDataManagerSubsystem::LoadDataFromSlot(FString SlotName, int32 SlotIndex)
     }
 }
 
-FString UDataManagerSubsystem::GetSaveName_Implementation(const FString& SlotName, int32 SlotIndex) const
+FString USaveGameSubsystem::GetSaveName_Implementation(const FString& SlotName, int32 SlotIndex) const
 {
     return SlotIndex == 0 ? SlotName : SlotName + "_" + FString::FromInt(SlotIndex);
 }
 
-void UDataManagerSubsystem::OnSaveData_Implementation()
+void USaveGameSubsystem::OnSaveData_Implementation()
 {
     // Save Data to SaveGame
 }
 
-void UDataManagerSubsystem::OnLoadData_Implementation()
+void USaveGameSubsystem::OnLoadData_Implementation()
 {
     // Load Data from SaveGame
 }

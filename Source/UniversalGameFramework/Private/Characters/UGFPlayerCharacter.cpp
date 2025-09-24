@@ -14,7 +14,7 @@
 #include "Components/EquipmentManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Games/UGFSaveGame.h"
-#include "Subsystems/DataManagerSubsystem.h"
+#include "Subsystems/SaveGameSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
 #include "Data/UGFItemInstance.h"
 #include "Interfaces/DataInterface.h"
@@ -86,7 +86,7 @@ void AUGFPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (UDataManagerSubsystem* DataManagerSubsystem = GetGameInstance()->GetSubsystem<UDataManagerSubsystem>())
+    if (USaveGameSubsystem* DataManagerSubsystem = GetGameInstance()->GetSubsystem<USaveGameSubsystem>())
     {
         DataManagerSubsystem->OnSaveDataDelegate.AddDynamic(this, &ThisClass::OnSaveData);
         DataManagerSubsystem->OnLoadDataDelegate.AddDynamic(this, &ThisClass::OnLoadData);

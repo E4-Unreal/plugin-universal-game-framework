@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "DataManagerSubsystem.generated.h"
+#include "SaveGameSubsystem.generated.h"
 
 class USaveGame;
 
@@ -14,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSaveGameDelegate, USaveGame*, SaveG
  *
  */
 UCLASS()
-class DATAMANAGER_API UDataManagerSubsystem : public UGameInstanceSubsystem
+class DATAMANAGER_API USaveGameSubsystem : public UGameInstanceSubsystem
 {
     GENERATED_BODY()
 
@@ -36,7 +36,7 @@ protected:
     TObjectPtr<USaveGame> SaveGame;
 
 public:
-    UDataManagerSubsystem();
+    USaveGameSubsystem();
 
     virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
