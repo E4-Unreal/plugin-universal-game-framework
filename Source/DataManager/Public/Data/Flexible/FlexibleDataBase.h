@@ -24,5 +24,20 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
+    virtual UDataFragment* GetFragmentByClass(TSubclassOf<UDataFragment> FragmentClass) const { return nullptr; }
+
+    template <typename TFragment = UDataFragment>
+    TFragment* GetFragmentByClass() const
+    {
+        return GetFragmentByClass(TFragment::StaticClass());
+    }
+
+    UFUNCTION(BlueprintPure)
     virtual UDataFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const { return nullptr; }
+
+    template <typename TInterface = UInterface>
+    UDataFragment* GetFragmentByInterface() const
+    {
+        return GetFragmentByInterface(TInterface::StaticClass());
+    }
 };
