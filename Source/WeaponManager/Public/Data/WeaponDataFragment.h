@@ -33,6 +33,8 @@ public:
     float MaxDurability;
 
 public:
+    UWeaponDataFragment();
+
     /* WeaponDataInterface */
 
     virtual FGameplayTag GetSlotType_Implementation() const override { return SlotType; }

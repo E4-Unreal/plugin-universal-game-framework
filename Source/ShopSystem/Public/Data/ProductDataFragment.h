@@ -20,13 +20,15 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Currency"))
     FGameplayTag CurrencyType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
     int32 BuyPrice;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
     int32 SellPrice;
 
 public:
+    UProductDataFragment();
+
     /* ProductInterface */
 
     virtual const FGameplayTag GetCurrencyType_Implementation() const override { return CurrencyType; }

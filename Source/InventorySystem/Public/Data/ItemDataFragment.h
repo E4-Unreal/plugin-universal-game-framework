@@ -17,13 +17,15 @@ class INVENTORYSYSTEM_API UItemDataFragment : public UDataFragment, public IItem
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))
     int32 MaxStack;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Item"))
     FGameplayTag ItemType;
 
 public:
+    UItemDataFragment();
+
     /* ItemDataInterface */
 
     virtual int32 GetMaxStack_Implementation() const override { return MaxStack; }

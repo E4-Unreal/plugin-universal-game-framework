@@ -2,3 +2,10 @@
 
 
 #include "Data/ProductDataFragment.h"
+
+#include "GameplayTags/CurrencyGameplayTags.h"
+
+UProductDataFragment::UProductDataFragment()
+{
+    CurrencyType = Currency::Default;
+}
