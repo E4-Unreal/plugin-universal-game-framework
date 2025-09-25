@@ -64,7 +64,7 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
         UDataAsset* DataToDelete = OldDataAssetMap[IDToDelete];
         if (DataToDelete)
         {
-            UEditorAssetLibrary::DeleteAsset(DataToDelete->GetPathName());
+            DeleteDataAsset(DataToDelete);
         }
     }
 
@@ -83,7 +83,7 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
         }
         else
         {
-            UEditorAssetLibrary::DeleteAsset(DataToUpdate->GetPathName());
+            DeleteDataAsset(DataToUpdate);
             IDSetToCreate.Emplace(IDToUpdate);
         }
     }
@@ -101,7 +101,7 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
             }
             else
             {
-                UEditorAssetLibrary::DeleteAsset(NewData->GetPathName());
+                DeleteDataAsset(NewData);
             }
         }
     }
@@ -217,5 +217,13 @@ void UDataAssetBuilderAssetAction::UpdatePackageName(UDataAsset* DataAsset, UDat
             FAssetRegistryModule::AssetRenamed(DataAsset, DataAsset->GetPackage()->GetPathName());
             DataAsset->MarkPackageDirty();
         }
+    }
+}
+
+void UDataAssetBuilderAssetAction::DeleteDataAsset(UDataAsset* DataAsset)
+{
+    if (DataAsset)
+    {
+        UEditorAssetLibrary::DeleteAsset(DataAsset->GetPathName());
     }
 }

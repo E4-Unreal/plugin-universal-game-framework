@@ -29,4 +29,6 @@ protected:
     static UDataAsset* CreateData(UDataAssetBuilder* Builder, int32 ID);
     static FTableRowBase* GetTableRow(UDataTable* DataTable, int32 ID);
     static void UpdatePackageName(UDataAsset* DataAsset, UDataAssetBuilder* Builder);
+
+    static void DeleteDataAsset(UDataAsset* DataAsset);
 };
