@@ -7,7 +7,7 @@
 #include "Interfaces/DataObjectInterface.h"
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
-#include "Interfaces/ItemInstanceInterface.h"
+#include "Interfaces/ItemObjectInterface.h"
 #include "Net/UnrealNetwork.h"
 #include "Settings/InventorySystemSettings.h"
 

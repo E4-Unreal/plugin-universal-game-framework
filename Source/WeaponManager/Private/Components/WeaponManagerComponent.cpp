@@ -14,7 +14,7 @@ UWeaponManagerComponent::UWeaponManagerComponent()
     bWantsInitializeComponent = true;
 
     UsingDataInterfaces.Emplace(UWeaponDataInterface::StaticClass());
-    UsingInstanceInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
+    UsingDataObjectInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
 
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
 }

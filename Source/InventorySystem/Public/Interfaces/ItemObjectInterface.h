@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "ItemInstanceInterface.generated.h"
+#include "ItemObjectInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UItemInstanceInterface : public UInterface
+class UItemObjectInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -15,7 +15,7 @@ class UItemInstanceInterface : public UInterface
 /**
  *
  */
-class INVENTORYSYSTEM_API IItemInstanceInterface
+class INVENTORYSYSTEM_API IItemObjectInterface
 {
     GENERATED_BODY()
 

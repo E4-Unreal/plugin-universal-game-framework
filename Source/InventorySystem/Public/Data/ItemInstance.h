@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataObjectBase.h"
-#include "Interfaces/ItemInstanceInterface.h"
+#include "Interfaces/ItemObjectInterface.h"
 #include "ItemInstance.generated.h"
 
 /**
  *
  */
 UCLASS(EditInlineNew)
-class INVENTORYSYSTEM_API UItemInstance : public UDataObjectBase, public IItemInstanceInterface
+class INVENTORYSYSTEM_API UItemInstance : public UDataObjectBase, public IItemObjectInterface
 {
     GENERATED_BODY()
 

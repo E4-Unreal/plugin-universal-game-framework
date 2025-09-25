@@ -11,7 +11,8 @@
 
 UInventoryComponent::UInventoryComponent()
 {
-
+    UsingDataInterfaces.Emplace(UItemDataInterface::StaticClass());
+    UsingDataObjectInterfaces.Emplace(UItemObjectInterface::StaticClass());
 }
 
 void UInventoryComponent::BeginPlay()
@@ -25,7 +26,7 @@ bool UInventoryComponent::HasContent(UObject* InContent) const
 {
     if (CheckContent(InContent))
     {
-        const int32 InQuantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
+        const int32 InQuantity = IItemObjectInterface::Execute_GetQuantity(InContent);
         int32 OwnedQuantity = GetItemQuantity(GetDataFromContent(InContent));
 
         return OwnedQuantity >= InQuantity;
@@ -40,7 +41,7 @@ bool UInventoryComponent::AddContent(UObject* InContent)
     if (!CheckContent(InContent)) return false;
 
     UDataAsset* InData = GetDataFromContent(InContent);
-    int32 Quantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
+    int32 Quantity = IItemObjectInterface::Execute_GetQuantity(InContent);
     const int32 MaxStack = IItemDataInterface::Execute_GetMaxStack(InData);
 
     // 기존 인벤토리 슬롯 채우기
@@ -50,7 +51,7 @@ bool UInventoryComponent::AddContent(UObject* InContent)
 
         UDataAsset* SlotData = GetDataFromContent(Content);
         const int32 SlotMaxStack = IItemDataInterface::Execute_GetMaxStack(SlotData);
-        const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
+        const int32 SlotQuantity = IItemObjectInterface::Execute_GetQuantity(Content);
         const int32 SlotCapacity = SlotMaxStack - SlotQuantity;
 
         const int32 QuantityToAdd = FMath::Min(Quantity, SlotCapacity);
@@ -71,7 +72,7 @@ bool UInventoryComponent::AddContent(UObject* InContent)
         Quantity -= QuantityToAdd;
 
         auto NewContent = IDataInterface::Execute_CreateDataObject(InData);
-        IItemInstanceInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
+        IItemObjectInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
 
@@ -84,14 +85,14 @@ bool UInventoryComponent::RemoveContent(UObject* InContent)
     if (!HasContent(InContent)) return false;
 
     UDataAsset* InData = GetDataFromContent(InContent);
-    int32 InQuantity = IItemInstanceInterface::Execute_GetQuantity(InContent);
+    int32 InQuantity = IItemObjectInterface::Execute_GetQuantity(InContent);
 
     // 인벤토리 조회 및 아이템 제거
     for (const auto& [Index, Content] : SlotMap)
     {
         if (GetDataFromContent(Content) != InData) continue;
 
-        const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
+        const int32 SlotQuantity = IItemObjectInterface::Execute_GetQuantity(Content);
 
         const int32 QuantityToRemove = FMath::Min(InQuantity, SlotQuantity);
         InQuantity -= QuantityToRemove;
@@ -118,9 +119,9 @@ void UInventoryComponent::SwapContent(USlotManagerComponentBase* Source, int32 S
 
         if (SourceData == DestinationData)
         {
-            const int32 SourceSlotQuantity = IItemInstanceInterface::Execute_GetQuantity(SourceContent);
+            const int32 SourceSlotQuantity = IItemObjectInterface::Execute_GetQuantity(SourceContent);
             const int32 DestinationSlotMaxStack = IItemDataInterface::Execute_GetMaxStack(DestinationData);
-            const int32 DestinationSlotQuantity = IItemInstanceInterface::Execute_GetQuantity(DestinationContent);
+            const int32 DestinationSlotQuantity = IItemObjectInterface::Execute_GetQuantity(DestinationContent);
             const int32 DestinationSlotCapacity = DestinationSlotMaxStack - DestinationSlotQuantity;
             int32 QuantityToMove = FMath::Min(SourceSlotQuantity, DestinationSlotCapacity);
 
@@ -139,7 +140,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
     if (CheckData(NewData))
     {
         auto NewContent = IDataInterface::Execute_CreateDataObject(NewData);
-        IItemInstanceInterface::Execute_SetQuantity(NewContent, Quantity);
+        IItemObjectInterface::Execute_SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
 }
@@ -155,7 +156,7 @@ bool UInventoryComponent::SetSlotQuantity(int32 SlotIndex, int32 NewQuantity)
         }
         else
         {
-            IItemInstanceInterface::Execute_SetQuantity(OldContent, NewQuantity);
+            IItemObjectInterface::Execute_SetQuantity(OldContent, NewQuantity);
         }
 
         OnSlotUpdated.Broadcast(SlotIndex);
@@ -172,12 +173,12 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 
     const auto Content = GetContent(SlotIndex);
     UDataAsset* Data = GetDataFromContent(Content);
-    const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
+    const int32 SlotQuantity = IItemObjectInterface::Execute_GetQuantity(Content);
 
     if (SlotQuantity < Quantity) return;
 
     auto NewItemInstance = IDataInterface::Execute_CreateDataObject(Data);
-    IItemInstanceInterface::Execute_SetQuantity(NewItemInstance, Quantity);
+    IItemObjectInterface::Execute_SetQuantity(NewItemInstance, Quantity);
 
     TArray<UObject*> InventoryItemsToDrop = { NewItemInstance };
 
@@ -196,7 +197,7 @@ int32 UInventoryComponent::GetItemQuantity(UDataAsset* Item) const
     {
         if (GetDataFromContent(Content) == Item)
         {
-            Quantity += IItemInstanceInterface::Execute_GetQuantity(Content);
+            Quantity += IItemObjectInterface::Execute_GetQuantity(Content);
         }
     }
 
@@ -215,7 +216,7 @@ int32 UInventoryComponent::GetItemCapacity(UDataAsset* Item) const
         {
             if (GetDataFromContent(Content) == Item)
             {
-                const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(Content);
+                const int32 SlotQuantity = IItemObjectInterface::Execute_GetQuantity(Content);
                 const int32 SlotMaxStack = IItemDataInterface::Execute_GetMaxStack(Item);
                 const int32 SlotCapacity = SlotMaxStack - SlotQuantity;
                 Capacity += SlotCapacity;
