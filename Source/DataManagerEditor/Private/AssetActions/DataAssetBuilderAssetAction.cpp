@@ -5,6 +5,7 @@
 
 #include "AssetSelection.h"
 #include "EditorAssetLibrary.h"
+#include "ObjectTools.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Interfaces/DataInterface.h"
 #include "Data/DataAssetBuilder.h"
@@ -72,19 +73,20 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
 
     for (int32 IDToUpdate : IDSetToUpdate)
     {
-        UDataAsset* DataToUpdate = OldDataAssetMap[IDToUpdate];
-        if (DataToUpdate && DataToUpdate->GetClass() == DataClass)
+        if (UDataAsset* DataToUpdate = OldDataAssetMap[IDToUpdate])
         {
+            // 데이터 에셋 클래스 변경
+            if (DataToUpdate->GetClass() != DataClass)
+            {
+                DataToUpdate = ChangeDataAssetClass(DataToUpdate, DataClass);
+            }
+
+            // 업데이트
             if (Builder->UpdateData(DataToUpdate, GetTableRow(DataTable, IDToUpdate)))
             {
                 DataToUpdate->MarkPackageDirty();
             }
             UpdatePackageName(DataToUpdate, Builder);
-        }
-        else
-        {
-            DeleteDataAsset(DataToUpdate);
-            IDSetToCreate.Emplace(IDToUpdate);
         }
     }
 
@@ -226,4 +228,33 @@ void UDataAssetBuilderAssetAction::DeleteDataAsset(UDataAsset* DataAsset)
     {
         UEditorAssetLibrary::DeleteAsset(DataAsset->GetPathName());
     }
+}
+
+UDataAsset* UDataAssetBuilderAssetAction::ChangeDataAssetClass(UDataAsset* OldDataAsset,
+    TSubclassOf<UDataAsset> NewDataAssetClass)
+{
+    if (OldDataAsset && !OldDataAsset->IsA(NewDataAssetClass))
+    {
+        FName ObjectName = OldDataAsset->GetFName();
+        UObject* Outer = OldDataAsset->GetOuter();
+        OldDataAsset->Rename(nullptr, GetTransientPackage(), REN_DoNotDirty | REN_DontCreateRedirectors);
+
+        UDataAsset* NewDataAsset = NewObject<UDataAsset>(Outer, NewDataAssetClass, ObjectName, OldDataAsset->GetFlags());
+
+        NewDataAsset->MarkPackageDirty();
+
+        // 데이터 복사
+        UEngine::FCopyPropertiesForUnrelatedObjectsParams CopyOptions;
+        CopyOptions.bNotifyObjectReplacement = true;
+        UEngine::CopyPropertiesForUnrelatedObjects(OldDataAsset, NewDataAsset, CopyOptions);
+
+        // 리디렉트
+        bool bShowDeleteConfirmation = false;
+        TArray<UObject*> OldDataAssetArray({ (UObject*)OldDataAsset });
+        ObjectTools::ConsolidateObjects(NewDataAsset, OldDataAssetArray, bShowDeleteConfirmation);
+
+        return NewDataAsset;
+    }
+
+    return nullptr;
 }
