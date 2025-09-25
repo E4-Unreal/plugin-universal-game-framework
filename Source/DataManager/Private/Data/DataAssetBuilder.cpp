@@ -2,3 +2,8 @@
 
 
 #include "Data/DataAssetBuilder.h"
+
+FName UDataAssetBuilder::GetDataName() const
+{
+    return DataName.IsNone() && !DataClass.IsNull() ? FName(DataClass.LoadSynchronous()->GetName()) : DataName;
+}

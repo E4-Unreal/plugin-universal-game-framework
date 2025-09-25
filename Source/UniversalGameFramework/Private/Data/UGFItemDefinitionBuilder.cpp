@@ -9,6 +9,7 @@
 UUGFItemDefinitionBuilder::UUGFItemDefinitionBuilder()
 {
     DataClass = UUGFEquipmentDefinition::StaticClass();
+    DataName = "Item";
 }
 
 bool UUGFItemDefinitionBuilder::UpdateData(UDataAsset* Data, FTableRowBase* TableRow)
