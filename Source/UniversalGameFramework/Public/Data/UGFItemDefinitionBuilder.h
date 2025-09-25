@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Objects/DataAssetBuilder.h"
+#include "Data/DataAssetBuilder.h"
 #include "UGFItemDefinitionBuilder.generated.h"
 
 /**

@@ -8,7 +8,7 @@
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/DataAssetRegistry.h"
 #include "Interfaces/DataInterface.h"
-#include "Objects/DataAssetBuilder.h"
+#include "Data/DataAssetBuilder.h"
 #include "UObject/SavePackage.h"
 
 UDataAssetRegistryAssetAction::UDataAssetRegistryAssetAction()
