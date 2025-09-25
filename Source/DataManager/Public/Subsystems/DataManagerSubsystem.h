@@ -22,11 +22,11 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    virtual UDataAsset* GetDataAsset(FName AssetType, int32 ID) const;
+    virtual TSoftObjectPtr<UDataAsset> GetDataAsset(FName AssetType, int32 ID) const;
 
     UFUNCTION(BlueprintPure)
-    virtual TArray<UDataAsset*> GetDataAssets(FName AssetType) const;
+    virtual TArray<TSoftObjectPtr<UDataAsset>> GetDataAssets(FName AssetType) const;
 
     UFUNCTION(BlueprintPure)
-    virtual TMap<int32, UDataAsset*> GetDataAssetMap(FName AssetType) const;
+    virtual TMap<int32, TSoftObjectPtr<UDataAsset>> GetDataAssetMap(FName AssetType) const;
 };

@@ -14,23 +14,26 @@ bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
     return ChildClasses.Num() == 0;
 }
 
-UDataAsset* UDataManagerSubsystem::GetDataAsset(FName AssetType, int32 ID) const
+TSoftObjectPtr<UDataAsset> UDataManagerSubsystem::GetDataAsset(FName AssetType, int32 ID) const
 {
     FPrimaryAssetId AssetID = FPrimaryAssetId(AssetType, FName(FString::FromInt(ID)));
+    FAssetData AssetData;
+    UAssetManager::Get().GetPrimaryAssetData(AssetID, AssetData);
 
-    return UAssetManager::Get().GetPrimaryAssetObject<UDataAsset>(AssetID);
+    return TSoftObjectPtr<UDataAsset>(AssetData.GetSoftObjectPath());
 }
 
-TArray<UDataAsset*> UDataManagerSubsystem::GetDataAssets(FName AssetType) const
+TArray<TSoftObjectPtr<UDataAsset>> UDataManagerSubsystem::GetDataAssets(FName AssetType) const
 {
-    TArray<UObject*> Objects;
-    UAssetManager::Get().GetPrimaryAssetObjectList(AssetType, Objects);
+    TArray<FAssetData> AssetDataList;
+    UAssetManager::Get().GetPrimaryAssetDataList(AssetType, AssetDataList);
 
-    TArray<UDataAsset*> DataAssets;
-    DataAssets.Reserve(Objects.Num());
-    for (UObject* Object : Objects)
+    TArray<TSoftObjectPtr<UDataAsset>> DataAssets;
+    DataAssets.Reserve(AssetDataList.Num());
+    for (const auto& AssetData : AssetDataList)
     {
-        if (UDataAsset* DataAsset = Cast<UDataAsset>(Object))
+        TSoftObjectPtr<UDataAsset> DataAsset = TSoftObjectPtr<UDataAsset>(AssetData.GetSoftObjectPath());
+        if (!DataAsset.IsNull())
         {
             DataAssets.Emplace(DataAsset);
         }
@@ -39,18 +42,22 @@ TArray<UDataAsset*> UDataManagerSubsystem::GetDataAssets(FName AssetType) const
     return DataAssets;
 }
 
-TMap<int32, UDataAsset*> UDataManagerSubsystem::GetDataAssetMap(FName AssetType) const
+TMap<int32, TSoftObjectPtr<UDataAsset>> UDataManagerSubsystem::GetDataAssetMap(FName AssetType) const
 {
-    TArray<UDataAsset*> DataAssets = GetDataAssets(AssetType);
+    TArray<TSoftObjectPtr<UDataAsset>> DataAssets = GetDataAssets(AssetType);
 
-    TMap<int32, UDataAsset*> DataAssetMap;
+    TMap<int32, TSoftObjectPtr<UDataAsset>> DataAssetMap;
     DataAssetMap.Reserve(DataAssets.Num());
-    for (UDataAsset* DataAsset : DataAssets)
+    for (TSoftObjectPtr<UDataAsset> DataAsset : DataAssets)
     {
-        if (DataAsset && DataAsset->Implements<UDataInterface>())
+        if (!DataAsset.IsNull())
         {
-            const int32 ID = IDataInterface::Execute_GetID(DataAsset);
-            DataAssetMap.Emplace(ID, DataAsset);
+            FString IDString = UAssetManager::Get().GetPrimaryAssetIdForPath(DataAsset.ToSoftObjectPath()).PrimaryAssetName.ToString();
+            if (IDString.IsNumeric())
+            {
+                const int32 ID = FCString::Atoi(*IDString);
+                DataAssetMap.Emplace(ID, DataAsset);
+            }
         }
     }
 
