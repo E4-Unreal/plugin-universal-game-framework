@@ -168,16 +168,6 @@ UDataAsset* UDataAssetBuilderAssetAction::CreateData(UDataAssetBuilder* Builder,
     Package->MarkPackageDirty();
     FAssetRegistryModule::AssetCreated(NewData);
 
-    // 패키지 저장
-    FString PackageFileName = FPackageName::LongPackageNameToFilename(PackageName, FPackageName::GetAssetPackageExtension());
-
-    FSavePackageArgs SavePackageArgs;
-    SavePackageArgs.TopLevelFlags = RF_Public | RF_Standalone;
-    SavePackageArgs.bForceByteSwapping = true;
-    SavePackageArgs.SaveFlags = SAVE_NoError;
-
-    UPackage::SavePackage(Package, NewData, *PackageFileName, SavePackageArgs);
-
     return NewData;
 }
 
