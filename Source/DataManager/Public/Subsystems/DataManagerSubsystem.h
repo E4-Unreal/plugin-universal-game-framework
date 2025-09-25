@@ -26,4 +26,7 @@ public:
 
     UFUNCTION(BlueprintPure)
     virtual TArray<UDataAsset*> GetDataAssets(FName AssetType) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual TMap<int32, UDataAsset*> GetDataAssetMap(FName AssetType) const;
 };

@@ -4,6 +4,7 @@
 #include "Subsystems/DataManagerSubsystem.h"
 
 #include "Engine/AssetManager.h"
+#include "Interfaces/DataInterface.h"
 
 bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -36,4 +37,22 @@ TArray<UDataAsset*> UDataManagerSubsystem::GetDataAssets(FName AssetType) const
     }
 
     return DataAssets;
+}
+
+TMap<int32, UDataAsset*> UDataManagerSubsystem::GetDataAssetMap(FName AssetType) const
+{
+    TArray<UDataAsset*> DataAssets = GetDataAssets(AssetType);
+
+    TMap<int32, UDataAsset*> DataAssetMap;
+    DataAssetMap.Reserve(DataAssets.Num());
+    for (UDataAsset* DataAsset : DataAssets)
+    {
+        if (DataAsset && DataAsset->Implements<UDataInterface>())
+        {
+            const int32 ID = IDataInterface::Execute_GetID(DataAsset);
+            DataAssetMap.Emplace(ID, DataAsset);
+        }
+    }
+
+    return DataAssetMap;
 }
