@@ -7,5 +7,7 @@
 // Add default functionality here for any IDataInstanceInterface functions that are not pure virtual.
 bool IDataObjectInterface::SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
-    return Cast<UObject>(this)->GetClass()->ImplementsInterface(InterfaceClass);
+    const UObject* Object = Cast<UObject>(this);
+
+    return Object && InterfaceClass ? Object->GetClass()->ImplementsInterface(InterfaceClass) : false;
 }
