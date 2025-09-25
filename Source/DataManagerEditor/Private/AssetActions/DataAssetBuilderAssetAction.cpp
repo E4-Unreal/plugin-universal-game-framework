@@ -214,6 +214,7 @@ void UDataAssetBuilderAssetAction::UpdatePackageName(UDataAsset* DataAsset, UDat
         if (DataAsset->GetPackage()->GetPathName() != PackageName)
         {
             UEditorAssetLibrary::RenameAsset(DataAsset->GetPackage()->GetPathName(), PackageName);
+            FAssetRegistryModule::AssetRenamed(DataAsset, DataAsset->GetPackage()->GetPathName());
             DataAsset->MarkPackageDirty();
         }
     }
