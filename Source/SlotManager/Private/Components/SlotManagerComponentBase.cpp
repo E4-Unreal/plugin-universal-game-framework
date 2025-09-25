@@ -116,7 +116,7 @@ bool USlotManagerComponentBase::AddContentByData(UDataAsset* NewData)
 {
     if (CheckData(NewData))
     {
-        UObject* NewContent = IDataInterface::Execute_CreateDataInstance(NewData);
+        UObject* NewContent = IDataInterface::Execute_CreateDataObject(NewData);
         return AddContent(NewContent);
     }
 

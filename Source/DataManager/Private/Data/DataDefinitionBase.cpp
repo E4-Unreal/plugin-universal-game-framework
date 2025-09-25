@@ -5,11 +5,11 @@
 
 #include "Interfaces/DataObjectInterface.h"
 
-UObject* UDataDefinitionBase::CreateDataInstance_Implementation() const
+UObject* UDataDefinitionBase::CreateDataObject_Implementation() const
 {
-    if (DataInstanceClass && DataInstanceClass->ImplementsInterface(UDataObjectInterface::StaticClass()))
+    if (DataObjectClass && DataObjectClass->ImplementsInterface(UDataObjectInterface::StaticClass()))
     {
-        auto NewInstance = NewObject<UObject>(GetTransientPackage(), DataInstanceClass);
+        auto NewInstance = NewObject<UObject>(GetTransientPackage(), DataObjectClass);
         IDataObjectInterface::Execute_SetData(NewInstance, const_cast<ThisClass*>(this));
 
         return NewInstance;

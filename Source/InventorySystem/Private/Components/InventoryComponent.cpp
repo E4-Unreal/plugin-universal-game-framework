@@ -70,7 +70,7 @@ bool UInventoryComponent::AddContent(UObject* InContent)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        auto NewContent = IDataInterface::Execute_CreateDataInstance(InData);
+        auto NewContent = IDataInterface::Execute_CreateDataObject(InData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
@@ -138,7 +138,7 @@ void UInventoryComponent::AddItemFromData(UDataAsset* NewData, int32 Quantity)
 {
     if (CheckData(NewData))
     {
-        auto NewContent = IDataInterface::Execute_CreateDataInstance(NewData);
+        auto NewContent = IDataInterface::Execute_CreateDataObject(NewData);
         IItemInstanceInterface::Execute_SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
@@ -176,7 +176,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 
     if (SlotQuantity < Quantity) return;
 
-    auto NewItemInstance = IDataInterface::Execute_CreateDataInstance(Data);
+    auto NewItemInstance = IDataInterface::Execute_CreateDataObject(Data);
     IItemInstanceInterface::Execute_SetQuantity(NewItemInstance, Quantity);
 
     TArray<UObject*> InventoryItemsToDrop = { NewItemInstance };

@@ -115,7 +115,7 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
     auto Data = Product.GetObject();
     if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
+        auto Instance = IDataInterface::Execute_CreateDataObject(Data);
         if (Instance && Instance->Implements<UItemInstanceInterface>())
         {
             IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
@@ -132,7 +132,7 @@ bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IP
     auto Data = Product.GetObject();
     if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
+        auto Instance = IDataInterface::Execute_CreateDataObject(Data);
         if (Instance && Instance->Implements<UItemInstanceInterface>())
         {
             IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);

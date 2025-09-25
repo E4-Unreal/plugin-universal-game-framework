@@ -35,7 +35,7 @@ void IDataActorInterface::SetData_Implementation(UDataAsset* NewData)
 {
     if (NewData && NewData->Implements<UDataInterface>())
     {
-        if (UObject* NewDataInstance = IDataInterface::Execute_CreateDataInstance(NewData))
+        if (UObject* NewDataInstance = IDataInterface::Execute_CreateDataObject(NewData))
         {
             Execute_SetDataInstance(CastChecked<UObject>(this), NewDataInstance);
         }

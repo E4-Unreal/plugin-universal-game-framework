@@ -41,5 +41,8 @@ public:
     void SetDescription(const FText& NewDescription);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* CreateDataInstance() const;
+    bool SupportsInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UObject* CreateDataObject() const;
 };
