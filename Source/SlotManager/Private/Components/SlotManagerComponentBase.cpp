@@ -206,18 +206,16 @@ bool USlotManagerComponentBase::CheckContent(UObject* Content) const
 {
     if (Content == nullptr || !Content->Implements<UDataObjectInterface>()) return false;
 
-    UDataAsset* Data = GetDataFromContent(Content);
-    if (!CheckData(Data)) return false;
-
     for (auto UsingObjectInterface : UsingDataObjectInterfaces)
     {
-        if (!IDataObjectInterface::Execute_SupportsInterface(Data, UsingObjectInterface))
+        if (!IDataObjectInterface::Execute_SupportsInterface(Content, UsingObjectInterface))
         {
             return false;
         }
     }
 
-    return true;
+    UDataAsset* Data = GetDataFromContent(Content);
+    return CheckData(Data);
 }
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
