@@ -23,6 +23,11 @@ UUGFFlexibleItemData::UUGFFlexibleItemData(const FObjectInitializer& ObjectIniti
     Fragments.Emplace(WeaponDataFragment);
 }
 
+FPrimaryAssetId UUGFFlexibleItemData::GetPrimaryAssetId() const
+{
+    return FPrimaryAssetId("Item", FName(FString::FromInt(ID)));
+}
+
 int32 UUGFFlexibleItemData::GetMaxStack_Implementation() const
 {
     auto ItemDataFragment = GetFragmentByInterface<UItemDataInterface>();

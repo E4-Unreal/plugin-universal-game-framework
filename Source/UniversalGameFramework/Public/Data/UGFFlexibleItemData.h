@@ -37,6 +37,10 @@ public:
 public:
     UUGFFlexibleItemData(const FObjectInitializer& ObjectInitializer);
 
+    /* PrimaryDataAsset */
+
+    virtual FPrimaryAssetId GetPrimaryAssetId() const override;
+
     /* SlotDataInterface */
 
     virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
