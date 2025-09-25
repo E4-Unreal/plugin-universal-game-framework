@@ -30,6 +30,5 @@ protected:
     static FTableRowBase* GetTableRow(UDataTable* DataTable, int32 ID);
     static void UpdatePackageName(UDataAsset* DataAsset, UDataAssetBuilder* Builder);
 
-    static void DeleteDataAsset(UDataAsset* DataAsset);
     static UDataAsset* ChangeDataAssetClass(UDataAsset* OldDataAsset, TSubclassOf<UDataAsset> NewDataAssetClass);
 };

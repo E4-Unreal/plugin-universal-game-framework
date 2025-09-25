@@ -46,7 +46,7 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
     // 이미 생성된 데이터 에셋 가져오기
 
     const FName AssetType = DataClass->GetDefaultObject<UDataAsset>()->GetPrimaryAssetId().PrimaryAssetType;
-    TMap<int32, UDataAsset*> OldDataAssetMap = GEngine->GetEngineSubsystem<UDataManagerSubsystem>()->GetDataAssetMap(AssetType);
+    TMap<int32, TSoftObjectPtr<UDataAsset>> OldDataAssetMap = GEngine->GetEngineSubsystem<UDataManagerSubsystem>()->GetDataAssetMap(AssetType);
     TArray<int32> OldIDList;
     OldDataAssetMap.GetKeys(OldIDList);
 
@@ -62,10 +62,10 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
 
     for (int32 IDToDelete : IDSetToDelete)
     {
-        UDataAsset* DataToDelete = OldDataAssetMap[IDToDelete];
-        if (DataToDelete)
+        TSoftObjectPtr<UDataAsset> DataToDelete = OldDataAssetMap[IDToDelete];
+        if (!DataToDelete.IsNull())
         {
-            DeleteDataAsset(DataToDelete);
+            UEditorAssetLibrary::DeleteAsset(DataToDelete->GetPathName());
         }
     }
 
@@ -73,7 +73,7 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
 
     for (int32 IDToUpdate : IDSetToUpdate)
     {
-        if (UDataAsset* DataToUpdate = OldDataAssetMap[IDToUpdate])
+        if (UDataAsset* DataToUpdate = OldDataAssetMap[IDToUpdate].LoadSynchronous())
         {
             // 데이터 에셋 클래스 변경
             if (DataToUpdate->GetClass() != DataClass)
@@ -96,15 +96,8 @@ void UDataAssetBuilderAssetAction::BuildData(UDataAssetBuilder* Builder) const
     {
         if (UDataAsset* NewData = CreateData(Builder, IDToCreate))
         {
-            if (Builder->UpdateData(NewData, GetTableRow(DataTable, IDToCreate)))
-            {
-                UpdatePackageName(NewData, Builder);
-                NewData->MarkPackageDirty();
-            }
-            else
-            {
-                DeleteDataAsset(NewData);
-            }
+            Builder->UpdateData(NewData, GetTableRow(DataTable, IDToCreate));
+            UpdatePackageName(NewData, Builder);
         }
     }
 }
@@ -209,14 +202,6 @@ void UDataAssetBuilderAssetAction::UpdatePackageName(UDataAsset* DataAsset, UDat
             FAssetRegistryModule::AssetRenamed(DataAsset, DataAsset->GetPackage()->GetPathName());
             DataAsset->MarkPackageDirty();
         }
-    }
-}
-
-void UDataAssetBuilderAssetAction::DeleteDataAsset(UDataAsset* DataAsset)
-{
-    if (DataAsset)
-    {
-        UEditorAssetLibrary::DeleteAsset(DataAsset->GetPathName());
     }
 }
 
