@@ -17,6 +17,10 @@ class DATAMANAGER_API UFlexibleDataBase : public UDataDefinitionBase
     GENERATED_BODY()
 
 public:
+    /* DataInterface */
+
+    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+
     /* API */
 
     UFUNCTION(BlueprintPure)
