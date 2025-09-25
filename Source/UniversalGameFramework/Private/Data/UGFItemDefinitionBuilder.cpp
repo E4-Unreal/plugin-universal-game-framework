@@ -14,38 +14,38 @@ UUGFItemDefinitionBuilder::UUGFItemDefinitionBuilder()
 
 bool UUGFItemDefinitionBuilder::UpdateData(UDataAsset* Data, FTableRowBase* TableRow)
 {
+    bool bDirty = false;
+
     UUGFEquipmentDefinition* ItemDefinition = Cast<UUGFEquipmentDefinition>(Data);
     FUGFItemDataTableRow* RowData = static_cast<FUGFItemDataTableRow*>(TableRow);
     if (ItemDefinition && RowData)
     {
         // Data
-        ItemDefinition->DisplayName = RowData->DisplayName;
-        ItemDefinition->Description = RowData->Description;
+        SET_TEXT(ItemDefinition->DisplayName, RowData->DisplayName)
+        SET_TEXT(ItemDefinition->Description, RowData->Description)
 
         // Slot
-        ItemDefinition->ThumbnailTexture = RowData->ThumbnailTexture;
+        SET_DATA(ItemDefinition->ThumbnailTexture, RowData->ThumbnailTexture)
 
         // Actor
-        ItemDefinition->StaticMesh = RowData->StaticMesh;
-        ItemDefinition->SkeletalMesh = RowData->SkeletalMesh;
+        SET_DATA(ItemDefinition->StaticMesh, RowData->StaticMesh)
+        SET_DATA(ItemDefinition->SkeletalMesh, RowData->SkeletalMesh)
 
         // Inventory
-        ItemDefinition->MaxStack = RowData->MaxStack;
-        ItemDefinition->ItemType = RowData->ItemType;
+        SET_DATA(ItemDefinition->MaxStack, RowData->MaxStack)
+        SET_DATA(ItemDefinition->ItemType, RowData->ItemType)
 
         // Product
-        ItemDefinition->CurrencyType = RowData->CurrencyType;
-        ItemDefinition->BuyPrice = RowData->BuyPrice;
-        ItemDefinition->SellPrice = RowData->SellPrice;
+        SET_DATA(ItemDefinition->CurrencyType, RowData->CurrencyType)
+        SET_DATA(ItemDefinition->BuyPrice, RowData->BuyPrice)
+        SET_DATA(ItemDefinition->SellPrice, RowData->SellPrice)
 
         // Equipment
-        ItemDefinition->SlotType = RowData->SlotType;
-        ItemDefinition->ActiveSocketName = RowData->ActiveSocketName;
-        ItemDefinition->InActiveSocketName = RowData->InActiveSocketName;
-        ItemDefinition->MaxDurability = RowData->MaxDurability;
-
-        return true;
+        SET_DATA(ItemDefinition->SlotType, RowData->SlotType)
+        SET_DATA(ItemDefinition->ActiveSocketName, RowData->ActiveSocketName)
+        SET_DATA(ItemDefinition->InActiveSocketName, RowData->InActiveSocketName)
+        SET_DATA(ItemDefinition->MaxDurability, RowData->MaxDurability)
     }
 
-    return false;
+    return bDirty;
 }

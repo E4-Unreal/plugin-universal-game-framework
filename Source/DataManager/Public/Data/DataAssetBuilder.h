@@ -6,6 +6,9 @@
 #include "UObject/Object.h"
 #include "DataAssetBuilder.generated.h"
 
+#define SET_TEXT(OldText, NewText) if (!OldText.EqualTo(NewText)) { OldText = NewText; bDirty = true; }
+#define SET_DATA(OldData, NewData) if (OldData != NewData) { OldData = NewData; bDirty = true; }
+
 /**
  *
  */
