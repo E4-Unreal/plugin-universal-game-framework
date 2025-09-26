@@ -30,6 +30,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UMaterialInterface> Material;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))
     int32 MaxStack;
 
@@ -62,6 +65,7 @@ public:
     virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
     virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
+    virtual TSoftObjectPtr<UMaterialInterface> GetMaterial_Implementation() const override { return Material; }
 
     /* ProductInterface */
 

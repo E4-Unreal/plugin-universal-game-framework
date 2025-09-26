@@ -23,6 +23,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Item"))
     FGameplayTag ItemType;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UMaterialInterface> Material;
+
 public:
     UItemDataFragment();
 
@@ -30,4 +33,5 @@ public:
 
     virtual int32 GetMaxStack_Implementation() const override { return MaxStack; }
     virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
+    virtual TSoftObjectPtr<UMaterialInterface> GetMaterial_Implementation() const override { return Material; }
 };

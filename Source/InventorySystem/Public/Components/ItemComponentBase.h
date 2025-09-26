@@ -40,5 +40,6 @@ protected:
 
     virtual void FindDisplayMesh();
     virtual UStaticMesh* GetStaticMesh() const;
+    virtual UMaterialInterface* GetMaterial() const;
     virtual TArray<UObject*> GetItems() const { return TArray<UObject*>(); }
 };

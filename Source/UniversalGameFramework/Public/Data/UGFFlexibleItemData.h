@@ -51,6 +51,7 @@ public:
     virtual FGameplayTag GetItemType_Implementation() const override;
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
     virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
+    virtual TSoftObjectPtr<UMaterialInterface> GetMaterial_Implementation() const override;
 
     /* ProductInterface */
 

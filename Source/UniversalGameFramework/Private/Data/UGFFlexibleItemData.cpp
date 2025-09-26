@@ -42,6 +42,13 @@ FGameplayTag UUGFFlexibleItemData::GetItemType_Implementation() const
     return ItemDataFragment ? IItemDataInterface::Execute_GetItemType(ItemDataFragment) : FGameplayTag::EmptyTag;
 }
 
+TSoftObjectPtr<UMaterialInterface> UUGFFlexibleItemData::GetMaterial_Implementation() const
+{
+    auto ItemDataFragment = GetFragmentByInterface<UItemDataInterface>();
+
+    return ItemDataFragment ? IItemDataInterface::Execute_GetMaterial(ItemDataFragment) : nullptr;
+}
+
 const FGameplayTag UUGFFlexibleItemData::GetCurrencyType_Implementation() const
 {
     auto ProductDataFragment = GetFragmentByInterface<UProductInterface>();

@@ -39,6 +39,7 @@ bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Ta
         {
             SET_DATA(ItemDataFragment->MaxStack, RowData->MaxStack)
             SET_DATA(ItemDataFragment->ItemType, RowData->ItemType)
+            SET_DATA(ItemDataFragment->Material, RowData->Material)
         }
 
         // Product

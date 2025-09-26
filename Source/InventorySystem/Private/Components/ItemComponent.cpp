@@ -127,6 +127,22 @@ UStaticMesh* UItemComponent::GetStaticMesh() const
     return StaticMesh ? StaticMesh : GetDefaultItemMesh();
 }
 
+UMaterialInterface* UItemComponent::GetMaterial() const
+{
+    UMaterialInterface* Material = nullptr;
+
+    if (Items.Num() == 1)
+    {
+        UDataAsset* FirstItemData = GetFirstItemData();
+        if (FirstItemData && FirstItemData->Implements<UItemDataInterface>())
+        {
+            Material = IItemDataInterface::Execute_GetMaterial(FirstItemData).LoadSynchronous();
+        }
+    }
+
+    return Material;
+}
+
 UStaticMesh* UItemComponent::GetDefaultItemMesh() const
 {
     return !DefaultItemMesh.IsNull() ? DefaultItemMesh.LoadSynchronous() : UInventorySystemSettings::Get()->GetDefaultItemMesh();

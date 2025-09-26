@@ -34,6 +34,7 @@ bool UUGFItemDefinitionBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Tabl
         // Inventory
         SET_DATA(ItemDefinition->MaxStack, RowData->MaxStack)
         SET_DATA(ItemDefinition->ItemType, RowData->ItemType)
+        SET_DATA(ItemDefinition->Material, RowData->Material)
 
         // Product
         SET_DATA(ItemDefinition->CurrencyType, RowData->CurrencyType)
