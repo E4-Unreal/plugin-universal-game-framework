@@ -6,7 +6,6 @@
 #include "Engine/DeveloperSettings.h"
 #include "DataManagerSettings.generated.h"
 
-class UDataAssetRegistry;
 /**
  *
  */
@@ -15,16 +14,9 @@ class DATAMANAGER_API UDataManagerSettings : public UDeveloperSettings
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(Config, EditDefaultsOnly, Category = "Settings")
-    TArray<TSoftObjectPtr<UDataAssetRegistry>> DataAssetRegistries;
-
 public:
     UDataManagerSettings();
 
     UFUNCTION(BlueprintPure, meta = (DisplayName = "GetDataManagerSettings"))
     static UDataManagerSettings* Get() { return GetMutableDefault<UDataManagerSettings>(); }
-
-    UFUNCTION(BlueprintPure)
-    const TArray<TSoftObjectPtr<UDataAssetRegistry>>& GetDataAssetRegistries() const { return DataAssetRegistries; }
 };

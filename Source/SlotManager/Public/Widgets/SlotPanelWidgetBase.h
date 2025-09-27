@@ -10,7 +10,7 @@
 class UTextBlock;
 class USlotManagerComponentBase;
 class UUniformGridPanel;
-class UDataInstanceBase;
+class UDataObjectBase;
 
 /**
  *

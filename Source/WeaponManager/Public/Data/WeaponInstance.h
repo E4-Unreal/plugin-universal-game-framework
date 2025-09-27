@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataInstanceBase.h"
+#include "Data/DataObjectBase.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "WeaponInstance.generated.h"
 
@@ -13,7 +13,7 @@ class IWeaponDataInterface;
  *
  */
 UCLASS()
-class WEAPONMANAGER_API UWeaponInstance : public UDataInstanceBase, public IWeaponInstanceInterface
+class WEAPONMANAGER_API UWeaponInstance : public UDataObjectBase, public IWeaponInstanceInterface
 {
     GENERATED_BODY()
 

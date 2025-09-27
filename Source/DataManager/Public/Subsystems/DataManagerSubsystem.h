@@ -3,65 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
+#include "Subsystems/EngineSubsystem.h"
 #include "DataManagerSubsystem.generated.h"
-
-class USaveGame;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSaveGameDelegate, USaveGame*, SaveGame);
 
 /**
  *
  */
 UCLASS()
-class DATAMANAGER_API UDataManagerSubsystem : public UGameInstanceSubsystem
+class DATAMANAGER_API UDataManagerSubsystem : public UEngineSubsystem
 {
     GENERATED_BODY()
 
 public:
-    UPROPERTY(BlueprintAssignable)
-    FSaveGameDelegate OnSaveDataDelegate;
-
-    UPROPERTY(BlueprintAssignable)
-    FSaveGameDelegate OnLoadDataDelegate;
-
-protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FString DefaultSlotName;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<USaveGame> SaveGameClass;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TObjectPtr<USaveGame> SaveGame;
-
-public:
-    UDataManagerSubsystem();
+    /* Subsystem */
 
     virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
+    /* API */
+
     UFUNCTION(BlueprintPure)
-    FORCEINLINE USaveGame* GetSaveGame() const { return SaveGame; }
+    virtual TSoftObjectPtr<UDataAsset> GetDataAsset(FName AssetType, int32 ID) const;
 
-    UFUNCTION(BlueprintCallable)
-    virtual void SaveData() { SaveDataToSlot(DefaultSlotName, 0); }
+    UFUNCTION(BlueprintPure)
+    virtual TArray<TSoftObjectPtr<UDataAsset>> GetDataAssets(FName AssetType) const;
 
-    UFUNCTION(BlueprintCallable)
-    virtual void LoadData() { LoadDataFromSlot(DefaultSlotName, 0); }
-
-    UFUNCTION(BlueprintCallable)
-    virtual void SaveDataToSlot(FString SlotName, int32 SlotIndex);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void LoadDataFromSlot(FString SlotName, int32 SlotIndex);
-
-protected:
-    UFUNCTION(BlueprintPure, BlueprintNativeEvent)
-    FString GetSaveName(const FString& SlotName, int32 SlotIndex) const;
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnSaveData();
-
-    UFUNCTION(BlueprintNativeEvent)
-    void OnLoadData();
+    UFUNCTION(BlueprintPure)
+    virtual TMap<int32, TSoftObjectPtr<UDataAsset>> GetDataAssetMap(FName AssetType) const;
 };

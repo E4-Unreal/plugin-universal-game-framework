@@ -56,6 +56,7 @@ protected:
     /* ItemComponentBase */
 
     virtual UStaticMesh* GetStaticMesh() const override;
+    virtual UMaterialInterface* GetMaterial() const override;
     virtual TArray<UObject*> GetItems() const override { return Items; }
 
     /* API */

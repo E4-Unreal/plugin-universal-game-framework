@@ -5,8 +5,8 @@
 
 #include "Net/UnrealNetwork.h"
 #include "Logging.h"
-#include "Data/DataInstanceBase.h"
-#include "Interfaces/DataInstanceInterface.h"
+#include "Data/DataObjectBase.h"
+#include "Interfaces/DataObjectInterface.h"
 #include "Interfaces/DataInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
@@ -116,7 +116,7 @@ bool USlotManagerComponentBase::AddContentByData(UDataAsset* NewData)
 {
     if (CheckData(NewData))
     {
-        UObject* NewContent = IDataInterface::Execute_CreateDataInstance(NewData);
+        UObject* NewContent = IDataInterface::Execute_CreateDataObject(NewData);
         return AddContent(NewContent);
     }
 
@@ -204,20 +204,18 @@ void USlotManagerComponentBase::MappingSlots()
 
 bool USlotManagerComponentBase::CheckContent(UObject* Content) const
 {
-    if (Content == nullptr || !Content->Implements<UDataInstanceInterface>()) return false;
+    if (Content == nullptr || !Content->Implements<UDataObjectInterface>()) return false;
 
-    UDataAsset* Data = GetDataFromContent(Content);
-    if (!CheckData(Data)) return false;
-
-    for (auto UsingInstanceInterface : UsingInstanceInterfaces)
+    for (auto UsingObjectInterface : UsingDataObjectInterfaces)
     {
-        if (UsingInstanceInterface && !Content->GetClass()->ImplementsInterface(UsingInstanceInterface))
+        if (!IDataObjectInterface::Execute_SupportsInterface(Content, UsingObjectInterface))
         {
             return false;
         }
     }
 
-    return true;
+    UDataAsset* Data = GetDataFromContent(Content);
+    return CheckData(Data);
 }
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
@@ -226,7 +224,7 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 
     for (auto UsingDataInterface : UsingDataInterfaces)
     {
-        if (UsingDataInterface && !Data->GetClass()->ImplementsInterface(UsingDataInterface))
+        if (!IDataInterface::Execute_SupportsInterface(Data, UsingDataInterface))
         {
             return false;
         }
@@ -237,7 +235,7 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 
 UDataAsset* USlotManagerComponentBase::GetDataFromContent(UObject* InContent) const
 {
-    return InContent && InContent->Implements<UDataInstanceInterface>() ? IDataInstanceInterface::Execute_GetData(InContent) : nullptr;
+    return InContent && InContent->Implements<UDataObjectInterface>() ? IDataObjectInterface::Execute_GetData(InContent) : nullptr;
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)

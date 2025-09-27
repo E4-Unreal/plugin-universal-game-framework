@@ -12,7 +12,11 @@ public class ShopSystem : ModuleRules
                 "Core",
                 "UniversalUtilities",
                 "GameplayTags",
-                "UMG"
+                "UMG",
+
+                // UniversalGameFramework
+                "DataManager",
+                "CurrencyManager"
             }
         );
 

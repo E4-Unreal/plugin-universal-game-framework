@@ -3,13 +3,8 @@
 
 #include "Subsystems/DataManagerSubsystem.h"
 
-#include "GameFramework/SaveGame.h"
-#include "Kismet/GameplayStatics.h"
-
-UDataManagerSubsystem::UDataManagerSubsystem()
-{
-    DefaultSlotName = "Save";
-}
+#include "Engine/AssetManager.h"
+#include "Interfaces/DataInterface.h"
 
 bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
@@ -19,39 +14,52 @@ bool UDataManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
     return ChildClasses.Num() == 0;
 }
 
-void UDataManagerSubsystem::SaveDataToSlot(FString SlotName, int32 SlotIndex)
+TSoftObjectPtr<UDataAsset> UDataManagerSubsystem::GetDataAsset(FName AssetType, int32 ID) const
 {
-    if (SaveGameClass == nullptr) return;
+    FPrimaryAssetId AssetID = FPrimaryAssetId(AssetType, FName(FString::FromInt(ID)));
+    FAssetData AssetData;
+    UAssetManager::Get().GetPrimaryAssetData(AssetID, AssetData);
 
-    if (SaveGame == nullptr) SaveGame = UGameplayStatics::CreateSaveGameObject(SaveGameClass);
-
-    OnSaveData();
-    OnSaveDataDelegate.Broadcast(SaveGame);
-
-    UGameplayStatics::SaveGameToSlot(SaveGame, GetSaveName(SlotName, SlotIndex), 0);
+    return TSoftObjectPtr<UDataAsset>(AssetData.GetSoftObjectPath());
 }
 
-void UDataManagerSubsystem::LoadDataFromSlot(FString SlotName, int32 SlotIndex)
+TArray<TSoftObjectPtr<UDataAsset>> UDataManagerSubsystem::GetDataAssets(FName AssetType) const
 {
-    if (UGameplayStatics::DoesSaveGameExist(SlotName, SlotIndex))
+    TArray<FAssetData> AssetDataList;
+    UAssetManager::Get().GetPrimaryAssetDataList(AssetType, AssetDataList);
+
+    TArray<TSoftObjectPtr<UDataAsset>> DataAssets;
+    DataAssets.Reserve(AssetDataList.Num());
+    for (const auto& AssetData : AssetDataList)
     {
-        SaveGame = UGameplayStatics::LoadGameFromSlot(GetSaveName(SlotName, SlotIndex), 0);
-        OnLoadData();
-        OnLoadDataDelegate.Broadcast(SaveGame);
+        TSoftObjectPtr<UDataAsset> DataAsset = TSoftObjectPtr<UDataAsset>(AssetData.GetSoftObjectPath());
+        if (!DataAsset.IsNull())
+        {
+            DataAssets.Emplace(DataAsset);
+        }
     }
+
+    return DataAssets;
 }
 
-FString UDataManagerSubsystem::GetSaveName_Implementation(const FString& SlotName, int32 SlotIndex) const
+TMap<int32, TSoftObjectPtr<UDataAsset>> UDataManagerSubsystem::GetDataAssetMap(FName AssetType) const
 {
-    return SlotIndex == 0 ? SlotName : SlotName + "_" + FString::FromInt(SlotIndex);
-}
+    TArray<TSoftObjectPtr<UDataAsset>> DataAssets = GetDataAssets(AssetType);
 
-void UDataManagerSubsystem::OnSaveData_Implementation()
-{
-    // Save Data to SaveGame
-}
+    TMap<int32, TSoftObjectPtr<UDataAsset>> DataAssetMap;
+    DataAssetMap.Reserve(DataAssets.Num());
+    for (TSoftObjectPtr<UDataAsset> DataAsset : DataAssets)
+    {
+        if (!DataAsset.IsNull())
+        {
+            FString IDString = UAssetManager::Get().GetPrimaryAssetIdForPath(DataAsset.ToSoftObjectPath()).PrimaryAssetName.ToString();
+            if (IDString.IsNumeric())
+            {
+                const int32 ID = FCString::Atoi(*IDString);
+                DataAssetMap.Emplace(ID, DataAsset);
+            }
+        }
+    }
 
-void UDataManagerSubsystem::OnLoadData_Implementation()
-{
-    // Load Data from SaveGame
+    return DataAssetMap;
 }

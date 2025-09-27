@@ -3,8 +3,8 @@
 
 #include "Actors/WeaponActor.h"
 
-#include "Data/DataInstanceBase.h"
-#include "Interfaces/DataInstanceInterface.h"
+#include "Data/DataObjectBase.h"
+#include "Interfaces/DataObjectInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "Net/UnrealNetwork.h"
@@ -95,7 +95,7 @@ void AWeaponActor::ApplyWeaponData()
 
 void AWeaponActor::OnInstanceChanged(UObject* OldInstance, UObject* NewInstance)
 {
-    Data = NewInstance ? IDataInstanceInterface::Execute_GetData(NewInstance) : nullptr;
+    Data = NewInstance ? IDataObjectInterface::Execute_GetData(NewInstance) : nullptr;
 
     ApplyWeaponData();
 }

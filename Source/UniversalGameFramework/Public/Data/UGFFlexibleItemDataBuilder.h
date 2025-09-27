@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataAssetBuilder.h"
-#include "UGFItemDefinitionBuilder.generated.h"
+#include "UGFFlexibleItemDataBuilder.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinitionBuilder : public UDataAssetBuilder
+class UNIVERSALGAMEFRAMEWORK_API UUGFFlexibleItemDataBuilder : public UDataAssetBuilder
 {
     GENERATED_BODY()
 
 public:
-    UUGFItemDefinitionBuilder();
+    UUGFFlexibleItemDataBuilder();
 
     /* DataAssetBuilder */
 

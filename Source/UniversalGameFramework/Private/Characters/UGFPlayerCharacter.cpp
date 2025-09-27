@@ -14,7 +14,7 @@
 #include "Components/EquipmentManagerComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Games/UGFSaveGame.h"
-#include "Subsystems/DataManagerSubsystem.h"
+#include "Subsystems/SaveGameSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
 #include "Data/UGFItemInstance.h"
 #include "Interfaces/DataInterface.h"
@@ -86,7 +86,7 @@ void AUGFPlayerCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (UDataManagerSubsystem* DataManagerSubsystem = GetGameInstance()->GetSubsystem<UDataManagerSubsystem>())
+    if (USaveGameSubsystem* DataManagerSubsystem = GetGameInstance()->GetSubsystem<USaveGameSubsystem>())
     {
         DataManagerSubsystem->OnSaveDataDelegate.AddDynamic(this, &ThisClass::OnSaveData);
         DataManagerSubsystem->OnLoadDataDelegate.AddDynamic(this, &ThisClass::OnLoadData);
@@ -115,10 +115,10 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
     auto Data = Product.GetObject();
     if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
-        if (Instance && Instance->Implements<UItemInstanceInterface>())
+        auto Instance = IDataInterface::Execute_CreateDataObject(Data);
+        if (Instance && Instance->Implements<UItemObjectInterface>())
         {
-            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
+            IItemObjectInterface::Execute_SetQuantity(Instance, Quantity);
 
             return GetInventory()->AddContent(Instance);
         }
@@ -132,10 +132,10 @@ bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IP
     auto Data = Product.GetObject();
     if (Data && Data->Implements<UDataInterface>())
     {
-        auto Instance = IDataInterface::Execute_CreateDataInstance(Data);
-        if (Instance && Instance->Implements<UItemInstanceInterface>())
+        auto Instance = IDataInterface::Execute_CreateDataObject(Data);
+        if (Instance && Instance->Implements<UItemObjectInterface>())
         {
-            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
+            IItemObjectInterface::Execute_SetQuantity(Instance, Quantity);
 
             return GetInventory()->RemoveContent(Instance);
         }

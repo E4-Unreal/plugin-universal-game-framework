@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "DataInterface.generated.h"
 
-class UDataInstanceBase;
+class UDataObjectBase;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UDataInterface : public UInterface
@@ -41,5 +41,9 @@ public:
     void SetDescription(const FText& NewDescription);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* CreateDataInstance() const;
+    bool SupportsInterface(TSubclassOf<UInterface> InterfaceClass) const;
+    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UObject* CreateDataObject() const;
 };

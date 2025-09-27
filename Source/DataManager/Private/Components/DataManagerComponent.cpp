@@ -3,7 +3,7 @@
 
 #include "Components/DataManagerComponent.h"
 
-#include "Interfaces/DataInstanceInterface.h"
+#include "Interfaces/DataObjectInterface.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -45,9 +45,9 @@ void UDataManagerComponent::Refresh_Implementation()
 
 UDataAsset* UDataManagerComponent::GetData() const
 {
-    if (DataInstance && DataInstance->Implements<UDataInstanceInterface>())
+    if (DataInstance && DataInstance->Implements<UDataObjectInterface>())
     {
-        return IDataInstanceInterface::Execute_GetData(DataInstance);
+        return IDataObjectInterface::Execute_GetData(DataInstance);
     }
 
     return Data;

@@ -21,5 +21,5 @@ public:
 public:
     /* FlexibleDataBase */
 
-    virtual UDataFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual const TArray<UDataFragment*>& GetFragments() const override { return Fragments; }
 };

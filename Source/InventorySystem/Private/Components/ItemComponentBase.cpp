@@ -22,6 +22,7 @@ void UItemComponentBase::Refresh_Implementation()
     if (DisplayMesh.IsValid())
     {
         DisplayMesh->SetStaticMesh(GetStaticMesh());
+        DisplayMesh->SetMaterial(0, GetMaterial());
     }
 }
 
@@ -48,6 +49,11 @@ void UItemComponentBase::FindDisplayMesh()
 }
 
 UStaticMesh* UItemComponentBase::GetStaticMesh() const
+{
+    return nullptr;
+}
+
+UMaterialInterface* UItemComponentBase::GetMaterial() const
 {
     return nullptr;
 }

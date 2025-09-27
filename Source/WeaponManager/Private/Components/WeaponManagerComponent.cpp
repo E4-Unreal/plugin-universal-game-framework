@@ -14,7 +14,7 @@ UWeaponManagerComponent::UWeaponManagerComponent()
     bWantsInitializeComponent = true;
 
     UsingDataInterfaces.Emplace(UWeaponDataInterface::StaticClass());
-    UsingInstanceInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
+    UsingDataObjectInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
 
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
 }
@@ -170,7 +170,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
 {
     if (CheckData(Data))
     {
-        UObject* NewContent = IDataInterface::Execute_CreateDataInstance(Data);
+        UObject* NewContent = IDataInterface::Execute_CreateDataObject(Data);
         return SpawnActorFromContent(NewContent);
     }
 

@@ -3,20 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FlexibleDataInstanceBase.h"
-#include "FlexibleDataInstance.generated.h"
+#include "FlexibleDataObjectBase.h"
+#include "FlexibleDataObject.generated.h"
 
 /**
  *
  */
 UCLASS()
-class DATAMANAGER_API UFlexibleDataInstance : public UFlexibleDataInstanceBase
+class DATAMANAGER_API UFlexibleDataObject : public UFlexibleDataObjectBase
 {
     GENERATED_BODY()
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced, Replicated)
-    TArray<TObjectPtr<UDataInstanceFragment>> Fragments;
+    TArray<TObjectPtr<UDataObjectFragment>> Fragments;
 
 public:
     /* Object */
@@ -25,5 +25,5 @@ public:
 
     /* FlexibleDataBase */
 
-    virtual UDataInstanceFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UDataObjectFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const override;
 };

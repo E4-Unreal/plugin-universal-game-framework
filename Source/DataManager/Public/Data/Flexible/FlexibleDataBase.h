@@ -16,9 +16,43 @@ class DATAMANAGER_API UFlexibleDataBase : public UDataDefinitionBase
 {
     GENERATED_BODY()
 
+protected:
+    static const TArray<UDataFragment*> EmptyFragments;
+
 public:
+    /* DataInterface */
+
+    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+
     /* API */
 
     UFUNCTION(BlueprintPure)
-    virtual UDataFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const { return nullptr; }
+    virtual const TArray<UDataFragment*>& GetFragments() const;
+
+    UFUNCTION(BlueprintPure)
+    UDataFragment* CreateFragment(TSubclassOf<UDataFragment> FragmentClass) const;
+
+    template <typename TFragment = UDataFragment>
+    TFragment* CreateFragment() const
+    {
+        return Cast<TFragment>(CreateFragment(TFragment::StaticClass()));
+    }
+
+    UFUNCTION(BlueprintPure)
+    UDataFragment* GetFragmentByClass(TSubclassOf<UDataFragment> FragmentClass) const;
+
+    template <typename TFragment = UDataFragment>
+    TFragment* GetFragmentByClass() const
+    {
+        return Cast<TFragment>(GetFragmentByClass(TFragment::StaticClass()));
+    }
+
+    UFUNCTION(BlueprintPure)
+    UDataFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const;
+
+    template <typename TInterface = UInterface>
+    UDataFragment* GetFragmentByInterface() const
+    {
+        return GetFragmentByInterface(TInterface::StaticClass());
+    }
 };
