@@ -6,6 +6,32 @@
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/DataInstanceInterface.h"
 
+UDataAsset* UDataManagerFunctionLibrary::GetData(UObject* DataObject)
+{
+    return GetDataByInterface<UDataInterface>(DataObject);
+}
+
+int32 UDataManagerFunctionLibrary::GetID(UObject* DataObject)
+{
+    auto Data = GetData(DataObject);
+
+    return Data ? IDataInterface::Execute_GetID(Data) : -1;
+}
+
+FText UDataManagerFunctionLibrary::GetDisplayName(UObject* DataObject)
+{
+    auto Data = GetData(DataObject);
+
+    return Data ? IDataInterface::Execute_GetDisplayName(Data) : FText::GetEmpty();
+}
+
+FText UDataManagerFunctionLibrary::GetDescription(UObject* DataObject)
+{
+    auto Data = GetData(DataObject);
+
+    return Data ? IDataInterface::Execute_GetDescription(Data) : FText::GetEmpty();
+}
+
 UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject, TSubclassOf<UInterface> InterfaceClass)
 {
     if (DataObject && InterfaceClass)
