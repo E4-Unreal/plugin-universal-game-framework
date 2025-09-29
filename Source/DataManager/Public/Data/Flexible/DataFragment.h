@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(Abstract, EditInlineNew)
+UCLASS(Abstract, EditInlineNew, CollapseCategories)
 class DATAMANAGER_API UDataFragment : public UPrimaryDataAsset
 {
     GENERATED_BODY()
