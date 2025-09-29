@@ -24,6 +24,30 @@ void USlotManagerComponentBase::InitializeComponent()
     MappingSlots();
 }
 
+bool USlotManagerComponentBase::IsSlotEmpty_Implementation(int32 SlotIndex) const
+{
+    return DoesSlotExist(SlotIndex) ? GetContent(SlotIndex) == nullptr : false;
+}
+
+UDataAsset* USlotManagerComponentBase::GetData_Implementation(int32 SlotIndex) const
+{
+    return GetDataFromContent(GetContent(SlotIndex));
+}
+
+void USlotManagerComponentBase::SwapSlots_Implementation(UActorComponent* Source, int32 SourceIndex,
+    UActorComponent* Destination, int32 DestinationIndex)
+{
+    auto SourceSlotManager = Cast<USlotManagerComponentBase>(Source);
+    auto DestinationSlotManager = Cast<USlotManagerComponentBase>(Destination);
+
+    SwapContent(SourceSlotManager, SourceIndex, DestinationSlotManager, DestinationIndex);
+}
+
+int32 USlotManagerComponentBase::GetMaxSlotNum_Implementation() const
+{
+    return 0;
+}
+
 void USlotManagerComponentBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -34,11 +58,6 @@ void USlotManagerComponentBase::GetLifetimeReplicatedProps(TArray<class FLifetim
 bool USlotManagerComponentBase::DoesSlotExist(int32 Index) const
 {
     return SlotMap.Contains(Index);
-}
-
-bool USlotManagerComponentBase::IsSlotEmpty(int32 Index) const
-{
-    return DoesSlotExist(Index) ? GetContent(Index) == nullptr : false;
 }
 
 bool USlotManagerComponentBase::HasContent(UObject* InContent) const
@@ -57,11 +76,6 @@ bool USlotManagerComponentBase::HasContent(UObject* InContent) const
 UObject* USlotManagerComponentBase::GetContent(int32 Index) const
 {
     return SlotMap.FindRef(Index);
-}
-
-UDataAsset* USlotManagerComponentBase::GetData(int32 Index) const
-{
-    return GetDataFromContent(GetContent(Index));
 }
 
 int32 USlotManagerComponentBase::GetEmptySlotIndex(UObject* NewContent) const

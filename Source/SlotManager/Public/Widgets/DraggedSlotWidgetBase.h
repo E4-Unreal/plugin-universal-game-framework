@@ -29,7 +29,7 @@ protected:
     TObjectPtr<UImage> ThumbnailImage;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
-    TWeakObjectPtr<USlotManagerComponentBase> SlotManager;
+    TWeakObjectPtr<UActorComponent> SlotManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     int32 SlotIndex;
@@ -39,8 +39,8 @@ public:
 
     /* SlotWidgetInterface */
 
-    virtual USlotManagerComponentBase* GetSlotManager_Implementation() const override { return SlotManager.Get(); }
-    virtual void SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager) override;
+    virtual UActorComponent* GetSlotManager_Implementation() const override { return SlotManager.Get(); }
+    virtual void SetSlotManager_Implementation(UActorComponent* NewSlotManager) override;
     virtual int32 GetSlotIndex_Implementation() const override { return SlotIndex; }
     virtual void SetSlotIndex_Implementation(int32 NewSlotIndex) override;
     virtual void Refresh_Implementation() override;

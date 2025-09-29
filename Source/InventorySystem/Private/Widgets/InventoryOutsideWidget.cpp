@@ -5,8 +5,8 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/InventoryComponent.h"
-#include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
+#include "Interfaces/SlotManagerInterface.h"
 #include "Widgets/SlotWidgetBase.h"
 
 void UInventoryOutsideWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -23,7 +23,7 @@ void UInventoryOutsideWidget::OnWidgetDrop(UUserWidget* DropWidget)
     {
         auto SlotManager = ISlotWidgetInterface::Execute_GetSlotManager(DropWidget);
         const int32 SlotIndex = ISlotWidgetInterface::Execute_GetSlotIndex(DropWidget);
-        auto SlotContent = SlotManager->GetContent(SlotIndex);
+        auto SlotContent = ISlotManagerInterface::Execute_GetDataInstance(SlotManager, SlotIndex);
 
         if (UInventoryComponent* Inventory = Cast<UInventoryComponent>(SlotManager))
         {

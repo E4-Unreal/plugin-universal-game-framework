@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Types/ContentSlot.h"
 #include "Components/ReplicatedComponent.h"
+#include "Interfaces/SlotManagerInterface.h"
 #include "SlotManagerComponentBase.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotUpdated, int32, Index);
@@ -13,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotUpdated, int32, Index);
  * 인벤토리, 장비창, 스킬창, 퀵 슬롯 등의 부모 클래스
  */
 UCLASS(Abstract)
-class SLOTMANAGER_API USlotManagerComponentBase : public UReplicatedComponent
+class SLOTMANAGER_API USlotManagerComponentBase : public UReplicatedComponent, public ISlotManagerInterface
 {
     GENERATED_BODY()
 
@@ -42,25 +43,32 @@ public:
 
     virtual void InitializeComponent() override;
 
+    /* SlotManagerInterface */
+
+    virtual UObject* GetDataInstance_Implementation(int32 SlotIndex) const override { return GetContent(SlotIndex); }
+    virtual void BindOnSlotUpdated_Implementation(const FSlotUpdatedDelegate& SlotUpdatedDelegate) override { OnSlotUpdated.Add(SlotUpdatedDelegate); }
+    virtual void UnbindOnSlotUpdated_Implementation(const FSlotUpdatedDelegate& SlotUpdatedDelegate) override { OnSlotUpdated.Remove(SlotUpdatedDelegate); }
+    virtual void SwapSlots_Implementation(UActorComponent* Source, int32 SourceIndex, UActorComponent* Destination, int32 DestinationIndex) override;
+
     /* API */
 
-    UFUNCTION(BlueprintPure)
-    virtual int32 GetMaxSlotNum() const { return 0; }
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    int32 GetMaxSlotNum() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool IsSlotEmpty(int32 SlotIndex) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UDataAsset* GetData(int32 SlotIndex) const;
 
     UFUNCTION(BlueprintPure)
     virtual bool DoesSlotExist(int32 Index) const;
-
-    UFUNCTION(BlueprintPure)
-    virtual bool IsSlotEmpty(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
     virtual bool HasContent(UObject* InContent) const;
 
     UFUNCTION(BlueprintPure)
     virtual UObject* GetContent(int32 Index) const;
-
-    UFUNCTION(BlueprintPure)
-    virtual UDataAsset* GetData(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
     virtual int32 GetEmptySlotIndex(UObject* NewContent) const;

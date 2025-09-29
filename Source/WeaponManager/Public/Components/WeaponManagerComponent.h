@@ -60,9 +60,12 @@ protected:
     /* SlotManagerComponentBase */
 
     virtual void CreateSlots() override;
-    virtual int32 GetMaxSlotNum() const override { return MaxSlotNum; }
     virtual bool CheckData(UDataAsset* Data) const override;
     virtual void HandleOnSlotUpdated(int32 Index) override;
+
+    /* SlotManagerInterface */
+
+    virtual int32 GetMaxSlotNum_Implementation() const override { return MaxSlotNum; }
 
     /* API */
 

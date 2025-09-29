@@ -24,10 +24,10 @@ class SLOTMANAGER_API ISlotWidgetInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    USlotManagerComponentBase* GetSlotManager() const;
+    UActorComponent* GetSlotManager() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetSlotManager(USlotManagerComponentBase* NewSlotManager);
+    void SetSlotManager(UActorComponent* NewSlotManager);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     int32 GetSlotIndex() const;

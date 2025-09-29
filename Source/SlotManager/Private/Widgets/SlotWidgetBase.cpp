@@ -4,10 +4,10 @@
 #include "Widgets/SlotWidgetBase.h"
 
 #include "Components/Image.h"
-#include "Components/SlotManagerComponentBase.h"
 #include "Interfaces/SlotDataInterface.h"
+#include "Interfaces/SlotManagerInterface.h"
 
-void USlotWidgetBase::SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager)
+void USlotWidgetBase::SetSlotManager_Implementation(UActorComponent* NewSlotManager)
 {
     SlotManager = NewSlotManager;
 }
@@ -22,7 +22,7 @@ void USlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (UDataAsset* Data = SlotManager->GetData(SlotIndex))
+        if (auto Data = ISlotManagerInterface::Execute_GetData(SlotManager.Get(), SlotIndex))
         {
             ApplyData(Data);
         }
@@ -46,7 +46,7 @@ void USlotWidgetBase::NativePreConstruct()
 
 bool USlotWidgetBase::CanDrag() const
 {
-    return Super::CanDrag() && SlotManager.IsValid() && !SlotManager->IsSlotEmpty(SlotIndex);
+    return Super::CanDrag() && SlotManager.IsValid() && !ISlotManagerInterface::Execute_IsSlotEmpty(SlotManager.Get(), SlotIndex);
 }
 
 void USlotWidgetBase::OnDraggedWidgetCreated(UUserWidget* DraggedWidget)
@@ -66,12 +66,12 @@ void USlotWidgetBase::OnWidgetDrop(UUserWidget* DropWidget)
 
     if (DropWidget->Implements<USlotWidgetInterface>())
     {
-        USlotManagerComponentBase* Source = Execute_GetSlotManager(DropWidget);
+        auto Source = Execute_GetSlotManager(DropWidget);
         int32 SourceIndex = Execute_GetSlotIndex(DropWidget);
 
         if (SlotManager.IsValid())
         {
-            SlotManager->SwapContent(Source, SourceIndex, SlotManager.Get(), SlotIndex);
+            ISlotManagerInterface::Execute_SwapSlots(SlotManager.Get(), Source, SourceIndex, SlotManager.Get(), SlotIndex);
         }
     }
 }
