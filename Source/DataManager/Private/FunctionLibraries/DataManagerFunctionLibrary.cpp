@@ -6,8 +6,36 @@
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/InstanceDataInterface.h"
 
+UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject, TSubclassOf<UInterface> InterfaceClass)
+{
+    if (DataObject && InterfaceClass)
+    {
+        if (DataObject->Implements<UDataInterface>())
+        {
+            return IDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass);
+        }
+        else if (DataObject->Implements<UInstanceDataInterface>())
+        {
+            return IInstanceDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass);
+        }
+    }
+
+    return nullptr;
+}
+
+UObject* UDataManagerFunctionLibrary::GetInstanceDataByInterface(UObject* InstanceData,
+    TSubclassOf<UInterface> InterfaceClass)
+{
+    if (InstanceData && InterfaceClass && InstanceData->Implements<UInstanceDataInterface>())
+    {
+        return IInstanceDataInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass);
+    }
+
+    return nullptr;
+}
+
 bool UDataManagerFunctionLibrary::SupportsDataInterfaces(UDataAsset* Data,
-    const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
+                                                         const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
 {
     if (Data && Data->Implements<UDataInterface>())
     {
@@ -15,7 +43,7 @@ bool UDataManagerFunctionLibrary::SupportsDataInterfaces(UDataAsset* Data,
         {
             if (InterfaceClass == nullptr) continue;
 
-            if (IDataInterface::Execute_GetDataByInterface(Data, InterfaceClass) == nullptr) return false;
+            if (GetDataByInterface(Data, InterfaceClass) == nullptr) return false;
         }
 
         return true;
@@ -33,7 +61,7 @@ bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* Instan
         {
             if (InterfaceClass == nullptr) continue;
 
-            if (IInstanceDataInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass) == nullptr && IInstanceDataInterface::Execute_GetDataByInterface(InstanceData, InterfaceClass) == nullptr) return false;
+            if (GetInstanceDataByInterface(InstanceData, InterfaceClass) == nullptr && GetDataByInterface(InstanceData, InterfaceClass) == nullptr) return false;
         }
 
         return true;
