@@ -8,8 +8,8 @@
 #include "InventoryComponent.generated.h"
 
 class UItemInstance;
-
 class IItemDataInterface;
+struct FGameplayTag;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UInventoryComponent : public USlotManagerComponentBase
@@ -68,4 +68,19 @@ public:
 protected:
     virtual void AddDefaultItems();
     virtual TSubclassOf<AActor> GetItemActorClass() const;
+
+    /* Getter */
+
+    // ItemData
+
+    static UDataAsset* GetItemData(UObject* DataObject);
+    static int32 GetMaxStack(UObject* DataObject);
+    static FGameplayTag GetItemType(UObject* DataObject);
+
+    // ItemInstance
+
+    UObject* CreateItemInstance(UDataAsset* Data) const;
+    static UObject* GetItemInstance(UObject* InstanceData);
+    static int32 GetQuantity(UObject* InstanceData);
+    static void SetQuantity(UObject* InstanceData, int32 NewQuantity);
 };

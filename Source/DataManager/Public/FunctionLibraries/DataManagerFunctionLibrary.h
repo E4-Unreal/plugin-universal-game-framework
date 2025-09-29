@@ -44,4 +44,7 @@ public:
 
     UFUNCTION(BlueprintCallable)
     static bool SupportsInstanceDataInterfaces(UObject* InstanceData, const TArray<TSubclassOf<UInterface>>& InterfaceClasses);
+
+    UFUNCTION(BlueprintCallable)
+    static UObject* CreateInstanceData(UDataAsset* Data);
 };
