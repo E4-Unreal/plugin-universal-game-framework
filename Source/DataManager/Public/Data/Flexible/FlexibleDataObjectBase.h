@@ -19,7 +19,7 @@ class DATAMANAGER_API UFlexibleDataObjectBase : public UDataObjectBase
 public:
     /* DataInterface */
 
-    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UObject* GetDataObjectByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 
     /* API */
 

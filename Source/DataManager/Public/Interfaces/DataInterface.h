@@ -41,8 +41,7 @@ public:
     void SetDescription(const FText& NewDescription);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool SupportsInterface(TSubclassOf<UInterface> InterfaceClass) const;
-    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const;
+    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UObject* CreateDataObject() const;

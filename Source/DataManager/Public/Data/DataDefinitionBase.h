@@ -37,5 +37,6 @@ public:
     virtual void SetDisplayName_Implementation(const FText& NewDisplayName) override { DisplayName = NewDisplayName; }
     virtual FText GetDescription_Implementation() const override { return Description; }
     virtual void SetDescription_Implementation(const FText& NewDescription) override { Description = NewDescription; }
+    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
     virtual UObject* CreateDataObject_Implementation() const override;
 };

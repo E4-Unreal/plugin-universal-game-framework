@@ -20,7 +20,7 @@ bool UDataManagerFunctionLibrary::SupportsInterfaces(UObject* DataObject, const 
             {
                 if (InterfaceClass == nullptr) continue;
 
-                if (!IDataInterface::Execute_SupportsInterface(DataObject, InterfaceClass)) bResult = false;
+                if (IDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
             }
         }
         else if (DataObject->Implements<UDataObjectInterface>())
@@ -31,7 +31,7 @@ bool UDataManagerFunctionLibrary::SupportsInterfaces(UObject* DataObject, const 
             {
                 if (InterfaceClass == nullptr) continue;
 
-                if (!IDataObjectInterface::Execute_SupportsInterface(DataObject, InterfaceClass)) bResult = false;
+                if (IDataObjectInterface::Execute_GetDataObjectByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
             }
         }
     }

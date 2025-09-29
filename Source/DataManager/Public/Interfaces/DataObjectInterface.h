@@ -27,6 +27,5 @@ public:
     void SetData(UDataAsset* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool SupportsInterface(TSubclassOf<UInterface> InterfaceClass) const;
-    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const;
+    UObject* GetDataObjectByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };

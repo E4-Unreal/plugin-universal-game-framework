@@ -24,8 +24,9 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* DataInstanceInterface */
+    /* DataObjectInterface */
 
     virtual UDataAsset* GetData_Implementation() const override { return Data; }
     virtual void SetData_Implementation(UDataAsset* NewData) override { Data = NewData; }
+    virtual UObject* GetDataObjectByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 };

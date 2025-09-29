@@ -7,11 +7,11 @@
 
 const TArray<UDataFragment*> UFlexibleDataBase::EmptyFragments;
 
-bool UFlexibleDataBase::SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
+UDataAsset* UFlexibleDataBase::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
-    auto DataFragment = GetFragmentByInterface(InterfaceClass);
+    auto Data = Super::GetDataByInterface_Implementation(InterfaceClass);
 
-    return DataFragment && DataFragment->GetClass()->ImplementsInterface(InterfaceClass);
+    return Data ? Data : GetFragmentByInterface(InterfaceClass);
 }
 
 const TArray<UDataFragment*>& UFlexibleDataBase::GetFragments() const

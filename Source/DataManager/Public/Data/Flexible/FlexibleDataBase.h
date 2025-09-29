@@ -22,7 +22,7 @@ protected:
 public:
     /* DataInterface */
 
-    virtual bool SupportsInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 
     /* API */
 
