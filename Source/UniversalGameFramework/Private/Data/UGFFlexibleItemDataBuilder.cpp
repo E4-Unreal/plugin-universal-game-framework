@@ -6,6 +6,7 @@
 #include "Data/ItemDataFragment.h"
 #include "Data/MeshDataFragment.h"
 #include "Data/ProductDataFragment.h"
+#include "Data/SlotDataFragment.h"
 #include "Data/UGFFlexibleItemData.h"
 #include "Data/UGFItemDataTableRow.h"
 #include "Data/WeaponDataFragment.h"
@@ -29,7 +30,18 @@ bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Ta
         SET_TEXT(ItemData->Description, RowData->Description)
 
         // Slot
-        SET_DATA(ItemData->ThumbnailTexture, RowData->ThumbnailTexture)
+        auto SlotDataFragment = ItemData->GetFragmentByClass<USlotDataFragment>();
+
+        if (SlotDataFragment == nullptr)
+        {
+            SlotDataFragment = ItemData->AddFragment<USlotDataFragment>();
+            bDirty = true;
+        }
+
+        if (SlotDataFragment)
+        {
+            SET_DATA(SlotDataFragment->ThumbnailTexture, RowData->ThumbnailTexture)
+        }
 
         // Mesh
         auto MeshDataFragment = ItemData->GetFragmentByClass<UMeshDataFragment>();

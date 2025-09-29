@@ -18,14 +18,9 @@ class UItemDataFragment;
  */
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API UUGFFlexibleItemData : public UFlexibleData,
-    public ISlotDataInterface,
     public IProductInterface
 {
     GENERATED_BODY()
-
-public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
 public:
     UUGFFlexibleItemData(const FObjectInitializer& ObjectInitializer);
@@ -33,10 +28,6 @@ public:
     /* PrimaryDataAsset */
 
     virtual FPrimaryAssetId GetPrimaryAssetId() const override;
-
-    /* SlotDataInterface */
-
-    virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
 
     /* ProductInterface */
 

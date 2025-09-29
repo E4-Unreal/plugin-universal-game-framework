@@ -15,7 +15,7 @@ class DATAMANAGER_API UDataManagerFunctionLibrary : public UBlueprintFunctionLib
     GENERATED_BODY()
 
 public:
-    /* ItemData */
+    /* Data */
 
     UFUNCTION(BlueprintPure, Category = "Data")
     static UDataAsset* GetData(UObject* DataObject);

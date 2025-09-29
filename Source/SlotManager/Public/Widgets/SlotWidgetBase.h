@@ -56,7 +56,7 @@ protected:
 
     /* API */
 
-    virtual void SetThumbnailTexture(UTexture2D* NewTexture);
+    virtual void SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTexture);
     virtual void ApplyData(UDataAsset* InData);
     virtual void Clear();
 };
