@@ -32,7 +32,15 @@ bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Ta
         SET_DATA(ItemData->ThumbnailTexture, RowData->ThumbnailTexture)
 
         // Mesh
-        if (auto MeshDataFragment = ItemData->GetFragmentByClass<UMeshDataFragment>())
+        auto MeshDataFragment = ItemData->GetFragmentByClass<UMeshDataFragment>();
+
+        if (MeshDataFragment == nullptr)
+        {
+            MeshDataFragment = ItemData->AddFragment<UMeshDataFragment>();
+            bDirty = true;
+        }
+
+        if (MeshDataFragment)
         {
             SET_DATA(MeshDataFragment->StaticMesh, RowData->StaticMesh)
             SET_DATA(MeshDataFragment->SkeletalMesh, RowData->SkeletalMesh)
@@ -41,14 +49,30 @@ bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Ta
         }
 
         // Inventory
-        if (auto ItemDataFragment = ItemData->GetFragmentByClass<UItemDataFragment>())
+        auto ItemDataFragment = ItemData->GetFragmentByClass<UItemDataFragment>();
+
+        if (ItemDataFragment == nullptr)
+        {
+            ItemDataFragment = ItemData->AddFragment<UItemDataFragment>();
+            bDirty = true;
+        }
+
+        if (ItemDataFragment)
         {
             SET_DATA(ItemDataFragment->MaxStack, RowData->MaxStack)
             SET_DATA(ItemDataFragment->ItemType, RowData->ItemType)
         }
 
         // Product
-        if (auto ProductDataFragment = ItemData->GetFragmentByClass<UProductDataFragment>())
+        auto ProductDataFragment = ItemData->GetFragmentByClass<UProductDataFragment>();
+
+        if (ProductDataFragment == nullptr)
+        {
+            ProductDataFragment = ItemData->AddFragment<UProductDataFragment>();
+            bDirty = true;
+        }
+
+        if (ProductDataFragment)
         {
             SET_DATA(ProductDataFragment->CurrencyType, RowData->CurrencyType)
             SET_DATA(ProductDataFragment->BuyPrice, RowData->BuyPrice)
@@ -56,7 +80,15 @@ bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Ta
         }
 
         // Equipment
-        if (auto WeaponDataFragment = ItemData->GetFragmentByClass<UWeaponDataFragment>())
+        auto WeaponDataFragment = ItemData->GetFragmentByClass<UWeaponDataFragment>();
+
+        if (WeaponDataFragment == nullptr)
+        {
+            WeaponDataFragment = ItemData->AddFragment<UWeaponDataFragment>();
+            bDirty = true;
+        }
+
+        if (WeaponDataFragment)
         {
             SET_DATA(WeaponDataFragment->SlotType, RowData->SlotType)
             SET_DATA(WeaponDataFragment->ActiveSocketName, RowData->ActiveSocketName)

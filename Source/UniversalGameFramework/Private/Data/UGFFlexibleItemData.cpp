@@ -15,17 +15,10 @@ UUGFFlexibleItemData::UUGFFlexibleItemData(const FObjectInitializer& ObjectIniti
     // TODO FlexibleItemInstance로 대체
     InstanceDataClass = UUGFEquipmentInstance::StaticClass();
 
-    auto MeshDataFragment = CreateFragment<UMeshDataFragment>();
-    Fragments.Emplace(MeshDataFragment);
-
-    auto ItemDataFragment = CreateFragment<UItemDataFragment>();
-    Fragments.Emplace(ItemDataFragment);
-
-    auto ProductDataFragment = CreateFragment<UProductDataFragment>();
-    Fragments.Emplace(ProductDataFragment);
-
-    auto WeaponDataFragment = CreateFragment<UWeaponDataFragment>();
-    Fragments.Emplace(WeaponDataFragment);
+    auto MeshDataFragment = AddFragment<UMeshDataFragment>();
+    auto ItemDataFragment = AddFragment<UItemDataFragment>();
+    auto ProductDataFragment = AddFragment<UProductDataFragment>();
+    auto WeaponDataFragment = AddFragment<UWeaponDataFragment>();
 }
 
 FPrimaryAssetId UUGFFlexibleItemData::GetPrimaryAssetId() const

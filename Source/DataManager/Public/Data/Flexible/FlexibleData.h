@@ -22,4 +22,15 @@ public:
     /* FlexibleDataBase */
 
     virtual const TArray<UDataFragment*>& GetFragments() const override { return Fragments; }
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    UDataFragment* AddFragment(TSubclassOf<UDataFragment> FragmentClass);
+
+    template <typename TFragment = UDataFragment>
+    TFragment* AddFragment()
+    {
+        return Cast<TFragment>(AddFragment(TFragment::StaticClass()));
+    }
 };
