@@ -6,12 +6,14 @@
 #include "Data/UGFItemInstance.h"
 #include "Data/ItemDataFragment.h"
 #include "Data/ProductDataFragment.h"
+#include "Data/UGFEquipmentInstance.h"
 #include "Data/WeaponDataFragment.h"
 
 UUGFFlexibleItemData::UUGFFlexibleItemData(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    InstanceDataClass = UUGFItemInstance::StaticClass();
+    // TODO FlexibleItemInstance로 대체
+    InstanceDataClass = UUGFEquipmentInstance::StaticClass();
 
     auto ItemDataFragment = CreateFragment<UItemDataFragment>();
     Fragments.Emplace(ItemDataFragment);
