@@ -6,35 +6,38 @@
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/InstanceDataInterface.h"
 
-bool UDataManagerFunctionLibrary::SupportsInterfaces(UObject* DataObject, const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
+bool UDataManagerFunctionLibrary::SupportsDataInterfaces(UDataAsset* Data,
+    const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
 {
-    bool bResult = false;
-
-    if (DataObject)
+    if (Data && Data->Implements<UDataInterface>())
     {
-        if (DataObject->Implements<UDataInterface>())
+        for (auto InterfaceClass : InterfaceClasses)
         {
-            bResult = true;
+            if (InterfaceClass == nullptr) continue;
 
-            for (auto InterfaceClass : InterfaceClasses)
-            {
-                if (InterfaceClass == nullptr) continue;
-
-                if (IDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
-            }
+            if (IDataInterface::Execute_GetDataByInterface(Data, InterfaceClass) == nullptr) return false;
         }
-        else if (DataObject->Implements<UInstanceDataInterface>())
-        {
-            bResult = true;
 
-            for (auto InterfaceClass : InterfaceClasses)
-            {
-                if (InterfaceClass == nullptr) continue;
-
-                if (IInstanceDataInterface::Execute_GetInstanceDataByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
-            }
-        }
+        return true;
     }
 
-    return bResult;
+    return false;
+}
+
+bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* InstanceData,
+    const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
+{
+    if (InstanceData && InstanceData->Implements<UInstanceDataInterface>())
+    {
+        for (auto InterfaceClass : InterfaceClasses)
+        {
+            if (InterfaceClass == nullptr) continue;
+
+            if (IInstanceDataInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass) == nullptr) return false;
+        }
+
+        return true;
+    }
+
+    return false;
 }

@@ -16,5 +16,8 @@ class DATAMANAGER_API UDataManagerFunctionLibrary : public UBlueprintFunctionLib
 
 public:
     UFUNCTION(BlueprintCallable)
-    static bool SupportsInterfaces(UObject* DataObject, const TArray<TSubclassOf<UInterface>>& InterfaceClasses);
+    static bool SupportsDataInterfaces(UDataAsset* Data, const TArray<TSubclassOf<UInterface>>& InterfaceClasses);
+
+    UFUNCTION(BlueprintCallable)
+    static bool SupportsInstanceDataInterfaces(UObject* InstanceData, const TArray<TSubclassOf<UInterface>>& InterfaceClasses);
 };
