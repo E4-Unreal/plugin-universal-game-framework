@@ -7,7 +7,7 @@
 #include "Components/InventoryComponent.h"
 #include "Data/ItemDropConfig.h"
 #include "Interfaces/DataInterface.h"
-#include "Interfaces/ItemObjectInterface.h"
+#include "Interfaces/ItemInstanceInterface.h"
 #include "Settings/InventorySystemSettings.h"
 
 UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializer)
@@ -105,9 +105,9 @@ TArray<UObject*> UItemDropComponent::GetItems() const
                 if (ItemCount > 0)
                 {
                     UObject* NewItem = IDataInterface::Execute_CreateDataObject(ItemData);
-                    if (NewItem && NewItem->Implements<UItemObjectInterface>())
+                    if (NewItem && NewItem->Implements<UItemInstanceInterface>())
                     {
-                        IItemObjectInterface::Execute_SetQuantity(NewItem, ItemCount);
+                        IItemInstanceInterface::Execute_SetQuantity(NewItem, ItemCount);
 
                         Items.Emplace(NewItem);
                     }

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataObjectBase.h"
-#include "Interfaces/ItemObjectInterface.h"
+#include "Interfaces/ItemInstanceInterface.h"
 #include "UGFItemInstance.generated.h"
 
 /**
@@ -12,7 +12,7 @@
  */
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API UUGFItemInstance : public UDataObjectBase,
-    public IItemObjectInterface
+    public IItemInstanceInterface
 {
     GENERATED_BODY()
 
