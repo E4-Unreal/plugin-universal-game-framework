@@ -5,9 +5,9 @@
 
 #include "Data/Flexible/DataObjectFragment.h"
 
-UObject* UFlexibleDataObjectBase::GetDataObjectByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
+UObject* UFlexibleDataObjectBase::GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
-    auto DataObject = Super::GetDataObjectByInterface_Implementation(InterfaceClass);
+    auto DataObject = Super::GetInstanceDataByInterface_Implementation(InterfaceClass);
 
     return DataObject ? DataObject : GetFragmentByInterface(InterfaceClass);
 }

@@ -7,7 +7,7 @@
 #include "Logging.h"
 #include "Data/DataObjectBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "Interfaces/DataObjectInterface.h"
+#include "Interfaces/InstanceDataInterface.h"
 #include "Interfaces/DataInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
@@ -221,7 +221,7 @@ bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 
 UDataAsset* USlotManagerComponentBase::GetDataFromContent(UObject* InContent) const
 {
-    return InContent && InContent->Implements<UDataObjectInterface>() ? IDataObjectInterface::Execute_GetData(InContent) : nullptr;
+    return InContent && InContent->Implements<UInstanceDataInterface>() ? IInstanceDataInterface::Execute_GetData(InContent) : nullptr;
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)

@@ -3,7 +3,7 @@
 
 #include "Data/DataDefinitionBase.h"
 
-#include "Interfaces/DataObjectInterface.h"
+#include "Interfaces/InstanceDataInterface.h"
 
 UDataAsset* UDataDefinitionBase::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
@@ -12,10 +12,10 @@ UDataAsset* UDataDefinitionBase::GetDataByInterface_Implementation(TSubclassOf<U
 
 UObject* UDataDefinitionBase::CreateDataObject_Implementation() const
 {
-    if (DataObjectClass && DataObjectClass->ImplementsInterface(UDataObjectInterface::StaticClass()))
+    if (DataObjectClass && DataObjectClass->ImplementsInterface(UInstanceDataInterface::StaticClass()))
     {
         auto NewInstance = NewObject<UObject>(GetTransientPackage(), DataObjectClass);
-        IDataObjectInterface::Execute_SetData(NewInstance, const_cast<ThisClass*>(this));
+        IInstanceDataInterface::Execute_SetData(NewInstance, const_cast<ThisClass*>(this));
 
         return NewInstance;
     }

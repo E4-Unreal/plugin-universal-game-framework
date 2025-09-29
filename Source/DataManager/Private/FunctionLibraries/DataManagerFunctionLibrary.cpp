@@ -4,7 +4,7 @@
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 
 #include "Interfaces/DataInterface.h"
-#include "Interfaces/DataObjectInterface.h"
+#include "Interfaces/InstanceDataInterface.h"
 
 bool UDataManagerFunctionLibrary::SupportsInterfaces(UObject* DataObject, const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
 {
@@ -23,7 +23,7 @@ bool UDataManagerFunctionLibrary::SupportsInterfaces(UObject* DataObject, const 
                 if (IDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
             }
         }
-        else if (DataObject->Implements<UDataObjectInterface>())
+        else if (DataObject->Implements<UInstanceDataInterface>())
         {
             bResult = true;
 
@@ -31,7 +31,7 @@ bool UDataManagerFunctionLibrary::SupportsInterfaces(UObject* DataObject, const 
             {
                 if (InterfaceClass == nullptr) continue;
 
-                if (IDataObjectInterface::Execute_GetDataObjectByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
+                if (IInstanceDataInterface::Execute_GetInstanceDataByInterface(DataObject, InterfaceClass) == nullptr) bResult = false;
             }
         }
     }

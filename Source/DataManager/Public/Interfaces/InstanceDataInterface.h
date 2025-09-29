@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "DataObjectInterface.generated.h"
+#include "InstanceDataInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UDataObjectInterface : public UInterface
+class UInstanceDataInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -15,7 +15,7 @@ class UDataObjectInterface : public UInterface
 /**
  *
  */
-class DATAMANAGER_API IDataObjectInterface
+class DATAMANAGER_API IInstanceDataInterface
 {
     GENERATED_BODY()
 
@@ -27,5 +27,5 @@ public:
     void SetData(UDataAsset* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* GetDataObjectByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+    UObject* GetInstanceDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 };
