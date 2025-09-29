@@ -1,10 +1,37 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ShopSystemFunctionLibrary.h"
+#include "FunctionLibraries/ShopSystemFunctionLibrary.h"
 
+#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/CustomerInterface.h"
 #include "Interfaces/ProductInterface.h"
+
+UDataAsset* UShopSystemFunctionLibrary::GetProductData(UObject* DataObject)
+{
+    return UDataManagerFunctionLibrary::GetDataByInterface<UProductInterface>(DataObject);
+}
+
+FGameplayTag UShopSystemFunctionLibrary::GetCurrencyType(UObject* DataObject)
+{
+    auto ProductData = GetProductData(DataObject);
+
+    return ProductData ? IProductInterface::Execute_GetCurrencyType(ProductData) : FGameplayTag::EmptyTag;
+}
+
+int32 UShopSystemFunctionLibrary::GetBuyPrice(UObject* DataObject)
+{
+    auto ProductData = GetProductData(DataObject);
+
+    return ProductData ? IProductInterface::Execute_GetBuyPrice(ProductData) : 0;
+}
+
+int32 UShopSystemFunctionLibrary::GetSellPrice(UObject* DataObject)
+{
+    auto ProductData = GetProductData(DataObject);
+
+    return ProductData ? IProductInterface::Execute_GetSellPrice(ProductData) : 0;
+}
 
 bool UShopSystemFunctionLibrary::PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer,
                                                  const TScriptInterface<IProductInterface>& Product, int32 Quantity)

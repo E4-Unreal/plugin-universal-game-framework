@@ -3,7 +3,7 @@
 
 #include "Widgets/BuyModalWidget.h"
 
-#include "ShopSystemFunctionLibrary.h"
+#include "FunctionLibraries/ShopSystemFunctionLibrary.h"
 #include "Components/Button.h"
 #include "Components/SpinBox.h"
 

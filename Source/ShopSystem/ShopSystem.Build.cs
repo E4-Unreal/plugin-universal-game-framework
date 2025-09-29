@@ -16,7 +16,8 @@ public class ShopSystem : ModuleRules
 
                 // UniversalGameFramework
                 "DataManager",
-                "CurrencyManager"
+                "CurrencyManager",
+                "SlotManager"
             }
         );
 

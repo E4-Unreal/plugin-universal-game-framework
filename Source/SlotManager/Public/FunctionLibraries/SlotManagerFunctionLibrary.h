@@ -17,9 +17,9 @@ class SLOTMANAGER_API USlotManagerFunctionLibrary : public UBlueprintFunctionLib
 public:
     /* Data */
 
-    UFUNCTION(BlueprintPure, Category = "Data")
+    UFUNCTION(BlueprintPure, Category = "SlotData")
     static UDataAsset* GetSlotData(UObject* DataObject);
 
-    UFUNCTION(BlueprintPure, Category = "Data")
+    UFUNCTION(BlueprintPure, Category = "SlotData")
     static TSoftObjectPtr<UTexture2D> GetThumbnailTexture(UObject* DataObject);
 };

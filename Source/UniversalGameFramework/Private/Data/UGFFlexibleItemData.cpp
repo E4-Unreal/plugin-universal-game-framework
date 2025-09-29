@@ -27,24 +27,3 @@ FPrimaryAssetId UUGFFlexibleItemData::GetPrimaryAssetId() const
 {
     return FPrimaryAssetId("Item", FName(FString::FromInt(ID)));
 }
-
-const FGameplayTag UUGFFlexibleItemData::GetCurrencyType_Implementation() const
-{
-    auto ProductDataFragment = GetFragmentByInterface<UProductInterface>();
-
-    return ProductDataFragment ? IProductInterface::Execute_GetCurrencyType(ProductDataFragment) : FGameplayTag::EmptyTag;
-}
-
-int32 UUGFFlexibleItemData::GetBuyPrice_Implementation() const
-{
-    auto ProductDataFragment = GetFragmentByInterface<UProductInterface>();
-
-    return ProductDataFragment ? IProductInterface::Execute_GetBuyPrice(ProductDataFragment) : 0;
-}
-
-int32 UUGFFlexibleItemData::GetSellPrice_Implementation() const
-{
-    auto ProductDataFragment = GetFragmentByInterface<UProductInterface>();
-
-    return ProductDataFragment ? IProductInterface::Execute_GetSellPrice(ProductDataFragment) : 0;
-}
