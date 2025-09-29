@@ -6,7 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "InventorySystemFunctionLibrary.generated.h"
 
-class UObject;
+struct FGameplayTag;
 
 UCLASS()
 class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFunctionLibrary
@@ -25,4 +25,29 @@ public:
 
     UFUNCTION(BlueprintCallable)
     static void ImpulseActor(AActor* Actor, float ImpulseAngle, float ImpulseStrength);
+
+    /* ItemData */
+
+    UFUNCTION(BlueprintPure, Category = "ItemData")
+    static UDataAsset* GetItemData(UObject* DataObject);
+
+    UFUNCTION(BlueprintPure, Category = "ItemData")
+    static int32 GetMaxStack(UObject* DataObject);
+
+    UFUNCTION(BlueprintPure, Category = "ItemData")
+    static FGameplayTag GetItemType(UObject* DataObject);
+
+    /* ItemInstanceData */
+
+    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
+    static UObject* CreateItemInstance(UDataAsset* Data);
+
+    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
+    static UObject* GetItemInstance(UObject* InstanceData);
+
+    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
+    static int32 GetQuantity(UObject* InstanceData);
+
+    UFUNCTION(BlueprintCallable, Category = "ItemInstanceData")
+    static void SetQuantity(UObject* InstanceData, int32 NewQuantity);
 };
