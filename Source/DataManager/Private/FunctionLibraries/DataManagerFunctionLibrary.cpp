@@ -33,7 +33,7 @@ bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* Instan
         {
             if (InterfaceClass == nullptr) continue;
 
-            if (IInstanceDataInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass) == nullptr) return false;
+            if (IInstanceDataInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass) == nullptr && IInstanceDataInterface::Execute_GetDataByInterface(InstanceData, InterfaceClass) == nullptr) return false;
         }
 
         return true;

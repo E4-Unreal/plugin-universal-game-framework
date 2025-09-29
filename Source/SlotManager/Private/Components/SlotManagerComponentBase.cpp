@@ -205,13 +205,7 @@ void USlotManagerComponentBase::MappingSlots()
 
 bool USlotManagerComponentBase::CheckContent(UObject* Content) const
 {
-    if (Content && UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(Content, UsingDataObjectInterfaces))
-    {
-        UDataAsset* Data = GetDataFromContent(Content);
-        return CheckData(Data);
-    }
-
-    return false;
+    return Content && UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(Content, UsingDataObjectInterfaces);
 }
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const

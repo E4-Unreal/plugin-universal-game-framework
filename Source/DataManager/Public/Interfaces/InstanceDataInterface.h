@@ -28,4 +28,8 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UObject* GetInstanceDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const;
 };
