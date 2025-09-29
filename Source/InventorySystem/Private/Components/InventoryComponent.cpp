@@ -250,7 +250,7 @@ int32 UInventoryComponent::GetMaxStack(UObject* DataObject)
 {
     auto ItemData = GetItemData(DataObject);
 
-    return ItemData ? GetMaxStack(ItemData) : 0;
+    return ItemData ? IItemDataInterface::Execute_GetMaxStack(ItemData) : 0;
 }
 
 FGameplayTag UInventoryComponent::GetItemType(UObject* DataObject)
@@ -276,13 +276,13 @@ int32 UInventoryComponent::GetQuantity(UObject* InstanceData)
 {
     auto ItemInstance = GetItemInstance(InstanceData);
 
-    return ItemInstance ? GetQuantity(ItemInstance) : 0;
+    return ItemInstance ? IItemInstanceInterface::Execute_GetQuantity(ItemInstance) : 0;
 }
 
 void UInventoryComponent::SetQuantity(UObject* InstanceData, int32 NewQuantity)
 {
     if (auto ItemInstance = GetItemInstance(InstanceData))
     {
-        SetQuantity(ItemInstance, NewQuantity);
+        IItemInstanceInterface::Execute_SetQuantity(ItemInstance, NewQuantity);
     }
 }
