@@ -6,6 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Logging.h"
 #include "Data/DataObjectBase.h"
+#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/DataObjectInterface.h"
 #include "Interfaces/DataInterface.h"
 
@@ -204,33 +205,18 @@ void USlotManagerComponentBase::MappingSlots()
 
 bool USlotManagerComponentBase::CheckContent(UObject* Content) const
 {
-    if (Content == nullptr || !Content->Implements<UDataObjectInterface>()) return false;
-
-    for (auto UsingObjectInterface : UsingDataObjectInterfaces)
+    if (Content && UDataManagerFunctionLibrary::SupportsInterfaces(Content, UsingDataObjectInterfaces))
     {
-        if (!IDataObjectInterface::Execute_SupportsInterface(Content, UsingObjectInterface))
-        {
-            return false;
-        }
+        UDataAsset* Data = GetDataFromContent(Content);
+        return CheckData(Data);
     }
 
-    UDataAsset* Data = GetDataFromContent(Content);
-    return CheckData(Data);
+    return false;
 }
 
 bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
 {
-    if (Data == nullptr || !Data->Implements<UDataInterface>()) return false;
-
-    for (auto UsingDataInterface : UsingDataInterfaces)
-    {
-        if (!IDataInterface::Execute_SupportsInterface(Data, UsingDataInterface))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return Data && UDataManagerFunctionLibrary::SupportsInterfaces(Data, UsingDataInterfaces);
 }
 
 UDataAsset* USlotManagerComponentBase::GetDataFromContent(UObject* InContent) const

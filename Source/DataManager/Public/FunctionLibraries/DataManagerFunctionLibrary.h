@@ -7,10 +7,14 @@
 #include "DataManagerFunctionLibrary.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class DATAMANAGER_API UDataManagerFunctionLibrary : public UBlueprintFunctionLibrary
 {
     GENERATED_BODY()
+
+public:
+    UFUNCTION(BlueprintCallable)
+    static bool SupportsInterfaces(UObject* DataObject, const TArray<TSubclassOf<UInterface>>& InterfaceClasses);
 };
