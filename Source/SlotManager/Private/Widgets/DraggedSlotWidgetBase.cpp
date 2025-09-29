@@ -4,7 +4,7 @@
 #include "Widgets/DraggedSlotWidgetBase.h"
 
 #include "Components/Image.h"
-#include "Interfaces/SlotDataInterface.h"
+#include "FunctionLibraries/SlotManagerFunctionLibrary.h"
 #include "Interfaces/SlotManagerInterface.h"
 
 UDraggedSlotWidgetBase::UDraggedSlotWidgetBase(const FObjectInitializer& ObjectInitializer)
@@ -51,12 +51,12 @@ void UDraggedSlotWidgetBase::NativePreConstruct()
     Execute_Refresh(this);
 }
 
-void UDraggedSlotWidgetBase::SetThumbnailTexture(UTexture2D* NewTexture)
+void UDraggedSlotWidgetBase::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTexture)
 {
     if (NewTexture)
     {
         ThumbnailImage->SetBrushTintColor(FLinearColor::White);
-        ThumbnailImage->SetBrushFromTexture(NewTexture);
+        ThumbnailImage->SetBrushFromSoftTexture(NewTexture);
     }
     else
     {
@@ -71,10 +71,10 @@ void UDraggedSlotWidgetBase::Clear()
 
 void UDraggedSlotWidgetBase::ApplyData(UDataAsset* InData)
 {
-    if (InData && InData->Implements<USlotDataInterface>())
+    if (USlotManagerFunctionLibrary::GetSlotData(InData))
     {
-        UTexture2D* ThumbnailTexture = ISlotDataInterface::Execute_GetThumbnailTexture(InData).LoadSynchronous();
-        if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture.LoadSynchronous();
+        auto ThumbnailTexture = USlotManagerFunctionLibrary::GetThumbnailTexture(InData);
+        if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture;
 
         SetThumbnailTexture(ThumbnailTexture);
     }
