@@ -10,6 +10,9 @@ public class MeshManager : ModuleRules
             new string[]
             {
                 "Core",
+
+                // UniversalGameFramework
+                "DataManager"
             }
         );
 
