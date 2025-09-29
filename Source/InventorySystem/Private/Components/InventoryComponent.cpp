@@ -12,7 +12,7 @@
 UInventoryComponent::UInventoryComponent()
 {
     UsingDataInterfaces.Emplace(UItemDataInterface::StaticClass());
-    UsingDataObjectInterfaces.Emplace(UItemObjectInterface::StaticClass());
+    UsingInstanceDataInterfaces.Emplace(UItemObjectInterface::StaticClass());
 }
 
 void UInventoryComponent::BeginPlay()

@@ -22,7 +22,7 @@ public:
     TArray<TSubclassOf<UInterface>> UsingDataInterfaces;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TArray<TSubclassOf<UInterface>> UsingDataObjectInterfaces;
+    TArray<TSubclassOf<UInterface>> UsingInstanceDataInterfaces;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_Slots)
