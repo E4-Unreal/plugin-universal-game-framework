@@ -18,21 +18,22 @@ void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject
 
 void UShopListViewEntryWidget::Refresh()
 {
-    if (!Product) return;
-
-    if (DisplayNameTextBlock)
+    if (auto ProductData = UShopSystemFunctionLibrary::GetProductData(Product.GetObject()))
     {
-        DisplayNameTextBlock->SetText(UDataManagerFunctionLibrary::GetDisplayName(Product.GetObject()));
-    }
+        if (DisplayNameTextBlock)
+        {
+            DisplayNameTextBlock->SetText(UDataManagerFunctionLibrary::GetDisplayName(Product.GetObject()));
+        }
 
-    if (ThumbnailImage)
-    {
-        ThumbnailImage->SetBrushFromSoftTexture(USlotManagerFunctionLibrary::GetThumbnailTexture(Product.GetObject()));
-    }
+        if (ThumbnailImage)
+        {
+            ThumbnailImage->SetBrushFromSoftTexture(USlotManagerFunctionLibrary::GetThumbnailTexture(Product.GetObject()));
+        }
 
-    if (BuyPriceTextBlock)
-    {
-        const int32 BuyPrice = UShopSystemFunctionLibrary::GetBuyPrice(Product.GetObject());
-        BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(BuyPrice)));
+        if (BuyPriceTextBlock)
+        {
+            const int32 BuyPrice = UShopSystemFunctionLibrary::GetBuyPrice(Product.GetObject());
+            BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(BuyPrice)));
+        }
     }
 }
