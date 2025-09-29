@@ -3,10 +3,9 @@
 
 #include "Components/InventoryComponent.h"
 
-#include "InventorySystemFunctionLibrary.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Data/ItemInstance.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Settings/InventorySystemSettings.h"
 

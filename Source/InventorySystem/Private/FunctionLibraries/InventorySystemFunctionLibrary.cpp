@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "InventorySystemFunctionLibrary.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 
 #include "Interfaces/ItemActorInterface.h"
 

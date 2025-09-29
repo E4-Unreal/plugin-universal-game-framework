@@ -3,7 +3,7 @@
 
 #include "Components/ItemDropComponent.h"
 
-#include "InventorySystemFunctionLibrary.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Components/InventoryComponent.h"
 #include "Data/ItemDropConfig.h"
 #include "Interfaces/DataInterface.h"
