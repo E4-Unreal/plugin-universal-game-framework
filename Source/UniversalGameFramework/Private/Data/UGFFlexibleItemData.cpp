@@ -11,7 +11,7 @@
 UUGFFlexibleItemData::UUGFFlexibleItemData(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    DataObjectClass = UUGFItemInstance::StaticClass();
+    InstanceDataClass = UUGFItemInstance::StaticClass();
 
     auto ItemDataFragment = CreateFragment<UItemDataFragment>();
     Fragments.Emplace(ItemDataFragment);

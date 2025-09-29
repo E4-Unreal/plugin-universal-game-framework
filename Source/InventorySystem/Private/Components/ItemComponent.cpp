@@ -4,7 +4,7 @@
 #include "Components/ItemComponent.h"
 
 #include "Components/InventoryComponent.h"
-#include "Interfaces/InstanceDataInterface.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/DataInterface.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/ItemInstanceInterface.h"
@@ -67,9 +67,9 @@ UDataAsset* UItemComponent::GetFirstItemData() const
     if (!Items.IsEmpty())
     {
         UObject* FirstItem = Items[0];
-        if (FirstItem && FirstItem->Implements<UInstanceDataInterface>())
+        if (FirstItem && FirstItem->Implements<UDataInstanceInterface>())
         {
-            UDataAsset* FirstItemData = IInstanceDataInterface::Execute_GetData(FirstItem);
+            UDataAsset* FirstItemData = IDataInstanceInterface::Execute_GetData(FirstItem);
             if (FirstItemData && FirstItemData->Implements<UDataInterface>())
             {
                 return FirstItemData;

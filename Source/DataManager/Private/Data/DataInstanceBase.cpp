@@ -1,18 +1,18 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/DataObjectBase.h"
+#include "Data/DataInstanceBase.h"
 
 #include "Net/UnrealNetwork.h"
 
-void UDataObjectBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+void UDataInstanceBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ThisClass, Data);
 }
 
-UObject* UDataObjectBase::GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
+UObject* UDataInstanceBase::GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
     return InterfaceClass && GetClass()->ImplementsInterface(InterfaceClass) ? const_cast<ThisClass*>(this) : nullptr;
 }

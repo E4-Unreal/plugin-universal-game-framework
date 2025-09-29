@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataObjectBase.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemInstanceInterface.h"
 #include "UGFItemInstance.generated.h"
 
@@ -11,7 +11,7 @@
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API UUGFItemInstance : public UDataObjectBase,
+class UNIVERSALGAMEFRAMEWORK_API UUGFItemInstance : public UDataInstanceBase,
     public IItemInstanceInterface
 {
     GENERATED_BODY()

@@ -170,7 +170,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
 {
     if (CheckData(Data))
     {
-        UObject* NewContent = IDataInterface::Execute_CreateDataObject(Data);
+        UObject* NewContent = IDataInterface::Execute_CreateInstanceData(Data);
         return SpawnActorFromContent(NewContent);
     }
 

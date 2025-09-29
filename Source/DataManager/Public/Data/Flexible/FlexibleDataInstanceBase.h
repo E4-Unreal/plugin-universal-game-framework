@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataObjectBase.h"
-#include "FlexibleDataObjectBase.generated.h"
+#include "Data/DataInstanceBase.h"
+#include "FlexibleDataInstanceBase.generated.h"
 
-class UDataObjectFragment;
+class UDataInstanceFragment;
 
 /**
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UFlexibleDataObjectBase : public UDataObjectBase
+class DATAMANAGER_API UFlexibleDataInstanceBase : public UDataInstanceBase
 {
     GENERATED_BODY()
 
@@ -24,5 +24,5 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    virtual UDataObjectFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const { return nullptr; }
+    virtual UDataInstanceFragment* GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const { return nullptr; }
 };

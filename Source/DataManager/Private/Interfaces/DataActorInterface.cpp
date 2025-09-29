@@ -3,7 +3,7 @@
 
 #include "Interfaces/DataActorInterface.h"
 
-#include "Interfaces/InstanceDataInterface.h"
+#include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/DataInterface.h"
 
 
@@ -23,9 +23,9 @@ void IDataActorInterface::SetDataInstance_Implementation(UObject* NewDataInstanc
 UDataAsset* IDataActorInterface::GetDataAsset_Implementation() const
 {
     UObject* DataInstance = Execute_GetDataInstance(CastChecked<UObject>(this));
-    if (DataInstance && DataInstance->Implements<UInstanceDataInterface>())
+    if (DataInstance && DataInstance->Implements<UDataInstanceInterface>())
     {
-        return IInstanceDataInterface::Execute_GetData(DataInstance);
+        return IDataInstanceInterface::Execute_GetData(DataInstance);
     }
 
     return nullptr;
@@ -35,7 +35,7 @@ void IDataActorInterface::SetData_Implementation(UDataAsset* NewData)
 {
     if (NewData && NewData->Implements<UDataInterface>())
     {
-        if (UObject* NewDataInstance = IDataInterface::Execute_CreateDataObject(NewData))
+        if (UObject* NewDataInstance = IDataInterface::Execute_CreateInstanceData(NewData))
         {
             Execute_SetDataInstance(CastChecked<UObject>(this), NewDataInstance);
         }

@@ -4,7 +4,7 @@
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 
 #include "Interfaces/DataInterface.h"
-#include "Interfaces/InstanceDataInterface.h"
+#include "Interfaces/DataInstanceInterface.h"
 
 UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject, TSubclassOf<UInterface> InterfaceClass)
 {
@@ -14,9 +14,9 @@ UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject,
         {
             return IDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass);
         }
-        else if (DataObject->Implements<UInstanceDataInterface>())
+        else if (DataObject->Implements<UDataInstanceInterface>())
         {
-            return IInstanceDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass);
+            return IDataInstanceInterface::Execute_GetDataByInterface(DataObject, InterfaceClass);
         }
     }
 
@@ -26,9 +26,9 @@ UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject,
 UObject* UDataManagerFunctionLibrary::GetInstanceDataByInterface(UObject* InstanceData,
     TSubclassOf<UInterface> InterfaceClass)
 {
-    if (InstanceData && InterfaceClass && InstanceData->Implements<UInstanceDataInterface>())
+    if (InstanceData && InterfaceClass && InstanceData->Implements<UDataInstanceInterface>())
     {
-        return IInstanceDataInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass);
+        return IDataInstanceInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass);
     }
 
     return nullptr;
@@ -55,7 +55,7 @@ bool UDataManagerFunctionLibrary::SupportsDataInterfaces(UDataAsset* Data,
 bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* InstanceData,
     const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
 {
-    if (InstanceData && InstanceData->Implements<UInstanceDataInterface>())
+    if (InstanceData && InstanceData->Implements<UDataInstanceInterface>())
     {
         for (auto InterfaceClass : InterfaceClasses)
         {
@@ -72,5 +72,5 @@ bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* Instan
 
 UObject* UDataManagerFunctionLibrary::CreateInstanceData(UDataAsset* Data)
 {
-    return Data && Data->Implements<UDataInterface>() ? IDataInterface::Execute_CreateDataObject(Data) : nullptr;
+    return Data && Data->Implements<UDataInterface>() ? IDataInterface::Execute_CreateInstanceData(Data) : nullptr;
 }

@@ -104,7 +104,7 @@ TArray<UObject*> UItemDropComponent::GetItems() const
 
                 if (ItemCount > 0)
                 {
-                    UObject* NewItem = IDataInterface::Execute_CreateDataObject(ItemData);
+                    UObject* NewItem = IDataInterface::Execute_CreateInstanceData(ItemData);
                     if (NewItem && NewItem->Implements<UItemInstanceInterface>())
                     {
                         IItemInstanceInterface::Execute_SetQuantity(NewItem, ItemCount);

@@ -25,8 +25,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 2))
     FText Description;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 3, MustImplement = "DataObjectInterface"))
-    TSubclassOf<UObject> DataObjectClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 3, MustImplement = "InstanceDataInterface"))
+    TSubclassOf<UObject> InstanceDataClass;
 
 public:
     /* DataDefinitionInterface */
@@ -37,6 +37,5 @@ public:
     virtual void SetDisplayName_Implementation(const FText& NewDisplayName) override { DisplayName = NewDisplayName; }
     virtual FText GetDescription_Implementation() const override { return Description; }
     virtual void SetDescription_Implementation(const FText& NewDescription) override { Description = NewDescription; }
-    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
-    virtual UObject* CreateDataObject_Implementation() const override;
+    virtual TSubclassOf<UObject> GetInstanceDataClass_Implementation() const override { return InstanceDataClass; }
 };

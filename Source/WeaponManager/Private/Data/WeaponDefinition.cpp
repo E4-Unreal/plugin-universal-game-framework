@@ -9,7 +9,7 @@
 
 UWeaponDefinition::UWeaponDefinition()
 {
-    DataObjectClass = UWeaponInstance::StaticClass();
+    InstanceDataClass = UWeaponInstance::StaticClass();
     ActorClass = AWeaponActor::StaticClass();
     SlotType = Weapon::Slot::Primary;
     ActiveSocketName = FName("hand_r");

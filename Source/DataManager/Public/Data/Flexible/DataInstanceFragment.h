@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Data/ReplicatedObject.h"
-#include "DataObjectFragment.generated.h"
+#include "DataInstanceFragment.generated.h"
 
 /**
  *
  */
 UCLASS(Abstract, EditInlineNew)
-class DATAMANAGER_API UDataObjectFragment : public UReplicatedObject
+class DATAMANAGER_API UDataInstanceFragment : public UReplicatedObject
 {
     GENERATED_BODY()
 };
