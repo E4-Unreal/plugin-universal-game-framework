@@ -27,6 +27,9 @@ struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FTableRowBase
     TSoftObjectPtr<UMaterialInterface> Material;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftClassPtr<UAnimInstance> AnimationClass;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))

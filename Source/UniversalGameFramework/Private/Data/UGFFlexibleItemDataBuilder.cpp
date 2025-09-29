@@ -4,6 +4,7 @@
 #include "Data/UGFFlexibleItemDataBuilder.h"
 
 #include "Data/ItemDataFragment.h"
+#include "Data/MeshDataFragment.h"
 #include "Data/ProductDataFragment.h"
 #include "Data/UGFFlexibleItemData.h"
 #include "Data/UGFItemDataTableRow.h"
@@ -30,16 +31,20 @@ bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* Ta
         // Slot
         SET_DATA(ItemData->ThumbnailTexture, RowData->ThumbnailTexture)
 
-        // Actor
-        SET_DATA(ItemData->StaticMesh, RowData->StaticMesh)
-        SET_DATA(ItemData->SkeletalMesh, RowData->SkeletalMesh)
+        // Mesh
+        if (auto MeshDataFragment = ItemData->GetFragmentByClass<UMeshDataFragment>())
+        {
+            SET_DATA(MeshDataFragment->StaticMesh, RowData->StaticMesh)
+            SET_DATA(MeshDataFragment->SkeletalMesh, RowData->SkeletalMesh)
+            SET_DATA(MeshDataFragment->Material, RowData->Material)
+            SET_DATA(MeshDataFragment->AnimationClass, RowData->AnimationClass)
+        }
 
         // Inventory
         if (auto ItemDataFragment = ItemData->GetFragmentByClass<UItemDataFragment>())
         {
             SET_DATA(ItemDataFragment->MaxStack, RowData->MaxStack)
             SET_DATA(ItemDataFragment->ItemType, RowData->ItemType)
-            SET_DATA(ItemDataFragment->Material, RowData->Material)
         }
 
         // Product

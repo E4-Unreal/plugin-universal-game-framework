@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Data/DataDefinitionBase.h"
 #include "Interfaces/ItemDataInterface.h"
+#include "Interfaces/MeshDataInterface.h"
 #include "Interfaces/ProductInterface.h"
 #include "Interfaces/SlotDataInterface.h"
 #include "UGFItemDefinition.generated.h"
@@ -14,6 +15,7 @@
  */
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDataDefinitionBase,
+    public IMeshDataInterface,
     public ISlotDataInterface,
     public IItemDataInterface,
     public IProductInterface
@@ -32,6 +34,9 @@ public:
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UMaterialInterface> Material;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftClassPtr<UAnimInstance> AnimationClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 1))
     int32 MaxStack;
@@ -55,6 +60,13 @@ public:
 
     virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
+    /* MeshDataInterface */
+
+    virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
+    virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
+    virtual TSoftObjectPtr<UMaterialInterface> GetMaterial_Implementation() const override { return Material; }
+    virtual TSoftClassPtr<UAnimInstance> GetAnimationClass_Implementation() const override { return AnimationClass; }
+
     /* SlotDataInterface */
 
     virtual TSoftObjectPtr<UTexture2D> GetThumbnailTexture_Implementation() const override { return ThumbnailTexture; }
@@ -63,9 +75,6 @@ public:
 
     virtual int32 GetMaxStack_Implementation() const override { return MaxStack; }
     virtual FGameplayTag GetItemType_Implementation() const override { return ItemType; }
-    virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
-    virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
-    virtual TSoftObjectPtr<UMaterialInterface> GetMaterial_Implementation() const override { return Material; }
 
     /* ProductInterface */
 

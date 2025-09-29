@@ -29,7 +29,8 @@ public class UniversalGameFramework : ModuleRules
                 "DataManager",
                 "SlotManager",
                 "AnimationSystem",
-                "WidgetManager"
+                "WidgetManager",
+                "MeshManager",
             }
         );
 
