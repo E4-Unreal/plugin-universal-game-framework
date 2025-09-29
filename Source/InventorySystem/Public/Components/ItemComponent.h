@@ -47,9 +47,6 @@ public:
     virtual void SetItems(const TArray<UObject*> NewItems);
 
     UFUNCTION(BlueprintPure)
-    UDataAsset* GetFirstItemData() const;
-
-    UFUNCTION(BlueprintPure)
     FText GetItemName() const;
 
 protected:

@@ -4,10 +4,8 @@
 #include "Components/ItemComponent.h"
 
 #include "Components/InventoryComponent.h"
-#include "Interfaces/DataInstanceInterface.h"
-#include "Interfaces/DataInterface.h"
-#include "Interfaces/ItemDataInterface.h"
-#include "Interfaces/ItemInstanceInterface.h"
+#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "FunctionLibraries/MeshManagerFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Settings/InventorySystemSettings.h"
 
@@ -62,24 +60,6 @@ void UItemComponent::SetItems(const TArray<UObject*> NewItems)
     Refresh();
 }
 
-UDataAsset* UItemComponent::GetFirstItemData() const
-{
-    if (!Items.IsEmpty())
-    {
-        UObject* FirstItem = Items[0];
-        if (FirstItem && FirstItem->Implements<UDataInstanceInterface>())
-        {
-            UDataAsset* FirstItemData = IDataInstanceInterface::Execute_GetData(FirstItem);
-            if (FirstItemData && FirstItemData->Implements<UDataInterface>())
-            {
-                return FirstItemData;
-            }
-        }
-    }
-
-    return nullptr;
-}
-
 void UItemComponent::ClearItems()
 {
     for (const auto& Item : Items)
@@ -97,9 +77,9 @@ void UItemComponent::OnRep_Items(TArray<UObject*> OldItems)
 
 FText UItemComponent::GetItemName() const
 {
-    if (UDataAsset* FirstItemData = GetFirstItemData())
+    if (!Items.IsEmpty())
     {
-        FText FirstItemName = IDataInterface::Execute_GetDisplayName(FirstItemData);
+        FText FirstItemName = UDataManagerFunctionLibrary::GetDisplayName(Items[0]);
 
         return Items.Num() == 1 ? FirstItemName : FText::Format(ItemNameFormat, FirstItemName);
     }
@@ -113,11 +93,7 @@ UStaticMesh* UItemComponent::GetStaticMesh() const
 
     if (Items.Num() == 1)
     {
-        UDataAsset* FirstItemData = GetFirstItemData();
-        if (FirstItemData && FirstItemData->Implements<UItemDataInterface>())
-        {
-            StaticMesh = IItemDataInterface::Execute_GetStaticMesh(FirstItemData).LoadSynchronous();
-        }
+        StaticMesh = UMeshManagerFunctionLibrary::GetStaticMesh(Items[0]).LoadSynchronous();
     }
     else if (Items.Num() > 1)
     {
@@ -133,11 +109,7 @@ UMaterialInterface* UItemComponent::GetMaterial() const
 
     if (Items.Num() == 1)
     {
-        UDataAsset* FirstItemData = GetFirstItemData();
-        if (FirstItemData && FirstItemData->Implements<UItemDataInterface>())
-        {
-            Material = IItemDataInterface::Execute_GetMaterial(FirstItemData).LoadSynchronous();
-        }
+        Material = UMeshManagerFunctionLibrary::GetMaterial(Items[0]).LoadSynchronous();
     }
 
     return Material;
