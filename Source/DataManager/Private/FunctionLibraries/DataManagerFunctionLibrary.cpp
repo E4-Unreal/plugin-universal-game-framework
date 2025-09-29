@@ -36,7 +36,11 @@ UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject,
 {
     if (DataObject && InterfaceClass)
     {
-        if (DataObject->Implements<UDataInterface>())
+        if (DataObject->GetClass()->ImplementsInterface(InterfaceClass))
+        {
+            return Cast<UDataAsset>(DataObject);
+        }
+        else if (DataObject->Implements<UDataInterface>())
         {
             return IDataInterface::Execute_GetDataByInterface(DataObject, InterfaceClass);
         }
