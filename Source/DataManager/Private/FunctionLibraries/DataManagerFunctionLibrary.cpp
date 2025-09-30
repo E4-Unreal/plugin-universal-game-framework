@@ -56,9 +56,16 @@ UDataAsset* UDataManagerFunctionLibrary::GetDataByInterface(UObject* DataObject,
 UObject* UDataManagerFunctionLibrary::GetInstanceDataByInterface(UObject* InstanceData,
     TSubclassOf<UInterface> InterfaceClass)
 {
-    if (InstanceData && InterfaceClass && InstanceData->Implements<UDataInstanceInterface>())
+    if (InstanceData && InterfaceClass)
     {
-        return IDataInstanceInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass);
+        if (InstanceData->GetClass()->ImplementsInterface(InterfaceClass))
+        {
+            return InstanceData;
+        }
+        else if (InstanceData->Implements<UDataInstanceInterface>())
+        {
+            return IDataInstanceInterface::Execute_GetInstanceDataByInterface(InstanceData, InterfaceClass);
+        }
     }
 
     return nullptr;

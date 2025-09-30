@@ -35,6 +35,10 @@ public:
 public:
     UWeaponDataFragment();
 
+    /* DataFragment */
+
+    virtual UDataInstanceFragment* CreateDataInstanceFragment() const override;
+
     /* WeaponDataInterface */
 
     virtual FGameplayTag GetSlotType_Implementation() const override { return SlotType; }

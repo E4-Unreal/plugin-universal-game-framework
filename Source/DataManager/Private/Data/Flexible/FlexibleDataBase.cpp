@@ -4,14 +4,41 @@
 #include "Data/Flexible/FlexibleDataBase.h"
 
 #include "Data/Flexible/DataFragment.h"
+#include "Data/Flexible/FlexibleDataInstance.h"
 
 const TArray<UDataFragment*> UFlexibleDataBase::EmptyFragments;
+
+UFlexibleDataBase::UFlexibleDataBase(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    InstanceDataClass = UFlexibleDataInstance::StaticClass();
+}
 
 UDataAsset* UFlexibleDataBase::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
     auto Data = Super::GetDataByInterface_Implementation(InterfaceClass);
 
     return Data ? Data : GetFragmentByInterface(InterfaceClass);
+}
+
+UObject* UFlexibleDataBase::CreateInstanceData_Implementation() const
+{
+    auto DataInstance = Super::CreateInstanceData_Implementation();
+
+    if (auto FlexibleDataInstance = Cast<UFlexibleDataInstance>(DataInstance))
+    {
+        for (auto Fragment : GetFragments())
+        {
+            if (Fragment == nullptr) continue;
+
+            if (auto DataInstanceFragment = Fragment->CreateDataInstanceFragment())
+            {
+                FlexibleDataInstance->Fragments.Emplace(DataInstanceFragment);
+            }
+        }
+    }
+
+    return DataInstance;
 }
 
 const TArray<UDataFragment*>& UFlexibleDataBase::GetFragments() const

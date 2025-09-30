@@ -26,6 +26,10 @@ public:
 public:
     UItemDataFragment();
 
+    /* DataFragment */
+
+    virtual UDataInstanceFragment* CreateDataInstanceFragment() const override;
+
     /* ItemDataInterface */
 
     virtual int32 GetMaxStack_Implementation() const override { return MaxStack; }

@@ -20,9 +20,12 @@ protected:
     static const TArray<UDataFragment*> EmptyFragments;
 
 public:
+    UFlexibleDataBase(const FObjectInitializer& ObjectInitializer);
+
     /* DataInterface */
 
     virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UObject* CreateInstanceData_Implementation() const override;
 
     /* API */
 

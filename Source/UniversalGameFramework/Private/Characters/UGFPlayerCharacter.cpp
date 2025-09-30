@@ -16,8 +16,8 @@
 #include "Games/UGFSaveGame.h"
 #include "Subsystems/SaveGameSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
-#include "Data/UGFItemInstance.h"
-#include "Interfaces/DataInterface.h"
+#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -112,15 +112,12 @@ bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& Curr
 
 bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    auto Data = Product.GetObject();
-    if (Data && Data->Implements<UDataInterface>())
+    if (auto ProductData = Cast<UDataAsset>(Product.GetObject()))
     {
-        auto Instance = IDataInterface::Execute_CreateInstanceData(Data);
-        if (Instance && Instance->Implements<UItemInstanceInterface>())
+        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateInstanceData(ProductData))
         {
-            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
-
-            return GetInventory()->AddContent(Instance);
+            UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+            return GetInventory()->AddContent(ItemInstance);
         }
     }
 
@@ -129,15 +126,12 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
 
 bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
 {
-    auto Data = Product.GetObject();
-    if (Data && Data->Implements<UDataInterface>())
+    if (auto ProductData = Cast<UDataAsset>(Product.GetObject()))
     {
-        auto Instance = IDataInterface::Execute_CreateInstanceData(Data);
-        if (Instance && Instance->Implements<UItemInstanceInterface>())
+        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateInstanceData(ProductData))
         {
-            IItemInstanceInterface::Execute_SetQuantity(Instance, Quantity);
-
-            return GetInventory()->RemoveContent(Instance);
+            UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+            return GetInventory()->RemoveContent(ItemInstance);
         }
     }
 
