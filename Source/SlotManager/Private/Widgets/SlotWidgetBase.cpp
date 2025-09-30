@@ -78,7 +78,7 @@ void USlotWidgetBase::OnWidgetDrop(UUserWidget* DropWidget)
 
 void USlotWidgetBase::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTexture)
 {
-    if (NewTexture)
+    if (!NewTexture.IsNull())
     {
         ThumbnailImage->SetBrushTintColor(FLinearColor::White);
         ThumbnailImage->SetBrushFromSoftTexture(NewTexture);
