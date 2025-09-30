@@ -32,7 +32,7 @@ private:
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (AllowedClasses = "WeaponDataInterface"))
-    TSoftObjectPtr<UDataAsset> Data;
+    TObjectPtr<UDataAsset> Data;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient, ReplicatedUsing = OnRep_Instance)
     TObjectPtr<UObject> Instance;

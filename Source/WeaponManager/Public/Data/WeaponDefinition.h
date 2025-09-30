@@ -56,7 +56,5 @@ public:
     virtual TSubclassOf<AActor> GetActorClass_Implementation() const override { return ActorClass; }
     virtual FName GetInActiveSocketName_Implementation() const override { return InActiveSocketName; }
     virtual float GetMaxDurability_Implementation() const override { return MaxDurability; }
-    virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
     virtual FGameplayTag GetSlotType_Implementation() const override { return SlotType; }
-    virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
 };

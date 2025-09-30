@@ -3,10 +3,8 @@
 
 #include "Actors/WeaponActor.h"
 
-#include "Data/DataInstanceBase.h"
-#include "Interfaces/DataInstanceInterface.h"
-#include "Interfaces/WeaponDataInterface.h"
-#include "Interfaces/WeaponInstanceInterface.h"
+#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "FunctionLibraries/MeshManagerFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 const FName AWeaponActor::RootSceneName(TEXT("RootScene"));
@@ -74,11 +72,10 @@ void AWeaponActor::SetInstance_Implementation(UObject* NewInstance)
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (!Data.IsNull() && Data->Implements<UWeaponDataInterface>())
+    if (auto MeshData = UMeshManagerFunctionLibrary::GetMeshData(Data))
     {
-        UDataAsset* LoadedData = Data.LoadSynchronous();
-        TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(LoadedData);
-        TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(LoadedData);
+        auto SkeletalMeshAsset = UMeshManagerFunctionLibrary::GetSkeletalMesh(MeshData);
+        auto StaticMeshAsset = UMeshManagerFunctionLibrary::GetStaticMesh(MeshData);
 
         if (!SkeletalMeshAsset.IsNull())
         {
@@ -95,7 +92,7 @@ void AWeaponActor::ApplyWeaponData()
 
 void AWeaponActor::OnInstanceChanged(UObject* OldInstance, UObject* NewInstance)
 {
-    Data = NewInstance ? IDataInstanceInterface::Execute_GetData(NewInstance) : nullptr;
+    Data = NewInstance ? UDataManagerFunctionLibrary::GetData(NewInstance) : nullptr;
 
     ApplyWeaponData();
 }
