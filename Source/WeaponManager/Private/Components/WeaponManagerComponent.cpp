@@ -4,8 +4,9 @@
 #include "Components/WeaponManagerComponent.h"
 
 #include "Data/WeaponInstance.h"
+#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "FunctionLibraries/WeaponManagerFunctionLibrary.h"
 #include "GameplayTags/WeaponGameplayTags.h"
-#include "Interfaces/DataInterface.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 
@@ -50,7 +51,7 @@ AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
     UObject* CurrentContent = GetContent(CurrentSlotIndex);
     if (CheckContent(CurrentContent))
     {
-        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
+        AActor* Actor = UWeaponManagerFunctionLibrary::GetActor(CurrentContent);
 
         return Actor;
     }
@@ -105,11 +106,14 @@ bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
 {
     if (Super::CheckData(Data))
     {
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(Data);
-        const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(Data);
+        if (auto WeaponData = UWeaponManagerFunctionLibrary::GetWeaponData(Data))
+        {
+            const FGameplayTag SlotType = UWeaponManagerFunctionLibrary::GetSlotType(WeaponData);
+            const TSubclassOf<AActor> WeaponActorClass = UWeaponManagerFunctionLibrary::GetActorClass(WeaponData);
+            const FName ActiveSocketName = UWeaponManagerFunctionLibrary::GetActiveSocketName(WeaponData);
 
-        return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+            return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+        }
     }
 
     return false;
@@ -170,7 +174,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
 {
     if (CheckData(Data))
     {
-        UObject* NewContent = IDataInterface::Execute_CreateInstanceData(Data);
+        UObject* NewContent = UDataManagerFunctionLibrary::CreateInstanceData(Data);
         return SpawnActorFromContent(NewContent);
     }
 
@@ -181,27 +185,29 @@ AActor* UWeaponManagerComponent::SpawnActorFromContent(UObject* Content)
 {
     if (CheckContent(Content))
     {
-        UDataAsset* WeaponData = GetDataFromContent(Content);
-        TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(WeaponData);
-
-        FActorSpawnParameters ActorSpawnParameters;
-        ActorSpawnParameters.Owner = GetOwner();
-        ActorSpawnParameters.Instigator = GetOwner()->GetInstigator();
-        ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-        const FVector SpawnLocation = GetOwner()->GetActorLocation();
-        if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters))
+        if (auto WeaponData = UWeaponManagerFunctionLibrary::GetWeaponData(Content))
         {
-            IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Content);
+            TSubclassOf<AActor> ActorClass = UWeaponManagerFunctionLibrary::GetActorClass(WeaponData);
 
-            if (CheckActor(SpawnedActor))
+            FActorSpawnParameters ActorSpawnParameters;
+            ActorSpawnParameters.Owner = GetOwner();
+            ActorSpawnParameters.Instigator = GetOwner()->GetInstigator();
+            ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+            const FVector SpawnLocation = GetOwner()->GetActorLocation();
+            if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters))
             {
-                IWeaponInstanceInterface::Execute_SetActor(Content, SpawnedActor);
-                return SpawnedActor;
-            }
-            else
-            {
-                SpawnedActor->Destroy();
+                IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Content);
+
+                if (CheckActor(SpawnedActor))
+                {
+                    UWeaponManagerFunctionLibrary::SetActor(Content, SpawnedActor);
+                    return SpawnedActor;
+                }
+                else
+                {
+                    SpawnedActor->Destroy();
+                }
             }
         }
     }
@@ -228,10 +234,12 @@ void UWeaponManagerComponent::Equip(UObject* Content)
 {
     if (CheckContent(Content))
     {
-        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
+        auto WeaponData = UWeaponManagerFunctionLibrary::GetWeaponData(Content);
+        auto WeaponInstance = UWeaponManagerFunctionLibrary::GetWeaponInstance(Content);
+
+        AActor* Actor = UWeaponManagerFunctionLibrary::GetActor(WeaponInstance);
         if (Actor == nullptr) Actor = SpawnActorFromContent(Content);
-        UDataAsset* WeaponData = GetDataFromContent(Content);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(WeaponData);
+        const FName ActiveSocketName = UWeaponManagerFunctionLibrary::GetActiveSocketName(WeaponData);
 
         AttachWeaponActorToSocket(Actor, ActiveSocketName);
     }
@@ -241,9 +249,11 @@ void UWeaponManagerComponent::UnEquip(UObject* Content)
 {
     if (CheckContent(Content))
     {
-        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
-        UDataAsset* WeaponData = GetDataFromContent(Content);
-        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetInActiveSocketName(WeaponData);
+        auto WeaponData = UWeaponManagerFunctionLibrary::GetWeaponData(Content);
+        auto WeaponInstance = UWeaponManagerFunctionLibrary::GetWeaponInstance(Content);
+
+        AActor* Actor = UWeaponManagerFunctionLibrary::GetActor(WeaponInstance);
+        const FName InActiveSocketName = UWeaponManagerFunctionLibrary::GetInActiveSocketName(WeaponData);
 
         AttachWeaponActorToSocket(Actor, InActiveSocketName);
     }

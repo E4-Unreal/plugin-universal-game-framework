@@ -5,7 +5,7 @@
 
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/InventoryComponent.h"
-#include "Interfaces/ItemInstanceInterface.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Interfaces/SlotManagerInterface.h"
 #include "Widgets/SlotWidgetBase.h"
 
@@ -27,7 +27,7 @@ void UInventoryOutsideWidget::OnWidgetDrop(UUserWidget* DropWidget)
 
         if (UInventoryComponent* Inventory = Cast<UInventoryComponent>(SlotManager))
         {
-            const int32 SlotQuantity = IItemInstanceInterface::Execute_GetQuantity(SlotContent);
+            const int32 SlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(SlotContent);
             Inventory->DropItemFromSlot(SlotIndex, SlotQuantity);
         }
     }
