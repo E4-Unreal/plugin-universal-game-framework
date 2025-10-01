@@ -8,7 +8,6 @@
 #include "ObjectTools.h"
 #include "AssetRegistry/AssetRegistryModule.h"
 #include "Data/DataDefinitionBase.h"
-#include "Interfaces/DataInterface.h"
 #include "Data/DataDefinitionBuilder.h"
 #include "Subsystems/DataManagerSubsystem.h"
 
