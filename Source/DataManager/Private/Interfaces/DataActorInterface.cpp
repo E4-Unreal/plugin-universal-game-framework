@@ -25,7 +25,7 @@ UDataAsset* IDataActorInterface::GetDataAsset_Implementation() const
     UObject* DataInstance = Execute_GetDataInstance(CastChecked<UObject>(this));
     if (DataInstance && DataInstance->Implements<UDataInstanceInterface>())
     {
-        return IDataInstanceInterface::Execute_GetData(DataInstance);
+        return IDataInstanceInterface::Execute_GetDefinition(DataInstance);
     }
 
     return nullptr;

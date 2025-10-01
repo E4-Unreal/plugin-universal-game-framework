@@ -7,6 +7,7 @@
 #include "Components/SlotManagerComponentBase.h"
 #include "InventoryComponent.generated.h"
 
+class UDataDefinitionBase;
 class UItemInstance;
 class IItemDataInterface;
 struct FGameplayTag;
@@ -38,9 +39,9 @@ public:
 
     /* SlotManagerComponentBase */
 
-    virtual bool HasContent(UObject* InContent) const override;
-    virtual bool AddContent(UObject* InContent) override;
-    virtual bool RemoveContent(UObject* InContent) override;
+    virtual bool HasContent(UDataInstanceBase* InContent) const override;
+    virtual bool AddContent(UDataInstanceBase* InContent) override;
+    virtual bool RemoveContent(UDataInstanceBase* InContent) override;
     virtual void SwapContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex) override;
 
     /* SlotManagerInterface */
@@ -50,7 +51,7 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void AddItemFromData(UDataAsset* NewData, int32 Quantity = 1);
+    virtual void AddItemFromData(UDataDefinitionBase* NewData, int32 Quantity = 1);
 
     UFUNCTION(BlueprintCallable)
     virtual bool SetSlotQuantity(int32 SlotIndex, int32 NewQuantity);
@@ -62,11 +63,11 @@ public:
 
     // 현재 아이템 보유 수량
     UFUNCTION(BlueprintPure)
-    virtual int32 GetItemQuantity(UDataAsset* Item) const;
+    virtual int32 GetItemQuantity(UDataDefinitionBase* Item) const;
 
     // 현재 추가 가능한 아이템 수량
     UFUNCTION(BlueprintPure)
-    virtual int32 GetItemCapacity(UDataAsset* Item) const;
+    virtual int32 GetItemCapacity(UDataDefinitionBase* Item) const;
 
 protected:
     virtual void AddDefaultItems();

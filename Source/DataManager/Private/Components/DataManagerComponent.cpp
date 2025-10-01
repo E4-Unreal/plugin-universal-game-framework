@@ -47,7 +47,7 @@ UDataAsset* UDataManagerComponent::GetData() const
 {
     if (DataInstance && DataInstance->Implements<UDataInstanceInterface>())
     {
-        return IDataInstanceInterface::Execute_GetData(DataInstance);
+        return IDataInstanceInterface::Execute_GetDefinition(DataInstance);
     }
 
     return Data;

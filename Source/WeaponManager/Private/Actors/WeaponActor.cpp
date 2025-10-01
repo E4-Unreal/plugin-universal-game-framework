@@ -3,7 +3,8 @@
 
 #include "Actors/WeaponActor.h"
 
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "Data/DataDefinitionBase.h"
+#include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/MeshManagerFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 
@@ -55,24 +56,24 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Data))
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Definition))
     {
         ApplyWeaponData();
     }
 }
 #endif
 
-void AWeaponActor::SetInstance_Implementation(UObject* NewInstance)
+void AWeaponActor::SetInstance_Implementation(UDataInstanceBase* NewInstance)
 {
-    UObject* OldWeaponInstance = Instance;
+    auto OldInstance = Instance;
     Instance = NewInstance;
 
-    OnInstanceChanged(OldWeaponInstance, Instance);
+    OnInstanceChanged(OldInstance, Instance);
 }
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (auto MeshData = UMeshManagerFunctionLibrary::GetMeshData(Data))
+    if (auto MeshData = UMeshManagerFunctionLibrary::GetMeshData(Definition))
     {
         auto SkeletalMeshAsset = UMeshManagerFunctionLibrary::GetSkeletalMesh(MeshData);
         auto StaticMeshAsset = UMeshManagerFunctionLibrary::GetStaticMesh(MeshData);
@@ -90,14 +91,14 @@ void AWeaponActor::ApplyWeaponData()
     }
 }
 
-void AWeaponActor::OnInstanceChanged(UObject* OldInstance, UObject* NewInstance)
+void AWeaponActor::OnInstanceChanged(UDataInstanceBase* OldInstance, UDataInstanceBase* NewInstance)
 {
-    Data = NewInstance ? UDataManagerFunctionLibrary::GetData(NewInstance) : nullptr;
+    Definition = NewInstance ? NewInstance->Definition : nullptr;
 
     ApplyWeaponData();
 }
 
-void AWeaponActor::OnRep_Instance(UObject* OldInstance)
+void AWeaponActor::OnRep_Instance(UDataInstanceBase* OldInstance)
 {
     OnInstanceChanged(OldInstance, Instance);
 }

@@ -20,7 +20,7 @@ UDataAsset* UFlexibleDataBase::GetDataByInterface_Implementation(TSubclassOf<UIn
     return Data ? Data : GetFragmentByInterface(InterfaceClass);
 }
 
-UObject* UFlexibleDataBase::CreateInstanceData_Implementation() const
+UDataInstanceBase* UFlexibleDataBase::CreateInstanceData_Implementation() const
 {
     auto DataInstance = Super::CreateInstanceData_Implementation();
 

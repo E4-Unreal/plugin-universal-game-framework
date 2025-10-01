@@ -14,11 +14,8 @@ void UInventorySlotWidget::Refresh_Implementation()
     if (SlotManager.IsValid())
     {
         auto Content = ISlotManagerInterface::Execute_GetDataInstance(SlotManager.Get(), SlotIndex);
-        if (auto ItemInstance = UInventorySystemFunctionLibrary::GetItemInstance(Content))
-        {
-            const int32 Quantity = UInventorySystemFunctionLibrary::GetQuantity(ItemInstance);
-            SetQuantityTextBlock(Quantity);
-        }
+        const int32 Quantity = UInventorySystemFunctionLibrary::GetQuantity(Content);
+        SetQuantityTextBlock(Quantity);
     }
 }
 

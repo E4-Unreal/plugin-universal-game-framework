@@ -7,6 +7,7 @@
 #include "Interfaces/DataInstanceInterface.h"
 #include "DataInstanceBase.generated.h"
 
+class UDataDefinitionBase;
 /**
  *
  */
@@ -17,7 +18,7 @@ class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject, public IData
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Replicated, meta = (DisplayPriority = 0))
-    TObjectPtr<UDataAsset> Data;
+    TObjectPtr<UDataDefinitionBase> Definition;
 
 public:
     /* Object */
@@ -26,7 +27,7 @@ public:
 
     /* DataObjectInterface */
 
-    virtual UDataAsset* GetData_Implementation() const override { return Data; }
-    virtual void SetData_Implementation(UDataAsset* NewData) override { Data = NewData; }
+    virtual UDataDefinitionBase* GetDefinition_Implementation() const override { return Definition; }
+    virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override { Definition = NewDefinition; }
     virtual UObject* GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 };

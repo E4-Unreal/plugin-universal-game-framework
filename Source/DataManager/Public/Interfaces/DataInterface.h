@@ -48,6 +48,6 @@ public:
     TSubclassOf<UObject> GetInstanceDataClass() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* CreateInstanceData() const;
-    virtual UObject* CreateInstanceData_Implementation() const;
+    UDataInstanceBase* CreateInstanceData() const;
+    virtual UDataInstanceBase* CreateInstanceData_Implementation() const;
 };

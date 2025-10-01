@@ -25,7 +25,7 @@ public:
     /* DataInterface */
 
     virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
-    virtual UObject* CreateInstanceData_Implementation() const override;
+    virtual UDataInstanceBase* CreateInstanceData_Implementation() const override;
 
     /* API */
 

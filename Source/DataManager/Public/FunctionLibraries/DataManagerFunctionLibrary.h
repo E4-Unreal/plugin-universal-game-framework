@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "DataManagerFunctionLibrary.generated.h"
 
+class UDataInstanceBase;
 /**
  *
  */
@@ -60,5 +61,5 @@ public:
     static bool SupportsInstanceDataInterfaces(UObject* InstanceData, const TArray<TSubclassOf<UInterface>>& InterfaceClasses);
 
     UFUNCTION(BlueprintCallable)
-    static UObject* CreateInstanceData(UDataAsset* Data);
+    static UDataInstanceBase* CreateDataInstance(UDataAsset* Data);
 };

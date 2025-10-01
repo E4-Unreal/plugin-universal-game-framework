@@ -31,7 +31,7 @@ public:
 
     /* DataInstanceInterface */
 
-    virtual void SetData_Implementation(UDataAsset* NewData) override;
+    virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override;
 
     /* WeaponInstanceInterface */
 

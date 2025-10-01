@@ -107,7 +107,7 @@ bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* Instan
     return false;
 }
 
-UObject* UDataManagerFunctionLibrary::CreateInstanceData(UDataAsset* Data)
+UDataInstanceBase* UDataManagerFunctionLibrary::CreateDataInstance(UDataAsset* Data)
 {
     return Data && Data->Implements<UDataInterface>() ? IDataInterface::Execute_CreateInstanceData(Data) : nullptr;
 }

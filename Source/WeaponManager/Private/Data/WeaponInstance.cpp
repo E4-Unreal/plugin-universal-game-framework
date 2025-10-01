@@ -3,6 +3,7 @@
 
 #include "Data/WeaponInstance.h"
 
+#include "Data/DataDefinitionBase.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Net/UnrealNetwork.h"
 
@@ -14,22 +15,22 @@ void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
     DOREPLIFETIME(ThisClass, Durability);
 }
 
-void UWeaponInstance::SetData_Implementation(UDataAsset* NewData)
+void UWeaponInstance::SetDefinition_Implementation(UDataDefinitionBase* NewDefinition)
 {
-    Data = NewData;
+    Definition = NewDefinition;
 
-    if (Data)
+    if (Definition)
     {
-        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
+        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Definition);
         Durability = MaxDurability;
     }
 }
 
 void UWeaponInstance::SetDurability_Implementation(float NewDurability)
 {
-    if (Data)
+    if (Definition)
     {
-        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Data);
+        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Definition);
         Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
     }
 }

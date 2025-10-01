@@ -6,6 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "InventorySystemFunctionLibrary.generated.h"
 
+class UDataInstanceBase;
+class UDataDefinitionBase;
 struct FGameplayTag;
 
 UCLASS()
@@ -15,13 +17,13 @@ class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFun
 
 public:
     UFUNCTION(BlueprintCallable)
-    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, UObject* ItemInstance, const FVector& Offset = FVector::ZeroVector);
+    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, UDataInstanceBase* ItemInstance, const FVector& Offset = FVector::ZeroVector);
 
     UFUNCTION(BlueprintCallable)
-    static TArray<AActor*> SpawnItemActors(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UObject*>& ItemInstances, const FVector& Offset = FVector::ZeroVector);
+    static TArray<AActor*> SpawnItemActors(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset = FVector::ZeroVector);
 
     UFUNCTION(BlueprintCallable)
-    static AActor* SpawnItemPackageActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UObject*>& ItemInstances, const FVector& Offset = FVector::ZeroVector);
+    static AActor* SpawnItemPackageActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset = FVector::ZeroVector);
 
     UFUNCTION(BlueprintCallable)
     static void ImpulseActor(AActor* Actor, float ImpulseAngle, float ImpulseStrength);
@@ -29,25 +31,25 @@ public:
     /* ItemData */
 
     UFUNCTION(BlueprintPure, Category = "ItemData")
-    static UDataAsset* GetItemData(UObject* DataObject);
+    static UDataAsset* GetItemData(UDataDefinitionBase* Definition);
 
     UFUNCTION(BlueprintPure, Category = "ItemData")
-    static int32 GetMaxStack(UObject* DataObject);
+    static int32 GetMaxStack(UDataDefinitionBase* Definition);
 
     UFUNCTION(BlueprintPure, Category = "ItemData")
-    static FGameplayTag GetItemType(UObject* DataObject);
+    static FGameplayTag GetItemType(UDataDefinitionBase* Definition);
 
     /* ItemInstanceData */
 
     UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static UObject* CreateItemInstance(UDataAsset* Data);
+    static UDataInstanceBase* CreateItemInstance(UDataDefinitionBase* Definition);
 
     UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static UObject* GetItemInstance(UObject* InstanceData);
+    static UObject* GetItemInstance(UDataInstanceBase* DataInstance);
 
     UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static int32 GetQuantity(UObject* InstanceData);
+    static int32 GetQuantity(UDataInstanceBase* DataInstance);
 
     UFUNCTION(BlueprintCallable, Category = "ItemInstanceData")
-    static void SetQuantity(UObject* InstanceData, int32 NewQuantity);
+    static void SetQuantity(UDataInstanceBase* DataInstance, int32 NewQuantity);
 };

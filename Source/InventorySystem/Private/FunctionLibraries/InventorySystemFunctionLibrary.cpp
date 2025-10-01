@@ -3,13 +3,15 @@
 
 #include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 
+#include "Data/DataDefinitionBase.h"
+#include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/ItemActorInterface.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/ItemInstanceInterface.h"
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                        UObject* ItemInstance, const FVector& Offset)
+                                                        UDataInstanceBase* ItemInstance, const FVector& Offset)
 {
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && ItemInstance; !bCanSpawn) return nullptr;
 
@@ -19,7 +21,7 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
     FTransform SpawnTransform = Owner->GetActorTransform();
     SpawnTransform.SetLocation(SpawnTransform.GetLocation() + Owner->GetActorRotation().RotateVector(Offset));
     AActor* SpawnedItemActor = World->SpawnActorDeferred<AActor>(ItemActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    TArray<UObject*> ItemInstances = { ItemInstance };
+    TArray ItemInstances = { ItemInstance };
     IItemActorInterface::Execute_SetItemInstances(SpawnedItemActor, ItemInstances);
     SpawnedItemActor->FinishSpawning(SpawnTransform);
 
@@ -27,7 +29,7 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
 }
 
 TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                         const TArray<UObject*>& ItemInstances, const FVector& Offset)
+                                                         const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
 {
     TArray<AActor*> SpawnedItemActors;
     SpawnedItemActors.Reserve(ItemInstances.Num());
@@ -44,7 +46,7 @@ TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, 
 }
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemPackageActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-    const TArray<UObject*>& ItemInstances, const FVector& Offset)
+    const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
 {
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && !ItemInstances.IsEmpty(); !bCanSpawn) return nullptr;
 
@@ -74,49 +76,53 @@ void UInventorySystemFunctionLibrary::ImpulseActor(AActor* Actor, float ImpulseA
     }
 }
 
-UDataAsset* UInventorySystemFunctionLibrary::GetItemData(UObject* DataObject)
+UDataAsset* UInventorySystemFunctionLibrary::GetItemData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<UItemDataInterface>(DataObject);
+    return UDataManagerFunctionLibrary::GetDataByInterface<UItemDataInterface>(Definition);
 }
 
-int32 UInventorySystemFunctionLibrary::GetMaxStack(UObject* DataObject)
+int32 UInventorySystemFunctionLibrary::GetMaxStack(UDataDefinitionBase* Definition)
 {
-    auto ItemData = GetItemData(DataObject);
+    auto ItemData = GetItemData(Definition);
 
     return ItemData ? IItemDataInterface::Execute_GetMaxStack(ItemData) : 0;
 }
 
-FGameplayTag UInventorySystemFunctionLibrary::GetItemType(UObject* DataObject)
+FGameplayTag UInventorySystemFunctionLibrary::GetItemType(UDataDefinitionBase* Definition)
 {
-    auto ItemData = GetItemData(DataObject);
+    auto ItemData = GetItemData(Definition);
 
     return ItemData ? IItemDataInterface::Execute_GetItemType(ItemData) : FGameplayTag::EmptyTag;
 }
 
-UObject* UInventorySystemFunctionLibrary::CreateItemInstance(UDataAsset* Data)
+UDataInstanceBase* UInventorySystemFunctionLibrary::CreateItemInstance(UDataDefinitionBase* Definition)
 {
-    auto InstanceData = UDataManagerFunctionLibrary::CreateInstanceData(Data);
-    auto ItemData = GetItemData(InstanceData);
-    auto ItemInstance = GetItemInstance(InstanceData);
+    if (Definition)
+    {
+        auto DataInstance = UDataManagerFunctionLibrary::CreateDataInstance(Definition);
+        auto ItemInstance = GetItemInstance(DataInstance);
 
-    return ItemData && ItemInstance ? InstanceData : nullptr;
+        return ItemInstance ? DataInstance : nullptr;
+    }
+
+    return nullptr;
 }
 
-UObject* UInventorySystemFunctionLibrary::GetItemInstance(UObject* InstanceData)
+UObject* UInventorySystemFunctionLibrary::GetItemInstance(UDataInstanceBase* DataInstance)
 {
-    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UItemInstanceInterface>(InstanceData);
+    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UItemInstanceInterface>(DataInstance);
 }
 
-int32 UInventorySystemFunctionLibrary::GetQuantity(UObject* InstanceData)
+int32 UInventorySystemFunctionLibrary::GetQuantity(UDataInstanceBase* DataInstance)
 {
-    auto ItemInstance = GetItemInstance(InstanceData);
+    auto ItemInstance = GetItemInstance(DataInstance);
 
     return ItemInstance ? IItemInstanceInterface::Execute_GetQuantity(ItemInstance) : 0;
 }
 
-void UInventorySystemFunctionLibrary::SetQuantity(UObject* InstanceData, int32 NewQuantity)
+void UInventorySystemFunctionLibrary::SetQuantity(UDataInstanceBase* DataInstance, int32 NewQuantity)
 {
-    if (auto ItemInstance = GetItemInstance(InstanceData))
+    if (auto ItemInstance = GetItemInstance(DataInstance))
     {
         IItemInstanceInterface::Execute_SetQuantity(ItemInstance, NewQuantity);
     }

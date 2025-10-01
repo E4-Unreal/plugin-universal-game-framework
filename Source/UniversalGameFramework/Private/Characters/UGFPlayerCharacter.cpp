@@ -114,7 +114,7 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
 {
     if (auto ProductData = Cast<UDataAsset>(Product.GetObject()))
     {
-        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateInstanceData(ProductData))
+        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ProductData))
         {
             UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, Quantity);
             return GetInventory()->AddContent(ItemInstance);
@@ -128,7 +128,7 @@ bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IP
 {
     if (auto ProductData = Cast<UDataAsset>(Product.GetObject()))
     {
-        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateInstanceData(ProductData))
+        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ProductData))
         {
             UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, Quantity);
             return GetInventory()->RemoveContent(ItemInstance);

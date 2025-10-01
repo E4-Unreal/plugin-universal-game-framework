@@ -9,7 +9,7 @@ void UDataInstanceBase::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ThisClass, Data);
+    DOREPLIFETIME(ThisClass, Definition);
 }
 
 UObject* UDataInstanceBase::GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const

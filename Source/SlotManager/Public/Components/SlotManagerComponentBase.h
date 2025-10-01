@@ -30,7 +30,7 @@ protected:
     TArray<FContentSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<int32, TObjectPtr<UObject>> SlotMap;
+    TMap<int32, TObjectPtr<UDataInstanceBase>> SlotMap;
 
 public:
     UPROPERTY(BlueprintAssignable)
@@ -45,7 +45,7 @@ public:
 
     /* SlotManagerInterface */
 
-    virtual UObject* GetDataInstance_Implementation(int32 SlotIndex) const override { return GetContent(SlotIndex); }
+    virtual UDataInstanceBase* GetDataInstance_Implementation(int32 SlotIndex) const override { return GetContent(SlotIndex); }
     virtual void BindOnSlotUpdated_Implementation(const FSlotUpdatedDelegate& SlotUpdatedDelegate) override { OnSlotUpdated.Add(SlotUpdatedDelegate); }
     virtual void UnbindOnSlotUpdated_Implementation(const FSlotUpdatedDelegate& SlotUpdatedDelegate) override { OnSlotUpdated.Remove(SlotUpdatedDelegate); }
     virtual void SwapSlots_Implementation(UActorComponent* Source, int32 SourceIndex, UActorComponent* Destination, int32 DestinationIndex) override;
@@ -65,25 +65,25 @@ public:
     virtual bool DoesSlotExist(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual bool HasContent(UObject* InContent) const;
+    virtual bool HasContent(UDataInstanceBase* InContent) const;
 
     UFUNCTION(BlueprintPure)
-    virtual UObject* GetContent(int32 Index) const;
+    virtual UDataInstanceBase* GetContent(int32 Index) const;
 
     UFUNCTION(BlueprintPure)
-    virtual int32 GetEmptySlotIndex(UObject* NewContent) const;
+    virtual int32 GetEmptySlotIndex(UDataInstanceBase* NewContent) const;
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual void SetContent(int32 Index, UObject* NewContent);
+    virtual void SetContent(int32 Index, UDataInstanceBase* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool AddContent(UObject* NewContent);
+    virtual bool AddContent(UDataInstanceBase* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual bool AddContentByData(UDataAsset* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool RemoveContent(UObject* InContent);
+    virtual bool RemoveContent(UDataInstanceBase* InContent);
 
     UFUNCTION(BlueprintCallable, Server, Reliable)
     virtual void TransferContent(USlotManagerComponentBase* Source, int32 SourceIndex, USlotManagerComponentBase* Destination, int32 DestinationIndex);
@@ -103,9 +103,8 @@ protected:
 
     virtual void CreateSlots();
     virtual void MappingSlots();
-    virtual bool CheckContent(UObject* Content) const;
+    virtual bool CheckContent(UDataInstanceBase* Content) const;
     virtual bool CheckData(UDataAsset* Data) const;
-    virtual UDataAsset* GetDataFromContent(UObject* InContent) const;
 
     UFUNCTION()
     virtual void HandleOnSlotUpdated(int32 Index);

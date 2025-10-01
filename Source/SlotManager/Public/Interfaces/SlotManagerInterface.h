@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SlotManagerInterface.generated.h"
 
+class UDataInstanceBase;
 DECLARE_DYNAMIC_DELEGATE_OneParam(FSlotUpdatedDelegate, int32, SlotIndex);
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
@@ -29,7 +30,7 @@ public:
     UDataAsset* GetData(int32 SlotIndex) const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UObject* GetDataInstance(int32 SlotIndex) const;
+    UDataInstanceBase* GetDataInstance(int32 SlotIndex) const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool IsSlotEmpty(int32 SlotIndex) const;

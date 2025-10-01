@@ -4,6 +4,7 @@
 #include "Components/ItemComponent.h"
 
 #include "Components/InventoryComponent.h"
+#include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/MeshManagerFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -47,7 +48,7 @@ bool UItemComponent::AddItemsToInventory(AActor* TargetActor)
 }
 #endif
 
-void UItemComponent::SetItems(const TArray<UObject*> NewItems)
+void UItemComponent::SetItems(const TArray<UDataInstanceBase*> NewItems)
 {
     ClearItems();
 
@@ -70,7 +71,7 @@ void UItemComponent::ClearItems()
     Items.Empty();
 }
 
-void UItemComponent::OnRep_Items(TArray<UObject*> OldItems)
+void UItemComponent::OnRep_Items(TArray<UDataInstanceBase*> OldItems)
 {
     Refresh();
 }

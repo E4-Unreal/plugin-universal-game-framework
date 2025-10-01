@@ -65,9 +65,9 @@ UItemDropConfig* UItemDropComponent::GetDropConfig() const
     return DropConfigInstance ? DropConfigInstance : DropConfig;
 }
 
-TArray<UObject*> UItemDropComponent::GetItems() const
+TArray<UDataInstanceBase*> UItemDropComponent::GetItems() const
 {
-    TArray<UObject*> Items;
+    TArray<UDataInstanceBase*> Items;
     if (auto LocalDropConfig = GetDropConfig())
     {
         const auto& DropDataList = LocalDropConfig->GetDataList();
@@ -76,7 +76,7 @@ TArray<UObject*> UItemDropComponent::GetItems() const
             const auto& ItemData = DropData.ItemData;
             const auto& DropChance = DropData.DropChance;
             const auto& CountChanceMap = DropData.CountChanceMap;
-            auto ItemInstance = UDataManagerFunctionLibrary::CreateInstanceData(ItemData);
+            auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ItemData);
 
             // 아이템 드랍 확률 검사
             if (ItemInstance && FMath::RandRange(0.0f, 1.0f) <= DropChance)

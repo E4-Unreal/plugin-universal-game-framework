@@ -40,7 +40,7 @@ public:
 
     /* SlotManagerComponentBase */
 
-    virtual int32 GetEmptySlotIndex(UObject* NewContent) const override;
+    virtual int32 GetEmptySlotIndex(UDataInstanceBase* NewContent) const override;
 
     /* API */
 
@@ -77,10 +77,10 @@ protected:
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
     virtual AActor* SpawnActorFromData(UDataAsset* Data);
-    virtual AActor* SpawnActorFromContent(UObject* Content);
+    virtual AActor* SpawnActorFromContent(UDataInstanceBase* Content);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);
 
-    virtual void Equip(UObject* Content);
-    virtual void UnEquip(UObject* Content);
+    virtual void Equip(UDataInstanceBase* Content);
+    virtual void UnEquip(UDataInstanceBase* Content);
 };

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "ContentSlot.generated.h"
 
+class UDataInstanceBase;
+
 USTRUCT(BlueprintType)
 struct SLOTMANAGER_API FContentSlot
 {
@@ -14,5 +16,5 @@ struct SLOTMANAGER_API FContentSlot
     int32 Index;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UObject> Content;
+    TObjectPtr<UDataInstanceBase> Content;
 };
