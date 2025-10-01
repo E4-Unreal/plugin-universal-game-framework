@@ -20,7 +20,7 @@ protected:
     static const TArray<UDataFragment*> EmptyFragments;
 
 public:
-    UFlexibleDataBase(const FObjectInitializer& ObjectInitializer);
+    UFlexibleDataBase();
 
     /* DataInterface */
 

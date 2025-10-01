@@ -8,8 +8,7 @@
 
 const TArray<UDataFragment*> UFlexibleDataBase::EmptyFragments;
 
-UFlexibleDataBase::UFlexibleDataBase(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+UFlexibleDataBase::UFlexibleDataBase()
 {
     InstanceDataClass = UFlexibleDataInstance::StaticClass();
 }

@@ -9,15 +9,12 @@
 
 UUGFItemDefinition::UUGFItemDefinition()
 {
+    DataType = "Item";
+
     InstanceDataClass = UUGFItemInstance::StaticClass();
 
     MaxStack = 10;
     ItemType = Item::Root;
 
     CurrencyType = Currency::Default;
-}
-
-FPrimaryAssetId UUGFItemDefinition::GetPrimaryAssetId() const
-{
-    return FPrimaryAssetId("Item", FName(FString::FromInt(ID)));
 }

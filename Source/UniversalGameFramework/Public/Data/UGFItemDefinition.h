@@ -56,10 +56,6 @@ public:
 public:
     UUGFItemDefinition();
 
-    /* PrimaryDataAsset */
-
-    virtual FPrimaryAssetId GetPrimaryAssetId() const override;
-
     /* MeshDataInterface */
 
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }

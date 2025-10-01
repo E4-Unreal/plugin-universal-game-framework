@@ -2,3 +2,13 @@
 
 
 #include "Data/DataDefinitionBase.h"
+
+UDataDefinitionBase::UDataDefinitionBase()
+{
+    DataType = "Data";
+}
+
+FPrimaryAssetId UDataDefinitionBase::GetPrimaryAssetId() const
+{
+    return FPrimaryAssetId(DataType, FName(FString::FromInt(ID)));
+}

@@ -15,9 +15,5 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFFlexibleItemData : public UFlexibleData
     GENERATED_BODY()
 
 public:
-    UUGFFlexibleItemData(const FObjectInitializer& ObjectInitializer);
-
-    /* PrimaryDataAsset */
-
-    virtual FPrimaryAssetId GetPrimaryAssetId() const override;
+    UUGFFlexibleItemData();
 };

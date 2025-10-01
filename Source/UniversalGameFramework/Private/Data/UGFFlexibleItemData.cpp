@@ -9,17 +9,13 @@
 #include "Data/SlotDataFragment.h"
 #include "Data/WeaponDataFragment.h"
 
-UUGFFlexibleItemData::UUGFFlexibleItemData(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+UUGFFlexibleItemData::UUGFFlexibleItemData()
 {
+    DataType = "Item";
+
     auto MeshDataFragment = AddFragment<UMeshDataFragment>();
     auto SlotDataFragment = AddFragment<USlotDataFragment>();
     auto ItemDataFragment = AddFragment<UItemDataFragment>();
     auto ProductDataFragment = AddFragment<UProductDataFragment>();
     auto WeaponDataFragment = AddFragment<UWeaponDataFragment>();
-}
-
-FPrimaryAssetId UUGFFlexibleItemData::GetPrimaryAssetId() const
-{
-    return FPrimaryAssetId("Item", FName(FString::FromInt(ID)));
 }
