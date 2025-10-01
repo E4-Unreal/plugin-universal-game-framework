@@ -8,16 +8,16 @@
 
 UUGFItemDefinitionBuilder::UUGFItemDefinitionBuilder()
 {
-    DataClass = UUGFEquipmentDefinition::StaticClass();
+    DefinitionClass = UUGFEquipmentDefinition::StaticClass();
     DataName = "Item";
 }
 
-bool UUGFItemDefinitionBuilder::UpdateData(UDataAsset* Data, FTableRowBase* TableRow)
+bool UUGFItemDefinitionBuilder::OnUpdateData(UDataDefinitionBase* Definition, FDataDefinitionTableRowBase* DataDefinitionTableRow)
 {
     bool bDirty = false;
 
-    UUGFEquipmentDefinition* ItemDefinition = Cast<UUGFEquipmentDefinition>(Data);
-    FUGFItemDataTableRow* RowData = static_cast<FUGFItemDataTableRow*>(TableRow);
+    auto ItemDefinition = Cast<UUGFEquipmentDefinition>(Definition);
+    auto RowData = static_cast<FUGFItemDataTableRow*>(DataDefinitionTableRow);
     if (ItemDefinition && RowData)
     {
         // Data

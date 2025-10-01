@@ -3,21 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataAssetBuilder.h"
+#include "Data/DataDefinitionBuilder.h"
 #include "UGFItemDefinitionBuilder.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinitionBuilder : public UDataAssetBuilder
+class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinitionBuilder : public UDataDefinitionBuilder
 {
     GENERATED_BODY()
 
 public:
     UUGFItemDefinitionBuilder();
 
-    /* DataAssetBuilder */
+protected:
 
-    virtual bool UpdateData(UDataAsset* Data, FTableRowBase* TableRow) override;
+    /* DataDefinitionBuilder */
+
+    virtual bool OnUpdateData(UDataDefinitionBase* Definition, FDataDefinitionTableRowBase* DataDefinitionTableRow) override;
+
 };

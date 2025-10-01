@@ -13,22 +13,18 @@
 
 UUGFFlexibleItemDataBuilder::UUGFFlexibleItemDataBuilder()
 {
-    DataClass = UUGFFlexibleItemData::StaticClass();
+    DefinitionClass = UUGFFlexibleItemData::StaticClass();
     DataName = "Item";
 }
 
-bool UUGFFlexibleItemDataBuilder::UpdateData(UDataAsset* Data, FTableRowBase* TableRow)
+bool UUGFFlexibleItemDataBuilder::OnUpdateData(UDataDefinitionBase* Definition, FDataDefinitionTableRowBase* DataDefinitionTableRow)
 {
     bool bDirty = false;
 
-    auto ItemData = Cast<UUGFFlexibleItemData>(Data);
-    FUGFItemDataTableRow* RowData = static_cast<FUGFItemDataTableRow*>(TableRow);
+    auto ItemData = Cast<UUGFFlexibleItemData>(Definition);
+    auto RowData = static_cast<FUGFItemDataTableRow*>(DataDefinitionTableRow);
     if (ItemData && RowData)
     {
-        // Data
-        SET_TEXT(ItemData->DisplayName, RowData->DisplayName)
-        SET_TEXT(ItemData->Description, RowData->Description)
-
         // Slot
         auto SlotDataFragment = ItemData->GetFragmentByClass<USlotDataFragment>();
 

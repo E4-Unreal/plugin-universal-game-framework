@@ -4,22 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "DataAssetBuilder.generated.h"
+#include "DataDefinitionBuilder.generated.h"
 
 #define SET_TEXT(OldText, NewText) if (!OldText.EqualTo(NewText)) { OldText = NewText; bDirty = true; }
 #define SET_DATA(OldData, NewData) if (OldData != NewData) { OldData = NewData; bDirty = true; }
+
+struct FDataDefinitionTableRowBase;
+class UDataDefinitionBase;
 
 /**
  *
  */
 UCLASS(Abstract, Blueprintable)
-class DATAMANAGER_API UDataAssetBuilder : public UObject
+class DATAMANAGER_API UDataDefinitionBuilder : public UObject
 {
     GENERATED_BODY()
 
 protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInterface"))
-    TSoftClassPtr<UDataAsset> DataClass;
+    TSoftClassPtr<UDataDefinitionBase> DefinitionClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UDataTable> DataTable;
@@ -34,18 +37,28 @@ public:
     /* Query */
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE TSubclassOf<UDataAsset> GetDataClass() const { return DataClass.LoadSynchronous(); }
+    TSet<int32> GetIDSet() const;
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE UDataTable* GetDataTable() const { return DataTable.LoadSynchronous(); }
+    FORCEINLINE TSubclassOf<UDataDefinitionBase> GetDefinitionClass() const { return DefinitionClass.LoadSynchronous(); }
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE FName GetPrefix() const { return Prefix; }
+    FString GetDataName() const;
 
     UFUNCTION(BlueprintPure)
-    FName GetDataName() const;
+    FString GetAssetPath() const;
+
+    UFUNCTION(BlueprintPure)
+    FString GetAssetName(int32 ID) const;
 
     /* API */
 
-    virtual bool UpdateData(UDataAsset* Data, FTableRowBase* TableRow) { return false; }
+    bool UpdateData(UDataDefinitionBase* Definition, int32 ID);
+
+protected:
+    /* API */
+
+    static int32 ConvertRowNameToID(FName RowName);
+
+    virtual bool OnUpdateData(UDataDefinitionBase* Definition, FDataDefinitionTableRowBase* DataDefinitionTableRow) { return false; }
 };
