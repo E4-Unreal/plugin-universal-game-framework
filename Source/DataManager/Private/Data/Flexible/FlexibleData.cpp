@@ -5,8 +5,13 @@
 
 UDataFragment* UFlexibleData::AddFragment(TSubclassOf<UDataFragment> FragmentClass)
 {
-    auto DataFragment = CreateFragment(FragmentClass);
-    Fragments.Emplace(DataFragment);
+    auto Fragment = GetFragmentByClass(FragmentClass);
 
-    return DataFragment;
+    if (Fragment == nullptr)
+    {
+        Fragment = CreateFragment(FragmentClass);
+        Fragments.Emplace(Fragment);
+    }
+
+    return Fragment;
 }

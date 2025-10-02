@@ -22,5 +22,4 @@ protected:
     /* DataDefinitionBuilder */
 
     virtual bool OnUpdateData(UDataDefinitionBase* Definition, FDataDefinitionTableRowBase* DataDefinitionTableRow) override;
-
 };
