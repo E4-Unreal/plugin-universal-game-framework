@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "GameplayTagContainer.h"
-#include "ProductInterface.generated.h"
+#include "ProductDataInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UProductInterface : public UInterface
+class UProductDataInterface : public UInterface
 {
     GENERATED_BODY()
 };
@@ -16,7 +16,7 @@ class UProductInterface : public UInterface
 /**
  *
  */
-class SHOPSYSTEM_API IProductInterface
+class SHOPSYSTEM_API IProductDataInterface
 {
     GENERATED_BODY()
 

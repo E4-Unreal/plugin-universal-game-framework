@@ -8,7 +8,7 @@
 
 class UDataDefinitionBase;
 class ICustomerInterface;
-class IProductInterface;
+class IProductDataInterface;
 class UButton;
 class USpinBox;
 /**

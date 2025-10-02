@@ -6,7 +6,7 @@
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "Interfaces/CustomerInterface.h"
-#include "Interfaces/ProductInterface.h"
+#include "Interfaces/ProductDataInterface.h"
 
 bool UShopSystemFunctionLibrary::PurchaseProduct(AActor* Customer, UDataDefinitionBase* Product, int32 Quantity)
 {

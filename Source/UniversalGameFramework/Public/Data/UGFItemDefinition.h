@@ -6,7 +6,7 @@
 #include "Data/DataDefinitionBase.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/MeshDataInterface.h"
-#include "Interfaces/ProductInterface.h"
+#include "Interfaces/ProductDataInterface.h"
 #include "Interfaces/SlotDataInterface.h"
 #include "UGFItemDefinition.generated.h"
 
@@ -18,7 +18,7 @@ class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UDataDefinitionBase
     public IMeshDataInterface,
     public ISlotDataInterface,
     public IItemDataInterface,
-    public IProductInterface
+    public IProductDataInterface
 {
     GENERATED_BODY()
 

@@ -4,7 +4,7 @@
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 
 #include "Data/DataDefinitionBase.h"
-#include "Interfaces/ProductInterface.h"
+#include "Interfaces/ProductDataInterface.h"
 
 bool UProductDataFunctionLibrary::HasProductData(UDataDefinitionBase* Definition)
 {
@@ -15,24 +15,24 @@ FGameplayTag UProductDataFunctionLibrary::GetCurrencyType(UDataDefinitionBase* D
 {
     auto ProductData = GetProductData(Definition);
 
-    return ProductData ? IProductInterface::Execute_GetCurrencyType(ProductData) : FGameplayTag::EmptyTag;
+    return ProductData ? IProductDataInterface::Execute_GetCurrencyType(ProductData) : FGameplayTag::EmptyTag;
 }
 
 int32 UProductDataFunctionLibrary::GetBuyPrice(UDataDefinitionBase* Definition)
 {
     auto ProductData = GetProductData(Definition);
 
-    return ProductData ? IProductInterface::Execute_GetBuyPrice(ProductData) : 0;
+    return ProductData ? IProductDataInterface::Execute_GetBuyPrice(ProductData) : 0;
 }
 
 int32 UProductDataFunctionLibrary::GetSellPrice(UDataDefinitionBase* Definition)
 {
     auto ProductData = GetProductData(Definition);
 
-    return ProductData ? IProductInterface::Execute_GetSellPrice(ProductData) : 0;
+    return ProductData ? IProductDataInterface::Execute_GetSellPrice(ProductData) : 0;
 }
 
 UDataAsset* UProductDataFunctionLibrary::GetProductData(UDataDefinitionBase* Definition)
 {
-    return Definition ? Definition->GetDataByInterface<UProductInterface>() : nullptr;
+    return Definition ? Definition->GetDataByInterface<UProductDataInterface>() : nullptr;
 }

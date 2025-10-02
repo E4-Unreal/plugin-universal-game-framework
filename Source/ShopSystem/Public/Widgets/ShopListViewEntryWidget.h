@@ -11,7 +11,7 @@ class UDataDefinitionBase;
 class UBuyModalWidget;
 class UImage;
 class UTextBlock;
-class IProductInterface;
+class IProductDataInterface;
 
 /**
  * ShopListViewPanelWidget의 EntryClass

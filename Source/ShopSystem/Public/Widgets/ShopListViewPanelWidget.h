@@ -7,7 +7,7 @@
 #include "ShopListViewPanelWidget.generated.h"
 
 class UDataDefinitionBase;
-class IProductInterface;
+class IProductDataInterface;
 class UListView;
 class UBuyModalWidget;
 

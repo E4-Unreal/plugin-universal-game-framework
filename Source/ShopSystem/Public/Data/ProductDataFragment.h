@@ -5,14 +5,14 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Data/Flexible/DataFragment.h"
-#include "Interfaces/ProductInterface.h"
+#include "Interfaces/ProductDataInterface.h"
 #include "ProductDataFragment.generated.h"
 
 /**
  *
  */
 UCLASS()
-class SHOPSYSTEM_API UProductDataFragment : public UDataFragment, public IProductInterface
+class SHOPSYSTEM_API UProductDataFragment : public UDataFragment, public IProductDataInterface
 {
     GENERATED_BODY()
 
