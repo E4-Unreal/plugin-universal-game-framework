@@ -8,6 +8,8 @@
 
 class UDataDefinitionBase;
 class UDataInstanceBase;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotUpdated, int32, Index);
 DECLARE_DYNAMIC_DELEGATE_OneParam(FSlotUpdatedDelegate, int32, SlotIndex);
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
