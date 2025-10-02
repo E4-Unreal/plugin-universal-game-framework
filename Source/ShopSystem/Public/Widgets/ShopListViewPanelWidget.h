@@ -28,11 +28,15 @@ protected:
     /* TargetWidgetBase */
 
     virtual void BindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent) override;
+    virtual void UnbindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent) override;
 
     /* API */
 
     virtual void InitializeShopListView();
 
     UFUNCTION()
-    void OnItemDoubleClicked(UObject* Item);
+    virtual void OnItemDoubleClicked(UObject* Item);
+
+    UFUNCTION()
+    virtual void OnSlotUpdated(int32 Index);
 };
