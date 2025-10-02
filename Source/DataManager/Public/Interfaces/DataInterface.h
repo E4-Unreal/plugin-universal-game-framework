@@ -23,24 +23,6 @@ class DATAMANAGER_API IDataInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    int32 GetID() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetID(int32 NewID);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FText GetDisplayName() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetDisplayName(const FText& NewDisplayName);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FText GetDescription() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetDescription(const FText& NewDescription);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
     virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const;
 

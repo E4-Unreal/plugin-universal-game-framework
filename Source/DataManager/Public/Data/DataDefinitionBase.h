@@ -40,11 +40,5 @@ public:
 
     /* DataDefinitionInterface */
 
-    virtual int32 GetID_Implementation() const override { return ID; }
-    virtual void SetID_Implementation(int32 NewID) override { ID = NewID; }
-    virtual FText GetDisplayName_Implementation() const override { return DisplayName; }
-    virtual void SetDisplayName_Implementation(const FText& NewDisplayName) override { DisplayName = NewDisplayName; }
-    virtual FText GetDescription_Implementation() const override { return Description; }
-    virtual void SetDescription_Implementation(const FText& NewDescription) override { Description = NewDescription; }
     virtual TSubclassOf<UObject> GetInstanceDataClass_Implementation() const override { return InstanceDataClass; }
 };

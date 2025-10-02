@@ -117,7 +117,6 @@ UDataDefinitionBase* UDataDefinitionBuilderAssetAction::CreateData(UDataDefiniti
 
     // 에셋 생성
     auto NewData = NewObject<UDataDefinitionBase>(Package, DefinitionClass, *AssetName, RF_Public | RF_Standalone | RF_MarkAsRootSet);
-    IDataInterface::Execute_SetID(NewData, ID);
 
     Package->MarkPackageDirty();
     FAssetRegistryModule::AssetCreated(NewData);
