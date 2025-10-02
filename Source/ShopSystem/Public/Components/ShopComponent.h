@@ -33,6 +33,16 @@ struct FProductSlot
     FProductSlot() { }
 };
 
+UCLASS(BlueprintType)
+class SHOPSYSTEM_API UProductSlotContainer : public UObject
+{
+    GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FProductSlot Slot;
+};
+
 UCLASS(meta = (BlueprintSpawnableComponent))
 class SHOPSYSTEM_API UShopComponent : public UActorComponent
 {
@@ -57,6 +67,9 @@ public:
 
     UFUNCTION(BlueprintPure)
     bool IsSlotExist(int32 Index) const { return SlotIndexMap.Contains(Index); }
+
+    UFUNCTION(BlueprintPure)
+    TArray<FProductSlot> GetSlots() const;
 
     UFUNCTION(BlueprintPure)
     const FProductSlot& GetSlot(int32 Index) const;

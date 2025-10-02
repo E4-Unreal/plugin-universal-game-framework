@@ -32,6 +32,20 @@ void UShopComponent::BeginPlay()
     }
 }
 
+TArray<FProductSlot> UShopComponent::GetSlots() const
+{
+    TArray<FProductSlot> ValidSlots;
+    for (const auto& [Index, SlotIndex] : SlotIndexMap)
+    {
+        if (SlotIndex < Slots.Num())
+        {
+            ValidSlots.Emplace(Slots[SlotIndex]);
+        }
+    }
+
+    return ValidSlots;
+}
+
 const FProductSlot& UShopComponent::GetSlot(int32 Index) const
 {
     if (SlotIndexMap.Contains(Index))
