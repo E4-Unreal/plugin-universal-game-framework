@@ -4,7 +4,6 @@
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 
 #include "Data/DataDefinitionBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/ProductInterface.h"
 
 bool UProductDataFunctionLibrary::HasProductData(UDataDefinitionBase* Definition)
@@ -35,5 +34,5 @@ int32 UProductDataFunctionLibrary::GetSellPrice(UDataDefinitionBase* Definition)
 
 UDataAsset* UProductDataFunctionLibrary::GetProductData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<UProductInterface>(Definition);
+    return Definition ? Definition->GetDataByInterface<UProductInterface>() : nullptr;
 }

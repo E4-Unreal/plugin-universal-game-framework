@@ -12,7 +12,7 @@ void UDataInstanceBase::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
     DOREPLIFETIME(ThisClass, Definition);
 }
 
-UObject* UDataInstanceBase::GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
+UObject* UDataInstanceBase::GetDataInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     return InterfaceClass && GetClass()->ImplementsInterface(InterfaceClass) ? const_cast<ThisClass*>(this) : nullptr;
 }

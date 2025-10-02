@@ -105,7 +105,7 @@ UDataDefinitionBase* UDataDefinitionBuilderAssetAction::CreateData(UDataDefiniti
     if (Builder == nullptr || ID < 0) return nullptr;
 
     auto DefinitionClass = Builder->GetDefinitionClass();
-    if (DefinitionClass == nullptr || !DefinitionClass->ImplementsInterface(UDataInterface::StaticClass())) return nullptr;
+    if (DefinitionClass == nullptr) return nullptr;
 
     // 패키지 생성
     const FString AssetPath = Builder->GetAssetPath();
@@ -126,7 +126,7 @@ UDataDefinitionBase* UDataDefinitionBuilderAssetAction::CreateData(UDataDefiniti
 
 void UDataDefinitionBuilderAssetAction::UpdatePackageName(UDataDefinitionBase* Definition, UDataDefinitionBuilder* Builder, int32 ID)
 {
-    if (Definition && Definition->Implements<UDataInterface>() && Builder)
+    if (Definition && Builder)
     {
         // Builder
 

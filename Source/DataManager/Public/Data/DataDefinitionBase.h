@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "Interfaces/DataInterface.h"
 #include "DataDefinitionBase.generated.h"
 
+class UDataInstanceBase;
 /**
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset, public IDataInterface
+class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
@@ -28,8 +28,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 3))
     FText Description;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 4, MustImplement = "InstanceDataInterface"))
-    TSubclassOf<UObject> InstanceDataClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 4))
+    TSubclassOf<UDataInstanceBase> DataInstanceClass;
 
 public:
     UDataDefinitionBase();
@@ -38,7 +38,17 @@ public:
 
     virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
-    /* DataDefinitionInterface */
+    /* API */
 
-    virtual TSubclassOf<UObject> GetInstanceDataClass_Implementation() const override { return InstanceDataClass; }
+    UFUNCTION(BlueprintPure)
+    virtual UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
+
+    template <typename TInterface = UInterface>
+    UDataAsset* GetDataByInterface() const
+    {
+        return GetDataByInterface(TInterface::StaticClass());
+    }
+
+    UFUNCTION(BlueprintPure)
+    virtual UDataInstanceBase* CreateDataInstance() const;
 };

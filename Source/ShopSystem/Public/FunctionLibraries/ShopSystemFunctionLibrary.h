@@ -6,8 +6,8 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "ShopSystemFunctionLibrary.generated.h"
 
-class IProductInterface;
 class ICustomerInterface;
+class UDataDefinitionBase;
 struct FGameplayTag;
 
 /**
@@ -20,5 +20,5 @@ class SHOPSYSTEM_API UShopSystemFunctionLibrary : public UBlueprintFunctionLibra
 
 public:
     UFUNCTION(BlueprintCallable)
-    static bool PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer, const TScriptInterface<IProductInterface>& Product, int32 Quantity);
+    static bool PurchaseProduct(AActor* Customer, UDataDefinitionBase* Product, int32 Quantity);
 };

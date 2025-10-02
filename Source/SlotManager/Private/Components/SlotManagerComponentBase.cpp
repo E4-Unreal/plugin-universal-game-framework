@@ -7,8 +7,6 @@
 #include "Logging.h"
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "Interfaces/DataInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
 {
@@ -133,8 +131,10 @@ bool USlotManagerComponentBase::AddContentByData(UDataDefinitionBase* NewData)
 {
     if (CheckData(NewData))
     {
-        UDataInstanceBase* NewContent = IDataInterface::Execute_CreateInstanceData(NewData);
-        return AddContent(NewContent);
+        if (auto NewContent = NewData->CreateDataInstance())
+        {
+            return AddContent(NewContent);
+        }
     }
 
     return false;

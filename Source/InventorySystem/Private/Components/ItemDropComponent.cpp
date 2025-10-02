@@ -5,8 +5,9 @@
 
 #include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Components/InventoryComponent.h"
+#include "Data/DataDefinitionBase.h"
 #include "Data/ItemDropConfig.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "Settings/InventorySystemSettings.h"
 
 UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializer)
@@ -76,7 +77,7 @@ TArray<UDataInstanceBase*> UItemDropComponent::GetItems() const
             const auto& ItemData = DropData.ItemData;
             const auto& DropChance = DropData.DropChance;
             const auto& CountChanceMap = DropData.CountChanceMap;
-            auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ItemData);
+            auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Cast<UDataDefinitionBase>(ItemData));
 
             // 아이템 드랍 확률 검사
             if (ItemInstance && FMath::RandRange(0.0f, 1.0f) <= DropChance)

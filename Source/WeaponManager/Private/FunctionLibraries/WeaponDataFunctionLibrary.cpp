@@ -5,7 +5,6 @@
 
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/WeaponDataInterface.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 
@@ -53,7 +52,7 @@ UDataInstanceBase* UWeaponDataFunctionLibrary::CreateItemInstance(UDataDefinitio
 {
     if (Definition)
     {
-        auto DataInstance = UDataManagerFunctionLibrary::CreateDataInstance(Definition);
+        auto DataInstance = Definition->CreateDataInstance();
         auto WeaponInstance = GetWeaponInstance(DataInstance);
 
         return WeaponInstance ? DataInstance : nullptr;
@@ -99,10 +98,10 @@ void UWeaponDataFunctionLibrary::SetDurability(UDataInstanceBase* Instance, floa
 
 UDataAsset* UWeaponDataFunctionLibrary::GetWeaponData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<UWeaponDataInterface>(Definition);
+    return Definition ? Definition->GetDataByInterface<UWeaponDataInterface>() : nullptr;
 }
 
 UObject* UWeaponDataFunctionLibrary::GetWeaponInstance(UDataInstanceBase* Instance)
 {
-    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UWeaponInstanceInterface>(Instance);
+    return Instance ? Instance->GetDataInstanceByInterface<UWeaponInstanceInterface>() : nullptr;
 }

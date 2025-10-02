@@ -7,7 +7,7 @@
 #include "CustomerInterface.generated.h"
 
 struct FGameplayTag;
-class IProductInterface;
+class UDataDefinitionBase;
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
 class UCustomerInterface : public UInterface
@@ -33,8 +33,8 @@ public:
     bool RemoveCurrency(const FGameplayTag& CurrencyType, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool AddProduct(const TScriptInterface<IProductInterface>& Product, int32 Quantity);
+    bool AddProduct(UDataDefinitionBase* Product, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool RemoveProduct(const TScriptInterface<IProductInterface>& Product, int32 Quantity);
+    bool RemoveProduct(UDataDefinitionBase* Product, int32 Quantity);
 };

@@ -10,19 +10,19 @@ const TArray<UDataFragment*> UFlexibleDataBase::EmptyFragments;
 
 UFlexibleDataBase::UFlexibleDataBase()
 {
-    InstanceDataClass = UFlexibleDataInstance::StaticClass();
+    DataInstanceClass = UFlexibleDataInstance::StaticClass();
 }
 
-UDataAsset* UFlexibleDataBase::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
+UDataAsset* UFlexibleDataBase::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
-    auto Data = Super::GetDataByInterface_Implementation(InterfaceClass);
+    auto Data = Super::GetDataByInterface(InterfaceClass);
 
     return Data ? Data : GetFragmentByInterface(InterfaceClass);
 }
 
-UDataInstanceBase* UFlexibleDataBase::CreateInstanceData_Implementation() const
+UDataInstanceBase* UFlexibleDataBase::CreateDataInstance() const
 {
-    auto DataInstance = Super::CreateInstanceData_Implementation();
+    auto DataInstance = Super::CreateDataInstance();
 
     if (auto FlexibleDataInstance = Cast<UFlexibleDataInstance>(DataInstance))
     {

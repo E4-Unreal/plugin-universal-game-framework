@@ -10,7 +10,7 @@
 
 UUGFEquipmentDefinition::UUGFEquipmentDefinition()
 {
-    InstanceDataClass = UUGFEquipmentInstance::StaticClass();
+    DataInstanceClass = UUGFEquipmentInstance::StaticClass();
 
     MaxStack = 1;
     ItemType = Item::Equipment::Root;

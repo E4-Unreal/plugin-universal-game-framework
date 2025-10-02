@@ -7,7 +7,7 @@
 #include "Components/Button.h"
 #include "Components/SpinBox.h"
 
-void UBuyModalWidget::SetProduct(const TScriptInterface<IProductInterface>& NewProduct)
+void UBuyModalWidget::SetProduct(UDataDefinitionBase* NewProduct)
 {
     Product = NewProduct;
 }

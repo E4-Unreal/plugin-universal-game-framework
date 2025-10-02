@@ -4,7 +4,6 @@
 #include "FunctionLibraries/MeshDataFunctionLibrary.h"
 
 #include "Data/DataDefinitionBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/MeshDataInterface.h"
 
 bool UMeshDataFunctionLibrary::HasMeshData(UDataDefinitionBase* Definition)
@@ -42,5 +41,5 @@ TSoftClassPtr<UAnimInstance> UMeshDataFunctionLibrary::GetAnimationClass(UDataDe
 
 UDataAsset* UMeshDataFunctionLibrary::GetMeshData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<UMeshDataInterface>(Definition);
+    return Definition ? Definition->GetDataByInterface<UMeshDataInterface>() : nullptr;
 }

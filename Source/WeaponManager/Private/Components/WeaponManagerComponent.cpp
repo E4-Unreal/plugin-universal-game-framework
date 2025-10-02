@@ -5,7 +5,6 @@
 
 #include "Data/DataDefinitionBase.h"
 #include "Data/WeaponInstance.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/WeaponDataFunctionLibrary.h"
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Interfaces/WeaponActorInterface.h"
@@ -187,7 +186,7 @@ AActor* UWeaponManagerComponent::SpawnActorFromData(UDataDefinitionBase* Definit
 {
     if (CheckData(Definition))
     {
-        UDataInstanceBase* NewContent = UDataManagerFunctionLibrary::CreateDataInstance(Definition);
+        auto NewContent = Definition->CreateDataInstance();
         return SpawnActorFromContent(NewContent);
     }
 

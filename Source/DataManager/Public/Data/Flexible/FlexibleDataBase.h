@@ -22,10 +22,10 @@ protected:
 public:
     UFlexibleDataBase();
 
-    /* DataInterface */
+    /* DataDefinitionBase */
 
-    virtual UDataAsset* GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
-    virtual UDataInstanceBase* CreateInstanceData_Implementation() const override;
+    virtual UDataAsset* GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UDataInstanceBase* CreateDataInstance() const override;
 
     /* API */
 

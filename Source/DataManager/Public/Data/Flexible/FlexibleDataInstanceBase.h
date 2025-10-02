@@ -17,9 +17,9 @@ class DATAMANAGER_API UFlexibleDataInstanceBase : public UDataInstanceBase
     GENERATED_BODY()
 
 public:
-    /* DataInterface */
+    /* DataInstanceBase */
 
-    virtual UObject* GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    virtual UObject* GetDataInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const override;
 
     /* API */
 

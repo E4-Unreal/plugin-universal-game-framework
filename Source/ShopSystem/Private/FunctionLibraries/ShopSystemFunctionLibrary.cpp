@@ -8,33 +8,29 @@
 #include "Interfaces/CustomerInterface.h"
 #include "Interfaces/ProductInterface.h"
 
-bool UShopSystemFunctionLibrary::PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer,
-                                                 const TScriptInterface<IProductInterface>& Product, int32 Quantity)
+bool UShopSystemFunctionLibrary::PurchaseProduct(AActor* Customer, UDataDefinitionBase* Product, int32 Quantity)
 {
     if (Customer && Quantity > 0)
     {
-        if (auto Definition = Cast<UDataDefinitionBase>(Product.GetObject()))
+        if (UProductDataFunctionLibrary::HasProductData(Product))
         {
-            if (UProductDataFunctionLibrary::HasProductData(Definition))
-            {
-                const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Definition);
-                const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Definition);
+            const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Product);
+            const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Product);
 
-                // 구매 금액
-                int32 TotalBuyPrice = Quantity * BuyPrice;
+            // 구매 금액
+            int32 TotalBuyPrice = Quantity * BuyPrice;
 
-                // 소지금
-                int32 Budget = ICustomerInterface::Execute_GetCurrency(Customer.GetObject(), CurrencyType);
+            // 소지금
+            int32 Budget = ICustomerInterface::Execute_GetCurrency(Customer, CurrencyType);
 
-                // 소지금 부족
-                if (Budget < TotalBuyPrice) return false;
+            // 소지금 부족
+            if (Budget < TotalBuyPrice) return false;
 
-                // 소지금으로부터 구매 금액 차감 후 상품 지급
-                ICustomerInterface::Execute_RemoveCurrency(Customer.GetObject(), CurrencyType, TotalBuyPrice);
-                ICustomerInterface::Execute_AddProduct(Customer.GetObject(), Product, Quantity);
+            // 소지금으로부터 구매 금액 차감 후 상품 지급
+            ICustomerInterface::Execute_RemoveCurrency(Customer, CurrencyType, TotalBuyPrice);
+            ICustomerInterface::Execute_AddProduct(Customer, Product, Quantity);
 
-                return true;
-            }
+            return true;
         }
     }
 

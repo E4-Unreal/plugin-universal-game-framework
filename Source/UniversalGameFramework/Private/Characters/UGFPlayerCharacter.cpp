@@ -16,7 +16,6 @@
 #include "Games/UGFSaveGame.h"
 #include "Subsystems/SaveGameSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
@@ -110,29 +109,23 @@ bool AUGFPlayerCharacter::RemoveCurrency_Implementation(const FGameplayTag& Curr
     return GetCurrencyManager()->RemoveCurrencyByType(CurrencyType, Quantity);
 }
 
-bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
+bool AUGFPlayerCharacter::AddProduct_Implementation(UDataDefinitionBase* Product, int32 Quantity)
 {
-    if (auto ProductData = Cast<UDataAsset>(Product.GetObject()))
+    if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Product))
     {
-        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ProductData))
-        {
-            UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
-            return GetInventory()->AddContent(ItemInstance);
-        }
+        UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+        return GetInventory()->AddContent(ItemInstance);
     }
 
     return false;
 }
 
-bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity)
+bool AUGFPlayerCharacter::RemoveProduct_Implementation(UDataDefinitionBase* Product, int32 Quantity)
 {
-    if (auto ProductData = Cast<UDataAsset>(Product.GetObject()))
+    if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Product))
     {
-        if (auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ProductData))
-        {
-            UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
-            return GetInventory()->RemoveContent(ItemInstance);
-        }
+        UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+        return GetInventory()->RemoveContent(ItemInstance);
     }
 
     return false;

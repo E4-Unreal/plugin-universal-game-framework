@@ -6,7 +6,6 @@
 #include "Components/InventoryComponent.h"
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/MeshDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Settings/InventorySystemSettings.h"

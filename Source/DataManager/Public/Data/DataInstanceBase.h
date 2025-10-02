@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "ReplicatedObject.h"
-#include "Interfaces/DataInstanceInterface.h"
 #include "DataInstanceBase.generated.h"
 
 class UDataDefinitionBase;
@@ -12,7 +11,7 @@ class UDataDefinitionBase;
  *
  */
 UCLASS(Abstract, EditInlineNew)
-class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject, public IDataInstanceInterface
+class DATAMANAGER_API UDataInstanceBase : public UReplicatedObject
 {
     GENERATED_BODY()
 
@@ -33,7 +32,12 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SetDefinition(UDataDefinitionBase* NewDefinition) { Definition = NewDefinition; }
 
-    /* DataObjectInterface */
+    UFUNCTION(BlueprintPure)
+    virtual UObject* GetDataInstanceByInterface(TSubclassOf<UInterface> InterfaceClass) const;
 
-    virtual UObject* GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
+    template <typename TInterface = UInterface>
+    UObject* GetDataInstanceByInterface() const
+    {
+        return GetDataInstanceByInterface(TInterface::StaticClass());
+    }
 };

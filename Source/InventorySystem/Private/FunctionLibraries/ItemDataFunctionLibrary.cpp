@@ -5,7 +5,6 @@
 
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Interfaces/ItemInstanceInterface.h"
 
@@ -31,9 +30,9 @@ FGameplayTag UItemDataFunctionLibrary::GetItemType(UDataDefinitionBase* Definiti
 
 UDataInstanceBase* UItemDataFunctionLibrary::CreateItemInstance(UDataDefinitionBase* Definition)
 {
-    if (Definition)
+    if (Definition && HasItemData(Definition))
     {
-        auto DataInstance = UDataManagerFunctionLibrary::CreateDataInstance(Definition);
+        auto DataInstance = Definition->CreateDataInstance();
         auto ItemInstance = GetItemInstance(DataInstance);
 
         return ItemInstance ? DataInstance : nullptr;
@@ -64,10 +63,10 @@ void UItemDataFunctionLibrary::SetQuantity(UDataInstanceBase* Instance, int32 Ne
 
 UDataAsset* UItemDataFunctionLibrary::GetItemData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<UItemDataInterface>(Definition);
+    return Definition ? Definition->GetDataByInterface<UItemDataInterface>() : nullptr;
 }
 
 UObject* UItemDataFunctionLibrary::GetItemInstance(UDataInstanceBase* Instance)
 {
-    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UItemInstanceInterface>(Instance);
+    return Instance ? Instance->GetDataInstanceByInterface<UItemInstanceInterface>() : nullptr;
 }

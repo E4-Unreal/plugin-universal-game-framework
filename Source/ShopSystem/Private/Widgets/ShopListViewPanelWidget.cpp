@@ -26,7 +26,7 @@ void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
     if (BuyModalWidgetClass)
     {
         auto BuyModalWidget = CreateWidget<UBuyModalWidget>(this, BuyModalWidgetClass);
-        BuyModalWidget->SetProduct(Item);
+        BuyModalWidget->SetProduct(Cast<UDataDefinitionBase>(Item));
         BuyModalWidget->AddToViewport();
     }
 }

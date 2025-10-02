@@ -4,7 +4,6 @@
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
 #include "Data/DataDefinitionBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/SlotDataInterface.h"
 
 bool USlotDataFunctionLibrary::HasSlotData(UDataDefinitionBase* Definition)
@@ -21,5 +20,5 @@ TSoftObjectPtr<UTexture2D> USlotDataFunctionLibrary::GetThumbnailTexture(UDataDe
 
 UDataAsset* USlotDataFunctionLibrary::GetSlotData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<USlotDataInterface>(Definition);
+    return Definition ? Definition->GetDataByInterface<USlotDataInterface>() : nullptr;
 }
