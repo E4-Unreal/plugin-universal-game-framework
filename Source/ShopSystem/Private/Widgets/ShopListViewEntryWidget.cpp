@@ -6,7 +6,6 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Data/DataDefinitionBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
@@ -21,7 +20,7 @@ void UShopListViewEntryWidget::Refresh()
 {
     if (DisplayNameTextBlock)
     {
-        DisplayNameTextBlock->SetText(UDataManagerFunctionLibrary::GetDisplayName(Product));
+        DisplayNameTextBlock->SetText(Product->DisplayName);
     }
 
     if (ThumbnailImage)

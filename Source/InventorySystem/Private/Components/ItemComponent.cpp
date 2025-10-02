@@ -4,6 +4,7 @@
 #include "Components/ItemComponent.h"
 
 #include "Components/InventoryComponent.h"
+#include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/MeshDataFunctionLibrary.h"
@@ -80,9 +81,12 @@ FText UItemComponent::GetItemName() const
 {
     if (!Items.IsEmpty())
     {
-        FText FirstItemName = UDataManagerFunctionLibrary::GetDisplayName(Items[0]);
+        if (auto Definition = Items[0]->Definition)
+        {
+            FText FirstItemName = Definition->DisplayName;
 
-        return Items.Num() == 1 ? FirstItemName : FText::Format(ItemNameFormat, FirstItemName);
+            return Items.Num() == 1 ? FirstItemName : FText::Format(ItemNameFormat, FirstItemName);
+        }
     }
 
     return FText::GetEmpty();
