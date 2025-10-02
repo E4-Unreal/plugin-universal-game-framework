@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Data/DataDefinitionBase.h"
-#include "FlexibleDataBase.generated.h"
+#include "FlexibleDataDefinitionBase.generated.h"
 
 class UDataFragment;
 
@@ -12,7 +12,7 @@ class UDataFragment;
  *
  */
 UCLASS(Abstract)
-class DATAMANAGER_API UFlexibleDataBase : public UDataDefinitionBase
+class DATAMANAGER_API UFlexibleDataDefinitionBase : public UDataDefinitionBase
 {
     GENERATED_BODY()
 
@@ -20,7 +20,7 @@ protected:
     static const TArray<UDataFragment*> EmptyFragments;
 
 public:
-    UFlexibleDataBase();
+    UFlexibleDataDefinitionBase();
 
     /* DataDefinitionBase */
 

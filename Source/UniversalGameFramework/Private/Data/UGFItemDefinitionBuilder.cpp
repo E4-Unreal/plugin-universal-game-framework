@@ -21,7 +21,7 @@ bool UUGFItemDefinitionBuilder::OnUpdateData(UDataDefinitionBase* Definition, FD
 {
     bool bDirty = false;
 
-    auto ItemDefinition = Cast<UFlexibleData>(Definition);
+    auto ItemDefinition = Cast<UFlexibleDataDefinition>(Definition);
     auto RowData = static_cast<FUGFItemDataTableRow*>(DataDefinitionTableRow);
     if (ItemDefinition && RowData)
     {

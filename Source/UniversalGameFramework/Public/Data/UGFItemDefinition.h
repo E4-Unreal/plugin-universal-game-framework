@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/Flexible/FlexibleData.h"
+#include "Data/Flexible/FlexibleDataDefinition.h"
 #include "UGFItemDefinition.generated.h"
 
 /**
  *
  */
 UCLASS()
-class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UFlexibleData
+class UNIVERSALGAMEFRAMEWORK_API UUGFItemDefinition : public UFlexibleDataDefinition
 {
     GENERATED_BODY()
 

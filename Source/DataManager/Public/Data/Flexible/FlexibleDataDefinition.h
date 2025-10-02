@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FlexibleDataBase.h"
-#include "FlexibleData.generated.h"
+#include "FlexibleDataDefinitionBase.h"
+#include "FlexibleDataDefinition.generated.h"
 
 /**
  *
  */
 UCLASS()
-class DATAMANAGER_API UFlexibleData : public UFlexibleDataBase
+class DATAMANAGER_API UFlexibleDataDefinition : public UFlexibleDataDefinitionBase
 {
     GENERATED_BODY()
 

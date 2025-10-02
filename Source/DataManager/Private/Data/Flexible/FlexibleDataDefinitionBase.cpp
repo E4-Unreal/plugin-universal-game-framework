@@ -1,26 +1,26 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/Flexible/FlexibleDataBase.h"
+#include "Data/Flexible/FlexibleDataDefinitionBase.h"
 
 #include "Data/Flexible/DataFragment.h"
 #include "Data/Flexible/FlexibleDataInstance.h"
 
-const TArray<UDataFragment*> UFlexibleDataBase::EmptyFragments;
+const TArray<UDataFragment*> UFlexibleDataDefinitionBase::EmptyFragments;
 
-UFlexibleDataBase::UFlexibleDataBase()
+UFlexibleDataDefinitionBase::UFlexibleDataDefinitionBase()
 {
     DataInstanceClass = UFlexibleDataInstance::StaticClass();
 }
 
-UDataAsset* UFlexibleDataBase::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
+UDataAsset* UFlexibleDataDefinitionBase::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
 {
     auto Data = Super::GetDataByInterface(InterfaceClass);
 
     return Data ? Data : GetFragmentByInterface(InterfaceClass);
 }
 
-UDataInstanceBase* UFlexibleDataBase::CreateDataInstance() const
+UDataInstanceBase* UFlexibleDataDefinitionBase::CreateDataInstance() const
 {
     auto DataInstance = Super::CreateDataInstance();
 
@@ -40,22 +40,22 @@ UDataInstanceBase* UFlexibleDataBase::CreateDataInstance() const
     return DataInstance;
 }
 
-const TArray<UDataFragment*>& UFlexibleDataBase::GetFragments() const
+const TArray<UDataFragment*>& UFlexibleDataDefinitionBase::GetFragments() const
 {
     return EmptyFragments;
 }
 
-UDataFragment* UFlexibleDataBase::CreateFragment(TSubclassOf<UDataFragment> FragmentClass) const
+UDataFragment* UFlexibleDataDefinitionBase::CreateFragment(TSubclassOf<UDataFragment> FragmentClass) const
 {
     if (FragmentClass)
     {
-        return NewObject<UDataFragment>(const_cast<UFlexibleDataBase*>(this), FragmentClass, FragmentClass->GetFName(), RF_Public);
+        return NewObject<UDataFragment>(const_cast<UFlexibleDataDefinitionBase*>(this), FragmentClass, FragmentClass->GetFName(), RF_Public);
     }
 
     return nullptr;
 }
 
-UDataFragment* UFlexibleDataBase::GetFragmentByClass(TSubclassOf<UDataFragment> FragmentClass) const
+UDataFragment* UFlexibleDataDefinitionBase::GetFragmentByClass(TSubclassOf<UDataFragment> FragmentClass) const
 {
     if (FragmentClass)
     {
@@ -71,7 +71,7 @@ UDataFragment* UFlexibleDataBase::GetFragmentByClass(TSubclassOf<UDataFragment> 
     return nullptr;
 }
 
-UDataFragment* UFlexibleDataBase::GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const
+UDataFragment* UFlexibleDataDefinitionBase::GetFragmentByInterface(const TSubclassOf<UInterface> InterfaceClass) const
 {
     if (InterfaceClass)
     {

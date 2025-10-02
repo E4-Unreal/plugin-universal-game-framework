@@ -1,9 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Data/Flexible/FlexibleData.h"
+#include "Data/Flexible/FlexibleDataDefinition.h"
 
-UDataFragment* UFlexibleData::AddFragment(TSubclassOf<UDataFragment> FragmentClass)
+UDataFragment* UFlexibleDataDefinition::AddFragment(TSubclassOf<UDataFragment> FragmentClass)
 {
     auto Fragment = GetFragmentByClass(FragmentClass);
 
