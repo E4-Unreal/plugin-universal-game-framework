@@ -43,24 +43,27 @@ void UCommonPromptWidgetBase::OnInputTextBoxChanged_Implementation(const FText& 
         FString String = Text.ToString();
         if (!String.IsNumeric())
         {
-            FString NewString;
             TArray<FString> CharacterArray = UKismetStringLibrary::GetCharacterArrayFromString(String);
+            String.Empty();
             for (FString Character : CharacterArray)
             {
                 if (Character.IsNumeric())
                 {
-                    NewString += Character;
+                    String += Character;
                 }
                 else
                 {
                     break;
                 }
             }
+        }
 
-            if (GetInputTextBox())
-            {
-                GetInputTextBox()->SetText(FText::FromString(NewString));
-            }
+        int64 Value = FMath::Clamp(FCString::Atoi64(*String), MinNum, MaxNum);
+        String = FString::FromInt(Value);
+
+        if (GetInputTextBox())
+        {
+            GetInputTextBox()->SetText(FText::FromString(String));
         }
     }
 }
