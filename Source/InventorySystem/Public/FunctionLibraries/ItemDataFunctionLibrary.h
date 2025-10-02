@@ -22,7 +22,7 @@ public:
     /* ItemData */
 
     UFUNCTION(BlueprintPure, Category = "ItemData")
-    static UDataAsset* GetItemData(UDataDefinitionBase* Definition);
+    static bool HasItemData(UDataDefinitionBase* Definition);
 
     UFUNCTION(BlueprintPure, Category = "ItemData")
     static int32 GetMaxStack(UDataDefinitionBase* Definition);
@@ -30,17 +30,21 @@ public:
     UFUNCTION(BlueprintPure, Category = "ItemData")
     static FGameplayTag GetItemType(UDataDefinitionBase* Definition);
 
-    /* ItemInstanceData */
+    /* ItemInstance */
 
-    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
+    UFUNCTION(BlueprintPure, Category = "ItemInstance")
     static UDataInstanceBase* CreateItemInstance(UDataDefinitionBase* Definition);
 
-    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static UObject* GetItemInstance(UDataInstanceBase* DataInstance);
+    UFUNCTION(BlueprintPure, Category = "ItemInstance")
+    static bool HasItemInstance(UDataInstanceBase* Instance);
 
-    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static int32 GetQuantity(UDataInstanceBase* DataInstance);
+    UFUNCTION(BlueprintPure, Category = "ItemInstance")
+    static int32 GetQuantity(UDataInstanceBase* Instance);
 
-    UFUNCTION(BlueprintCallable, Category = "ItemInstanceData")
-    static void SetQuantity(UDataInstanceBase* DataInstance, int32 NewQuantity);
+    UFUNCTION(BlueprintCallable, Category = "ItemInstance")
+    static void SetQuantity(UDataInstanceBase* Instance, int32 NewQuantity);
+
+protected:
+    static UDataAsset* GetItemData(UDataDefinitionBase* Definition);
+    static UObject* GetItemInstance(UDataInstanceBase* Instance);
 };

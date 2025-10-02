@@ -10,9 +10,9 @@
 #include "Interfaces/ItemInstanceInterface.h"
 
 
-UDataAsset* UItemDataFunctionLibrary::GetItemData(UDataDefinitionBase* Definition)
+bool UItemDataFunctionLibrary::HasItemData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<UItemDataInterface>(Definition);
+    return GetItemData(Definition) != nullptr;
 }
 
 int32 UItemDataFunctionLibrary::GetMaxStack(UDataDefinitionBase* Definition)
@@ -42,22 +42,32 @@ UDataInstanceBase* UItemDataFunctionLibrary::CreateItemInstance(UDataDefinitionB
     return nullptr;
 }
 
-UObject* UItemDataFunctionLibrary::GetItemInstance(UDataInstanceBase* DataInstance)
+bool UItemDataFunctionLibrary::HasItemInstance(UDataInstanceBase* Instance)
 {
-    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UItemInstanceInterface>(DataInstance);
+    return GetItemInstance(Instance) != nullptr;
 }
 
-int32 UItemDataFunctionLibrary::GetQuantity(UDataInstanceBase* DataInstance)
+int32 UItemDataFunctionLibrary::GetQuantity(UDataInstanceBase* Instance)
 {
-    auto ItemInstance = GetItemInstance(DataInstance);
+    auto ItemInstance = GetItemInstance(Instance);
 
     return ItemInstance ? IItemInstanceInterface::Execute_GetQuantity(ItemInstance) : 0;
 }
 
-void UItemDataFunctionLibrary::SetQuantity(UDataInstanceBase* DataInstance, int32 NewQuantity)
+void UItemDataFunctionLibrary::SetQuantity(UDataInstanceBase* Instance, int32 NewQuantity)
 {
-    if (auto ItemInstance = GetItemInstance(DataInstance))
+    if (auto ItemInstance = GetItemInstance(Instance))
     {
         IItemInstanceInterface::Execute_SetQuantity(ItemInstance, NewQuantity);
     }
+}
+
+UDataAsset* UItemDataFunctionLibrary::GetItemData(UDataDefinitionBase* Definition)
+{
+    return UDataManagerFunctionLibrary::GetDataByInterface<UItemDataInterface>(Definition);
+}
+
+UObject* UItemDataFunctionLibrary::GetItemInstance(UDataInstanceBase* Instance)
+{
+    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UItemInstanceInterface>(Instance);
 }
