@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ShopListViewEntryWidget.generated.h"
 
+class UDataDefinitionBase;
 class UBuyModalWidget;
 class UImage;
 class UTextBlock;
@@ -31,7 +32,7 @@ protected:
     TObjectPtr<UTextBlock> BuyPriceTextBlock;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
-    TScriptInterface<IProductInterface> Product;
+    TObjectPtr<UDataDefinitionBase> Product;
 
 protected:
     virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ShopListViewPanelWidget.generated.h"
 
+class UDataDefinitionBase;
 class IProductInterface;
 class UListView;
 class UBuyModalWidget;
@@ -26,14 +27,14 @@ protected:
     TSubclassOf<UBuyModalWidget> BuyModalWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    TArray<TScriptInterface<IProductInterface>> DefaultProducts;
+    TArray<TObjectPtr<UDataDefinitionBase>> DefaultProducts;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
-    TArray<TScriptInterface<IProductInterface>> Products;
+    TArray<TObjectPtr<UDataDefinitionBase>> Products;
 
 public:
     UFUNCTION(BlueprintCallable)
-    virtual void SetProducts(const TArray<TScriptInterface<IProductInterface>>& NewProducts);
+    virtual void SetProducts(const TArray<UDataDefinitionBase*>& NewProducts);
 
 protected:
     virtual void NativeOnInitialized() override;
