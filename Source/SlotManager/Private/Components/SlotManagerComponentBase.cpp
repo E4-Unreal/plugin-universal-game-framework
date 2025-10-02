@@ -130,7 +130,7 @@ bool USlotManagerComponentBase::AddContent(UDataInstanceBase* NewContent)
     return false;
 }
 
-bool USlotManagerComponentBase::AddContentByData(UDataAsset* NewData)
+bool USlotManagerComponentBase::AddContentByData(UDataDefinitionBase* NewData)
 {
     if (CheckData(NewData))
     {
@@ -225,9 +225,9 @@ bool USlotManagerComponentBase::CheckContent(UDataInstanceBase* Content) const
     return Content && UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(Content, UsingInstanceDataInterfaces);
 }
 
-bool USlotManagerComponentBase::CheckData(UDataAsset* Data) const
+bool USlotManagerComponentBase::CheckData(UDataDefinitionBase* Definition) const
 {
-    return Data && UDataManagerFunctionLibrary::SupportsDataInterfaces(Data, UsingDataInterfaces);
+    return Definition && UDataManagerFunctionLibrary::SupportsDataInterfaces(Definition, UsingDataInterfaces);
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)

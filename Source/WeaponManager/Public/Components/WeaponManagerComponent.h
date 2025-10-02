@@ -60,7 +60,7 @@ protected:
     /* SlotManagerComponentBase */
 
     virtual void CreateSlots() override;
-    virtual bool CheckData(UDataAsset* Data) const override;
+    virtual bool CheckData(UDataDefinitionBase* Definition) const override;
     virtual void HandleOnSlotUpdated(int32 Index) override;
 
     /* SlotManagerInterface */
@@ -76,7 +76,7 @@ protected:
     virtual bool DoesSocketExist(FName SocketName) const;
 
     virtual bool AttachWeaponActorToSocket(AActor* WeaponActor, const FName SocketName) const;
-    virtual AActor* SpawnActorFromData(UDataAsset* Data);
+    virtual AActor* SpawnActorFromData(UDataDefinitionBase* Definition);
     virtual AActor* SpawnActorFromContent(UDataInstanceBase* Content);
     bool CheckActor(AActor* Actor) const;
     static bool CheckActorClass(TSubclassOf<AActor> ActorClass);

@@ -80,7 +80,7 @@ public:
     virtual bool AddContent(UDataInstanceBase* NewContent);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-    virtual bool AddContentByData(UDataAsset* NewData);
+    virtual bool AddContentByData(UDataDefinitionBase* NewData);
 
     UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
     virtual bool RemoveContent(UDataInstanceBase* InContent);
@@ -104,7 +104,7 @@ protected:
     virtual void CreateSlots();
     virtual void MappingSlots();
     virtual bool CheckContent(UDataInstanceBase* Content) const;
-    virtual bool CheckData(UDataAsset* Data) const;
+    virtual bool CheckData(UDataDefinitionBase* Definition) const;
 
     UFUNCTION()
     virtual void HandleOnSlotUpdated(int32 Index);

@@ -4,7 +4,7 @@
 #include "Data/UGFEquipmentInstance.h"
 
 #include "Data/DataDefinitionBase.h"
-#include "FunctionLibraries/WeaponManagerFunctionLibrary.h"
+#include "FunctionLibraries/WeaponDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 void UUGFEquipmentInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -21,7 +21,7 @@ void UUGFEquipmentInstance::SetDefinition_Implementation(UDataDefinitionBase* Ne
 
     if (Definition)
     {
-        const float MaxDurability = UWeaponManagerFunctionLibrary::GetMaxDurability(Definition);
+        const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Definition);
         Durability = MaxDurability;
     }
 }
@@ -30,7 +30,7 @@ void UUGFEquipmentInstance::SetDurability_Implementation(float NewDurability)
 {
     if (Definition)
     {
-        const float MaxDurability = UWeaponManagerFunctionLibrary::GetMaxDurability(Definition);
+        const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Definition);
         Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
     }
 }
