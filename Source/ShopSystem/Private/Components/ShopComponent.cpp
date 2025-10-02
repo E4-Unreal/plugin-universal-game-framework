@@ -41,7 +41,7 @@ const FProductSlot& UShopComponent::GetSlot(int32 Index) const
     return FProductSlot::EmptySlot;
 }
 
-bool UShopComponent::BuyProduct(AActor* Customer, int32 Index, int32 Quantity)
+bool UShopComponent::BuyItem(AActor* Customer, int32 Index, int32 Quantity)
 {
     // 입력 유효성 확인
     if (Customer && IsSlotExist(Index) && Quantity > 0)
@@ -87,7 +87,7 @@ bool UShopComponent::BuyProduct(AActor* Customer, int32 Index, int32 Quantity)
     return false;
 }
 
-bool UShopComponent::SellProduct(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity)
+bool UShopComponent::SellItem(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity)
 {
     // 입력 유효성 검사
     if (Customer && CheckDefinition(Definition))

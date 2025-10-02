@@ -59,10 +59,10 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
-    virtual bool BuyProduct(AActor* Customer, int32 Index, int32 Quantity);
+    virtual bool BuyItem(AActor* Customer, int32 Index, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
-    virtual bool SellProduct(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity);
+    virtual bool SellItem(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
     virtual bool SellEquipment(AActor* Customer, UDataInstanceBase* Instance);
