@@ -11,6 +11,8 @@ UDataFragment* UFlexibleData::AddFragment(TSubclassOf<UDataFragment> FragmentCla
     {
         Fragment = CreateFragment(FragmentClass);
         Fragments.Emplace(Fragment);
+
+        MarkPackageDirty();
     }
 
     return Fragment;
