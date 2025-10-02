@@ -16,11 +16,13 @@ public class InventorySystem : ModuleRules
                 "InputCore",
                 "DeveloperSettings",
 
+                // UniversalGameFramework
                 "UniversalUtilities",
                 "InteractionSystem",
                 "DataManager",
                 "SlotManager",
-                "WidgetManager"
+                "WidgetManager",
+                "MeshManager",
             }
         );
 

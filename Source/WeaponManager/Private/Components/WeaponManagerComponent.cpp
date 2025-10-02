@@ -3,18 +3,16 @@
 
 #include "Components/WeaponManagerComponent.h"
 
+#include "Data/DataDefinitionBase.h"
 #include "Data/WeaponInstance.h"
+#include "FunctionLibraries/WeaponDataFunctionLibrary.h"
 #include "GameplayTags/WeaponGameplayTags.h"
-#include "Interfaces/DataInterface.h"
 #include "Interfaces/WeaponActorInterface.h"
 #include "Interfaces/WeaponDataInterface.h"
 
 UWeaponManagerComponent::UWeaponManagerComponent()
 {
     bWantsInitializeComponent = true;
-
-    UsingDataInterfaces.Emplace(UWeaponDataInterface::StaticClass());
-    UsingDataObjectInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
 
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
 }
@@ -26,12 +24,11 @@ void UWeaponManagerComponent::InitializeComponent()
     FindMesh();
 }
 
-int32 UWeaponManagerComponent::GetEmptySlotIndex(UObject* NewContent) const
+int32 UWeaponManagerComponent::GetEmptySlotIndex(UDataInstanceBase* NewContent) const
 {
     if (CheckContent(NewContent))
     {
-        UDataAsset* WeaponData = GetDataFromContent(NewContent);
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(WeaponData);
+        const FGameplayTag SlotType = UWeaponDataFunctionLibrary::GetSlotType(NewContent->Definition);
 
         for (const auto& [SlotIndex, Index] : SlotIndexMap)
         {
@@ -47,10 +44,10 @@ int32 UWeaponManagerComponent::GetEmptySlotIndex(UObject* NewContent) const
 
 AActor* UWeaponManagerComponent::GetCurrentWeaponActor() const
 {
-    UObject* CurrentContent = GetContent(CurrentSlotIndex);
+    UDataInstanceBase* CurrentContent = GetContent(CurrentSlotIndex);
     if (CheckContent(CurrentContent))
     {
-        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(CurrentContent);
+        AActor* Actor = UWeaponDataFunctionLibrary::GetActor(CurrentContent);
 
         return Actor;
     }
@@ -72,10 +69,10 @@ void UWeaponManagerComponent::SetSlotIndex_Implementation(int32 NewSlotIndex, bo
     int32 OldIndex = CurrentSlotIndex;
     CurrentSlotIndex = NewSlotIndex;
 
-    UObject* OldContent = GetContent(OldIndex);
+    UDataInstanceBase* OldContent = GetContent(OldIndex);
     UnEquip(OldContent);
 
-    UObject* NewContent = GetContent(NewSlotIndex);
+    UDataInstanceBase* NewContent = GetContent(NewSlotIndex);
     Equip(NewContent);
 }
 
@@ -101,15 +98,34 @@ void UWeaponManagerComponent::CreateSlots()
     MaxSlotNum = SlotIndex + 1;
 }
 
-bool UWeaponManagerComponent::CheckData(UDataAsset* Data) const
+bool UWeaponManagerComponent::CheckData(UDataDefinitionBase* Definition) const
 {
-    if (Super::CheckData(Data))
+    if (Super::CheckData(Definition))
     {
-        const FGameplayTag SlotType = IWeaponDataInterface::Execute_GetSlotType(Data);
-        const TSubclassOf<AActor> WeaponActorClass = IWeaponDataInterface::Execute_GetActorClass(Data);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(Data);
+        if (UWeaponDataFunctionLibrary::HasWeaponData(Definition))
+        {
+            const FGameplayTag SlotType = UWeaponDataFunctionLibrary::GetSlotType(Definition);
+            const TSubclassOf<AActor> WeaponActorClass = UWeaponDataFunctionLibrary::GetActorClass(Definition);
+            const FName ActiveSocketName = UWeaponDataFunctionLibrary::GetActiveSocketName(Definition);
 
-        return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+            return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+        }
+    }
+
+    return false;
+}
+
+bool UWeaponManagerComponent::CheckContent(UDataInstanceBase* Content) const
+{
+    if (Super::CheckContent(Content))
+    {
+        if (UWeaponDataFunctionLibrary::HasWeaponInstance(Content) && UWeaponDataFunctionLibrary::HasWeaponData(Content->Definition))
+        {
+            const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Content->Definition);
+            const float Durability = UWeaponDataFunctionLibrary::GetDurability(Content);
+
+            return MaxDurability > 0.0f ? Durability > 0.0f : true;
+        }
     }
 
     return false;
@@ -166,42 +182,44 @@ bool UWeaponManagerComponent::AttachWeaponActorToSocket(AActor* WeaponActor, con
     return bResult;
 }
 
-AActor* UWeaponManagerComponent::SpawnActorFromData(UDataAsset* Data)
+AActor* UWeaponManagerComponent::SpawnActorFromData(UDataDefinitionBase* Definition)
 {
-    if (CheckData(Data))
+    if (CheckData(Definition))
     {
-        UObject* NewContent = IDataInterface::Execute_CreateDataObject(Data);
+        auto NewContent = Definition->CreateDataInstance();
         return SpawnActorFromContent(NewContent);
     }
 
     return nullptr;
 }
 
-AActor* UWeaponManagerComponent::SpawnActorFromContent(UObject* Content)
+AActor* UWeaponManagerComponent::SpawnActorFromContent(UDataInstanceBase* Content)
 {
     if (CheckContent(Content))
     {
-        UDataAsset* WeaponData = GetDataFromContent(Content);
-        TSubclassOf<AActor> ActorClass = IWeaponDataInterface::Execute_GetActorClass(WeaponData);
-
-        FActorSpawnParameters ActorSpawnParameters;
-        ActorSpawnParameters.Owner = GetOwner();
-        ActorSpawnParameters.Instigator = GetOwner()->GetInstigator();
-        ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-        const FVector SpawnLocation = GetOwner()->GetActorLocation();
-        if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters))
+        if (UWeaponDataFunctionLibrary::HasWeaponData(Content->Definition))
         {
-            IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Content);
+            TSubclassOf<AActor> ActorClass = UWeaponDataFunctionLibrary::GetActorClass(Content->Definition);
 
-            if (CheckActor(SpawnedActor))
+            FActorSpawnParameters ActorSpawnParameters;
+            ActorSpawnParameters.Owner = GetOwner();
+            ActorSpawnParameters.Instigator = GetOwner()->GetInstigator();
+            ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+            const FVector SpawnLocation = GetOwner()->GetActorLocation();
+            if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters))
             {
-                IWeaponInstanceInterface::Execute_SetActor(Content, SpawnedActor);
-                return SpawnedActor;
-            }
-            else
-            {
-                SpawnedActor->Destroy();
+                IWeaponActorInterface::Execute_SetInstance(SpawnedActor, Content);
+
+                if (CheckActor(SpawnedActor))
+                {
+                    UWeaponDataFunctionLibrary::SetActor(Content, SpawnedActor);
+                    return SpawnedActor;
+                }
+                else
+                {
+                    SpawnedActor->Destroy();
+                }
             }
         }
     }
@@ -224,26 +242,24 @@ bool UWeaponManagerComponent::CheckActorClass(TSubclassOf<AActor> ActorClass)
     return ActorClass && ActorClass->ImplementsInterface(UWeaponActorInterface::StaticClass());
 }
 
-void UWeaponManagerComponent::Equip(UObject* Content)
+void UWeaponManagerComponent::Equip(UDataInstanceBase* Content)
 {
     if (CheckContent(Content))
     {
-        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
+        AActor* Actor = UWeaponDataFunctionLibrary::GetActor(Content);
         if (Actor == nullptr) Actor = SpawnActorFromContent(Content);
-        UDataAsset* WeaponData = GetDataFromContent(Content);
-        const FName ActiveSocketName = IWeaponDataInterface::Execute_GetActiveSocketName(WeaponData);
+        const FName ActiveSocketName = UWeaponDataFunctionLibrary::GetActiveSocketName(Content->Definition);
 
         AttachWeaponActorToSocket(Actor, ActiveSocketName);
     }
 }
 
-void UWeaponManagerComponent::UnEquip(UObject* Content)
+void UWeaponManagerComponent::UnEquip(UDataInstanceBase* Content)
 {
     if (CheckContent(Content))
     {
-        AActor* Actor = IWeaponInstanceInterface::Execute_GetActor(Content);
-        UDataAsset* WeaponData = GetDataFromContent(Content);
-        const FName InActiveSocketName = IWeaponDataInterface::Execute_GetInActiveSocketName(WeaponData);
+        AActor* Actor = UWeaponDataFunctionLibrary::GetActor(Content);
+        const FName InActiveSocketName = UWeaponDataFunctionLibrary::GetInActiveSocketName(Content->Definition);
 
         AttachWeaponActorToSocket(Actor, InActiveSocketName);
     }

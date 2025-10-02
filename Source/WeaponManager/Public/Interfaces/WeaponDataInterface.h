@@ -36,11 +36,5 @@ public:
     FName GetInActiveSocketName() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     float GetMaxDurability() const;
 };

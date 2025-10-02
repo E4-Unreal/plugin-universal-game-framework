@@ -6,6 +6,7 @@
 #include "Components/DataManagerComponentBase.h"
 #include "ItemComponentBase.generated.h"
 
+class UDataInstanceBase;
 
 UCLASS(Abstract, meta = (BlueprintSpawnableComponent))
 class INVENTORYSYSTEM_API UItemComponentBase : public UDataManagerComponentBase
@@ -41,5 +42,5 @@ protected:
     virtual void FindDisplayMesh();
     virtual UStaticMesh* GetStaticMesh() const;
     virtual UMaterialInterface* GetMaterial() const;
-    virtual TArray<UObject*> GetItems() const { return TArray<UObject*>(); }
+    virtual TArray<UDataInstanceBase*> GetItems() const { return TArray<UDataInstanceBase*>(); }
 };

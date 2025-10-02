@@ -7,6 +7,7 @@
 #include "Interfaces/SlotWidgetInterface.h"
 #include "DraggedSlotWidgetBase.generated.h"
 
+class UDataDefinitionBase;
 class UImage;
 
 /**
@@ -22,14 +23,14 @@ public:
     TSoftObjectPtr<UTexture2D> DefaultThumbnailTexture;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (AllowedClasses = "SlotDataInterface"))
-    TSoftObjectPtr<UDataAsset> PreviewData;
+    TSoftObjectPtr<UDataDefinitionBase> PreviewData;
 
 protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> ThumbnailImage;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
-    TWeakObjectPtr<USlotManagerComponentBase> SlotManager;
+    TWeakObjectPtr<UActorComponent> SlotManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     int32 SlotIndex;
@@ -39,8 +40,8 @@ public:
 
     /* SlotWidgetInterface */
 
-    virtual USlotManagerComponentBase* GetSlotManager_Implementation() const override { return SlotManager.Get(); }
-    virtual void SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager) override;
+    virtual UActorComponent* GetSlotManager_Implementation() const override { return SlotManager.Get(); }
+    virtual void SetSlotManager_Implementation(UActorComponent* NewSlotManager) override;
     virtual int32 GetSlotIndex_Implementation() const override { return SlotIndex; }
     virtual void SetSlotIndex_Implementation(int32 NewSlotIndex) override;
     virtual void Refresh_Implementation() override;
@@ -52,7 +53,7 @@ protected:
 
     /* API */
 
-    virtual void SetThumbnailTexture(UTexture2D* NewTexture);
-    virtual void ApplyData(UDataAsset* InData);
+    virtual void SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTexture);
+    virtual void ApplyData(UDataDefinitionBase* InData);
     virtual void Clear();
 };

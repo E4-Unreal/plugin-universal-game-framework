@@ -4,18 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "Data/DataDefinitionTableRowBase.h"
 #include "UGFItemDataTableRow.generated.h"
 
 USTRUCT(BlueprintType)
-struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FTableRowBase
+struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FDataDefinitionTableRowBase
 {
     GENERATED_BODY()
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FText DisplayName;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FText Description;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UStaticMesh> StaticMesh;
@@ -25,6 +20,9 @@ struct UNIVERSALGAMEFRAMEWORK_API FUGFItemDataTableRow : public FTableRowBase
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UMaterialInterface> Material;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftClassPtr<UAnimInstance> AnimationClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> ThumbnailTexture;

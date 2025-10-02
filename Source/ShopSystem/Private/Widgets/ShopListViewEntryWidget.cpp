@@ -5,31 +5,32 @@
 
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "Interfaces/ProductInterface.h"
+#include "Data/DataDefinitionBase.h"
+#include "FunctionLibraries/ProductDataFunctionLibrary.h"
+#include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
-    Product = ListItemObject;
+    Product = Cast<UDataDefinitionBase>(ListItemObject);
 
     Refresh();
 }
 
 void UShopListViewEntryWidget::Refresh()
 {
-    if (!Product) return;
-
     if (DisplayNameTextBlock)
     {
-        DisplayNameTextBlock->SetText(IProductInterface::Execute_GetDisplayNameText(Product.GetObject()));
+        DisplayNameTextBlock->SetText(Product->DisplayName);
     }
 
     if (ThumbnailImage)
     {
-        ThumbnailImage->SetBrushFromSoftTexture(IProductInterface::Execute_GetThumbnailTexture(Product.GetObject()));
+        ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Product));
     }
 
     if (BuyPriceTextBlock)
     {
-        BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(IProductInterface::Execute_GetBuyPrice(Product.GetObject()))));
+        const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Product);
+        BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(BuyPrice)));
     }
 }

@@ -3,10 +3,8 @@
 
 #include "Actors/WeaponActor.h"
 
-#include "Data/DataObjectBase.h"
-#include "Interfaces/DataObjectInterface.h"
-#include "Interfaces/WeaponDataInterface.h"
-#include "Interfaces/WeaponInstanceInterface.h"
+#include "Data/DataInstanceBase.h"
+#include "FunctionLibraries/MeshDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 const FName AWeaponActor::RootSceneName(TEXT("RootScene"));
@@ -57,28 +55,27 @@ void AWeaponActor::PostEditChangeProperty(struct FPropertyChangedEvent& Property
 
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Data))
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Definition))
     {
         ApplyWeaponData();
     }
 }
 #endif
 
-void AWeaponActor::SetInstance_Implementation(UObject* NewInstance)
+void AWeaponActor::SetInstance_Implementation(UDataInstanceBase* NewInstance)
 {
-    UObject* OldWeaponInstance = Instance;
+    auto OldInstance = Instance;
     Instance = NewInstance;
 
-    OnInstanceChanged(OldWeaponInstance, Instance);
+    OnInstanceChanged(OldInstance, Instance);
 }
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (!Data.IsNull() && Data->Implements<UWeaponDataInterface>())
+    if (UMeshDataFunctionLibrary::HasMeshData(Definition))
     {
-        UDataAsset* LoadedData = Data.LoadSynchronous();
-        TSoftObjectPtr<USkeletalMesh> SkeletalMeshAsset = IWeaponDataInterface::Execute_GetSkeletalMesh(LoadedData);
-        TSoftObjectPtr<UStaticMesh> StaticMeshAsset = IWeaponDataInterface::Execute_GetStaticMesh(LoadedData);
+        auto SkeletalMeshAsset = UMeshDataFunctionLibrary::GetSkeletalMesh(Definition);
+        auto StaticMeshAsset = UMeshDataFunctionLibrary::GetStaticMesh(Definition);
 
         if (!SkeletalMeshAsset.IsNull())
         {
@@ -93,14 +90,14 @@ void AWeaponActor::ApplyWeaponData()
     }
 }
 
-void AWeaponActor::OnInstanceChanged(UObject* OldInstance, UObject* NewInstance)
+void AWeaponActor::OnInstanceChanged(UDataInstanceBase* OldInstance, UDataInstanceBase* NewInstance)
 {
-    Data = NewInstance ? IDataObjectInterface::Execute_GetData(NewInstance) : nullptr;
+    Definition = NewInstance ? NewInstance->Definition : nullptr;
 
     ApplyWeaponData();
 }
 
-void AWeaponActor::OnRep_Instance(UObject* OldInstance)
+void AWeaponActor::OnRep_Instance(UDataInstanceBase* OldInstance)
 {
     OnInstanceChanged(OldInstance, Instance);
 }

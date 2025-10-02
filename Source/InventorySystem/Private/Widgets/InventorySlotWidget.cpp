@@ -3,10 +3,9 @@
 
 #include "Widgets/InventorySlotWidget.h"
 
-#include "Components/SlotManagerComponentBase.h"
 #include "Components/TextBlock.h"
-#include "Data/DataObjectBase.h"
-#include "Interfaces/ItemObjectInterface.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
+#include "Interfaces/SlotManagerInterface.h"
 
 void UInventorySlotWidget::Refresh_Implementation()
 {
@@ -14,12 +13,9 @@ void UInventorySlotWidget::Refresh_Implementation()
 
     if (SlotManager.IsValid())
     {
-        auto Content = SlotManager->GetContent(SlotIndex);
-        if (Content && Content->Implements<UItemObjectInterface>())
-        {
-            const int32 Quantity = IItemObjectInterface::Execute_GetQuantity(Content);
-            SetQuantityTextBlock(Quantity);
-        }
+        auto Content = ISlotManagerInterface::Execute_GetDataInstance(SlotManager.Get(), SlotIndex);
+        const int32 Quantity = UItemDataFunctionLibrary::GetQuantity(Content);
+        SetQuantityTextBlock(Quantity);
     }
 }
 

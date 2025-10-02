@@ -3,49 +3,66 @@
 
 #include "Data/UGFItemDefinitionBuilder.h"
 
-#include "Data/UGFEquipmentDefinition.h"
+#include "Data/ItemDataFragment.h"
+#include "Data/MeshDataFragment.h"
+#include "Data/ProductDataFragment.h"
+#include "Data/SlotDataFragment.h"
+#include "Data/UGFItemDefinition.h"
 #include "Data/UGFItemDataTableRow.h"
+#include "Data/WeaponDataFragment.h"
 
 UUGFItemDefinitionBuilder::UUGFItemDefinitionBuilder()
 {
-    DataClass = UUGFEquipmentDefinition::StaticClass();
+    DefinitionClass = UUGFItemDefinition::StaticClass();
     DataName = "Item";
 }
 
-bool UUGFItemDefinitionBuilder::UpdateData(UDataAsset* Data, FTableRowBase* TableRow)
+bool UUGFItemDefinitionBuilder::OnUpdateData(UDataDefinitionBase* Definition, FDataDefinitionTableRowBase* DataDefinitionTableRow)
 {
     bool bDirty = false;
 
-    UUGFEquipmentDefinition* ItemDefinition = Cast<UUGFEquipmentDefinition>(Data);
-    FUGFItemDataTableRow* RowData = static_cast<FUGFItemDataTableRow*>(TableRow);
+    auto ItemDefinition = Cast<UFlexibleDataDefinition>(Definition);
+    auto RowData = static_cast<FUGFItemDataTableRow*>(DataDefinitionTableRow);
     if (ItemDefinition && RowData)
     {
-        // Data
-        SET_TEXT(ItemDefinition->DisplayName, RowData->DisplayName)
-        SET_TEXT(ItemDefinition->Description, RowData->Description)
+        // SlotData
+        if (auto SlotData = ItemDefinition->AddFragment<USlotDataFragment>())
+        {
+            SET_DATA(SlotData->ThumbnailTexture, RowData->ThumbnailTexture)
+        }
 
-        // Slot
-        SET_DATA(ItemDefinition->ThumbnailTexture, RowData->ThumbnailTexture)
+        // MeshData
+        if (auto MeshData = ItemDefinition->AddFragment<UMeshDataFragment>())
+        {
+            SET_DATA(MeshData->StaticMesh, RowData->StaticMesh)
+            SET_DATA(MeshData->SkeletalMesh, RowData->SkeletalMesh)
+            SET_DATA(MeshData->Material, RowData->Material)
+            SET_DATA(MeshData->AnimationClass, RowData->AnimationClass)
+        }
 
-        // Actor
-        SET_DATA(ItemDefinition->StaticMesh, RowData->StaticMesh)
-        SET_DATA(ItemDefinition->SkeletalMesh, RowData->SkeletalMesh)
+        // ItemData
+        if (auto ItemData = ItemDefinition->AddFragment<UItemDataFragment>())
+        {
+            SET_DATA(ItemData->MaxStack, RowData->MaxStack)
+            SET_DATA(ItemData->ItemType, RowData->ItemType)
+        }
 
-        // Inventory
-        SET_DATA(ItemDefinition->MaxStack, RowData->MaxStack)
-        SET_DATA(ItemDefinition->ItemType, RowData->ItemType)
-        SET_DATA(ItemDefinition->Material, RowData->Material)
+        // ProductData
+        if (auto ProductData = ItemDefinition->AddFragment<UProductDataFragment>())
+        {
+            SET_DATA(ProductData->CurrencyType, RowData->CurrencyType)
+            SET_DATA(ProductData->BuyPrice, RowData->BuyPrice)
+            SET_DATA(ProductData->SellPrice, RowData->SellPrice)
+        }
 
-        // Product
-        SET_DATA(ItemDefinition->CurrencyType, RowData->CurrencyType)
-        SET_DATA(ItemDefinition->BuyPrice, RowData->BuyPrice)
-        SET_DATA(ItemDefinition->SellPrice, RowData->SellPrice)
-
-        // Equipment
-        SET_DATA(ItemDefinition->SlotType, RowData->SlotType)
-        SET_DATA(ItemDefinition->ActiveSocketName, RowData->ActiveSocketName)
-        SET_DATA(ItemDefinition->InActiveSocketName, RowData->InActiveSocketName)
-        SET_DATA(ItemDefinition->MaxDurability, RowData->MaxDurability)
+        // WeaponData
+        if (auto WeaponData = ItemDefinition->AddFragment<UWeaponDataFragment>())
+        {
+            SET_DATA(WeaponData->SlotType, RowData->SlotType)
+            SET_DATA(WeaponData->ActiveSocketName, RowData->ActiveSocketName)
+            SET_DATA(WeaponData->InActiveSocketName, RowData->InActiveSocketName)
+            SET_DATA(WeaponData->MaxDurability, RowData->MaxDurability)
+        }
     }
 
     return bDirty;

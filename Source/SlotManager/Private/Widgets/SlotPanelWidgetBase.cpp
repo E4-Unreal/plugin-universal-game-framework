@@ -3,22 +3,25 @@
 
 #include "Widgets/SlotPanelWidgetBase.h"
 
-#include "Components/SlotManagerComponentBase.h"
 #include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"
+#include "Interfaces/SlotManagerInterface.h"
 #include "Interfaces/SlotWidgetInterface.h"
 
 USlotPanelWidgetBase::USlotPanelWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-
+    SlotUpdatedDelegate.BindDynamic(this, &ThisClass::OnSlotUpdated);
 }
 
 void USlotPanelWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
 {
     TargetActor = NewTargetActor ? NewTargetActor : GetOwningPlayerPawn();
 
-    if (TargetActor.IsValid()) SetSlotManager(Cast<USlotManagerComponentBase>(TargetActor->GetComponentByClass(SlotManagerClass)));
+    if (TargetActor.IsValid() && SlotManagerClass)
+    {
+        SetSlotManager(TargetActor->GetComponentByClass(SlotManagerClass));
+    }
 }
 
 void USlotPanelWidgetBase::NativeOnInitialized()
@@ -51,7 +54,7 @@ void USlotPanelWidgetBase::SetPanelName(const FText& NewPanelName)
     }
 }
 
-void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotManager)
+void USlotPanelWidgetBase::SetSlotManager(UActorComponent* NewSlotManager)
 {
     UnBindSlotManagerEvents();
 
@@ -64,12 +67,9 @@ void USlotPanelWidgetBase::SetSlotManager(USlotManagerComponentBase* NewSlotMana
 
 void USlotPanelWidgetBase::FindSlotManager()
 {
-    if (SlotManagerClass == nullptr) return;
+    if (TargetActor.IsValid()) return;
 
-    if (APawn* Pawn = GetOwningPlayerPawn())
-    {
-        SetSlotManager(Cast<USlotManagerComponentBase>(Pawn->GetComponentByClass(SlotManagerClass)));
-    }
+    SetTargetActor(GetOwningPlayerPawn());
 }
 
 void USlotPanelWidgetBase::CreateSlotWidgets()
@@ -79,7 +79,7 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
 
     // 슬롯 수가 변경되지 않은 경우 무시
     const int32 OldSlotNum = SlotWidgetMap.Num();
-    const int32 NewSlotNum  = SlotManager.IsValid() ? SlotManager->GetMaxSlotNum() : PreviewSlotNum;
+    const int32 NewSlotNum  = SlotManager.IsValid() ? ISlotManagerInterface::Execute_GetMaxSlotNum(SlotManager.Get()) : PreviewSlotNum;
     if (OldSlotNum == NewSlotNum) return;
 
     // 슬롯 위젯 생성
@@ -115,7 +115,7 @@ void USlotPanelWidgetBase::UpdateSlotWidgets()
     }
 }
 
-void USlotPanelWidgetBase::InitializeSlotWidget(UUserWidget* SlotWidget, USlotManagerComponentBase* InSlotManager,
+void USlotPanelWidgetBase::InitializeSlotWidget(UUserWidget* SlotWidget, UActorComponent* InSlotManager,
     int32 InSlotIndex)
 {
     if (SlotWidget && SlotWidget->Implements<USlotWidgetInterface>())
@@ -129,7 +129,7 @@ void USlotPanelWidgetBase::BindSlotManagerEvents()
 {
     if (SlotManager.IsValid())
     {
-        SlotManager->OnSlotUpdated.AddDynamic(this, &USlotPanelWidgetBase::OnSlotUpdated);
+        ISlotManagerInterface::Execute_BindOnSlotUpdated(SlotManager.Get(), SlotUpdatedDelegate);
     }
 }
 
@@ -137,7 +137,7 @@ void USlotPanelWidgetBase::UnBindSlotManagerEvents()
 {
     if (SlotManager.IsValid())
     {
-        SlotManager->OnSlotUpdated.RemoveDynamic(this, &USlotPanelWidgetBase::OnSlotUpdated);
+        ISlotManagerInterface::Execute_UnbindOnSlotUpdated(SlotManager.Get(), SlotUpdatedDelegate);
     }
 }
 

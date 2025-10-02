@@ -4,8 +4,9 @@
 #include "Widgets/DraggedSlotWidgetBase.h"
 
 #include "Components/Image.h"
-#include "Components/SlotManagerComponentBase.h"
-#include "Interfaces/SlotDataInterface.h"
+#include "Data/DataDefinitionBase.h"
+#include "FunctionLibraries/SlotDataFunctionLibrary.h"
+#include "Interfaces/SlotManagerInterface.h"
 
 UDraggedSlotWidgetBase::UDraggedSlotWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -14,7 +15,7 @@ UDraggedSlotWidgetBase::UDraggedSlotWidgetBase(const FObjectInitializer& ObjectI
 }
 
 
-void UDraggedSlotWidgetBase::SetSlotManager_Implementation(USlotManagerComponentBase* NewSlotManager)
+void UDraggedSlotWidgetBase::SetSlotManager_Implementation(UActorComponent* NewSlotManager)
 {
     SlotManager = NewSlotManager;
 }
@@ -29,7 +30,7 @@ void UDraggedSlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (UDataAsset* Data = SlotManager->GetData(SlotIndex))
+        if (auto Data = ISlotManagerInterface::Execute_GetDefinition(SlotManager.Get(), SlotIndex))
         {
             ApplyData(Data);
         }
@@ -51,12 +52,12 @@ void UDraggedSlotWidgetBase::NativePreConstruct()
     Execute_Refresh(this);
 }
 
-void UDraggedSlotWidgetBase::SetThumbnailTexture(UTexture2D* NewTexture)
+void UDraggedSlotWidgetBase::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTexture)
 {
     if (NewTexture)
     {
         ThumbnailImage->SetBrushTintColor(FLinearColor::White);
-        ThumbnailImage->SetBrushFromTexture(NewTexture);
+        ThumbnailImage->SetBrushFromSoftTexture(NewTexture);
     }
     else
     {
@@ -69,12 +70,12 @@ void UDraggedSlotWidgetBase::Clear()
     SetThumbnailTexture(nullptr);
 }
 
-void UDraggedSlotWidgetBase::ApplyData(UDataAsset* InData)
+void UDraggedSlotWidgetBase::ApplyData(UDataDefinitionBase* InData)
 {
-    if (InData && InData->Implements<USlotDataInterface>())
+    if (USlotDataFunctionLibrary::HasSlotData(InData))
     {
-        UTexture2D* ThumbnailTexture = ISlotDataInterface::Execute_GetThumbnailTexture(InData).LoadSynchronous();
-        if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture.LoadSynchronous();
+        auto ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(InData);
+        if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture;
 
         SetThumbnailTexture(ThumbnailTexture);
     }

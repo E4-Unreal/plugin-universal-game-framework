@@ -78,8 +78,8 @@ public:
     virtual int32 GetCurrency_Implementation(const FGameplayTag& CurrencyType) const override;
     virtual bool AddCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity) override;
     virtual bool RemoveCurrency_Implementation(const FGameplayTag& CurrencyType, int32 Quantity) override;
-    virtual bool AddProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity) override;
-    virtual bool RemoveProduct_Implementation(const TScriptInterface<IProductInterface>& Product, int32 Quantity) override;
+    virtual bool AddProduct_Implementation(UDataDefinitionBase* Product, int32 Quantity) override;
+    virtual bool RemoveProduct_Implementation(UDataDefinitionBase* Product, int32 Quantity) override;
 
     /* Getter */
 

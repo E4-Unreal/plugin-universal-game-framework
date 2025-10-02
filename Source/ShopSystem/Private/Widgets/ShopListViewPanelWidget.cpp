@@ -4,6 +4,7 @@
 #include "Widgets/ShopListViewPanelWidget.h"
 
 #include "Components/ListView.h"
+#include "Data/DataDefinitionBase.h"
 #include "Widgets/BuyModalWidget.h"
 
 void UShopListViewPanelWidget::NativeOnInitialized()
@@ -25,12 +26,12 @@ void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
     if (BuyModalWidgetClass)
     {
         auto BuyModalWidget = CreateWidget<UBuyModalWidget>(this, BuyModalWidgetClass);
-        BuyModalWidget->SetProduct(Item);
+        BuyModalWidget->SetProduct(Cast<UDataDefinitionBase>(Item));
         BuyModalWidget->AddToViewport();
     }
 }
 
-void UShopListViewPanelWidget::SetProducts(const TArray<TScriptInterface<IProductInterface>>& NewProducts)
+void UShopListViewPanelWidget::SetProducts(const TArray<UDataDefinitionBase*>& NewProducts)
 {
     Products = NewProducts;
 
@@ -39,7 +40,7 @@ void UShopListViewPanelWidget::SetProducts(const TArray<TScriptInterface<IProduc
         ShopListView->ClearListItems();
         for (const auto& Product : Products)
         {
-            ShopListView->AddItem(Product.GetObject());
+            ShopListView->AddItem(Product);
         }
     }
 }

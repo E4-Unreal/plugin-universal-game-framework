@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ItemDropComponent.generated.h"
 
+class UDataInstanceBase;
 class UItemDropConfig;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
@@ -50,6 +51,6 @@ protected:
     /* API */
 
     virtual UItemDropConfig* GetDropConfig() const;
-    virtual TArray<UObject*> GetItems() const;
+    virtual TArray<UDataInstanceBase*> GetItems() const;
     virtual TSubclassOf<AActor> GetItemActorClass() const;
 };

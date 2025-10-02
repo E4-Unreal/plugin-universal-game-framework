@@ -3,11 +3,11 @@
 
 #include "Components/ItemDropComponent.h"
 
-#include "InventorySystemFunctionLibrary.h"
+#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Components/InventoryComponent.h"
+#include "Data/DataDefinitionBase.h"
 #include "Data/ItemDropConfig.h"
-#include "Interfaces/DataInterface.h"
-#include "Interfaces/ItemObjectInterface.h"
+#include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "Settings/InventorySystemSettings.h"
 
 UItemDropComponent::UItemDropComponent(const FObjectInitializer& ObjectInitializer)
@@ -66,9 +66,9 @@ UItemDropConfig* UItemDropComponent::GetDropConfig() const
     return DropConfigInstance ? DropConfigInstance : DropConfig;
 }
 
-TArray<UObject*> UItemDropComponent::GetItems() const
+TArray<UDataInstanceBase*> UItemDropComponent::GetItems() const
 {
-    TArray<UObject*> Items;
+    TArray<UDataInstanceBase*> Items;
     if (auto LocalDropConfig = GetDropConfig())
     {
         const auto& DropDataList = LocalDropConfig->GetDataList();
@@ -77,9 +77,10 @@ TArray<UObject*> UItemDropComponent::GetItems() const
             const auto& ItemData = DropData.ItemData;
             const auto& DropChance = DropData.DropChance;
             const auto& CountChanceMap = DropData.CountChanceMap;
+            auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Cast<UDataDefinitionBase>(ItemData));
 
             // 아이템 드랍 확률 검사
-            if (ItemData && ItemData->Implements<UDataInterface>() && FMath::RandRange(0.0f, 1.0f) <= DropChance)
+            if (ItemInstance && FMath::RandRange(0.0f, 1.0f) <= DropChance)
             {
                 // 아이템 드랍 개수 확률 검사
                 float TotalChance = 0.0f;
@@ -104,13 +105,9 @@ TArray<UObject*> UItemDropComponent::GetItems() const
 
                 if (ItemCount > 0)
                 {
-                    UObject* NewItem = IDataInterface::Execute_CreateDataObject(ItemData);
-                    if (NewItem && NewItem->Implements<UItemObjectInterface>())
-                    {
-                        IItemObjectInterface::Execute_SetQuantity(NewItem, ItemCount);
+                    UItemDataFunctionLibrary::SetQuantity(ItemInstance, ItemCount);
 
-                        Items.Emplace(NewItem);
-                    }
+                    Items.Emplace(ItemInstance);
                 }
             }
         }

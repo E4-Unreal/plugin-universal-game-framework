@@ -3,11 +3,11 @@
 
 #include "Widgets/BuyModalWidget.h"
 
-#include "ShopSystemFunctionLibrary.h"
+#include "FunctionLibraries/ShopSystemFunctionLibrary.h"
 #include "Components/Button.h"
 #include "Components/SpinBox.h"
 
-void UBuyModalWidget::SetProduct(const TScriptInterface<IProductInterface>& NewProduct)
+void UBuyModalWidget::SetProduct(UDataDefinitionBase* NewProduct)
 {
     Product = NewProduct;
 }

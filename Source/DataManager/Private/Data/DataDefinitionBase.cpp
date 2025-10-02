@@ -3,16 +3,31 @@
 
 #include "Data/DataDefinitionBase.h"
 
-#include "Interfaces/DataObjectInterface.h"
+#include "Data/DataInstanceBase.h"
 
-UObject* UDataDefinitionBase::CreateDataObject_Implementation() const
+UDataDefinitionBase::UDataDefinitionBase()
 {
-    if (DataObjectClass && DataObjectClass->ImplementsInterface(UDataObjectInterface::StaticClass()))
-    {
-        auto NewInstance = NewObject<UObject>(GetTransientPackage(), DataObjectClass);
-        IDataObjectInterface::Execute_SetData(NewInstance, const_cast<ThisClass*>(this));
+    DataType = "Data";
+}
 
-        return NewInstance;
+FPrimaryAssetId UDataDefinitionBase::GetPrimaryAssetId() const
+{
+    return FPrimaryAssetId(DataType, FName(FString::FromInt(ID)));
+}
+
+UDataAsset* UDataDefinitionBase::GetDataByInterface(TSubclassOf<UInterface> InterfaceClass) const
+{
+    return InterfaceClass && GetClass()->ImplementsInterface(InterfaceClass) ? const_cast<ThisClass*>(this) : nullptr;
+}
+
+UDataInstanceBase* UDataDefinitionBase::CreateDataInstance() const
+{
+    if (DataInstanceClass)
+    {
+        auto NewDataInstance = NewObject<UDataInstanceBase>(GetTransientPackage(), DataInstanceClass);
+        NewDataInstance->SetDefinition(const_cast<ThisClass*>(this));
+
+        return NewDataInstance;
     }
 
     return nullptr;

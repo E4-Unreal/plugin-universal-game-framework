@@ -3,21 +3,19 @@
 
 #include "Data/UGFItemDefinition.h"
 
-#include "Data/UGFItemInstance.h"
-#include "GameplayTags/CurrencyGameplayTags.h"
-#include "GameplayTags/InventoryGameplayTags.h"
+#include "Data/ItemDataFragment.h"
+#include "Data/MeshDataFragment.h"
+#include "Data/ProductDataFragment.h"
+#include "Data/SlotDataFragment.h"
+#include "Data/WeaponDataFragment.h"
 
 UUGFItemDefinition::UUGFItemDefinition()
 {
-    DataObjectClass = UUGFItemInstance::StaticClass();
+    DataType = "Item";
 
-    MaxStack = 10;
-    ItemType = Item::Root;
-
-    CurrencyType = Currency::Default;
-}
-
-FPrimaryAssetId UUGFItemDefinition::GetPrimaryAssetId() const
-{
-    return FPrimaryAssetId("Item", FName(FString::FromInt(ID)));
+    auto MeshDataFragment = AddFragment<UMeshDataFragment>();
+    auto SlotDataFragment = AddFragment<USlotDataFragment>();
+    auto ItemDataFragment = AddFragment<UItemDataFragment>();
+    auto ProductDataFragment = AddFragment<UProductDataFragment>();
+    auto WeaponDataFragment = AddFragment<UWeaponDataFragment>();
 }

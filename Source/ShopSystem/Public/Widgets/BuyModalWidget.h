@@ -6,8 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "BuyModalWidget.generated.h"
 
+class UDataDefinitionBase;
 class ICustomerInterface;
-class IProductInterface;
+class IProductDataInterface;
 class UButton;
 class USpinBox;
 /**
@@ -29,14 +30,14 @@ protected:
     TObjectPtr<UButton> CancelButton;
 
     UPROPERTY(VIsibleAnywhere, BlueprintReadOnly, Category = "State")
-    TScriptInterface<ICustomerInterface> Customer;
+    TObjectPtr<AActor> Customer;
 
     UPROPERTY(VIsibleAnywhere, BlueprintReadOnly, Category = "State")
-    TScriptInterface<IProductInterface> Product;
+    TObjectPtr<UDataDefinitionBase> Product;
 
 public:
     UFUNCTION(BlueprintCallable)
-    void SetProduct(const TScriptInterface<IProductInterface>& NewProduct);
+    void SetProduct(UDataDefinitionBase* NewProduct);
 
 protected:
     virtual void NativeOnInitialized() override;

@@ -5,6 +5,7 @@
 
 #include "GameplayTags/WeaponGameplayTags.h"
 #include "Actors/WeaponActor.h"
+#include "Data/WeaponInstanceFragment.h"
 
 UWeaponDataFragment::UWeaponDataFragment()
 {
@@ -12,4 +13,12 @@ UWeaponDataFragment::UWeaponDataFragment()
     ActorClass = AWeaponActor::StaticClass();
     ActiveSocketName = FName("hand_r");
     MaxDurability = 100;
+}
+
+UDataInstanceFragment* UWeaponDataFragment::CreateDataInstanceFragment() const
+{
+    auto WeaponInstanceFragment = NewObject<UWeaponInstanceFragment>();
+    WeaponInstanceFragment->Durability = MaxDurability;
+
+    return WeaponInstanceFragment;
 }

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/DataObjectBase.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/WeaponInstanceInterface.h"
 #include "WeaponInstance.generated.h"
 
@@ -13,7 +13,7 @@ class IWeaponDataInterface;
  *
  */
 UCLASS()
-class WEAPONMANAGER_API UWeaponInstance : public UDataObjectBase, public IWeaponInstanceInterface
+class WEAPONMANAGER_API UWeaponInstance : public UDataInstanceBase, public IWeaponInstanceInterface
 {
     GENERATED_BODY()
 
@@ -29,9 +29,9 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
-    /* DataInstanceInterface */
+    /* DataInstanceBase */
 
-    virtual void SetData_Implementation(UDataAsset* NewData) override;
+    virtual void SetDefinition(UDataDefinitionBase* NewDefinition) override;
 
     /* WeaponInstanceInterface */
 

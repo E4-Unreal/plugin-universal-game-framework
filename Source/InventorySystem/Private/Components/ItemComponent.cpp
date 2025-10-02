@@ -4,10 +4,9 @@
 #include "Components/ItemComponent.h"
 
 #include "Components/InventoryComponent.h"
-#include "Interfaces/DataObjectInterface.h"
-#include "Interfaces/DataInterface.h"
-#include "Interfaces/ItemDataInterface.h"
-#include "Interfaces/ItemObjectInterface.h"
+#include "Data/DataDefinitionBase.h"
+#include "Data/DataInstanceBase.h"
+#include "FunctionLibraries/MeshDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Settings/InventorySystemSettings.h"
 
@@ -49,7 +48,7 @@ bool UItemComponent::AddItemsToInventory(AActor* TargetActor)
 }
 #endif
 
-void UItemComponent::SetItems(const TArray<UObject*> NewItems)
+void UItemComponent::SetItems(const TArray<UDataInstanceBase*> NewItems)
 {
     ClearItems();
 
@@ -62,24 +61,6 @@ void UItemComponent::SetItems(const TArray<UObject*> NewItems)
     Refresh();
 }
 
-UDataAsset* UItemComponent::GetFirstItemData() const
-{
-    if (!Items.IsEmpty())
-    {
-        UObject* FirstItem = Items[0];
-        if (FirstItem && FirstItem->Implements<UDataObjectInterface>())
-        {
-            UDataAsset* FirstItemData = IDataObjectInterface::Execute_GetData(FirstItem);
-            if (FirstItemData && FirstItemData->Implements<UDataInterface>())
-            {
-                return FirstItemData;
-            }
-        }
-    }
-
-    return nullptr;
-}
-
 void UItemComponent::ClearItems()
 {
     for (const auto& Item : Items)
@@ -90,18 +71,21 @@ void UItemComponent::ClearItems()
     Items.Empty();
 }
 
-void UItemComponent::OnRep_Items(TArray<UObject*> OldItems)
+void UItemComponent::OnRep_Items(TArray<UDataInstanceBase*> OldItems)
 {
     Refresh();
 }
 
 FText UItemComponent::GetItemName() const
 {
-    if (UDataAsset* FirstItemData = GetFirstItemData())
+    if (!Items.IsEmpty())
     {
-        FText FirstItemName = IDataInterface::Execute_GetDisplayName(FirstItemData);
+        if (auto Definition = Items[0]->Definition)
+        {
+            FText FirstItemName = Definition->DisplayName;
 
-        return Items.Num() == 1 ? FirstItemName : FText::Format(ItemNameFormat, FirstItemName);
+            return Items.Num() == 1 ? FirstItemName : FText::Format(ItemNameFormat, FirstItemName);
+        }
     }
 
     return FText::GetEmpty();
@@ -113,11 +97,7 @@ UStaticMesh* UItemComponent::GetStaticMesh() const
 
     if (Items.Num() == 1)
     {
-        UDataAsset* FirstItemData = GetFirstItemData();
-        if (FirstItemData && FirstItemData->Implements<UItemDataInterface>())
-        {
-            StaticMesh = IItemDataInterface::Execute_GetStaticMesh(FirstItemData).LoadSynchronous();
-        }
+        StaticMesh = UMeshDataFunctionLibrary::GetStaticMesh(Items[0]->Definition).LoadSynchronous();
     }
     else if (Items.Num() > 1)
     {
@@ -133,11 +113,7 @@ UMaterialInterface* UItemComponent::GetMaterial() const
 
     if (Items.Num() == 1)
     {
-        UDataAsset* FirstItemData = GetFirstItemData();
-        if (FirstItemData && FirstItemData->Implements<UItemDataInterface>())
-        {
-            Material = IItemDataInterface::Execute_GetMaterial(FirstItemData).LoadSynchronous();
-        }
+        Material = UMeshDataFunctionLibrary::GetMaterial(Items[0]->Definition).LoadSynchronous();
     }
 
     return Material;

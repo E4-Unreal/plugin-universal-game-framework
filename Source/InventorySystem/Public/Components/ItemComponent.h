@@ -6,6 +6,8 @@
 #include "ItemComponentBase.h"
 #include "ItemComponent.generated.h"
 
+class UDataInstanceBase;
+
 /**
  * 단일 아이템 데이터를 관리하는 컴포넌트
  */
@@ -15,8 +17,8 @@ class INVENTORYSYSTEM_API UItemComponent : public UItemComponentBase
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemInstanceInterface"), Instanced, ReplicatedUsing = OnRep_Items)
-    TArray<TObjectPtr<UObject>> Items;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced, ReplicatedUsing = OnRep_Items)
+    TArray<TObjectPtr<UDataInstanceBase>> Items;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UStaticMesh> DefaultItemMesh;
@@ -44,10 +46,7 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetItems(const TArray<UObject*> NewItems);
-
-    UFUNCTION(BlueprintPure)
-    UDataAsset* GetFirstItemData() const;
+    virtual void SetItems(const TArray<UDataInstanceBase*> NewItems);
 
     UFUNCTION(BlueprintPure)
     FText GetItemName() const;
@@ -57,7 +56,7 @@ protected:
 
     virtual UStaticMesh* GetStaticMesh() const override;
     virtual UMaterialInterface* GetMaterial() const override;
-    virtual TArray<UObject*> GetItems() const override { return Items; }
+    virtual TArray<UDataInstanceBase*> GetItems() const override { return Items; }
 
     /* API */
 
@@ -68,5 +67,5 @@ protected:
     /* Replication */
 
     UFUNCTION()
-    virtual void OnRep_Items(TArray<UObject*> OldItems);
+    virtual void OnRep_Items(TArray<UDataInstanceBase*> OldItems);
 };

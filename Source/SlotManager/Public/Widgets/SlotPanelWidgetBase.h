@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/SlotManagerInterface.h"
 #include "Interfaces/TargetWidgetInterface.h"
 #include "SlotPanelWidgetBase.generated.h"
 
 class UTextBlock;
-class USlotManagerComponentBase;
 class UUniformGridPanel;
-class UDataObjectBase;
+class UDataInstanceBase;
 
 /**
  *
@@ -28,8 +28,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText PanelName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<USlotManagerComponentBase> SlotManagerClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "SlotManagerInterface"))
+    TSubclassOf<UActorComponent> SlotManagerClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "SlotWidgetInterface"))
     TSubclassOf<UUserWidget> SlotWidgetClass;
@@ -48,17 +48,20 @@ protected:
     TWeakObjectPtr<AActor> TargetActor;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
-    TWeakObjectPtr<USlotManagerComponentBase> SlotManager;
+    TWeakObjectPtr<UActorComponent> SlotManager;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<int32, TObjectPtr<UUserWidget>> SlotWidgetMap;
+
+    FSlotUpdatedDelegate SlotUpdatedDelegate;
 
 public:
     USlotPanelWidgetBase(const FObjectInitializer& ObjectInitializer);
 
     /* TargetWidgetInterface */
 
-    virtual void SetTargetActor_Implementation(AActor* NewTargetActor) override;
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetTargetActor(AActor* NewTargetActor);
 
     /* Components */
 
@@ -75,12 +78,12 @@ protected:
 
     virtual void SetPanelName(const FText& NewPanelName);
 
-    virtual void SetSlotManager(USlotManagerComponentBase* NewSlotManager);
+    virtual void SetSlotManager(UActorComponent* NewSlotManager);
     virtual void FindSlotManager();
 
     virtual void CreateSlotWidgets();
     virtual void UpdateSlotWidgets();
-    virtual void InitializeSlotWidget(UUserWidget* SlotWidget, USlotManagerComponentBase* InSlotManager, int32 InSlotIndex);
+    virtual void InitializeSlotWidget(UUserWidget* SlotWidget, UActorComponent* InSlotManager, int32 InSlotIndex);
 
     virtual void BindSlotManagerEvents();
     virtual void UnBindSlotManagerEvents();

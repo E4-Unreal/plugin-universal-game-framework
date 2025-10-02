@@ -6,11 +6,17 @@
 #include "Engine/DataAsset.h"
 #include "DataFragment.generated.h"
 
+class UDataInstanceFragment;
+
 /**
  *
  */
-UCLASS(Abstract, EditInlineNew)
+UCLASS(Abstract, EditInlineNew, CollapseCategories)
 class DATAMANAGER_API UDataFragment : public UPrimaryDataAsset
 {
     GENERATED_BODY()
+
+public:
+    UFUNCTION(BlueprintPure)
+    virtual UDataInstanceFragment* CreateDataInstanceFragment() const { return nullptr; }
 };
