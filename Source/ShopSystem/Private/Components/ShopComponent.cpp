@@ -10,6 +10,7 @@
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/WeaponDataFunctionLibrary.h"
+#include "Types/Currency.h"
 
 const FProductSlot FProductSlot::EmptySlot;
 
@@ -48,37 +49,27 @@ bool UShopComponent::BuyItem(AActor* Customer, int32 Index, int32 Quantity)
     {
         // 재고 수량 확인
         const auto& Slot = GetSlot(Index);
-        if (Slot.Stock >= Quantity)
+        auto Item = Slot.Definition;
+        const int32 Stock = Slot.Stock;
+
+        if (Stock >= Quantity)
         {
-            // 컴포넌트 확인
-            auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>();
-            auto Inventory = Customer->GetComponentByClass<UInventoryComponent>();
-            if (CurrencyManager && Inventory)
+            // 구매 금액 계산
+            const FCurrency BuyPrice = CalculateBuyPrice(Item, Quantity);
+
+            // 구매 가능 여부 확인
+            if (HasCurrency(Customer, BuyPrice))
             {
-                // 구매 금액 계산
-                auto Definition = Slot.Definition;
-                const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Definition);
-                const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Definition);
-                const int32 TotalBuyPrice = BuyPrice * Quantity;
-
-                // 구매 가능 여부 확인
-                if (CurrencyManager->HasCurrencyByType(CurrencyType, TotalBuyPrice))
+                // 인벤토리에 아이템 추가
+                if (AddItem(Customer, Item, Quantity))
                 {
-                    // 인벤토리에 아이템 추가
-                    if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Definition))
-                    {
-                        UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
-                        if (Inventory->AddContent(ItemInstance))
-                        {
-                            // 구매 금액 차감
-                            CurrencyManager->RemoveCurrencyByType(CurrencyType, TotalBuyPrice);
+                    // 구매 금액 차감
+                    RemoveCurrency(Customer, BuyPrice);
 
-                            // 재고 수량 차감
-                            SetStock(Index, Slot.Stock - Quantity);
+                    // 재고 수량 차감
+                    SetStock(Index, Stock - Quantity);
 
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
         }
@@ -87,36 +78,24 @@ bool UShopComponent::BuyItem(AActor* Customer, int32 Index, int32 Quantity)
     return false;
 }
 
-bool UShopComponent::SellItem(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity)
+bool UShopComponent::SellItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity)
 {
     // 입력 유효성 검사
-    if (Customer && CheckDefinition(Definition))
+    if (Customer && CheckDefinition(Item))
     {
         // 판매 금액 계산
-        const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Definition);
-        const int32 SellPrice = UProductDataFunctionLibrary::GetSellPrice(Definition);
-        const int32 TotalSellPrice = SellPrice * Quantity;
+        const FCurrency SellPrice = CalculateSellPrice(Item, Quantity);
 
-        // 컴포넌트 확인
-        auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>();
-        auto Inventory = Customer->GetComponentByClass<UInventoryComponent>();
-        if (CurrencyManager && Inventory)
+        // 인벤토리 수량 확인
+        if (HasItem(Customer, Item, Quantity))
         {
-            // 인벤토리 수량 확인
-            if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Definition))
+            // 인벤토리 수량 차감
+            if (RemoveItem(Customer, Item, Quantity))
             {
-                UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
-                if (Inventory->HasContent(ItemInstance))
-                {
-                    // 인벤토리 수량 차감
-                    if (Inventory->RemoveContent(ItemInstance))
-                    {
-                        // 판매 금액 지불
-                        CurrencyManager->RemoveCurrencyByType(CurrencyType, TotalSellPrice);
+                // 판매 금액 지불
+                AddCurrency(Customer, SellPrice);
 
-                        return true;
-                    }
-                }
+                return true;
             }
         }
     }
@@ -124,47 +103,24 @@ bool UShopComponent::SellItem(AActor* Customer, UDataDefinitionBase* Definition,
     return false;
 }
 
-bool UShopComponent::SellEquipment(AActor* Customer, UDataInstanceBase* Instance)
+bool UShopComponent::SellEquipment(AActor* Customer, UDataInstanceBase* Equipment)
 {
     // 입력 유효성 검사
-    if (Customer && CheckInstance(Instance))
+    if (Customer && CheckInstance(Equipment))
     {
         // 판매 금액 계산
-        auto Definition = Instance->Definition;
-        const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Definition);
-        int32 SellPrice = UProductDataFunctionLibrary::GetSellPrice(Definition);
-        if (UWeaponDataFunctionLibrary::HasWeaponInstance(Instance))
+        const FCurrency SellPrice = CalculateEquipmentSellPrice(Equipment);
+
+        // 인벤토리 수량 확인
+        if (HasEquipment(Customer, Equipment))
         {
-            const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Definition);
-            const float Durability = UWeaponDataFunctionLibrary::GetDurability(Instance);
-
-            if (MaxDurability >= 0.0f)
+            // 인벤토리 수량 차감
+            if (RemoveEquipment(Customer, Equipment))
             {
-                const float DurabilityRatio = Durability / MaxDurability;
-                SellPrice *= DurabilityRatio;
-            }
-        }
+                // 판매 금액 지불
+                AddCurrency(Customer, SellPrice);
 
-        // 컴포넌트 확인
-        auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>();
-        auto Inventory = Customer->GetComponentByClass<UInventoryComponent>();
-        if (CurrencyManager && Inventory)
-        {
-            // 인벤토리 수량 확인
-            if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Definition))
-            {
-                UItemDataFunctionLibrary::SetQuantity(ItemInstance, 1);
-                if (Inventory->HasContent(ItemInstance))
-                {
-                    // 인벤토리 수량 차감
-                    if (Inventory->RemoveContent(ItemInstance))
-                    {
-                        // 판매 금액 지불
-                        CurrencyManager->RemoveCurrencyByType(CurrencyType, SellPrice);
-
-                        return true;
-                    }
-                }
+                return true;
             }
         }
     }
@@ -180,6 +136,160 @@ bool UShopComponent::CheckDefinition(UDataDefinitionBase* Definition) const
 bool UShopComponent::CheckInstance(UDataInstanceBase* Instance) const
 {
     return Instance && CheckDefinition(Instance->Definition);
+}
+
+bool UShopComponent::HasCurrency(AActor* Customer, FCurrency Currency) const
+{
+    if (Customer)
+    {
+        if (auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>())
+        {
+            return CurrencyManager->HasCurrencyByType(Currency.CurrencyType, Currency.Amount);
+        }
+    }
+
+    return false;
+}
+
+bool UShopComponent::AddCurrency(AActor* Customer, FCurrency Currency) const
+{
+    if (Customer)
+    {
+        if (auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>())
+        {
+            return CurrencyManager->AddCurrencyByType(Currency.CurrencyType, Currency.Amount);
+        }
+    }
+
+    return false;
+}
+
+bool UShopComponent::RemoveCurrency(AActor* Customer, FCurrency Currency) const
+{
+    if (Customer)
+    {
+        if (auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>())
+        {
+            return CurrencyManager->RemoveCurrencyByType(Currency.CurrencyType, Currency.Amount);
+        }
+    }
+
+    return false;
+}
+
+bool UShopComponent::HasItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity) const
+{
+    if (Customer)
+    {
+        if (auto Inventory = Customer->GetComponentByClass<UInventoryComponent>())
+        {
+            if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Item))
+            {
+                UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+                return Inventory->HasContent(ItemInstance);
+            }
+        }
+    }
+
+    return false;
+}
+
+bool UShopComponent::AddItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity) const
+{
+    if (Customer)
+    {
+        if (auto Inventory = Customer->GetComponentByClass<UInventoryComponent>())
+        {
+            if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Item))
+            {
+                UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+                return Inventory->AddContent(ItemInstance);
+            }
+        }
+    }
+
+    return false;
+}
+
+bool UShopComponent::RemoveItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity) const
+{
+    if (Customer)
+    {
+        if (auto Inventory = Customer->GetComponentByClass<UInventoryComponent>())
+        {
+            if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Item))
+            {
+                UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+                return Inventory->RemoveContent(ItemInstance);
+            }
+        }
+    }
+
+    return false;
+}
+
+FCurrency UShopComponent::CalculateBuyPrice(UDataDefinitionBase* Item, int32 Quantity) const
+{
+    const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Item);
+    const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Item);
+    const int32 TotalBuyPrice = BuyPrice * Quantity;
+
+    return FCurrency(CurrencyType, TotalBuyPrice);
+}
+
+FCurrency UShopComponent::CalculateSellPrice(UDataDefinitionBase* Item, int32 Quantity) const
+{
+    const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Item);
+    const int32 SellPrice = UProductDataFunctionLibrary::GetSellPrice(Item);
+    const int32 TotalSellPrice = SellPrice * Quantity;
+
+    return FCurrency(CurrencyType, TotalSellPrice);
+}
+
+bool UShopComponent::HasEquipment(AActor* Customer, UDataInstanceBase* Equipment) const
+{
+    if (Customer)
+    {
+        if (auto Inventory = Customer->GetComponentByClass<UInventoryComponent>())
+        {
+            return Inventory->HasContent(Equipment);
+        }
+    }
+
+    return false;
+}
+
+bool UShopComponent::RemoveEquipment(AActor* Customer, UDataInstanceBase* Equipment) const
+{
+    if (Customer)
+    {
+        if (auto Inventory = Customer->GetComponentByClass<UInventoryComponent>())
+        {
+            return Inventory->RemoveContent(Equipment);
+        }
+    }
+
+    return false;
+}
+
+FCurrency UShopComponent::CalculateEquipmentSellPrice(UDataInstanceBase* Equipment) const
+{
+    auto Item = Equipment->Definition;
+    const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Item);
+    int32 SellPrice = UProductDataFunctionLibrary::GetSellPrice(Item);
+    if (UWeaponDataFunctionLibrary::HasWeaponInstance(Equipment))
+    {
+        const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Item);
+        const float Durability = UWeaponDataFunctionLibrary::GetDurability(Equipment);
+
+        if (MaxDurability >= 0.0f)
+        {
+            const float DurabilityRatio = Durability / MaxDurability;
+            SellPrice *= DurabilityRatio;
+        }
+    }
+
+    return FCurrency(CurrencyType, SellPrice);
 }
 
 void UShopComponent::SetStock(int32 Index, int32 NewStock)

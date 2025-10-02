@@ -6,8 +6,10 @@
 #include "Components/ActorComponent.h"
 #include "ShopComponent.generated.h"
 
+struct FCurrency;
 class UDataInstanceBase;
 class UDataDefinitionBase;
+struct FGameplayTag;
 
 USTRUCT(BlueprintType)
 struct FProductSlot
@@ -62,17 +64,35 @@ public:
     virtual bool BuyItem(AActor* Customer, int32 Index, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
-    virtual bool SellItem(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity);
+    virtual bool SellItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity);
 
     UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
-    virtual bool SellEquipment(AActor* Customer, UDataInstanceBase* Instance);
+    virtual bool SellEquipment(AActor* Customer, UDataInstanceBase* Equipment);
 protected:
-    /* Query */
+    /* API */
 
     virtual bool CheckDefinition(UDataDefinitionBase* Definition) const;
     virtual bool CheckInstance(UDataInstanceBase* Instance) const;
 
-    /* API */
+    // Currency
+
+    virtual bool HasCurrency(AActor* Customer, FCurrency Currency) const;
+    virtual bool AddCurrency(AActor* Customer, FCurrency Currency) const;
+    virtual bool RemoveCurrency(AActor* Customer, FCurrency Currency) const;
+
+    // Inventory
+
+    virtual bool HasItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity) const;
+    virtual bool AddItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity) const;
+    virtual bool RemoveItem(AActor* Customer, UDataDefinitionBase* Item, int32 Quantity) const;
+    virtual FCurrency CalculateBuyPrice(UDataDefinitionBase* Item, int32 Quantity) const;
+    virtual FCurrency CalculateSellPrice(UDataDefinitionBase* Item, int32 Quantity) const;
+
+    virtual bool HasEquipment(AActor* Customer, UDataInstanceBase* Equipment) const;
+    virtual bool RemoveEquipment(AActor* Customer, UDataInstanceBase* Equipment) const;
+    virtual FCurrency CalculateEquipmentSellPrice(UDataInstanceBase* Equipment) const;
+
+    // Slot
 
     virtual void SetStock(int32 Index, int32 NewStock);
 };
