@@ -297,6 +297,6 @@ void UShopComponent::SetStock(int32 Index, int32 NewStock)
     if (IsSlotExist(Index))
     {
         auto& Slot = const_cast<FProductSlot&>(GetSlot(Index));
-        Slot.Stock = FMath::Clamp(NewStock, 0, Slot.MaxStock);
+        if (!Slot.bInfiniteStock) Slot.Stock = FMath::Clamp(NewStock, 0, Slot.MaxStock);
     }
 }

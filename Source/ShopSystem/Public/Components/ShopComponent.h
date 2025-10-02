@@ -27,6 +27,9 @@ struct FProductSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
     int32 MaxStock;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bInfiniteStock;
+
     FProductSlot() { }
 };
 
