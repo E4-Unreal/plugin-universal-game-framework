@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "SlotManagerFunctionLibrary.generated.h"
 
+class UDataDefinitionBase;
 /**
  *
  */
@@ -18,8 +19,11 @@ public:
     /* Data */
 
     UFUNCTION(BlueprintPure, Category = "SlotData")
-    static UDataAsset* GetSlotData(UObject* DataObject);
+    static bool HasSlotData(UDataDefinitionBase* Definition);
 
     UFUNCTION(BlueprintPure, Category = "SlotData")
-    static TSoftObjectPtr<UTexture2D> GetThumbnailTexture(UObject* DataObject);
+    static TSoftObjectPtr<UTexture2D> GetThumbnailTexture(UDataDefinitionBase* Definition);
+
+protected:
+    static UDataAsset* GetSlotData(UDataDefinitionBase* Definition);
 };

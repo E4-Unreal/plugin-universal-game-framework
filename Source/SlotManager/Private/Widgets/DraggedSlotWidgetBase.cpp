@@ -4,6 +4,7 @@
 #include "Widgets/DraggedSlotWidgetBase.h"
 
 #include "Components/Image.h"
+#include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/SlotManagerFunctionLibrary.h"
 #include "Interfaces/SlotManagerInterface.h"
 
@@ -29,7 +30,7 @@ void UDraggedSlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (auto Data = ISlotManagerInterface::Execute_GetData(SlotManager.Get(), SlotIndex))
+        if (auto Data = ISlotManagerInterface::Execute_GetDefinition(SlotManager.Get(), SlotIndex))
         {
             ApplyData(Data);
         }
@@ -69,9 +70,9 @@ void UDraggedSlotWidgetBase::Clear()
     SetThumbnailTexture(nullptr);
 }
 
-void UDraggedSlotWidgetBase::ApplyData(UDataAsset* InData)
+void UDraggedSlotWidgetBase::ApplyData(UDataDefinitionBase* InData)
 {
-    if (USlotManagerFunctionLibrary::GetSlotData(InData))
+    if (USlotManagerFunctionLibrary::HasSlotData(InData))
     {
         auto ThumbnailTexture = USlotManagerFunctionLibrary::GetThumbnailTexture(InData);
         if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture;

@@ -22,7 +22,7 @@ void USlotWidgetBase::Refresh_Implementation()
 {
     if (SlotManager.IsValid())
     {
-        if (auto Data = ISlotManagerInterface::Execute_GetData(SlotManager.Get(), SlotIndex))
+        if (auto Data = ISlotManagerInterface::Execute_GetDefinition(SlotManager.Get(), SlotIndex))
         {
             ApplyData(Data);
         }
@@ -94,7 +94,7 @@ void USlotWidgetBase::Clear()
     SetThumbnailTexture(nullptr);
 }
 
-void USlotWidgetBase::ApplyData(UDataAsset* InData)
+void USlotWidgetBase::ApplyData(UDataDefinitionBase* InData)
 {
     auto ThumbnailTexture = USlotManagerFunctionLibrary::GetThumbnailTexture(InData);
     if (ThumbnailTexture.IsNull()) ThumbnailTexture = DefaultThumbnailTexture;

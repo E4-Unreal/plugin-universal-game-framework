@@ -30,7 +30,7 @@ bool USlotManagerComponentBase::IsSlotEmpty_Implementation(int32 SlotIndex) cons
     return DoesSlotExist(SlotIndex) ? GetContent(SlotIndex) == nullptr : false;
 }
 
-UDataAsset* USlotManagerComponentBase::GetData_Implementation(int32 SlotIndex) const
+UDataDefinitionBase* USlotManagerComponentBase::GetDefinition_Implementation(int32 SlotIndex) const
 {
     auto Content = GetContent(SlotIndex);
 

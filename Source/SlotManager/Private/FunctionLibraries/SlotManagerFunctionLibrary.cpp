@@ -3,17 +3,23 @@
 
 #include "FunctionLibraries/SlotManagerFunctionLibrary.h"
 
+#include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/SlotDataInterface.h"
 
-UDataAsset* USlotManagerFunctionLibrary::GetSlotData(UObject* DataObject)
+bool USlotManagerFunctionLibrary::HasSlotData(UDataDefinitionBase* Definition)
 {
-    return UDataManagerFunctionLibrary::GetDataByInterface<USlotDataInterface>(DataObject);
+    return GetSlotData(Definition) != nullptr;
 }
 
-TSoftObjectPtr<UTexture2D> USlotManagerFunctionLibrary::GetThumbnailTexture(UObject* DataObject)
+TSoftObjectPtr<UTexture2D> USlotManagerFunctionLibrary::GetThumbnailTexture(UDataDefinitionBase* Definition)
 {
-    auto SlotData = GetSlotData(DataObject);
+    auto SlotData = GetSlotData(Definition);
 
     return SlotData ? ISlotDataInterface::Execute_GetThumbnailTexture(SlotData) : nullptr;
+}
+
+UDataAsset* USlotManagerFunctionLibrary::GetSlotData(UDataDefinitionBase* Definition)
+{
+    return UDataManagerFunctionLibrary::GetDataByInterface<USlotDataInterface>(Definition);
 }

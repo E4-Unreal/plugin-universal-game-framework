@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DraggableWidgetBase.h"
+#include "Data/DataDefinitionBase.h"
 #include "Interfaces/SlotWidgetInterface.h"
 #include "SlotWidgetBase.generated.h"
 
@@ -21,8 +22,8 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> DefaultThumbnailTexture;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (AllowedClasses = "SlotDataInterface"))
-    TSoftObjectPtr<UDataAsset> PreviewData;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    TSoftObjectPtr<UDataDefinitionBase> PreviewData;
 
 protected:
     UPROPERTY(meta = (BindWidget))
@@ -57,6 +58,6 @@ protected:
     /* API */
 
     virtual void SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTexture);
-    virtual void ApplyData(UDataAsset* InData);
+    virtual void ApplyData(UDataDefinitionBase* InData);
     virtual void Clear();
 };

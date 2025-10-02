@@ -5,6 +5,7 @@
 
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/ShopSystemFunctionLibrary.h"
 #include "FunctionLibraries/SlotManagerFunctionLibrary.h"
@@ -27,7 +28,7 @@ void UShopListViewEntryWidget::Refresh()
 
         if (ThumbnailImage)
         {
-            ThumbnailImage->SetBrushFromSoftTexture(USlotManagerFunctionLibrary::GetThumbnailTexture(Product.GetObject()));
+            ThumbnailImage->SetBrushFromSoftTexture(USlotManagerFunctionLibrary::GetThumbnailTexture(Cast<UDataDefinitionBase>(Product.GetObject())));
         }
 
         if (BuyPriceTextBlock)

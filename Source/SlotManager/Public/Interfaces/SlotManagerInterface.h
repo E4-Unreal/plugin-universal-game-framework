@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SlotManagerInterface.generated.h"
 
+class UDataDefinitionBase;
 class UDataInstanceBase;
 DECLARE_DYNAMIC_DELEGATE_OneParam(FSlotUpdatedDelegate, int32, SlotIndex);
 
@@ -27,7 +28,7 @@ public:
     int32 GetMaxSlotNum() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataAsset* GetData(int32 SlotIndex) const;
+    UDataDefinitionBase* GetDefinition(int32 SlotIndex) const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UDataInstanceBase* GetDataInstance(int32 SlotIndex) const;

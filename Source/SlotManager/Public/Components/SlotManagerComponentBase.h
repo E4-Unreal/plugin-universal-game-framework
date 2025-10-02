@@ -59,7 +59,7 @@ public:
     bool IsSlotEmpty(int32 SlotIndex) const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataAsset* GetData(int32 SlotIndex) const;
+    UDataDefinitionBase* GetDefinition(int32 SlotIndex) const;
 
     UFUNCTION(BlueprintPure)
     virtual bool DoesSlotExist(int32 Index) const;
