@@ -104,7 +104,7 @@ TArray<UDataInstanceBase*> UItemDropComponent::GetItems() const
 
                 if (ItemCount > 0)
                 {
-                    UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, ItemCount);
+                    UItemDataFunctionLibrary::SetQuantity(ItemInstance, ItemCount);
 
                     Items.Emplace(ItemInstance);
                 }

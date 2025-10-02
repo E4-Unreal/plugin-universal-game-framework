@@ -14,7 +14,7 @@ void UInventorySlotWidget::Refresh_Implementation()
     if (SlotManager.IsValid())
     {
         auto Content = ISlotManagerInterface::Execute_GetDataInstance(SlotManager.Get(), SlotIndex);
-        const int32 Quantity = UInventorySystemFunctionLibrary::GetQuantity(Content);
+        const int32 Quantity = UItemDataFunctionLibrary::GetQuantity(Content);
         SetQuantityTextBlock(Quantity);
     }
 }

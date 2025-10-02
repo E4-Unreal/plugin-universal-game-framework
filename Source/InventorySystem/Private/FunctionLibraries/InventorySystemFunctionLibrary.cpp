@@ -3,12 +3,8 @@
 
 #include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 
-#include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "Interfaces/ItemActorInterface.h"
-#include "Interfaces/ItemDataInterface.h"
-#include "Interfaces/ItemInstanceInterface.h"
 
 AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
                                                         UDataInstanceBase* ItemInstance, const FVector& Offset)
@@ -73,57 +69,5 @@ void UInventorySystemFunctionLibrary::ImpulseActor(AActor* Actor, float ImpulseA
             ImpulseDirection = ImpulseDirection.RotateAngleAxis(FMath::RandRange(0, 360), FVector::UpVector);
             Mesh->AddImpulse(ImpulseDirection * ImpulseStrength);
         }
-    }
-}
-
-UDataAsset* UInventorySystemFunctionLibrary::GetItemData(UDataDefinitionBase* Definition)
-{
-    return UDataManagerFunctionLibrary::GetDataByInterface<UItemDataInterface>(Definition);
-}
-
-int32 UInventorySystemFunctionLibrary::GetMaxStack(UDataDefinitionBase* Definition)
-{
-    auto ItemData = GetItemData(Definition);
-
-    return ItemData ? IItemDataInterface::Execute_GetMaxStack(ItemData) : 0;
-}
-
-FGameplayTag UInventorySystemFunctionLibrary::GetItemType(UDataDefinitionBase* Definition)
-{
-    auto ItemData = GetItemData(Definition);
-
-    return ItemData ? IItemDataInterface::Execute_GetItemType(ItemData) : FGameplayTag::EmptyTag;
-}
-
-UDataInstanceBase* UInventorySystemFunctionLibrary::CreateItemInstance(UDataDefinitionBase* Definition)
-{
-    if (Definition)
-    {
-        auto DataInstance = UDataManagerFunctionLibrary::CreateDataInstance(Definition);
-        auto ItemInstance = GetItemInstance(DataInstance);
-
-        return ItemInstance ? DataInstance : nullptr;
-    }
-
-    return nullptr;
-}
-
-UObject* UInventorySystemFunctionLibrary::GetItemInstance(UDataInstanceBase* DataInstance)
-{
-    return UDataManagerFunctionLibrary::GetInstanceDataByInterface<UItemInstanceInterface>(DataInstance);
-}
-
-int32 UInventorySystemFunctionLibrary::GetQuantity(UDataInstanceBase* DataInstance)
-{
-    auto ItemInstance = GetItemInstance(DataInstance);
-
-    return ItemInstance ? IItemInstanceInterface::Execute_GetQuantity(ItemInstance) : 0;
-}
-
-void UInventorySystemFunctionLibrary::SetQuantity(UDataInstanceBase* DataInstance, int32 NewQuantity)
-{
-    if (auto ItemInstance = GetItemInstance(DataInstance))
-    {
-        IItemInstanceInterface::Execute_SetQuantity(ItemInstance, NewQuantity);
     }
 }

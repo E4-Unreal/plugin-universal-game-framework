@@ -17,7 +17,7 @@
 #include "Subsystems/SaveGameSubsystem.h"
 #include "Components/WeaponManagerComponent.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "FunctionLibraries/InventorySystemFunctionLibrary.h"
+#include "FunctionLibraries/ItemDataFunctionLibrary.h"
 
 const FName AUGFPlayerCharacter::CameraBoomName(TEXT("CameraBoom"));
 const FName AUGFPlayerCharacter::FollowCameraName(TEXT("FollowCamera"));
@@ -116,7 +116,7 @@ bool AUGFPlayerCharacter::AddProduct_Implementation(const TScriptInterface<IProd
     {
         if (auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ProductData))
         {
-            UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+            UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
             return GetInventory()->AddContent(ItemInstance);
         }
     }
@@ -130,7 +130,7 @@ bool AUGFPlayerCharacter::RemoveProduct_Implementation(const TScriptInterface<IP
     {
         if (auto ItemInstance = UDataManagerFunctionLibrary::CreateDataInstance(ProductData))
         {
-            UInventorySystemFunctionLibrary::SetQuantity(ItemInstance, Quantity);
+            UItemDataFunctionLibrary::SetQuantity(ItemInstance, Quantity);
             return GetInventory()->RemoveContent(ItemInstance);
         }
     }

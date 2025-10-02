@@ -7,8 +7,6 @@
 #include "InventorySystemFunctionLibrary.generated.h"
 
 class UDataInstanceBase;
-class UDataDefinitionBase;
-struct FGameplayTag;
 
 UCLASS()
 class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFunctionLibrary
@@ -27,29 +25,4 @@ public:
 
     UFUNCTION(BlueprintCallable)
     static void ImpulseActor(AActor* Actor, float ImpulseAngle, float ImpulseStrength);
-
-    /* ItemData */
-
-    UFUNCTION(BlueprintPure, Category = "ItemData")
-    static UDataAsset* GetItemData(UDataDefinitionBase* Definition);
-
-    UFUNCTION(BlueprintPure, Category = "ItemData")
-    static int32 GetMaxStack(UDataDefinitionBase* Definition);
-
-    UFUNCTION(BlueprintPure, Category = "ItemData")
-    static FGameplayTag GetItemType(UDataDefinitionBase* Definition);
-
-    /* ItemInstanceData */
-
-    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static UDataInstanceBase* CreateItemInstance(UDataDefinitionBase* Definition);
-
-    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static UObject* GetItemInstance(UDataInstanceBase* DataInstance);
-
-    UFUNCTION(BlueprintPure, Category = "ItemInstanceData")
-    static int32 GetQuantity(UDataInstanceBase* DataInstance);
-
-    UFUNCTION(BlueprintCallable, Category = "ItemInstanceData")
-    static void SetQuantity(UDataInstanceBase* DataInstance, int32 NewQuantity);
 };

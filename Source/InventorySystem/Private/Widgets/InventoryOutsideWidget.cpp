@@ -27,7 +27,7 @@ void UInventoryOutsideWidget::OnWidgetDrop(UUserWidget* DropWidget)
 
         if (UInventoryComponent* Inventory = Cast<UInventoryComponent>(SlotManager))
         {
-            const int32 SlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(SlotContent);
+            const int32 SlotQuantity = UItemDataFunctionLibrary::GetQuantity(SlotContent);
             Inventory->DropItemFromSlot(SlotIndex, SlotQuantity);
         }
     }

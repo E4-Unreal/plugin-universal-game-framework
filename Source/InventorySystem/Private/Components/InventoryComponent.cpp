@@ -6,7 +6,7 @@
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Data/ItemInstance.h"
-#include "FunctionLibraries/DataManagerFunctionLibrary.h"
+#include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "Interfaces/ItemDataInterface.h"
 #include "Settings/InventorySystemSettings.h"
 
@@ -27,7 +27,7 @@ bool UInventoryComponent::HasContent(UDataInstanceBase* InContent) const
 {
     if (CheckContent(InContent))
     {
-        const int32 InQuantity = UInventorySystemFunctionLibrary::UInventorySystemFunctionLibrary::GetQuantity(InContent);
+        const int32 InQuantity = UItemDataFunctionLibrary::GetQuantity(InContent);
         int32 OwnedQuantity = GetItemQuantity(InContent->Definition);
 
         return OwnedQuantity >= InQuantity;
@@ -41,16 +41,16 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
     // 실행 가능 여부 확인
     if (!CheckContent(InContent)) return false;
 
-    int32 Quantity = UInventorySystemFunctionLibrary::GetQuantity(InContent);
-    const int32 MaxStack = UInventorySystemFunctionLibrary::GetMaxStack(InContent->Definition);
+    int32 Quantity = UItemDataFunctionLibrary::GetQuantity(InContent);
+    const int32 MaxStack = UItemDataFunctionLibrary::GetMaxStack(InContent->Definition);
 
     // 기존 인벤토리 슬롯 채우기
     for (const auto& [Index, Content] : SlotMap)
     {
         if (Content == nullptr || Content != InContent) continue;
 
-        const int32 SlotMaxStack = UInventorySystemFunctionLibrary::GetMaxStack(Content->Definition);
-        const int32 SlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(Content);
+        const int32 SlotMaxStack = UItemDataFunctionLibrary::GetMaxStack(Content->Definition);
+        const int32 SlotQuantity = UItemDataFunctionLibrary::GetQuantity(Content);
         const int32 SlotCapacity = SlotMaxStack - SlotQuantity;
 
         const int32 QuantityToAdd = FMath::Min(Quantity, SlotCapacity);
@@ -70,8 +70,8 @@ bool UInventoryComponent::AddContent(UDataInstanceBase* InContent)
         int32 QuantityToAdd = FMath::Min(Quantity, MaxStack);
         Quantity -= QuantityToAdd;
 
-        auto NewContent = UInventorySystemFunctionLibrary::CreateItemInstance(InContent->Definition);
-        UInventorySystemFunctionLibrary::SetQuantity(NewContent, QuantityToAdd);
+        auto NewContent = UItemDataFunctionLibrary::CreateItemInstance(InContent->Definition);
+        UItemDataFunctionLibrary::SetQuantity(NewContent, QuantityToAdd);
         SetContent(EmptySlotIndex, NewContent);
     }
 
@@ -83,14 +83,14 @@ bool UInventoryComponent::RemoveContent(UDataInstanceBase* InContent)
     // 실행 가능 여부 확인
     if (!HasContent(InContent)) return false;
 
-    int32 InQuantity = UInventorySystemFunctionLibrary::GetQuantity(InContent);
+    int32 InQuantity = UItemDataFunctionLibrary::GetQuantity(InContent);
 
     // 인벤토리 조회 및 아이템 제거
     for (const auto& [Index, Content] : SlotMap)
     {
         if (Content->Definition != Content->Definition) continue;
 
-        const int32 SlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(Content);
+        const int32 SlotQuantity = UItemDataFunctionLibrary::GetQuantity(Content);
 
         const int32 QuantityToRemove = FMath::Min(InQuantity, SlotQuantity);
         InQuantity -= QuantityToRemove;
@@ -117,9 +117,9 @@ void UInventoryComponent::SwapContent(USlotManagerComponentBase* Source, int32 S
 
         if (SourceData == DestinationData)
         {
-            const int32 SourceSlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(SourceContent);
-            const int32 DestinationSlotMaxStack = UInventorySystemFunctionLibrary::GetMaxStack(DestinationData);
-            const int32 DestinationSlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(DestinationContent);
+            const int32 SourceSlotQuantity = UItemDataFunctionLibrary::GetQuantity(SourceContent);
+            const int32 DestinationSlotMaxStack = UItemDataFunctionLibrary::GetMaxStack(DestinationData);
+            const int32 DestinationSlotQuantity = UItemDataFunctionLibrary::GetQuantity(DestinationContent);
             const int32 DestinationSlotCapacity = DestinationSlotMaxStack - DestinationSlotQuantity;
             int32 QuantityToMove = FMath::Min(SourceSlotQuantity, DestinationSlotCapacity);
 
@@ -137,8 +137,8 @@ void UInventoryComponent::AddItemFromData(UDataDefinitionBase* NewData, int32 Qu
 {
     if (CheckData(NewData))
     {
-        auto NewContent = UInventorySystemFunctionLibrary::CreateItemInstance(NewData);
-        UInventorySystemFunctionLibrary::SetQuantity(NewContent, Quantity);
+        auto NewContent = UItemDataFunctionLibrary::CreateItemInstance(NewData);
+        UItemDataFunctionLibrary::SetQuantity(NewContent, Quantity);
         AddContent(NewContent);
     }
 }
@@ -154,7 +154,7 @@ bool UInventoryComponent::SetSlotQuantity(int32 SlotIndex, int32 NewQuantity)
         }
         else
         {
-            UInventorySystemFunctionLibrary::SetQuantity(OldContent, NewQuantity);
+            UItemDataFunctionLibrary::SetQuantity(OldContent, NewQuantity);
         }
 
         OnSlotUpdated.Broadcast(SlotIndex);
@@ -170,12 +170,12 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
     if (bool bCanDrop = !IsSlotEmpty(SlotIndex); !bCanDrop) return;
 
     const auto Content = GetContent(SlotIndex);
-    const int32 SlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(Content);
+    const int32 SlotQuantity = UItemDataFunctionLibrary::GetQuantity(Content);
 
     if (SlotQuantity < Quantity) return;
 
-    auto NewItemInstance = UInventorySystemFunctionLibrary::CreateItemInstance(Content->Definition);
-    UInventorySystemFunctionLibrary::SetQuantity(NewItemInstance, Quantity);
+    auto NewItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Content->Definition);
+    UItemDataFunctionLibrary::SetQuantity(NewItemInstance, Quantity);
 
     TArray<UDataInstanceBase*> InventoryItemsToDrop = { NewItemInstance };
 
@@ -194,7 +194,7 @@ int32 UInventoryComponent::GetItemQuantity(UDataDefinitionBase* Item) const
     {
         if (Content->Definition == Item)
         {
-            Quantity += UInventorySystemFunctionLibrary::GetQuantity(Content);
+            Quantity += UItemDataFunctionLibrary::GetQuantity(Content);
         }
     }
 
@@ -208,13 +208,13 @@ int32 UInventoryComponent::GetItemCapacity(UDataDefinitionBase* Item) const
     if (CheckData(Item))
     {
         int32 EmptySlotNum = MaxSlotNum - Slots.Num();
-        Capacity = EmptySlotNum * UInventorySystemFunctionLibrary::GetMaxStack(Item);
+        Capacity = EmptySlotNum * UItemDataFunctionLibrary::GetMaxStack(Item);
         for (const auto& [Index, Content] : Slots)
         {
             if (Content->Definition == Item)
             {
-                const int32 SlotQuantity = UInventorySystemFunctionLibrary::GetQuantity(Content);
-                const int32 SlotMaxStack = UInventorySystemFunctionLibrary::GetMaxStack(Item);
+                const int32 SlotQuantity = UItemDataFunctionLibrary::GetQuantity(Content);
+                const int32 SlotMaxStack = UItemDataFunctionLibrary::GetMaxStack(Item);
                 const int32 SlotCapacity = SlotMaxStack - SlotQuantity;
                 Capacity += SlotCapacity;
             }
