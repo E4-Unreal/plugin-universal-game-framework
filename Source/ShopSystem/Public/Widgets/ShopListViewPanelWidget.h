@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Interfaces/PopupWidgetInterface.h"
+#include "Interfaces/PromptWidgetInterface.h"
 #include "Widgets/TargetWidgetBase.h"
 #include "ShopListViewPanelWidget.generated.h"
 
@@ -16,9 +18,19 @@ class SHOPSYSTEM_API UShopListViewPanelWidget : public UTargetWidgetBase
 {
     GENERATED_BODY()
 
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText BuyPromptTitleText;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText BuyPromptMessageText;
+
 protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UListView> ShopListView;
+
+    FOnWidgetHidden WidgetHiddenDelegate;
+    FOnPromptSubmitted PromptSubmittedDelegate;
 
 protected:
     UShopListViewPanelWidget(const FObjectInitializer& ObjectInitializer);
@@ -41,4 +53,10 @@ protected:
 
     UFUNCTION()
     virtual void OnSlotUpdated(int32 Index);
+
+    UFUNCTION()
+    virtual void OnWidgetHidden();
+
+    UFUNCTION()
+    virtual void OnPromptSubmitted(const FText& SubmittedText);
 };

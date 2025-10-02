@@ -41,6 +41,9 @@ class SHOPSYSTEM_API UProductSlotContainer : public UObject
 
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    int32 Index;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FProductSlot Slot;
 };
 
