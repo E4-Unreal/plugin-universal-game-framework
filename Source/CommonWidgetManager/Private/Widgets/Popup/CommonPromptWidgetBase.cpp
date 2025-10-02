@@ -15,6 +15,26 @@ UCommonPromptWidgetBase::UCommonPromptWidgetBase(const FObjectInitializer& Objec
     MaxNum = 9999;
 }
 
+void UCommonPromptWidgetBase::NativeOnDeactivated()
+{
+    Super::NativeOnDeactivated();
+
+    if (GetInputTextBox())
+    {
+        GetInputTextBox()->SetText(FText::GetEmpty());
+    }
+}
+
+void UCommonPromptWidgetBase::SetNumeric_Implementation(bool bNewNumeric)
+{
+    bShouldNumeric = bNewNumeric;
+
+    if (bShouldNumeric && GetInputTextBox())
+    {
+        GetInputTextBox()->SetText(FText::FromString(FString::FromInt(1)));
+    }
+}
+
 void UCommonPromptWidgetBase::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
@@ -23,6 +43,8 @@ void UCommonPromptWidgetBase::NativeOnInitialized()
     {
         GetInputTextBox()->OnTextChanged.AddDynamic(this, &ThisClass::OnInputTextBoxChanged);
         GetInputTextBox()->OnTextCommitted.AddDynamic(this, &ThisClass::OnInputTextBoxCommitted);
+        GetInputTextBox()->SetText(FText::GetEmpty());
+        GetInputTextBox()->SetSelectAllTextWhenFocused(true);
     }
 
     if (GetConfirmButton())
@@ -58,8 +80,11 @@ void UCommonPromptWidgetBase::OnInputTextBoxChanged_Implementation(const FText& 
             }
         }
 
-        int64 Value = FMath::Clamp(FCString::Atoi64(*String), MinNum, MaxNum);
-        String = FString::FromInt(Value);
+        if (!String.IsEmpty())
+        {
+            int64 Value = FMath::Clamp(FCString::Atoi64(*String), MinNum, MaxNum);
+            String = FString::FromInt(Value);
+        }
 
         if (GetInputTextBox())
         {
