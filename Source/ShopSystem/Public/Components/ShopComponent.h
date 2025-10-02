@@ -61,6 +61,11 @@ public:
     UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
     virtual bool BuyProduct(AActor* Customer, int32 Index, int32 Quantity);
 
+    UFUNCTION(BlueprintCallable, meta = (DefaultToSelf = "Customer"))
+    virtual bool SellProduct(AActor* Customer, UDataDefinitionBase* Definition, int32 Quantity);
+
 protected:
+    virtual bool CheckDefinition(UDataDefinitionBase* Definition) const;
+    virtual bool CheckInstance(UDataInstanceBase* Instance) const;
     virtual void SetStock(int32 Index, int32 NewStock);
 };
