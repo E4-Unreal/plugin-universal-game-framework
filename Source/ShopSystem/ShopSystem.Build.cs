@@ -18,7 +18,8 @@ public class ShopSystem : ModuleRules
                 "DataManager",
                 "CurrencyManager",
                 "SlotManager",
-                "InventorySystem"
+                "InventorySystem",
+                "WidgetManager"
             }
         );
 

@@ -4,14 +4,12 @@
 #include "Widgets/ShopListViewPanelWidget.h"
 
 #include "Components/ListView.h"
-#include "Data/DataDefinitionBase.h"
+#include "Components/ShopComponent.h"
 #include "Widgets/BuyModalWidget.h"
 
 void UShopListViewPanelWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
-
-    SetProducts(DefaultProducts);
 
     if (ShopListView)
     {
@@ -20,27 +18,34 @@ void UShopListViewPanelWidget::NativeOnInitialized()
     }
 }
 
-void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
+void UShopListViewPanelWidget::BindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent)
 {
-    // 구매 팝업 창 표시
-    if (BuyModalWidgetClass)
-    {
-        auto BuyModalWidget = CreateWidget<UBuyModalWidget>(this, BuyModalWidgetClass);
-        BuyModalWidget->SetProduct(Cast<UDataDefinitionBase>(Item));
-        BuyModalWidget->AddToViewport();
-    }
+    Super::BindTargetComponentEvents_Implementation(InTargetComponent);
+
+    InitializeShopListView();
 }
 
-void UShopListViewPanelWidget::SetProducts(const TArray<UDataDefinitionBase*>& NewProducts)
+void UShopListViewPanelWidget::InitializeShopListView()
 {
-    Products = NewProducts;
-
     if (ShopListView && ShopListView->GetDefaultEntryClass())
     {
         ShopListView->ClearListItems();
-        for (const auto& Product : Products)
+
+        if (auto ShopComponent = Cast<UShopComponent>(TargetComponent))
         {
-            ShopListView->AddItem(Product);
+            const auto& ProductSlots = ShopComponent->GetSlots();
+
+            for (const auto& ProductSlot : ProductSlots)
+            {
+                auto Item = NewObject<UProductSlotContainer>();
+                Item->Slot = ProductSlot;
+                ShopListView->AddItem(Item);
+            }
         }
     }
+}
+
+void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
+{
+    // 구매 팝업 창 표시
 }
