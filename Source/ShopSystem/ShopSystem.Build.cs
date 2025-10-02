@@ -28,7 +28,8 @@ public class ShopSystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "WeaponManager"
             }
         );
     }

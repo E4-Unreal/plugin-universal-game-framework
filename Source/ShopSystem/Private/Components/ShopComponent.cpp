@@ -9,6 +9,7 @@
 #include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
+#include "FunctionLibraries/WeaponDataFunctionLibrary.h"
 
 const FProductSlot FProductSlot::EmptySlot;
 
@@ -123,6 +124,54 @@ bool UShopComponent::SellProduct(AActor* Customer, UDataDefinitionBase* Definiti
     return false;
 }
 
+bool UShopComponent::SellEquipment(AActor* Customer, UDataInstanceBase* Instance)
+{
+    // 입력 유효성 검사
+    if (Customer && CheckInstance(Instance))
+    {
+        // 판매 금액 계산
+        auto Definition = Instance->Definition;
+        const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Definition);
+        int32 SellPrice = UProductDataFunctionLibrary::GetSellPrice(Definition);
+        if (UWeaponDataFunctionLibrary::HasWeaponInstance(Instance))
+        {
+            const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Definition);
+            const float Durability = UWeaponDataFunctionLibrary::GetDurability(Instance);
+
+            if (MaxDurability >= 0.0f)
+            {
+                const float DurabilityRatio = Durability / MaxDurability;
+                SellPrice *= DurabilityRatio;
+            }
+        }
+
+        // 컴포넌트 확인
+        auto CurrencyManager = Customer->GetComponentByClass<UCurrencyManagerComponent>();
+        auto Inventory = Customer->GetComponentByClass<UInventoryComponent>();
+        if (CurrencyManager && Inventory)
+        {
+            // 인벤토리 수량 확인
+            if (auto ItemInstance = UItemDataFunctionLibrary::CreateItemInstance(Definition))
+            {
+                UItemDataFunctionLibrary::SetQuantity(ItemInstance, 1);
+                if (Inventory->HasContent(ItemInstance))
+                {
+                    // 인벤토리 수량 차감
+                    if (Inventory->RemoveContent(ItemInstance))
+                    {
+                        // 판매 금액 지불
+                        CurrencyManager->RemoveCurrencyByType(CurrencyType, SellPrice);
+
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 bool UShopComponent::CheckDefinition(UDataDefinitionBase* Definition) const
 {
     return Definition && UProductDataFunctionLibrary::HasProductData(Definition);
@@ -130,7 +179,7 @@ bool UShopComponent::CheckDefinition(UDataDefinitionBase* Definition) const
 
 bool UShopComponent::CheckInstance(UDataInstanceBase* Instance) const
 {
-    return Instance && UItemDataFunctionLibrary::HasItemInstance(Instance) && CheckDefinition(Instance->Definition);
+    return Instance && CheckDefinition(Instance->Definition);
 }
 
 void UShopComponent::SetStock(int32 Index, int32 NewStock)
