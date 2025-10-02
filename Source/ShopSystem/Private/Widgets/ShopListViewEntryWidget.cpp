@@ -4,33 +4,55 @@
 #include "Widgets/ShopListViewEntryWidget.h"
 
 #include "Components/Image.h"
+#include "Components/ShopComponent.h"
 #include "Components/TextBlock.h"
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
+UShopListViewEntryWidget::UShopListViewEntryWidget(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    StockTextFormat = NSLOCTEXT("ShopSystem", "StockTextFormat", "{0} / {1}");
+}
+
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
-    Product = Cast<UDataDefinitionBase>(ListItemObject);
-
     Refresh();
 }
 
 void UShopListViewEntryWidget::Refresh()
 {
-    if (DisplayNameTextBlock)
+    if (auto ProductSlotContainer = GetListItem<UProductSlotContainer>())
     {
-        DisplayNameTextBlock->SetText(Product->DisplayName);
-    }
+        const auto& ProductSlot = ProductSlotContainer->Slot;
+        auto Item = ProductSlot.Definition;
+        const int32 Stock = ProductSlot.Stock;
+        const int32 MaxStock = ProductSlot.MaxStock;
+        const bool bInfiniteStock = ProductSlot.bInfiniteStock;
 
-    if (ThumbnailImage)
-    {
-        ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Product));
-    }
+        if (DisplayNameTextBlock)
+        {
+            DisplayNameTextBlock->SetText(Item->DisplayName);
+        }
 
-    if (BuyPriceTextBlock)
-    {
-        const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Product);
-        BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(BuyPrice)));
+        if (ThumbnailImage)
+        {
+            ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Item));
+        }
+
+        if (BuyPriceTextBlock)
+        {
+            const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Item);
+            BuyPriceTextBlock->SetText(FText::AsNumber(BuyPrice));
+        }
+
+        if (StockTextBlock)
+        {
+            FText StockText = bInfiniteStock ? FText::FromString("∞") : FText::FromString(FString::FromInt(Stock));
+            FText MaxStockText = bInfiniteStock ? FText::FromString("∞") : FText::FromString(FString::FromInt(MaxStock));
+
+            StockTextBlock->SetText(FText::Format(StockTextFormat, StockText, MaxStockText));
+        }
     }
 }

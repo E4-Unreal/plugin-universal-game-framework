@@ -21,6 +21,10 @@ class SHOPSYSTEM_API UShopListViewEntryWidget : public UUserWidget, public IUser
 {
     GENERATED_BODY()
 
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText StockTextFormat;
+
 protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> ThumbnailImage;
@@ -31,11 +35,18 @@ protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UTextBlock> BuyPriceTextBlock;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
-    TObjectPtr<UDataDefinitionBase> Product;
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<UTextBlock> StockTextBlock;
+
+public:
+    UShopListViewEntryWidget(const FObjectInitializer& ObjectInitializer);
 
 protected:
+    /* IUserObjectListEntry */
+
     virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
+
+    /* API */
 
     UFUNCTION(BlueprintCallable)
     virtual void Refresh();
