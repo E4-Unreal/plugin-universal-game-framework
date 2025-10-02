@@ -21,6 +21,8 @@ protected:
     TObjectPtr<UListView> ShopListView;
 
 protected:
+    UShopListViewPanelWidget(const FObjectInitializer& ObjectInitializer);
+
     /* UserWidget */
 
     virtual void NativeOnInitialized() override;

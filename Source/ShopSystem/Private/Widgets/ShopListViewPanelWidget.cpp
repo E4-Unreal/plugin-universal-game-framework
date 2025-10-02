@@ -7,6 +7,12 @@
 #include "Components/ShopComponent.h"
 #include "Widgets/BuyModalWidget.h"
 
+UShopListViewPanelWidget::UShopListViewPanelWidget(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    TargetComponentClass = UShopComponent::StaticClass();
+}
+
 void UShopListViewPanelWidget::NativeOnInitialized()
 {
     Super::NativeOnInitialized();
