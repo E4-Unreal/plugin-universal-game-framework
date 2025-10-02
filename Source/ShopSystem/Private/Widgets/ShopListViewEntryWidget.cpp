@@ -8,7 +8,7 @@
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
 #include "FunctionLibraries/ShopSystemFunctionLibrary.h"
-#include "FunctionLibraries/SlotManagerFunctionLibrary.h"
+#include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
@@ -28,7 +28,7 @@ void UShopListViewEntryWidget::Refresh()
 
         if (ThumbnailImage)
         {
-            ThumbnailImage->SetBrushFromSoftTexture(USlotManagerFunctionLibrary::GetThumbnailTexture(Cast<UDataDefinitionBase>(Product.GetObject())));
+            ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Cast<UDataDefinitionBase>(Product.GetObject())));
         }
 
         if (BuyPriceTextBlock)

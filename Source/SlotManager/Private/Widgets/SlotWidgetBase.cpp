@@ -4,7 +4,7 @@
 #include "Widgets/SlotWidgetBase.h"
 
 #include "Components/Image.h"
-#include "FunctionLibraries/SlotManagerFunctionLibrary.h"
+#include "FunctionLibraries/SlotDataFunctionLibrary.h"
 #include "Interfaces/SlotManagerInterface.h"
 
 void USlotWidgetBase::SetSlotManager_Implementation(UActorComponent* NewSlotManager)
@@ -96,7 +96,7 @@ void USlotWidgetBase::Clear()
 
 void USlotWidgetBase::ApplyData(UDataDefinitionBase* InData)
 {
-    auto ThumbnailTexture = USlotManagerFunctionLibrary::GetThumbnailTexture(InData);
+    auto ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(InData);
     if (ThumbnailTexture.IsNull()) ThumbnailTexture = DefaultThumbnailTexture;
 
 

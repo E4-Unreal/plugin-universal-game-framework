@@ -5,7 +5,7 @@
 
 #include "Components/Image.h"
 #include "Data/DataDefinitionBase.h"
-#include "FunctionLibraries/SlotManagerFunctionLibrary.h"
+#include "FunctionLibraries/SlotDataFunctionLibrary.h"
 #include "Interfaces/SlotManagerInterface.h"
 
 UDraggedSlotWidgetBase::UDraggedSlotWidgetBase(const FObjectInitializer& ObjectInitializer)
@@ -72,9 +72,9 @@ void UDraggedSlotWidgetBase::Clear()
 
 void UDraggedSlotWidgetBase::ApplyData(UDataDefinitionBase* InData)
 {
-    if (USlotManagerFunctionLibrary::HasSlotData(InData))
+    if (USlotDataFunctionLibrary::HasSlotData(InData))
     {
-        auto ThumbnailTexture = USlotManagerFunctionLibrary::GetThumbnailTexture(InData);
+        auto ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(InData);
         if (ThumbnailTexture == nullptr) ThumbnailTexture = DefaultThumbnailTexture;
 
         SetThumbnailTexture(ThumbnailTexture);

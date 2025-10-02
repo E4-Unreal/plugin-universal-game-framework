@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "SlotManagerFunctionLibrary.generated.h"
+#include "SlotDataFunctionLibrary.generated.h"
 
 class UDataDefinitionBase;
 /**
  *
  */
 UCLASS()
-class SLOTMANAGER_API USlotManagerFunctionLibrary : public UBlueprintFunctionLibrary
+class SLOTMANAGER_API USlotDataFunctionLibrary : public UBlueprintFunctionLibrary
 {
     GENERATED_BODY()
 
