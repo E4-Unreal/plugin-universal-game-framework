@@ -13,6 +13,8 @@
 UShopListViewEntryWidget::UShopListViewEntryWidget(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
+    SetVisibilityInternal(ESlateVisibility::Visible);
+
     StockTextFormat = NSLOCTEXT("ShopSystem", "StockTextFormat", "{0} / {1}");
 }
 
