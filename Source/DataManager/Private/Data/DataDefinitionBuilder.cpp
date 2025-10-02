@@ -49,7 +49,7 @@ FString UDataDefinitionBuilder::GetAssetName(int32 ID) const
         auto TableRow = DataTable.LoadSynchronous()->FindRow<FDataDefinitionTableRowBase>(FName(FString::FromInt(ID)), "");
         if (TableRow && !TableRow->DisplayName.IsEmptyOrWhitespace())
         {
-            AssetName += "_" + TableRow->DisplayName.ToString();
+            AssetName += "_" + TableRow->DisplayName.ToString().Replace(TEXT(" "), TEXT(""));
         }
     }
 
