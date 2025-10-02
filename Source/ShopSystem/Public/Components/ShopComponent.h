@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/SlotManagerInterface.h"
 #include "ShopComponent.generated.h"
 
 struct FCurrency;
@@ -49,10 +50,14 @@ class SHOPSYSTEM_API UShopComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FOnSlotUpdated OnSlotUpdated;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TArray<FProductSlot> Slots;
 
 protected:
+    // TMap<Index, SlotIndex>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TMap<int32, int32> SlotIndexMap;
 
