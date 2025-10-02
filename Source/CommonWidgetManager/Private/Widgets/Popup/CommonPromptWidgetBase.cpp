@@ -100,13 +100,13 @@ void UCommonPromptWidgetBase::OnInputTextBoxCommitted_Implementation(const FText
 
 void UCommonPromptWidgetBase::OnConfirmButtonClicked_Implementation()
 {
-    DeactivateWidget();
-
     if (OnPromptSubmitted.IsBound())
     {
         OnPromptSubmitted.Execute(GetInputTextBox()->GetText());
         OnPromptSubmitted.Clear();
     }
+
+    DeactivateWidget();
 }
 
 void UCommonPromptWidgetBase::OnCancelButtonClicked_Implementation()
