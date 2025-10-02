@@ -7,7 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "FunctionLibraries/ShopSystemFunctionLibrary.h"
+#include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -19,7 +19,7 @@ void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject
 
 void UShopListViewEntryWidget::Refresh()
 {
-    if (auto ProductData = UShopSystemFunctionLibrary::GetProductData(Product.GetObject()))
+    if (auto Definition = Cast<UDataDefinitionBase>(Product.GetObject()))
     {
         if (DisplayNameTextBlock)
         {
@@ -28,12 +28,12 @@ void UShopListViewEntryWidget::Refresh()
 
         if (ThumbnailImage)
         {
-            ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Cast<UDataDefinitionBase>(Product.GetObject())));
+            ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Definition));
         }
 
         if (BuyPriceTextBlock)
         {
-            const int32 BuyPrice = UShopSystemFunctionLibrary::GetBuyPrice(Product.GetObject());
+            const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Definition);
             BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(BuyPrice)));
         }
     }

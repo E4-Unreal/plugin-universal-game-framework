@@ -19,18 +19,6 @@ class SHOPSYSTEM_API UShopSystemFunctionLibrary : public UBlueprintFunctionLibra
     GENERATED_BODY()
 
 public:
-    UFUNCTION(BlueprintPure, Category = "ProductData")
-    static UDataAsset* GetProductData(UObject* DataObject);
-
-    UFUNCTION(BlueprintPure, Category = "ProductData")
-    static FGameplayTag GetCurrencyType(UObject* DataObject);
-
-    UFUNCTION(BlueprintPure, Category = "ProductData")
-    static int32 GetBuyPrice(UObject* DataObject);
-
-    UFUNCTION(BlueprintPure, Category = "ProductData")
-    static int32 GetSellPrice(UObject* DataObject);
-
     UFUNCTION(BlueprintCallable)
     static bool PurchaseProduct(const TScriptInterface<ICustomerInterface>& Customer, const TScriptInterface<IProductInterface>& Product, int32 Quantity);
 };
