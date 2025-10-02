@@ -3,9 +3,8 @@
 
 #include "Actors/WeaponActor.h"
 
-#include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
-#include "FunctionLibraries/MeshManagerFunctionLibrary.h"
+#include "FunctionLibraries/MeshDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 const FName AWeaponActor::RootSceneName(TEXT("RootScene"));
@@ -73,10 +72,10 @@ void AWeaponActor::SetInstance_Implementation(UDataInstanceBase* NewInstance)
 
 void AWeaponActor::ApplyWeaponData()
 {
-    if (auto MeshData = UMeshManagerFunctionLibrary::GetMeshData(Definition))
+    if (UMeshDataFunctionLibrary::HasMeshData(Definition))
     {
-        auto SkeletalMeshAsset = UMeshManagerFunctionLibrary::GetSkeletalMesh(MeshData);
-        auto StaticMeshAsset = UMeshManagerFunctionLibrary::GetStaticMesh(MeshData);
+        auto SkeletalMeshAsset = UMeshDataFunctionLibrary::GetSkeletalMesh(Definition);
+        auto StaticMeshAsset = UMeshDataFunctionLibrary::GetStaticMesh(Definition);
 
         if (!SkeletalMeshAsset.IsNull())
         {

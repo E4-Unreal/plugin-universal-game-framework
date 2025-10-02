@@ -6,7 +6,7 @@
 #include "Components/InventoryComponent.h"
 #include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "FunctionLibraries/MeshManagerFunctionLibrary.h"
+#include "FunctionLibraries/MeshDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Settings/InventorySystemSettings.h"
 
@@ -94,7 +94,7 @@ UStaticMesh* UItemComponent::GetStaticMesh() const
 
     if (Items.Num() == 1)
     {
-        StaticMesh = UMeshManagerFunctionLibrary::GetStaticMesh(Items[0]).LoadSynchronous();
+        StaticMesh = UMeshDataFunctionLibrary::GetStaticMesh(Items[0]->Definition).LoadSynchronous();
     }
     else if (Items.Num() > 1)
     {
@@ -110,7 +110,7 @@ UMaterialInterface* UItemComponent::GetMaterial() const
 
     if (Items.Num() == 1)
     {
-        Material = UMeshManagerFunctionLibrary::GetMaterial(Items[0]).LoadSynchronous();
+        Material = UMeshDataFunctionLibrary::GetMaterial(Items[0]->Definition).LoadSynchronous();
     }
 
     return Material;
