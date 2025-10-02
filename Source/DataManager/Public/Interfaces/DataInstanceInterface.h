@@ -23,12 +23,6 @@ class DATAMANAGER_API IDataInstanceInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    UDataDefinitionBase* GetDefinition() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetDefinition(UDataDefinitionBase* NewDefinition);
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     UObject* GetInstanceDataByInterface(TSubclassOf<UInterface> InterfaceClass) const;
     virtual UObject* GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const;
 

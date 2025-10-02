@@ -24,7 +24,7 @@ UDataInstanceBase* IDataInterface::CreateInstanceData_Implementation() const
     if (InstanceDataClass && InstanceDataClass->ImplementsInterface(UDataInstanceInterface::StaticClass()))
     {
         auto NewInstanceData = NewObject<UDataInstanceBase>(GetTransientPackage(), InstanceDataClass);
-        IDataInstanceInterface::Execute_SetDefinition(NewInstanceData, const_cast<UDataDefinitionBase*>(Data));
+        NewInstanceData->SetDefinition(const_cast<UDataDefinitionBase*>(Data));
 
         return NewInstanceData;
     }

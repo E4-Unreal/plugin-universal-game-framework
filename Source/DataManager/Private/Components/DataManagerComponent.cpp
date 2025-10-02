@@ -16,8 +16,8 @@ void UDataManagerComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-    DOREPLIFETIME(ThisClass, Data);
-    DOREPLIFETIME(ThisClass, DataInstance);
+    DOREPLIFETIME(ThisClass, Definition);
+    DOREPLIFETIME(ThisClass, Instance);
 }
 
 #if WITH_EDITOR
@@ -25,13 +25,13 @@ void UDataManagerComponent::PostEditChangeProperty(struct FPropertyChangedEvent&
 {
     FName PropertyName = PropertyChangedEvent.Property != nullptr ? PropertyChangedEvent.Property->GetFName() : NAME_None;
 
-    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Data))
+    if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Definition))
     {
-        SetData(Data);
+        SetDefinition(Definition);
     }
-    else if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, DataInstance))
+    else if (PropertyName == GET_MEMBER_NAME_CHECKED(ThisClass, Instance))
     {
-        SetDataInstance(DataInstance);
+        SetDataInstance(Instance);
     }
 
     Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -43,48 +43,38 @@ void UDataManagerComponent::Refresh_Implementation()
     // Data 혹은 DataInstance를 활용하여 액터 혹은 액터 컴포넌트 설정
 }
 
-UDataAsset* UDataManagerComponent::GetData() const
+void UDataManagerComponent::SetDefinition(UDataDefinitionBase* NewDefinition)
 {
-    if (DataInstance && DataInstance->Implements<UDataInstanceInterface>())
-    {
-        return IDataInstanceInterface::Execute_GetDefinition(DataInstance);
-    }
+    Definition = NewDefinition;
 
-    return Data;
-}
-
-void UDataManagerComponent::SetData(UDataAsset* NewData)
-{
-    Data = NewData;
-
-    if (DataInstance) RemoveReplicatedObject(Cast<UReplicatedObject>(DataInstance));
-    DataInstance = nullptr;
+    if (Instance) RemoveReplicatedObject(Cast<UReplicatedObject>(Instance));
+    Instance = nullptr;
 
     Refresh();
 }
 
-void UDataManagerComponent::SetDataInstance(UObject* NewDataInstance)
+void UDataManagerComponent::SetDataInstance(UDataInstanceBase* NewInstance)
 {
-    if (DataInstance) RemoveReplicatedObject(Cast<UReplicatedObject>(DataInstance));
-    DataInstance = NewDataInstance;
-    if (DataInstance) AddReplicatedObject(Cast<UReplicatedObject>(DataInstance));
+    if (Instance) RemoveReplicatedObject(Cast<UReplicatedObject>(Instance));
+    Instance = NewInstance;
+    if (Instance) AddReplicatedObject(Cast<UReplicatedObject>(Instance));
 
-    Data = nullptr;
+    Definition = nullptr;
 
     Refresh();
 }
 
-void UDataManagerComponent::OnRep_Data(UDataAsset* OldData)
+void UDataManagerComponent::OnRep_Definition(UDataDefinitionBase* OldDefinition)
 {
-    if (Data)
+    if (Definition)
     {
         Refresh();
     }
 }
 
-void UDataManagerComponent::OnRep_DataInstance(UObject* OldDataInstance)
+void UDataManagerComponent::OnRep_Instance(UDataInstanceBase* OldInstance)
 {
-    if (DataInstance)
+    if (Instance)
     {
         Refresh();
     }

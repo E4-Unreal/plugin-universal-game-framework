@@ -4,6 +4,7 @@
 #include "Interfaces/DataInstanceInterface.h"
 
 #include "Data/DataDefinitionBase.h"
+#include "Data/DataInstanceBase.h"
 #include "Interfaces/DataInterface.h"
 
 
@@ -17,8 +18,8 @@ UObject* IDataInstanceInterface::GetInstanceDataByInterface_Implementation(TSubc
 
 UDataAsset* IDataInstanceInterface::GetDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const
 {
-    auto InstanceData = CastChecked<UObject>(this);
-    auto Data = IDataInstanceInterface::Execute_GetDefinition(InstanceData);
+    auto DataInstance = CastChecked<UDataInstanceBase>(this);
+    auto Data = DataInstance->Definition;
 
     return Data && Data->Implements<UDataInterface>() ? IDataInterface::Execute_GetDataByInterface(Data, InterfaceClass) : nullptr;
 }

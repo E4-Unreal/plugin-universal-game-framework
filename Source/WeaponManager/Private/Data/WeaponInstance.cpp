@@ -3,8 +3,7 @@
 
 #include "Data/WeaponInstance.h"
 
-#include "Data/DataDefinitionBase.h"
-#include "Interfaces/WeaponDataInterface.h"
+#include "FunctionLibraries/WeaponDataFunctionLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -15,22 +14,22 @@ void UWeaponInstance::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
     DOREPLIFETIME(ThisClass, Durability);
 }
 
-void UWeaponInstance::SetDefinition_Implementation(UDataDefinitionBase* NewDefinition)
+void UWeaponInstance::SetDefinition(UDataDefinitionBase* NewDefinition)
 {
-    Definition = NewDefinition;
+    Super::SetDefinition(NewDefinition);
 
-    if (Definition)
+    if (UWeaponDataFunctionLibrary::HasWeaponData(Definition))
     {
-        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Definition);
+        const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Definition);
         Durability = MaxDurability;
     }
 }
 
 void UWeaponInstance::SetDurability_Implementation(float NewDurability)
 {
-    if (Definition)
+    if (UWeaponDataFunctionLibrary::HasWeaponData(Definition))
     {
-        const float MaxDurability = IWeaponDataInterface::Execute_GetMaxDurability(Definition);
+        const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Definition);
         Durability = FMath::Clamp(NewDurability, 0, MaxDurability);
     }
 }

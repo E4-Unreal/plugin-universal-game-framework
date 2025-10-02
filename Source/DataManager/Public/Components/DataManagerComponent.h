@@ -8,17 +8,20 @@
 #include "DataManagerComponent.generated.h"
 
 
+class UDataInstanceBase;
+class UDataDefinitionBase;
+
 UCLASS(Abstract)
 class DATAMANAGER_API UDataManagerComponent : public UDataManagerComponentBase
 {
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInterface"), ReplicatedUsing = OnRep_Data)
-    TObjectPtr<UDataAsset> Data;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", ReplicatedUsing = OnRep_Definition)
+    TObjectPtr<UDataDefinitionBase> Definition;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInstanceInterface"), Instanced, ReplicatedUsing = OnRep_DataInstance)
-    TObjectPtr<UObject> DataInstance;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced, ReplicatedUsing = OnRep_Instance)
+    TObjectPtr<UDataInstanceBase> Instance;
 
 public:
     UDataManagerComponent();
@@ -37,23 +40,23 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
-    virtual UDataAsset* GetData() const;
+    virtual UDataDefinitionBase* GetDefinition() const { return Definition; }
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetData(UDataAsset* NewData);
+    virtual void SetDefinition(UDataDefinitionBase* NewDefinition);
 
     UFUNCTION(BlueprintPure)
-    virtual UObject* GetDataInstance() const { return DataInstance; }
+    virtual UObject* GetDataInstance() const { return Instance; }
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetDataInstance(UObject* NewDataInstance);
+    virtual void SetDataInstance(UDataInstanceBase* NewInstance);
 
 protected:
     /* Replication */
 
     UFUNCTION()
-    virtual void OnRep_Data(UDataAsset* OldData);
+    virtual void OnRep_Definition(UDataDefinitionBase* OldDefinition);
 
     UFUNCTION()
-    virtual void OnRep_DataInstance(UObject* OldDataInstance);
+    virtual void OnRep_Instance(UDataInstanceBase* OldInstance);
 };

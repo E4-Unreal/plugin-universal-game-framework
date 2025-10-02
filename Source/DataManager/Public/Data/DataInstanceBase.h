@@ -25,9 +25,15 @@ public:
 
     virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+    /* API */
+
+    UFUNCTION(BlueprintPure)
+    UDataDefinitionBase* GetDefinition() const { return Definition; }
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetDefinition(UDataDefinitionBase* NewDefinition) { Definition = NewDefinition; }
+
     /* DataObjectInterface */
 
-    virtual UDataDefinitionBase* GetDefinition_Implementation() const override { return Definition; }
-    virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override { Definition = NewDefinition; }
     virtual UObject* GetInstanceDataByInterface_Implementation(TSubclassOf<UInterface> InterfaceClass) const override;
 };

@@ -30,7 +30,7 @@ public:
 
     /* DataInstanceInterface */
 
-    virtual void SetDefinition_Implementation(UDataDefinitionBase* NewDefinition) override;
+    virtual void SetDefinition(UDataDefinitionBase* NewDefinition) override;
 
     /* WeaponInstanceInterface */
 
