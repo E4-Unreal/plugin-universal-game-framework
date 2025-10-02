@@ -71,42 +71,6 @@ UObject* UDataManagerFunctionLibrary::GetInstanceDataByInterface(UObject* Instan
     return nullptr;
 }
 
-bool UDataManagerFunctionLibrary::SupportsDataInterfaces(UDataAsset* Data,
-                                                         const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
-{
-    if (Data && Data->Implements<UDataInterface>())
-    {
-        for (auto InterfaceClass : InterfaceClasses)
-        {
-            if (InterfaceClass == nullptr) continue;
-
-            if (GetDataByInterface(Data, InterfaceClass) == nullptr) return false;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(UObject* InstanceData,
-    const TArray<TSubclassOf<UInterface>>& InterfaceClasses)
-{
-    if (InstanceData && InstanceData->Implements<UDataInstanceInterface>())
-    {
-        for (auto InterfaceClass : InterfaceClasses)
-        {
-            if (InterfaceClass == nullptr) continue;
-
-            if (GetInstanceDataByInterface(InstanceData, InterfaceClass) == nullptr && GetDataByInterface(InstanceData, InterfaceClass) == nullptr) return false;
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
 UDataInstanceBase* UDataManagerFunctionLibrary::CreateDataInstance(UDataAsset* Data)
 {
     return Data && Data->Implements<UDataInterface>() ? IDataInterface::Execute_CreateInstanceData(Data) : nullptr;

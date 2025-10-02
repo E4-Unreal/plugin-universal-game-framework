@@ -3,17 +3,14 @@
 
 #include "Components/InventoryComponent.h"
 
-#include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/InventorySystemFunctionLibrary.h"
 #include "Data/ItemInstance.h"
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
-#include "Interfaces/ItemDataInterface.h"
 #include "Settings/InventorySystemSettings.h"
 
 UInventoryComponent::UInventoryComponent()
 {
-    UsingDataInterfaces.Emplace(UItemDataInterface::StaticClass());
-    UsingInstanceDataInterfaces.Emplace(UItemInstanceInterface::StaticClass());
+
 }
 
 void UInventoryComponent::BeginPlay()

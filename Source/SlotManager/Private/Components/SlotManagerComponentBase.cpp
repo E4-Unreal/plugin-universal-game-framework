@@ -8,7 +8,6 @@
 #include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/DataManagerFunctionLibrary.h"
-#include "Interfaces/DataInstanceInterface.h"
 #include "Interfaces/DataInterface.h"
 
 USlotManagerComponentBase::USlotManagerComponentBase()
@@ -222,12 +221,12 @@ void USlotManagerComponentBase::MappingSlots()
 
 bool USlotManagerComponentBase::CheckContent(UDataInstanceBase* Content) const
 {
-    return Content && UDataManagerFunctionLibrary::SupportsInstanceDataInterfaces(Content, UsingInstanceDataInterfaces);
+    return Content != nullptr;
 }
 
 bool USlotManagerComponentBase::CheckData(UDataDefinitionBase* Definition) const
 {
-    return Definition && UDataManagerFunctionLibrary::SupportsDataInterfaces(Definition, UsingDataInterfaces);
+    return Definition != nullptr;
 }
 
 void USlotManagerComponentBase::HandleOnSlotUpdated(int32 Index)

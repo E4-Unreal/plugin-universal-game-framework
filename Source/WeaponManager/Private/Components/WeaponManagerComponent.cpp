@@ -15,9 +15,6 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 {
     bWantsInitializeComponent = true;
 
-    UsingDataInterfaces.Emplace(UWeaponDataInterface::StaticClass());
-    UsingInstanceDataInterfaces.Emplace(UWeaponInstanceInterface::StaticClass());
-
     SlotConfig.Emplace(Weapon::Slot::Primary, 1);
 }
 
@@ -113,6 +110,22 @@ bool UWeaponManagerComponent::CheckData(UDataDefinitionBase* Definition) const
             const FName ActiveSocketName = UWeaponDataFunctionLibrary::GetActiveSocketName(Definition);
 
             return SlotConfig.Contains(SlotType) && WeaponActorClass && DoesSocketExist(ActiveSocketName);
+        }
+    }
+
+    return false;
+}
+
+bool UWeaponManagerComponent::CheckContent(UDataInstanceBase* Content) const
+{
+    if (Super::CheckContent(Content))
+    {
+        if (UWeaponDataFunctionLibrary::HasWeaponInstance(Content) && UWeaponDataFunctionLibrary::HasWeaponData(Content->Definition))
+        {
+            const float MaxDurability = UWeaponDataFunctionLibrary::GetMaxDurability(Content->Definition);
+            const float Durability = UWeaponDataFunctionLibrary::GetDurability(Content);
+
+            return MaxDurability > 0.0f ? Durability > 0.0f : true;
         }
     }
 

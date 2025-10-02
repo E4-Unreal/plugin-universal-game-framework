@@ -61,6 +61,7 @@ protected:
 
     virtual void CreateSlots() override;
     virtual bool CheckData(UDataDefinitionBase* Definition) const override;
+    virtual bool CheckContent(UDataInstanceBase* Content) const override;
     virtual void HandleOnSlotUpdated(int32 Index) override;
 
     /* SlotManagerInterface */
