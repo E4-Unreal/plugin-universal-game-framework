@@ -3,50 +3,57 @@
 
 #include "Widgets/TargetWidgetBase.h"
 
+void UTargetWidgetBase::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    FindComponent();
+}
+
 void UTargetWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
 {
-    if (TargetActor == NewTargetActor) return;
-
-    TargetActor = NewTargetActor;
-
-    if (TargetActor.IsValid())
+    if (NewTargetActor)
     {
-        TargetComponent = TargetActor->FindComponentByClass(TargetComponentClass);
-    }
-    else if (!FindComponentFromPlayer())
-    {
-        FindComponentFromPawn();
+        SetTargetComponent(NewTargetActor->FindComponentByClass(TargetComponentClass));
     }
 }
 
-bool UTargetWidgetBase::FindComponentFromPlayer()
+void UTargetWidgetBase::SetTargetComponent_Implementation(UActorComponent* NewTargetComponent)
 {
+    auto OldTargetComponent = TargetComponent.Get();
+    TargetComponent = NewTargetComponent;
+    OnTargetComponentChanged(OldTargetComponent);
+}
+
+void UTargetWidgetBase::FindComponent()
+{
+    if (TargetComponent.IsValid()) return;
+
     if (APlayerController* OwningPlayer = GetOwningPlayer())
     {
-        TargetComponent =  OwningPlayer->FindComponentByClass(TargetComponentClass);
-        if (TargetComponent.IsValid())
-        {
-            TargetActor = OwningPlayer;
-
-            return true;
-        }
+        SetTargetComponent(OwningPlayer->FindComponentByClass(TargetComponentClass));
     }
 
-    return false;
-}
+    if (TargetComponent.IsValid()) return;
 
-bool UTargetWidgetBase::FindComponentFromPawn()
-{
     if (APawn* OwningPawn = GetOwningPlayerPawn())
     {
-        TargetComponent =  OwningPawn->FindComponentByClass(TargetComponentClass);
-        if (TargetComponent.IsValid())
-        {
-            TargetActor = OwningPawn;
-
-            return true;
-        }
+        SetTargetComponent(OwningPawn->FindComponentByClass(TargetComponentClass));
     }
+}
 
-    return false;
+void UTargetWidgetBase::BindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent)
+{
+    // Bind Events
+}
+
+void UTargetWidgetBase::UnbindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent)
+{
+    // Unbind Events
+}
+
+void UTargetWidgetBase::OnTargetComponentChanged_Implementation(UActorComponent* OldTargetComponent)
+{
+    if (OldTargetComponent) UnbindTargetComponentEvents(OldTargetComponent);
+    if (TargetComponent.IsValid()) BindTargetComponentEvents(TargetComponent.Get());
 }
