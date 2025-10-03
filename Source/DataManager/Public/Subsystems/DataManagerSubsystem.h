@@ -42,7 +42,8 @@ public:
 
         for (auto DataAsset : DataAssets)
         {
-            if (auto CastedDataAsset = TSoftObjectPtr<TDataAssetClass>(DataAsset.ToSoftObjectPath()))
+            auto CastedDataAsset = TSoftObjectPtr<TDataAssetClass>(DataAsset.ToSoftObjectPath());
+            if (!CastedDataAsset.IsNull())
             {
                 CastedDataAssets.Emplace(CastedDataAsset);
             }
@@ -63,7 +64,8 @@ public:
 
         for (const auto& [ID, DataAsset] : DataAssetMap)
         {
-            if (auto CastedDataAsset = TSoftObjectPtr<TDataAssetClass>(DataAsset.ToSoftObjectPath()))
+            auto CastedDataAsset = TSoftObjectPtr<TDataAssetClass>(DataAsset.ToSoftObjectPath());
+            if (!CastedDataAsset.IsNull())
             {
                 CastedDataAssetMap.Emplace(ID, CastedDataAsset);
             }
