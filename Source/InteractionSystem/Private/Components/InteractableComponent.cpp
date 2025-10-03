@@ -8,7 +8,6 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "GameplayTags/InteractionGameplaytags.h"
-#include "Interfaces/InteractableInterface.h"
 #include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
 #include "Interfaces/TargetWidgetInterface.h"
@@ -51,6 +50,70 @@ void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+FGameplayTag UInteractableComponent::GetInteractionType_Implementation() const
+{
+    return InteractionType;
+}
+
+FText UInteractableComponent::GetInteractionMessage_Implementation() const
+{
+    return InteractionMessage;
+}
+
+bool UInteractableComponent::CanInteract_Implementation(AActor* Interactor)
+{
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+
+    return Interactor && !GetOwner()->IsHidden();
+}
+
+void UInteractableComponent::Interact_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnInteract(Interactor);
+    }
+}
+
+void UInteractableComponent::CancelInteract_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnCancelInteract(Interactor);
+    }
+}
+
+bool UInteractableComponent::CanSelect_Implementation(AActor* Interactor)
+{
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+
+    return true;
+}
+
+void UInteractableComponent::Select_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnSelect(Interactor);
+    }
+}
+
+void UInteractableComponent::Deselect_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnDeselect(Interactor);
+    }
+}
+
 void UInteractableComponent::SetDisplayMesh(UMeshComponent* NewDisplayMesh)
 {
     DisplayMesh = NewDisplayMesh;
@@ -64,60 +127,6 @@ void UInteractableComponent::SetWidgetComponent(UWidgetComponent* NewWidgetCompo
 void UInteractableComponent::SetOverlapShape(UShapeComponent* NewOverlapShape)
 {
     OverlapShape = NewOverlapShape;
-}
-
-bool UInteractableComponent::CanInteract(AActor* Interactor) const
-{
-    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
-
-    return Interactor && !GetOwner()->IsHidden();
-}
-
-void UInteractableComponent::Interact(AActor* Interactor)
-{
-    if (Interactor)
-    {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnInteract(Interactor);
-    }
-}
-
-void UInteractableComponent::CancelInteract(AActor* Interactor)
-{
-    if (Interactor)
-    {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnCancelInteract(Interactor);
-    }
-}
-
-bool UInteractableComponent::CanSelect(AActor* Interactor) const
-{
-    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
-
-    return true;
-}
-
-void UInteractableComponent::Select(AActor* Interactor)
-{
-    if (Interactor)
-    {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnSelect(Interactor);
-    }
-}
-
-void UInteractableComponent::Deselect(AActor* Interactor)
-{
-    if (Interactor)
-    {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnDeselect(Interactor);
-    }
 }
 
 TSubclassOf<UUserWidget> UInteractableComponent::GetInteractionWidgetClass() const
@@ -297,8 +306,8 @@ void UInteractableComponent::InitWidgetComponent() const
         {
             if (GetOwner()->Implements<UInteractableInterface>())
             {
-                IInteractionWidgetInterface::Execute_SetInteractionType(InteractionWidget, IInteractableInterface::Execute_GetInteractionType(GetOwner()));
-                IInteractionWidgetInterface::Execute_SetInteractionMessage(InteractionWidget, IInteractableInterface::Execute_GetInteractionMessage(GetOwner()));
+                IInteractionWidgetInterface::Execute_SetInteractionType(InteractionWidget, GetInteractionType());
+                IInteractionWidgetInterface::Execute_SetInteractionMessage(InteractionWidget, GetInteractionMessage());
             }
         }
     }

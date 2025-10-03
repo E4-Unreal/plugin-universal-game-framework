@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/InteractableInterface.h"
 #include "InteractableComponent.generated.h"
 
 class UWidgetComponent;
@@ -12,7 +13,7 @@ class UShapeComponent;
 class UInteractionSystemComponent;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent
+class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent, public IInteractableInterface
 {
     GENERATED_BODY()
 
@@ -60,6 +61,32 @@ public:
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
 
+    /* InteractableInterface */
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FGameplayTag GetInteractionType() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FText GetInteractionMessage() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool CanInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Interact(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void CancelInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool CanSelect(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Select(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Deselect(AActor* Interactor);
+
     /* API */
 
     UFUNCTION(BlueprintCallable, Category = "Reference")
@@ -70,24 +97,6 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapShape(UShapeComponent* NewOverlapShape);
-
-    UFUNCTION(BlueprintPure)
-    virtual bool CanInteract(AActor* Interactor) const;
-
-    UFUNCTION(BlueprintCallable)
-    void Interact(AActor* Interactor);
-
-    UFUNCTION(BlueprintCallable)
-    void CancelInteract(AActor* Interactor);
-
-    UFUNCTION(BlueprintPure)
-    virtual bool CanSelect(AActor* Interactor) const;
-
-    UFUNCTION(BlueprintCallable)
-    void Select(AActor* Interactor);
-
-    UFUNCTION(BlueprintCallable)
-    void Deselect(AActor* Interactor);
 
 protected:
     /* Getter */
