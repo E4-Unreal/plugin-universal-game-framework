@@ -98,6 +98,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapShape(UShapeComponent* NewOverlapShape);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void SetInteractionType(FGameplayTag NewInteractionType);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetInteractionMessage(const FText& NewInteractionMessage);
+
 protected:
     /* Getter */
 

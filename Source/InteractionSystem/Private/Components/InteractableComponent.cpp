@@ -129,6 +129,32 @@ void UInteractableComponent::SetOverlapShape(UShapeComponent* NewOverlapShape)
     OverlapShape = NewOverlapShape;
 }
 
+void UInteractableComponent::SetInteractionType(FGameplayTag NewInteractionType)
+{
+    InteractionType = NewInteractionType;
+
+    if (WidgetComponent.IsValid())
+    {
+        if (auto InteractionWidget = WidgetComponent->GetWidget())
+        {
+            UInteractionSystemFunctionLibrary::SetInteractionType(InteractionWidget, InteractionType);
+        }
+    }
+}
+
+void UInteractableComponent::SetInteractionMessage(const FText& NewInteractionMessage)
+{
+    InteractionMessage = NewInteractionMessage;
+
+    if (WidgetComponent.IsValid())
+    {
+        if (auto InteractionWidget = WidgetComponent->GetWidget())
+        {
+            UInteractionSystemFunctionLibrary::SetInteractionMessage(InteractionWidget, GetInteractionMessage());
+        }
+    }
+}
+
 TSubclassOf<UUserWidget> UInteractableComponent::GetInteractionWidgetClass() const
 {
     return InteractionWidgetClass ? InteractionWidgetClass : UInteractionSystemSettings::Get()->GetDefaultInteractionWidgetClass();
