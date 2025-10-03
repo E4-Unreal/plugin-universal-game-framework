@@ -7,6 +7,7 @@
 #include "Components/ListView.h"
 #include "Components/ShopComponent.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
+#include "Internationalization/StringTableRegistry.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
 #include "Widgets/BuyModalWidget.h"
 #include "Widgets/ShopListViewEntryWidget.h"
@@ -16,8 +17,8 @@ UShopListViewPanelWidget::UShopListViewPanelWidget(const FObjectInitializer& Obj
 {
     TargetComponentClass = UShopComponent::StaticClass();
 
-    BuyPromptTitleText = NSLOCTEXT("ShopSystem", "BuyPromptTitleText", "Buy");
-    BuyPromptMessageText = NSLOCTEXT("ShopSystem", "BuyPromptMessageText", "How many would you like to buy?");
+    BuyPromptTitleText = LOCTABLE("Shop", "BuyPromptTitle");
+    BuyPromptMessageText = LOCTABLE("Shop", "BuyPromptMessage");
 
     WidgetHiddenDelegate.BindDynamic(this, &ThisClass::OnWidgetHidden);
     PromptSubmittedDelegate.BindDynamic(this, &ThisClass::OnPromptSubmitted);

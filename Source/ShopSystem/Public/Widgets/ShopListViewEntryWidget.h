@@ -25,6 +25,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText StockTextFormat;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText UnlimitedStockText;
+
 protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UImage> ThumbnailImage;

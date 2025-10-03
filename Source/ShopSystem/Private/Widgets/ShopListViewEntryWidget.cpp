@@ -9,13 +9,15 @@
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
+#include "Internationalization/StringTableRegistry.h"
 
 UShopListViewEntryWidget::UShopListViewEntryWidget(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
     SetVisibilityInternal(ESlateVisibility::Visible);
 
-    StockTextFormat = NSLOCTEXT("ShopSystem", "StockTextFormat", "{0} / {1}");
+    StockTextFormat = LOCTABLE("Shop", "StockFormat");
+    UnlimitedStockText = LOCTABLE("Shop", "UnlimitedStock");
 }
 
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
@@ -51,10 +53,16 @@ void UShopListViewEntryWidget::Refresh()
 
         if (StockTextBlock)
         {
-            FText StockText = bInfiniteStock ? FText::FromString("∞") : FText::FromString(FString::FromInt(Stock));
-            FText MaxStockText = bInfiniteStock ? FText::FromString("∞") : FText::FromString(FString::FromInt(MaxStock));
-
-            StockTextBlock->SetText(FText::Format(StockTextFormat, StockText, MaxStockText));
+            if (bInfiniteStock)
+            {
+                StockTextBlock->SetText(UnlimitedStockText);
+            }
+            else
+            {
+                FText StockText = FText::FromString(FString::FromInt(Stock));
+                FText MaxStockText = FText::FromString(FString::FromInt(MaxStock));
+                StockTextBlock->SetText(FText::Format(StockTextFormat, StockText, MaxStockText));
+            }
         }
     }
 }
