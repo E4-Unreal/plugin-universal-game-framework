@@ -44,10 +44,14 @@ protected:
 public:
     UCommonPromptWidgetBase(const FObjectInitializer& ObjectInitializer);
 
+    /* CommonActivatableWidget */
+
+    virtual void NativeOnDeactivated() override;
+
     /* PromptWidgetInterface */
 
     virtual void BindOnPromptSubmitted_Implementation(const FOnPromptSubmitted& NewDelegate) override { OnPromptSubmitted = NewDelegate; }
-    virtual void SetNumeric_Implementation(bool bNewNumeric) override { bShouldNumeric = bNewNumeric; }
+    virtual void SetNumeric_Implementation(bool bNewNumeric) override;
     virtual void SetMaxValue_Implementation(float NewMaxValue) override { MaxNum = NewMaxValue; }
     virtual void SetMinValue_Implementation(float NewMinValue) override { MinNum = NewMinValue; }
 

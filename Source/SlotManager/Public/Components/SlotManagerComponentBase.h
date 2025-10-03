@@ -8,8 +8,6 @@
 #include "Interfaces/SlotManagerInterface.h"
 #include "SlotManagerComponentBase.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSlotUpdated, int32, Index);
-
 /**
  * 인벤토리, 장비창, 스킬창, 퀵 슬롯 등의 부모 클래스
  */

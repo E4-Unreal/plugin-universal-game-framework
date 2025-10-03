@@ -17,7 +17,9 @@ public class ShopSystem : ModuleRules
                 // UniversalGameFramework
                 "DataManager",
                 "CurrencyManager",
-                "SlotManager"
+                "SlotManager",
+                "InventorySystem",
+                "WidgetManager"
             }
         );
 
@@ -27,7 +29,8 @@ public class ShopSystem : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "Slate",
-                "SlateCore"
+                "SlateCore",
+                "WeaponManager"
             }
         );
     }

@@ -26,13 +26,29 @@ protected:
     TWeakObjectPtr<UActorComponent> TargetComponent;
 
 public:
-    /* TargetWidgetInterface */
+    /* UserWidget */
 
-    virtual void SetTargetActor_Implementation(AActor* NewTargetActor) override;
+    virtual void NativeOnInitialized() override;
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetTargetActor(AActor* NewTargetActor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void SetTargetComponent(UActorComponent* NewTargetComponent);
 
 protected:
     /* API */
 
-    virtual bool FindComponentFromPlayer();
-    virtual bool FindComponentFromPawn();
+    virtual void FindComponent();
+
+    UFUNCTION(BlueprintNativeEvent)
+    void BindTargetComponentEvents(UActorComponent* InTargetComponent);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void UnbindTargetComponentEvents(UActorComponent* InTargetComponent);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnTargetComponentChanged(UActorComponent* OldTargetComponent);
 };

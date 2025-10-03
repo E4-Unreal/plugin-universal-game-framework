@@ -4,33 +4,65 @@
 #include "Widgets/ShopListViewEntryWidget.h"
 
 #include "Components/Image.h"
+#include "Components/ShopComponent.h"
 #include "Components/TextBlock.h"
 #include "Data/DataDefinitionBase.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
+#include "Internationalization/StringTableRegistry.h"
+
+UShopListViewEntryWidget::UShopListViewEntryWidget(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    SetVisibilityInternal(ESlateVisibility::Visible);
+
+    StockTextFormat = LOCTABLE("Shop", "StockFormat");
+    UnlimitedStockText = LOCTABLE("Shop", "UnlimitedStock");
+}
 
 void UShopListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
-    Product = Cast<UDataDefinitionBase>(ListItemObject);
-
     Refresh();
 }
 
 void UShopListViewEntryWidget::Refresh()
 {
-    if (DisplayNameTextBlock)
+    if (auto ProductSlotContainer = GetListItem<UProductSlotContainer>())
     {
-        DisplayNameTextBlock->SetText(Product->DisplayName);
-    }
+        const auto& ProductSlot = ProductSlotContainer->Slot;
+        auto Item = ProductSlot.Definition;
+        const int32 Stock = ProductSlot.Stock;
+        const int32 MaxStock = ProductSlot.MaxStock;
+        const bool bUnlimitedStock = ProductSlot.bUnlimitedStock;
 
-    if (ThumbnailImage)
-    {
-        ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Product));
-    }
+        if (DisplayNameTextBlock)
+        {
+            DisplayNameTextBlock->SetText(Item->DisplayName);
+        }
 
-    if (BuyPriceTextBlock)
-    {
-        const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Product);
-        BuyPriceTextBlock->SetText(FText::FromString(FString::FromInt(BuyPrice)));
+        if (ThumbnailImage)
+        {
+            ThumbnailImage->SetBrushFromSoftTexture(USlotDataFunctionLibrary::GetThumbnailTexture(Item));
+        }
+
+        if (BuyPriceTextBlock)
+        {
+            const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Item);
+            BuyPriceTextBlock->SetText(FText::AsNumber(BuyPrice));
+        }
+
+        if (StockTextBlock)
+        {
+            if (bUnlimitedStock)
+            {
+                StockTextBlock->SetText(UnlimitedStockText);
+            }
+            else
+            {
+                FText StockText = FText::FromString(FString::FromInt(Stock));
+                FText MaxStockText = FText::FromString(FString::FromInt(MaxStock));
+                StockTextBlock->SetText(FText::Format(StockTextFormat, StockText, MaxStockText));
+            }
+        }
     }
 }

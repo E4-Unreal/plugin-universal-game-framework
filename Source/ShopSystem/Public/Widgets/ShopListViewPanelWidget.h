@@ -3,42 +3,60 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Interfaces/PopupWidgetInterface.h"
+#include "Interfaces/PromptWidgetInterface.h"
+#include "Widgets/TargetWidgetBase.h"
 #include "ShopListViewPanelWidget.generated.h"
 
-class UDataDefinitionBase;
-class IProductDataInterface;
 class UListView;
-class UBuyModalWidget;
 
 /**
  *
  */
 UCLASS()
-class SHOPSYSTEM_API UShopListViewPanelWidget : public UUserWidget
+class SHOPSYSTEM_API UShopListViewPanelWidget : public UTargetWidgetBase
 {
     GENERATED_BODY()
+
+public:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText BuyPromptTitleText;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FText BuyPromptMessageText;
 
 protected:
     UPROPERTY(meta = (BindWidget))
     TObjectPtr<UListView> ShopListView;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    TSubclassOf<UBuyModalWidget> BuyModalWidgetClass;
-
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Config")
-    TArray<TObjectPtr<UDataDefinitionBase>> DefaultProducts;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State")
-    TArray<TObjectPtr<UDataDefinitionBase>> Products;
-
-public:
-    UFUNCTION(BlueprintCallable)
-    virtual void SetProducts(const TArray<UDataDefinitionBase*>& NewProducts);
+    FOnWidgetHidden WidgetHiddenDelegate;
+    FOnPromptSubmitted PromptSubmittedDelegate;
 
 protected:
+    UShopListViewPanelWidget(const FObjectInitializer& ObjectInitializer);
+
+    /* UserWidget */
+
     virtual void NativeOnInitialized() override;
 
+    /* TargetWidgetBase */
+
+    virtual void BindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent) override;
+    virtual void UnbindTargetComponentEvents_Implementation(UActorComponent* InTargetComponent) override;
+
+    /* API */
+
+    virtual void InitializeShopListView();
+
     UFUNCTION()
-    void OnItemDoubleClicked(UObject* Item);
+    virtual void OnItemDoubleClicked(UObject* Item);
+
+    UFUNCTION()
+    virtual void OnSlotUpdated(int32 Index);
+
+    UFUNCTION()
+    virtual void OnWidgetHidden();
+
+    UFUNCTION()
+    virtual void OnPromptSubmitted(const FText& SubmittedText);
 };
