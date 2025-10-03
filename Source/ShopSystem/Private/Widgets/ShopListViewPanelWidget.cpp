@@ -87,12 +87,12 @@ void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
         auto Product = ProductSlot.Definition;
         const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Product);
         const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Product);
-        const bool bInfiniteStock = ProductSlot.bUnlimitedStock;
+        const bool bUnlimitedStock = ProductSlot.bUnlimitedStock;
         const int32 Stock = ProductSlot.Stock;
         int32 AvailableQuantity = 1;
 
         // 재고 부족
-        if (!bInfiniteStock && Stock <= 0) return;
+        if (!bUnlimitedStock && Stock <= 0) return;
 
         if (auto OwningPawn = GetOwningPlayerPawn())
         {
@@ -103,7 +103,8 @@ void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
                 // 1개도 구매가 불가능한 상황
                 if (Currency < BuyPrice) return;
 
-                AvailableQuantity = FMath::Clamp(Currency / BuyPrice, 1, Stock);
+                AvailableQuantity = Currency / BuyPrice;
+                if (!bUnlimitedStock) AvailableQuantity = FMath::Max(AvailableQuantity, Stock);
             }
         }
 

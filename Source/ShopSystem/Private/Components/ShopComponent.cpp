@@ -105,7 +105,7 @@ bool UShopComponent::BuyItem(AActor* Customer, int32 Index, int32 Quantity)
         // 재고 수량 확인
         const auto& Slot = GetSlot(Index);
         auto Item = Slot.Definition;
-        const int32 Stock = Slot.Stock;
+        const int32 Stock = Slot.bUnlimitedStock ? INT32_MAX : Slot.Stock;
 
         if (Stock >= Quantity)
         {
