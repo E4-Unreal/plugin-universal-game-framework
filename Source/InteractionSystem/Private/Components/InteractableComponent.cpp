@@ -8,8 +8,8 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "GameplayTags/InteractionGameplaytags.h"
-#include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
+#include "FunctionLibraries/InteractionSystemFunctionLibrary.h"
 #include "Interfaces/TargetWidgetInterface.h"
 #include "Settings/InteractionSystemSettings.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
@@ -302,14 +302,8 @@ void UInteractableComponent::InitWidgetComponent() const
 
     if (auto InteractionWidget = WidgetComponent->GetWidget())
     {
-        if (InteractionWidget->Implements<UInteractionWidgetInterface>())
-        {
-            if (GetOwner()->Implements<UInteractableInterface>())
-            {
-                IInteractionWidgetInterface::Execute_SetInteractionType(InteractionWidget, GetInteractionType());
-                IInteractionWidgetInterface::Execute_SetInteractionMessage(InteractionWidget, GetInteractionMessage());
-            }
-        }
+        UInteractionSystemFunctionLibrary::SetInteractionType(InteractionWidget, GetInteractionType());
+        UInteractionSystemFunctionLibrary::SetInteractionMessage(InteractionWidget, GetInteractionMessage());
     }
 }
 

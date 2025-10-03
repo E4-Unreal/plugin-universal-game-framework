@@ -3,7 +3,9 @@
 
 #include "FunctionLibraries/InteractionSystemFunctionLibrary.h"
 
+#include "Blueprint/UserWidget.h"
 #include "Interfaces/InteractableInterface.h"
+#include "Interfaces/InteractionWidgetInterface.h"
 
 UObject* UInteractionSystemFunctionLibrary::GetInteractableObject(AActor* TargetActor)
 {
@@ -98,5 +100,26 @@ void UInteractionSystemFunctionLibrary::Deselect(AActor* TargetActor, AActor* In
     if (auto InteractableObject = GetInteractableObject(TargetActor))
     {
         IInteractableInterface::Execute_Deselect(InteractableObject, Interactor);
+    }
+}
+
+bool UInteractionSystemFunctionLibrary::IsInteractionWidget(UUserWidget* Widget)
+{
+    return Widget && Widget->Implements<UInteractionWidgetInterface>();
+}
+
+void UInteractionSystemFunctionLibrary::SetInteractionType(UUserWidget* Widget, FGameplayTag NewInteractionType)
+{
+    if (IsInteractionWidget(Widget))
+    {
+        IInteractionWidgetInterface::Execute_SetInteractionType(Widget, NewInteractionType);
+    }
+}
+
+void UInteractionSystemFunctionLibrary::SetInteractionMessage(UUserWidget* Widget, const FText& NewInteractionMessage)
+{
+    if (IsInteractionWidget(Widget))
+    {
+        IInteractionWidgetInterface::Execute_SetInteractionMessage(Widget, NewInteractionMessage);
     }
 }

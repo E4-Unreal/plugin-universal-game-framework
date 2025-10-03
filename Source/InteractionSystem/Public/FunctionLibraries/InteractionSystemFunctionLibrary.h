@@ -17,6 +17,8 @@ class INTERACTIONSYSTEM_API UInteractionSystemFunctionLibrary : public UBlueprin
     GENERATED_BODY()
 
 public:
+    /* InteractableInterface */
+
     UFUNCTION(BlueprintPure)
     static UObject* GetInteractableObject(AActor* TargetActor);
 
@@ -46,4 +48,15 @@ public:
 
     UFUNCTION(BlueprintCallable)
     static void Deselect(AActor* TargetActor, AActor* Interactor);
+
+    /* InteractionWidgetInterface */
+
+    UFUNCTION(BlueprintPure)
+    static bool IsInteractionWidget(UUserWidget* Widget);
+
+    UFUNCTION(BlueprintCallable)
+    static void SetInteractionType(UUserWidget* Widget, FGameplayTag NewInteractionType);
+
+    UFUNCTION(BlueprintCallable)
+    static void SetInteractionMessage(UUserWidget* Widget, const FText& NewInteractionMessage);
 };
