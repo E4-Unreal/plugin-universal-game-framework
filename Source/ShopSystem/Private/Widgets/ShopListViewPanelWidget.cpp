@@ -9,7 +9,6 @@
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "Internationalization/StringTableRegistry.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
-#include "Widgets/BuyModalWidget.h"
 #include "Widgets/ShopListViewEntryWidget.h"
 
 UShopListViewPanelWidget::UShopListViewPanelWidget(const FObjectInitializer& ObjectInitializer)
