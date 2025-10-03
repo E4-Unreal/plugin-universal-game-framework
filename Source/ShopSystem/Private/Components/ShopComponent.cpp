@@ -22,12 +22,31 @@ void UShopComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    InitializeSlots();
+}
+
+void UShopComponent::InitializeSlots()
+{
     for (int32 Index = 0; Index < Slots.Num(); ++Index)
     {
-        const auto& Product = Slots[Index];
+        auto& Product = Slots[Index];
         if (CheckDefinition(Product.Definition) && Product.MaxStock > 0)
         {
+            Product.Stock = Product.MaxStock;
             SlotIndexMap.Emplace(SlotIndexMap.Num(), Index);
+        }
+    }
+}
+
+void UShopComponent::SetStock(int32 Index, int32 NewStock)
+{
+    if (IsSlotExist(Index))
+    {
+        auto& Slot = const_cast<FProductSlot&>(GetSlot(Index));
+        if (!Slot.bUnlimitedStock)
+        {
+            Slot.Stock = FMath::Clamp(NewStock, 0, Slot.MaxStock);
+            OnSlotUpdated.Broadcast(Index);
         }
     }
 }
@@ -304,17 +323,4 @@ FCurrency UShopComponent::CalculateEquipmentSellPrice(UDataInstanceBase* Equipme
     }
 
     return FCurrency(CurrencyType, SellPrice);
-}
-
-void UShopComponent::SetStock(int32 Index, int32 NewStock)
-{
-    if (IsSlotExist(Index))
-    {
-        auto& Slot = const_cast<FProductSlot&>(GetSlot(Index));
-        if (!Slot.bInfiniteStock)
-        {
-            Slot.Stock = FMath::Clamp(NewStock, 0, Slot.MaxStock);
-            OnSlotUpdated.Broadcast(Index);
-        }
-    }
 }

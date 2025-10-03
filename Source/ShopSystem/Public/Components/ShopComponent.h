@@ -22,14 +22,14 @@ struct FProductSlot
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UDataDefinitionBase> Definition;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
-    int32 Stock;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    int32 Stock = 1;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
-    int32 MaxStock;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 1))
+    int32 MaxStock = 1;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool bInfiniteStock;
+    bool bUnlimitedStock = true;
 
     FProductSlot() { }
 };
@@ -95,6 +95,13 @@ public:
 protected:
     /* API */
 
+    // Slot
+
+    virtual void InitializeSlots();
+    virtual void SetStock(int32 Index, int32 NewStock);
+
+    // Check
+
     virtual bool CheckDefinition(UDataDefinitionBase* Definition) const;
     virtual bool CheckInstance(UDataInstanceBase* Instance) const;
 
@@ -115,8 +122,4 @@ protected:
     virtual bool HasEquipment(AActor* Customer, UDataInstanceBase* Equipment) const;
     virtual bool RemoveEquipment(AActor* Customer, UDataInstanceBase* Equipment) const;
     virtual FCurrency CalculateEquipmentSellPrice(UDataInstanceBase* Equipment) const;
-
-    // Slot
-
-    virtual void SetStock(int32 Index, int32 NewStock);
 };

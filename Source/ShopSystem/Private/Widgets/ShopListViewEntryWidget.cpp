@@ -33,7 +33,7 @@ void UShopListViewEntryWidget::Refresh()
         auto Item = ProductSlot.Definition;
         const int32 Stock = ProductSlot.Stock;
         const int32 MaxStock = ProductSlot.MaxStock;
-        const bool bInfiniteStock = ProductSlot.bInfiniteStock;
+        const bool bUnlimitedStock = ProductSlot.bUnlimitedStock;
 
         if (DisplayNameTextBlock)
         {
@@ -53,7 +53,7 @@ void UShopListViewEntryWidget::Refresh()
 
         if (StockTextBlock)
         {
-            if (bInfiniteStock)
+            if (bUnlimitedStock)
             {
                 StockTextBlock->SetText(UnlimitedStockText);
             }

@@ -88,7 +88,7 @@ void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
         auto Product = ProductSlot.Definition;
         const FGameplayTag CurrencyType = UProductDataFunctionLibrary::GetCurrencyType(Product);
         const int32 BuyPrice = UProductDataFunctionLibrary::GetBuyPrice(Product);
-        const bool bInfiniteStock = ProductSlot.bInfiniteStock;
+        const bool bInfiniteStock = ProductSlot.bUnlimitedStock;
         const int32 Stock = ProductSlot.Stock;
         int32 AvailableQuantity = 1;
 
