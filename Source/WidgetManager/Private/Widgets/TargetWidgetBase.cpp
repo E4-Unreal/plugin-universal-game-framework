@@ -12,16 +12,21 @@ void UTargetWidgetBase::NativeOnInitialized()
 
 void UTargetWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
 {
-    if (NewTargetActor)
+    if (TargetActor == NewTargetActor) return;
+    TargetActor = NewTargetActor;
+
+    if (TargetActor.IsValid())
     {
-        SetTargetComponent(NewTargetActor->FindComponentByClass(TargetComponentClass));
+        SetTargetComponent(TargetActor->FindComponentByClass(TargetComponentClass));
     }
 }
 
 void UTargetWidgetBase::SetTargetComponent_Implementation(UActorComponent* NewTargetComponent)
 {
+    if (TargetComponent == NewTargetComponent) return;
     auto OldTargetComponent = TargetComponent.Get();
     TargetComponent = NewTargetComponent;
+
     OnTargetComponentChanged(OldTargetComponent);
 }
 

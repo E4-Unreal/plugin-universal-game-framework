@@ -20,6 +20,9 @@ protected:
     TSubclassOf<UActorComponent> TargetComponentClass;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
+    TWeakObjectPtr<AActor> TargetActor;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Reference", Transient)
     TWeakObjectPtr<UActorComponent> TargetComponent;
 
 public:
