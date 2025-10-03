@@ -59,6 +59,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TArray<FProductSlot> Slots;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    bool bUseAssetType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FName AssetType;
+
 protected:
     // TMap<Index, SlotIndex>
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)

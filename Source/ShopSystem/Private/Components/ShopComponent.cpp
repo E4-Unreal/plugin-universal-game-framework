@@ -10,12 +10,15 @@
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "FunctionLibraries/WeaponDataFunctionLibrary.h"
+#include "Subsystems/DataManagerSubsystem.h"
 #include "Types/Currency.h"
 
 const FProductSlot FProductSlot::EmptySlot;
 
 UShopComponent::UShopComponent()
 {
+    bUseAssetType = true;
+    AssetType = "Item";
 }
 
 void UShopComponent::BeginPlay()
@@ -27,6 +30,25 @@ void UShopComponent::BeginPlay()
 
 void UShopComponent::InitializeSlots()
 {
+    if (bUseAssetType)
+    {
+        if (auto Subsystem = GEngine->GetEngineSubsystem<UDataManagerSubsystem>())
+        {
+            auto Items = Subsystem->GetDataAssets<UDataDefinitionBase>(AssetType);
+            Slots.Empty(Items.Num());
+            for (const auto& Item : Items)
+            {
+                if (!Item.IsNull())
+                {
+                    FProductSlot NewSlot;
+                    NewSlot.Definition = Item.LoadSynchronous();
+
+                    Slots.Emplace(NewSlot);
+                }
+            }
+        }
+    }
+
     for (int32 Index = 0; Index < Slots.Num(); ++Index)
     {
         auto& Product = Slots[Index];
