@@ -21,6 +21,9 @@ public:
     static UObject* GetInteractableObject(AActor* TargetActor);
 
     UFUNCTION(BlueprintPure)
+    static bool IsInteractable(AActor* TargetActor);
+
+    UFUNCTION(BlueprintPure)
     static FGameplayTag GetInteractionType(AActor* TargetActor);
 
     UFUNCTION(BlueprintPure)

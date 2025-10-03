@@ -24,6 +24,11 @@ UObject* UInteractionSystemFunctionLibrary::GetInteractableObject(AActor* Target
     return InteractableObject;
 }
 
+bool UInteractionSystemFunctionLibrary::IsInteractable(AActor* TargetActor)
+{
+    return GetInteractableObject(TargetActor) != nullptr;
+}
+
 FGameplayTag UInteractionSystemFunctionLibrary::GetInteractionType(AActor* TargetActor)
 {
     if (auto InteractableObject = GetInteractableObject(TargetActor))

@@ -5,8 +5,8 @@
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
-#include "Interfaces/InteractableInterface.h"
 #include "Logging.h"
+#include "FunctionLibraries/InteractionSystemFunctionLibrary.h"
 
 UInteractionSystemComponent::UInteractionSystemComponent(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -133,7 +133,7 @@ void UInteractionSystemComponent::AddTarget(AActor* NewTarget)
 {
     if (NewTarget
         && !AvailableTargets.Contains(NewTarget)
-        && NewTarget->Implements<UInteractableInterface>())
+        && UInteractionSystemFunctionLibrary::IsInteractable(NewTarget))
     {
         AvailableTargets.Emplace(NewTarget);
 
@@ -145,7 +145,7 @@ void UInteractionSystemComponent::RemoveTarget(AActor* OldTarget)
 {
     if (OldTarget
         && AvailableTargets.Contains(OldTarget)
-        && OldTarget->Implements<UInteractableInterface>())
+        && UInteractionSystemFunctionLibrary::IsInteractable(OldTarget))
     {
         DeselectTarget(OldTarget);
 
@@ -159,8 +159,7 @@ void UInteractionSystemComponent::SelectTarget(AActor* NewTarget)
 {
     if (NewTarget
         && AvailableTargets.Contains(NewTarget)
-        && NewTarget->Implements<UInteractableInterface>()
-        && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner()))
+        && UInteractionSystemFunctionLibrary::CanSelect(NewTarget, GetOwner()))
     {
         // 기존에 선택된 액터들 비활성화
 
@@ -168,9 +167,9 @@ void UInteractionSystemComponent::SelectTarget(AActor* NewTarget)
 
         // 새로 선택된 액터 활성화
 
-        IInteractableInterface::Execute_Select(NewTarget, GetOwner());
+        UInteractionSystemFunctionLibrary::Select(NewTarget, GetOwner());
         SelectedTargets.Emplace(NewTarget);
-        SelectedInteractionType = IInteractableInterface::Execute_GetInteractionType(NewTarget);
+        SelectedInteractionType = UInteractionSystemFunctionLibrary::GetInteractionType(NewTarget);
     }
 }
 
@@ -185,13 +184,13 @@ void UInteractionSystemComponent::SelectTargets(const TArray<AActor*>& NewTarget
     }
 
     AActor* FirstSelectedTarget = NewTargets[0];
-    if (!FirstSelectedTarget->Implements<UInteractableInterface>())
+    if (!UInteractionSystemFunctionLibrary::IsInteractable(FirstSelectedTarget))
     {
         LOG_ACTOR_COMPONENT(Warning, TEXT("%s doesn't implement the InteractableInterface."), *FirstSelectedTarget->GetName())
         return;
     }
 
-    SelectedInteractionType = IInteractableInterface::Execute_GetInteractionType(FirstSelectedTarget);
+    SelectedInteractionType = UInteractionSystemFunctionLibrary::GetInteractionType(FirstSelectedTarget);
     if (!SelectedInteractionType.IsValid())
     {
         LOG_ACTOR_COMPONENT(Warning, TEXT("%s's interaction type is not valid."), *FirstSelectedTarget->GetName())
@@ -209,11 +208,10 @@ void UInteractionSystemComponent::SelectTargets(const TArray<AActor*>& NewTarget
     {
         if (NewTarget
             && AvailableTargets.Contains(NewTarget)
-            && NewTarget->Implements<UInteractableInterface>()
-            && IInteractableInterface::Execute_CanSelect(NewTarget, GetOwner())
-            && SelectedInteractionType == IInteractableInterface::Execute_GetInteractionType(NewTarget))
+            && UInteractionSystemFunctionLibrary::CanSelect(NewTarget, GetOwner())
+            && SelectedInteractionType == UInteractionSystemFunctionLibrary::GetInteractionType(NewTarget))
         {
-            IInteractableInterface::Execute_Select(NewTarget, GetOwner());
+            UInteractionSystemFunctionLibrary::Select(NewTarget, GetOwner());
             SelectedTargets.Emplace(NewTarget);
         }
     }
@@ -221,9 +219,9 @@ void UInteractionSystemComponent::SelectTargets(const TArray<AActor*>& NewTarget
 
 void UInteractionSystemComponent::DeselectTarget(AActor* OldTarget)
 {
-    if (OldTarget && SelectedTargets.Contains(OldTarget) && OldTarget->Implements<UInteractableInterface>())
+    if (OldTarget && SelectedTargets.Contains(OldTarget) && UInteractionSystemFunctionLibrary::IsInteractable(OldTarget))
     {
-        IInteractableInterface::Execute_Deselect(OldTarget, GetOwner());
+        UInteractionSystemFunctionLibrary::Deselect(OldTarget, GetOwner());
 
         SelectedTargets.RemoveSingleSwap(OldTarget);
         if (SelectedTargets.IsEmpty()) SelectedInteractionType = FGameplayTag::EmptyTag;
@@ -234,9 +232,9 @@ void UInteractionSystemComponent::DeselectTargets()
 {
     for (const auto& SelectedTarget : SelectedTargets)
     {
-        if (SelectedTarget.IsValid() && SelectedTarget->Implements<UInteractableInterface>())
+        if (SelectedTarget.IsValid() && UInteractionSystemFunctionLibrary::IsInteractable(SelectedTarget.Get()))
         {
-            IInteractableInterface::Execute_Deselect(SelectedTarget.Get(), GetOwner());
+            UInteractionSystemFunctionLibrary::Deselect(SelectedTarget.Get(), GetOwner());
         }
     }
 
@@ -295,9 +293,9 @@ bool UInteractionSystemComponent::TryInteract()
 
     for (const auto& SelectedTarget : GetSelectedTargets())
     {
-        if (SelectedTarget && IInteractableInterface::Execute_CanInteract(SelectedTarget, GetOwner()))
+        if (SelectedTarget && UInteractionSystemFunctionLibrary::CanInteract(SelectedTarget, GetOwner()))
         {
-            IInteractableInterface::Execute_Interact(SelectedTarget, GetOwner());
+            UInteractionSystemFunctionLibrary::Interact(SelectedTarget, GetOwner());
         }
         else
         {
@@ -316,7 +314,7 @@ void UInteractionSystemComponent::CancelInteract()
     {
         if (SelectedTarget.IsValid())
         {
-            IInteractableInterface::Execute_CancelInteract(SelectedTarget.Get(), GetOwner());
+            UInteractionSystemFunctionLibrary::CancelInteract(SelectedTarget.Get(), GetOwner());
         }
     }
 }
