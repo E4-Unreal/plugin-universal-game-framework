@@ -41,13 +41,13 @@ protected:
 public:
     UShopListViewEntryWidget(const FObjectInitializer& ObjectInitializer);
 
-protected:
-    /* IUserObjectListEntry */
-
-    virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
-
     /* API */
 
     UFUNCTION(BlueprintCallable)
     virtual void Refresh();
+
+protected:
+    /* IUserObjectListEntry */
+
+    virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
 };

@@ -9,6 +9,7 @@
 #include "FunctionLibraries/ProductDataFunctionLibrary.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
 #include "Widgets/BuyModalWidget.h"
+#include "Widgets/ShopListViewEntryWidget.h"
 
 UShopListViewPanelWidget::UShopListViewPanelWidget(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -123,7 +124,11 @@ void UShopListViewPanelWidget::OnSlotUpdated(int32 Index)
             if (auto ShopComponent = Cast<UShopComponent>(TargetComponent))
             {
                 Item->Slot = ShopComponent->GetSlot(Index);
-                ShopListView->RequestRefresh();
+            }
+
+            if (auto EntryWidget = Cast<UShopListViewEntryWidget>(ShopListView->GetEntryWidgetFromItem(Item)))
+            {
+                EntryWidget->Refresh();
             }
         }
     }
