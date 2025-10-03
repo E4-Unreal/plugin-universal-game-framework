@@ -40,7 +40,12 @@ void UInteractionSystemComponent::OnComponentDestroyed(bool bDestroyingHierarchy
     UnBindOverlapCapsuleEvents();
 }
 
-TArray<AActor*> UInteractionSystemComponent::GetSelectedTargets()
+AActor* UInteractionSystemComponent::GetSelectedTarget() const
+{
+    return SelectedTargets.IsEmpty() ? nullptr : SelectedTargets[0].Get();
+}
+
+TArray<AActor*> UInteractionSystemComponent::GetSelectedTargets() const
 {
     TArray<AActor*> OutSelectedTargets;
     OutSelectedTargets.Reserve(SelectedTargets.Num());
