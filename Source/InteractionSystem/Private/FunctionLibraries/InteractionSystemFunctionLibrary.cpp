@@ -51,6 +51,21 @@ FText UInteractionSystemFunctionLibrary::GetInteractionMessage(AActor* TargetAct
     return FText::GetEmpty();
 }
 
+float UInteractionSystemFunctionLibrary::GetInteractionDuration(AActor* TargetActor)
+{
+    if (auto InteractableObject = GetInteractableObject(TargetActor))
+    {
+        return IInteractableInterface::Execute_GetInteractionDuration(InteractableObject);
+    }
+
+    return 0.0f;
+}
+
+bool UInteractionSystemFunctionLibrary::ShouldHold(AActor* TargetActor)
+{
+    return GetInteractionDuration(TargetActor) > 0.0f;
+}
+
 bool UInteractionSystemFunctionLibrary::IsInteracting(AActor* TargetActor)
 {
     return GetInteractor(TargetActor) != nullptr;
@@ -74,6 +89,14 @@ bool UInteractionSystemFunctionLibrary::CanInteract(AActor* TargetActor, AActor*
     }
 
     return false;
+}
+
+void UInteractionSystemFunctionLibrary::StartInteract(AActor* TargetActor, AActor* Interactor)
+{
+    if (auto InteractableObject = GetInteractableObject(TargetActor))
+    {
+        IInteractableInterface::Execute_StartInteract(InteractableObject, Interactor);
+    }
 }
 
 void UInteractionSystemFunctionLibrary::Interact(AActor* TargetActor, AActor* Interactor)

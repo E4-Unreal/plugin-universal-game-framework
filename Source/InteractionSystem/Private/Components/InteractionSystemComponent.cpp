@@ -295,7 +295,7 @@ bool UInteractionSystemComponent::TryInteract()
     {
         if (SelectedTarget && UInteractionSystemFunctionLibrary::CanInteract(SelectedTarget, GetOwner()))
         {
-            UInteractionSystemFunctionLibrary::Interact(SelectedTarget, GetOwner());
+            UInteractionSystemFunctionLibrary::StartInteract(SelectedTarget, GetOwner());
         }
         else
         {
@@ -312,7 +312,7 @@ void UInteractionSystemComponent::CancelInteract()
 
     for (const auto& SelectedTarget : SelectedTargets)
     {
-        if (SelectedTarget.IsValid())
+        if (SelectedTarget.IsValid() && UInteractionSystemFunctionLibrary::ShouldHold(SelectedTarget.Get()))
         {
             UInteractionSystemFunctionLibrary::CancelInteract(SelectedTarget.Get(), GetOwner());
         }

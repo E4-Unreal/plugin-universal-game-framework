@@ -23,39 +23,46 @@ class INTERACTIONSYSTEM_API IInteractableInterface
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FGameplayTag GetInteractionType() const;
+    virtual FGameplayTag GetInteractionType_Implementation() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FText GetInteractionMessage() const;
+    virtual FText GetInteractionMessage_Implementation() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    float GetInteractionDuration() const;
+    virtual float GetInteractionDuration_Implementation() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     AActor* GetInteractor() const;
+    virtual AActor* GetInteractor_Implementation() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanInteract(AActor* Interactor);
+    virtual bool CanInteract_Implementation(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void StartInteract(AActor* Interact);
+    virtual void StartInteract_Implementation(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Interact(AActor* Interactor);
+    virtual void Interact_Implementation(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void CancelInteract(AActor* Interactor);
+    virtual void CancelInteract_Implementation(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanSelect(AActor* Interactor);
+    virtual bool CanSelect_Implementation(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Select(AActor* Interactor);
+    virtual void Select_Implementation(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Deselect(AActor* Interactor);
-
-    virtual FGameplayTag GetInteractionType_Implementation() const;
-    virtual FText GetInteractionMessage_Implementation() const;
-    virtual AActor* GetInteractor_Implementation() const;
-    virtual bool CanInteract_Implementation(AActor* Interactor);
-    virtual void Interact_Implementation(AActor* Interactor);
-    virtual void CancelInteract_Implementation(AActor* Interactor);
-    virtual bool CanSelect_Implementation(AActor* Interactor);
-    virtual void Select_Implementation(AActor* Interactor);
     virtual void Deselect_Implementation(AActor* Interactor);
 
 private:

@@ -73,10 +73,16 @@ public:
     FText GetInteractionMessage() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    float GetInteractionDuration() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     AActor* GetInteractor() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void StartInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Interact(AActor* Interactor);
@@ -117,6 +123,9 @@ protected:
     UInteractionSystemComponent* GetPlayerInteractionSystem() const;
 
     /* API */
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnStartInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintNativeEvent)
     void OnInteract(AActor* Interactor);

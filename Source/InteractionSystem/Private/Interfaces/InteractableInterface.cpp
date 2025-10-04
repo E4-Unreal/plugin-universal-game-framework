@@ -36,6 +36,16 @@ FText IInteractableInterface::GetInteractionMessage_Implementation() const
     return FText::GetEmpty();
 }
 
+float IInteractableInterface::GetInteractionDuration_Implementation() const
+{
+    if (auto Component = GetComponent())
+    {
+        return Execute_GetInteractionDuration(Component);
+    }
+
+    return 0.0f;
+}
+
 AActor* IInteractableInterface::GetInteractor_Implementation() const
 {
     if (auto Component = GetComponent())
@@ -54,6 +64,14 @@ bool IInteractableInterface::CanInteract_Implementation(AActor* Interactor)
     }
 
     return false;
+}
+
+void IInteractableInterface::StartInteract_Implementation(AActor* Interactor)
+{
+    if (auto Component = GetComponent())
+    {
+        Execute_StartInteract(Component, Interactor);
+    }
 }
 
 void IInteractableInterface::Interact_Implementation(AActor* Interactor)

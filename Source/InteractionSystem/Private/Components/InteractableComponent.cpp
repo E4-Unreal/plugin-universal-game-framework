@@ -50,9 +50,14 @@ void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+float UInteractableComponent::GetInteractionDuration_Implementation() const
+{
+    return 0.0f;
+}
+
 AActor* UInteractableComponent::GetInteractor_Implementation() const
 {
-    return IInteractableInterface::GetInteractor_Implementation();
+    return CurrentInteractor.Get();
 }
 
 FGameplayTag UInteractableComponent::GetInteractionType_Implementation() const
@@ -70,6 +75,16 @@ bool UInteractableComponent::CanInteract_Implementation(AActor* Interactor)
     if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
 
     return Interactor && !GetOwner()->IsHidden();
+}
+
+void UInteractableComponent::StartInteract_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnStartInteract(Interactor);
+    }
 }
 
 void UInteractableComponent::Interact_Implementation(AActor* Interactor)
@@ -176,6 +191,11 @@ UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem(
     }
 
     return nullptr;
+}
+
+void UInteractableComponent::OnStartInteract_Implementation(AActor* Interactor)
+{
+    UInteractionSystemFunctionLibrary::Interact(GetOwner(), Interactor);
 }
 
 void UInteractableComponent::OnInteract_Implementation(AActor* Interactor)

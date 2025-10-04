@@ -32,13 +32,22 @@ public:
     static FText GetInteractionMessage(AActor* TargetActor);
 
     UFUNCTION(BlueprintPure)
+    static float GetInteractionDuration(AActor* TargetActor);
+
+    UFUNCTION(BlueprintPure)
+    static bool ShouldHold(AActor* TargetActor);
+
+    UFUNCTION(BlueprintPure)
     static bool IsInteracting(AActor* TargetActor);
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintPure)
     static AActor* GetInteractor(AActor* TargetActor);
 
     UFUNCTION(BlueprintPure)
     static bool CanInteract(AActor* TargetActor, AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable)
+    static void StartInteract(AActor* TargetActor, AActor* Interactor);
 
     UFUNCTION(BlueprintCallable)
     static void Interact(AActor* TargetActor, AActor* Interactor);
