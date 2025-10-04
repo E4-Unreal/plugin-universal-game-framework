@@ -50,6 +50,7 @@ int32 UEditableNumericText::GetValue() const
 
 void UEditableNumericText::SetValue(int32 NewValue)
 {
+    NewValue = FMath::Clamp(NewValue, MinValue, MaxValue);
     SetText(FText::FromString(FString::FromInt(NewValue)));
 }
 
@@ -75,12 +76,6 @@ void UEditableNumericText::NativeOnTextChanged(const FText& NewText)
             }
         }
 
-        if (!String.IsEmpty())
-        {
-            auto Value = FMath::Clamp(FCString::Atoi(*String), MinValue, MaxValue);
-            String = FString::FromInt(Value);
-        }
-
-        SetText(FText::FromString(String));
+        SetValue(FCString::Atoi(*String));
     }
 }
