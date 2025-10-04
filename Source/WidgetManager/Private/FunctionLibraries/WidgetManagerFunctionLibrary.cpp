@@ -4,6 +4,7 @@
 #include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/EntryWidgetInterface.h"
 #include "Interfaces/WidgetUtilityInterface.h"
 
 UUserWidget* UWidgetManagerFunctionLibrary::CreateWidgetByClass(APlayerController* OwningPlayerController,
@@ -198,5 +199,13 @@ void UWidgetManagerFunctionLibrary::Clear(UUserWidget* Widget)
     if (Widget && Widget->Implements<UWidgetUtilityInterface>())
     {
         IWidgetUtilityInterface::Execute_Clear(Widget);
+    }
+}
+
+void UWidgetManagerFunctionLibrary::SetItem(UUserWidget* Widget, UObject* NewItem)
+{
+    if (Widget && Widget->Implements<UEntryWidgetInterface>())
+    {
+        IEntryWidgetInterface::Execute_SetItem(Widget, NewItem);
     }
 }

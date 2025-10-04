@@ -67,4 +67,9 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "WidgetUtilityInterface")
     static void Clear(UUserWidget* Widget);
+
+    /* EntryWidgetInterface */
+
+    UFUNCTION(BlueprintCallable, Category = "EntryWidgetInterface")
+    static void SetItem(UUserWidget* Widget, UObject* NewItem);
 };
