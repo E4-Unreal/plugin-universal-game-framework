@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "Interfaces/InteractableInterface.h"
 #include "InteractableComponent.generated.h"
 
 class UWidgetComponent;
@@ -12,7 +13,7 @@ class UShapeComponent;
 class UInteractionSystemComponent;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
-class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent
+class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent, public IInteractableInterface
 {
     GENERATED_BODY()
 
@@ -51,6 +52,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "State", Transient)
     TArray<TWeakObjectPtr<AActor>> OverlappingActors;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TWeakObjectPtr<AActor> CurrentInteractor;
+
 public:
     UInteractableComponent();
 
@@ -59,6 +63,41 @@ public:
     virtual void InitializeComponent() override;
     virtual void BeginPlay() override;
     virtual void OnComponentDestroyed(bool bDestroyingHierarchy) override;
+
+    /* InteractableInterface */
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FGameplayTag GetInteractionType() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FText GetInteractionMessage() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    float GetInteractionDuration() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    AActor* GetInteractor() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool CanInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void StartInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Interact(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void CancelInteract(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool CanSelect(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Select(AActor* Interactor);
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Deselect(AActor* Interactor);
 
     /* API */
 
@@ -71,23 +110,11 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapShape(UShapeComponent* NewOverlapShape);
 
-    UFUNCTION(BlueprintPure)
-    virtual bool CanInteract(AActor* Interactor) const;
+    UFUNCTION(BlueprintCallable)
+    virtual void SetInteractionType(FGameplayTag NewInteractionType);
 
     UFUNCTION(BlueprintCallable)
-    void Interact(AActor* Interactor);
-
-    UFUNCTION(BlueprintCallable)
-    void CancelInteract(AActor* Interactor);
-
-    UFUNCTION(BlueprintPure)
-    virtual bool CanSelect(AActor* Interactor) const;
-
-    UFUNCTION(BlueprintCallable)
-    void Select(AActor* Interactor);
-
-    UFUNCTION(BlueprintCallable)
-    void Deselect(AActor* Interactor);
+    virtual void SetInteractionMessage(const FText& NewInteractionMessage);
 
 protected:
     /* Getter */
@@ -96,6 +123,9 @@ protected:
     UInteractionSystemComponent* GetPlayerInteractionSystem() const;
 
     /* API */
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnStartInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintNativeEvent)
     void OnInteract(AActor* Interactor);
@@ -147,4 +177,7 @@ protected:
 
     UFUNCTION()
     virtual void OnClicked(AActor* TouchedActor, FKey ButtonPressed);
+
+    UFUNCTION()
+    virtual void OnMenuWidgetDestruct(UUserWidget* Widget);
 };

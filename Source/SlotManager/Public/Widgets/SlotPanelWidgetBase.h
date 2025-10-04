@@ -24,6 +24,9 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidgetOptional))
     TObjectPtr<UTextBlock> PanelNameTextBlock;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidget))
+    TObjectPtr<UUniformGridPanel> SlotPanel;
+
 public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText PanelName;
@@ -41,9 +44,6 @@ public:
     int32 PreviewSlotNum = 20;
 
 protected:
-    UPROPERTY(meta = (BindWidget))
-    TObjectPtr<UUniformGridPanel> SlotPanel;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
     TWeakObjectPtr<AActor> TargetActor;
 
@@ -66,6 +66,7 @@ public:
     /* Components */
 
     FORCEINLINE UTextBlock* GetPanelNameTextBlock() const { return PanelNameTextBlock; }
+    FORCEINLINE UUniformGridPanel* GetSlotPanel() const { return SlotPanel; }
 
 protected:
     /* UserWidget */

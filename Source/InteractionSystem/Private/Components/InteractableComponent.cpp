@@ -8,9 +8,8 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "GameplayTags/InteractionGameplaytags.h"
-#include "Interfaces/InteractableInterface.h"
-#include "Interfaces/InteractionWidgetInterface.h"
 #include "Logging.h"
+#include "FunctionLibraries/InteractionSystemFunctionLibrary.h"
 #include "Interfaces/TargetWidgetInterface.h"
 #include "Settings/InteractionSystemSettings.h"
 #include "Subsystems/WidgetManagerSubsystem.h"
@@ -51,6 +50,90 @@ void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+float UInteractableComponent::GetInteractionDuration_Implementation() const
+{
+    return 0.0f;
+}
+
+AActor* UInteractableComponent::GetInteractor_Implementation() const
+{
+    return CurrentInteractor.Get();
+}
+
+FGameplayTag UInteractableComponent::GetInteractionType_Implementation() const
+{
+    return InteractionType;
+}
+
+FText UInteractableComponent::GetInteractionMessage_Implementation() const
+{
+    return InteractionMessage;
+}
+
+bool UInteractableComponent::CanInteract_Implementation(AActor* Interactor)
+{
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+
+    return Interactor && !GetOwner()->IsHidden();
+}
+
+void UInteractableComponent::StartInteract_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnStartInteract(Interactor);
+    }
+}
+
+void UInteractableComponent::Interact_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnInteract(Interactor);
+    }
+}
+
+void UInteractableComponent::CancelInteract_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnCancelInteract(Interactor);
+    }
+}
+
+bool UInteractableComponent::CanSelect_Implementation(AActor* Interactor)
+{
+    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+
+    return true;
+}
+
+void UInteractableComponent::Select_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnSelect(Interactor);
+    }
+}
+
+void UInteractableComponent::Deselect_Implementation(AActor* Interactor)
+{
+    if (Interactor)
+    {
+        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
+
+        OnDeselect(Interactor);
+    }
+}
+
 void UInteractableComponent::SetDisplayMesh(UMeshComponent* NewDisplayMesh)
 {
     DisplayMesh = NewDisplayMesh;
@@ -66,57 +149,29 @@ void UInteractableComponent::SetOverlapShape(UShapeComponent* NewOverlapShape)
     OverlapShape = NewOverlapShape;
 }
 
-bool UInteractableComponent::CanInteract(AActor* Interactor) const
+void UInteractableComponent::SetInteractionType(FGameplayTag NewInteractionType)
 {
-    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
+    InteractionType = NewInteractionType;
 
-    return Interactor && !GetOwner()->IsHidden();
-}
-
-void UInteractableComponent::Interact(AActor* Interactor)
-{
-    if (Interactor)
+    if (WidgetComponent.IsValid())
     {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnInteract(Interactor);
+        if (auto InteractionWidget = WidgetComponent->GetWidget())
+        {
+            UInteractionSystemFunctionLibrary::SetInteractionType(InteractionWidget, InteractionType);
+        }
     }
 }
 
-void UInteractableComponent::CancelInteract(AActor* Interactor)
+void UInteractableComponent::SetInteractionMessage(const FText& NewInteractionMessage)
 {
-    if (Interactor)
+    InteractionMessage = NewInteractionMessage;
+
+    if (WidgetComponent.IsValid())
     {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnCancelInteract(Interactor);
-    }
-}
-
-bool UInteractableComponent::CanSelect(AActor* Interactor) const
-{
-    if (bUseOverlapShape && !OverlappingActors.Contains(Interactor)) return false;
-
-    return true;
-}
-
-void UInteractableComponent::Select(AActor* Interactor)
-{
-    if (Interactor)
-    {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnSelect(Interactor);
-    }
-}
-
-void UInteractableComponent::Deselect(AActor* Interactor)
-{
-    if (Interactor)
-    {
-        LOG_ACTOR_COMPONENT(Log, TEXT("Interactor: %s"), *Interactor->GetName())
-
-        OnDeselect(Interactor);
+        if (auto InteractionWidget = WidgetComponent->GetWidget())
+        {
+            UInteractionSystemFunctionLibrary::SetInteractionMessage(InteractionWidget, GetInteractionMessage());
+        }
     }
 }
 
@@ -138,14 +193,21 @@ UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem(
     return nullptr;
 }
 
+void UInteractableComponent::OnStartInteract_Implementation(AActor* Interactor)
+{
+    UInteractionSystemFunctionLibrary::Interact(GetOwner(), Interactor);
+}
+
 void UInteractableComponent::OnInteract_Implementation(AActor* Interactor)
 {
+    CurrentInteractor = Interactor;
     ShowMenuWidget(Interactor);
 }
 
 void UInteractableComponent::OnCancelInteract_Implementation(AActor* Interactor)
 {
-
+    HideMenuWidget(Interactor);
+    CurrentInteractor = nullptr;
 }
 
 void UInteractableComponent::OnSelect_Implementation(AActor* Interactor)
@@ -197,9 +259,17 @@ UUserWidget* UInteractableComponent::ShowMenuWidget(AActor* PlayerActor)
     if (PlayerActor && MenuWidgetClass)
     {
         UUserWidget* MenuWidget = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->ShowWidget(PlayerActor, MenuWidgetClass);
-        if (MenuWidget && MenuWidget->Implements<UTargetWidgetInterface>())
+        if (MenuWidget)
         {
-            ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, GetOwner());
+            if (MenuWidget->Implements<UTargetWidgetInterface>())
+            {
+                ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, GetOwner());
+            }
+
+            if (!MenuWidget->OnNativeDestruct.IsBoundToObject(this))
+            {
+                MenuWidget->OnNativeDestruct.AddUObject(this, &ThisClass::OnMenuWidgetDestruct);
+            }
         }
 
         return MenuWidget;
@@ -293,14 +363,8 @@ void UInteractableComponent::InitWidgetComponent() const
 
     if (auto InteractionWidget = WidgetComponent->GetWidget())
     {
-        if (InteractionWidget->Implements<UInteractionWidgetInterface>())
-        {
-            if (GetOwner()->Implements<UInteractableInterface>())
-            {
-                IInteractionWidgetInterface::Execute_SetInteractionType(InteractionWidget, IInteractableInterface::Execute_GetInteractionType(GetOwner()));
-                IInteractionWidgetInterface::Execute_SetInteractionMessage(InteractionWidget, IInteractableInterface::Execute_GetInteractionMessage(GetOwner()));
-            }
-        }
+        UInteractionSystemFunctionLibrary::SetInteractionType(InteractionWidget, UInteractionSystemFunctionLibrary::GetInteractionType(GetOwner()));
+        UInteractionSystemFunctionLibrary::SetInteractionMessage(InteractionWidget, UInteractionSystemFunctionLibrary::GetInteractionMessage(GetOwner()));
     }
 }
 
@@ -367,5 +431,13 @@ void UInteractableComponent::OnClicked(AActor* TouchedActor, FKey ButtonPressed)
         {
             PlayerInteractionSystem->TryInteract();
         }
+    }
+}
+
+void UInteractableComponent::OnMenuWidgetDestruct(UUserWidget* Widget)
+{
+    if (CurrentInteractor.IsValid())
+    {
+        UInteractionSystemFunctionLibrary::CancelInteract(GetOwner(), CurrentInteractor.Get());
     }
 }

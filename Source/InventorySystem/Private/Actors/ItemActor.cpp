@@ -25,11 +25,6 @@ AItemActor::AItemActor(const FObjectInitializer& ObjectInitializer)
     ItemComponent = CreateDefaultSubobject<UItemComponent>(ItemComponentName);
 }
 
-FText AItemActor::GetInteractionMessage_Implementation() const
-{
-    return GetItemComponent()->GetItemName();
-}
-
 void AItemActor::Interact_Implementation(AActor* Interactor)
 {
     Super::Interact_Implementation(Interactor);
@@ -40,4 +35,5 @@ void AItemActor::Interact_Implementation(AActor* Interactor)
 void AItemActor::SetItemInstances_Implementation(const TArray<UDataInstanceBase*>& NewItemsInstances)
 {
     GetItemComponent()->SetItems(NewItemsInstances);
+    GetInteractableComponent()->SetInteractionMessage(GetItemComponent()->GetItemName());
 }

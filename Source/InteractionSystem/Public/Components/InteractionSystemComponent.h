@@ -50,7 +50,10 @@ public:
     const FORCEINLINE FGameplayTag& GetSelectedInteractionType() const { return SelectedInteractionType; }
 
     UFUNCTION(BlueprintPure)
-    TArray<AActor*> GetSelectedTargets();
+    AActor* GetSelectedTarget() const;
+
+    UFUNCTION(BlueprintPure)
+    TArray<AActor*> GetSelectedTargets() const;
 
     UFUNCTION(BlueprintCallable, Category = "Reference")
     virtual void SetOverlapSphere(USphereComponent* NewOverlapSphere);

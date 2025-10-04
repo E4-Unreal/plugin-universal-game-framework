@@ -85,7 +85,7 @@ bool UInventoryComponent::RemoveContent(UDataInstanceBase* InContent)
     // 인벤토리 조회 및 아이템 제거
     for (const auto& [Index, Content] : SlotMap)
     {
-        if (Content->Definition != Content->Definition) continue;
+        if (Content == nullptr || Content->Definition != InContent->Definition) continue;
 
         const int32 SlotQuantity = UItemDataFunctionLibrary::GetQuantity(Content);
 
@@ -189,7 +189,7 @@ int32 UInventoryComponent::GetItemQuantity(UDataDefinitionBase* Item) const
     int32 Quantity = 0;
     for (const auto& [Index, Content] : Slots)
     {
-        if (Content->Definition == Item)
+        if (Content && Content->Definition == Item)
         {
             Quantity += UItemDataFunctionLibrary::GetQuantity(Content);
         }

@@ -92,7 +92,7 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
 
             int32 SlotColumn = Index % MaxSlotColumn;
             int32 SlotRow = Index / MaxSlotColumn;
-            SlotPanel->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
+            GetSlotPanel()->AddChildToUniformGrid(SlotWidget, SlotRow, SlotColumn);
 
             SlotWidgetMap.Emplace(Index, SlotWidget);
         }
@@ -101,7 +101,7 @@ void USlotPanelWidgetBase::CreateSlotWidgets()
     {
         for (int32 Index = OldSlotNum - 1; Index >= NewSlotNum; --Index)
         {
-            SlotPanel->RemoveChildAt(Index);
+            GetSlotPanel()->RemoveChildAt(Index);
             SlotWidgetMap.Remove(Index);
         }
     }
