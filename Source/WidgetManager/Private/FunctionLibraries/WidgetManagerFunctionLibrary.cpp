@@ -4,9 +4,10 @@
 #include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/WidgetUtilityInterface.h"
 
 UUserWidget* UWidgetManagerFunctionLibrary::CreateWidgetByClass(APlayerController* OwningPlayerController,
-                                                         TSubclassOf<UUserWidget> WidgetClass)
+                                                                TSubclassOf<UUserWidget> WidgetClass)
 {
     UUserWidget* Widget = nullptr;
 
@@ -181,5 +182,21 @@ void UWidgetManagerFunctionLibrary::SetPlayerUIMode(APlayerController* PlayerCon
         {
             PlayerController->SetShowMouseCursor(true);
         }
+    }
+}
+
+void UWidgetManagerFunctionLibrary::Refresh(UUserWidget* Widget)
+{
+    if (Widget && Widget->Implements<UWidgetUtilityInterface>())
+    {
+        IWidgetUtilityInterface::Execute_Refresh(Widget);
+    }
+}
+
+void UWidgetManagerFunctionLibrary::Clear(UUserWidget* Widget)
+{
+    if (Widget && Widget->Implements<UWidgetUtilityInterface>())
+    {
+        IWidgetUtilityInterface::Execute_Clear(Widget);
     }
 }

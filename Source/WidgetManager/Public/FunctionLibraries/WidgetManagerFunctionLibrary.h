@@ -59,4 +59,12 @@ public:
 
     UFUNCTION(BlueprintCallable)
     static void SetPlayerUIMode(APlayerController* PlayerController);
+
+    /* WidgetUtilityInterface */
+
+    UFUNCTION(BlueprintCallable, Category = "WidgetUtilityInterface")
+    static void Refresh(UUserWidget* Widget);
+
+    UFUNCTION(BlueprintCallable, Category = "WidgetUtilityInterface")
+    static void Clear(UUserWidget* Widget);
 };
