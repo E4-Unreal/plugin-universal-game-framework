@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "CraftingRecipeListViewEntryWidget.generated.h"
 
+class UDataDefinitionBase;
 class UTextBlock;
 class UImage;
 
@@ -26,6 +27,27 @@ private:
     TObjectPtr<UImage> ThumbnailImage;
 
 public:
+#if WITH_EDITORONLY_DATA
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DesignerRebuild))
+    TObjectPtr<UDataDefinitionBase> PreviewRecipe;
+#endif
+
+public:
+    /* Widget */
+
+    virtual void SynchronizeProperties() override;
+
+    /* API */
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetDisplayName(const FText& NewDisplayName);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewThumbnailTexture);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void SetRecipe(UDataDefinitionBase* NewRecipe);
+
     /* Components */
 
     FORCEINLINE UTextBlock* GetDisplayNameTextBlock() const { return DisplayNameTextBlock; }

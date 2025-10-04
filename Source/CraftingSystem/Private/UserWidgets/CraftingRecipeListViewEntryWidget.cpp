@@ -10,28 +10,67 @@
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 #include "Types/Item.h"
 
-void UCraftingRecipeListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
+void UCraftingRecipeListViewEntryWidget::SynchronizeProperties()
 {
-    if (auto Recipe = Cast<UDataDefinitionBase>(ListItemObject))
+    Super::SynchronizeProperties();
+
+#if WITH_EDITOR
+    if (IsDesignTime())
     {
-        const FText DisplayName = Recipe->DisplayName;
-
-        const auto& Results = UCraftingRecipeDataFunctionLibrary::GetResults(Recipe);
-        if (!Results.IsEmpty())
+        if (PreviewRecipe)
         {
-            const auto& Result = Results[0];
-            auto Item = Result.Definition;
-
-            auto ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(Item);
-            if (GetThumbnailImage())
-            {
-                GetThumbnailImage()->SetBrushFromSoftTexture(ThumbnailTexture);
-            }
-        }
-
-        if (GetDisplayNameTextBlock())
-        {
-            GetDisplayNameTextBlock()->SetText(DisplayName);
+            SetRecipe(PreviewRecipe);
         }
     }
+#endif
+}
+
+void UCraftingRecipeListViewEntryWidget::SetDisplayName(const FText& NewDisplayName)
+{
+    if (GetDisplayNameTextBlock())
+    {
+        GetDisplayNameTextBlock()->SetText(NewDisplayName);
+    }
+}
+
+void UCraftingRecipeListViewEntryWidget::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewThumbnailTexture)
+{
+    if (GetThumbnailImage())
+    {
+        if (NewThumbnailTexture.IsNull())
+        {
+            GetThumbnailImage()->SetBrushTintColor(FSlateColor(FLinearColor::Transparent));
+        }
+        else
+        {
+            GetThumbnailImage()->SetBrushTintColor(FSlateColor(FLinearColor::White));
+            GetThumbnailImage()->SetBrushFromSoftTexture(NewThumbnailTexture);
+        }
+    }
+}
+
+void UCraftingRecipeListViewEntryWidget::SetRecipe(UDataDefinitionBase* NewRecipe)
+{
+    FText DisplayName;
+    TSoftObjectPtr<UTexture2D> ThumbnailTexture;
+
+    if (NewRecipe)
+    {
+        const auto& Results = UCraftingRecipeDataFunctionLibrary::GetResults(NewRecipe);
+        if (!Results.IsEmpty())
+        {
+            const auto& Item = Results[0];
+            auto ItemDefinition = Item.Definition;
+            DisplayName = ItemDefinition->DisplayName;
+            ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(ItemDefinition);
+        }
+    }
+
+    SetDisplayName(DisplayName);
+    SetThumbnailTexture(ThumbnailTexture);
+}
+
+void UCraftingRecipeListViewEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
+{
+    SetRecipe(Cast<UDataDefinitionBase>(ListItemObject));
 }
