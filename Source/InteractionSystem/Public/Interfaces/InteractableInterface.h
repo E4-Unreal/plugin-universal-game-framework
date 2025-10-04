@@ -47,4 +47,17 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void Deselect(AActor* Interactor);
+
+    virtual FGameplayTag GetInteractionType_Implementation() const;
+    virtual FText GetInteractionMessage_Implementation() const;
+    virtual AActor* GetInteractor_Implementation() const;
+    virtual bool CanInteract_Implementation(AActor* Interactor);
+    virtual void Interact_Implementation(AActor* Interactor);
+    virtual void CancelInteract_Implementation(AActor* Interactor);
+    virtual bool CanSelect_Implementation(AActor* Interactor);
+    virtual void Select_Implementation(AActor* Interactor);
+    virtual void Deselect_Implementation(AActor* Interactor);
+
+private:
+    virtual UActorComponent* GetComponent() const;
 };

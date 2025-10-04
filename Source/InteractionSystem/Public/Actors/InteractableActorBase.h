@@ -24,17 +24,6 @@ private:
 public:
     AInteractableActorBase(const FObjectInitializer& ObjectInitializer);
 
-    /* InteractableInterface */
-
-    virtual FGameplayTag GetInteractionType_Implementation() const override;
-    virtual FText GetInteractionMessage_Implementation() const override;
-    virtual bool CanInteract_Implementation(AActor* Interactor) override;
-    virtual void Interact_Implementation(AActor* Interactor) override;
-    virtual void CancelInteract_Implementation(AActor* Interactor) override;
-    virtual bool CanSelect_Implementation(AActor* Interactor) override;
-    virtual void Select_Implementation(AActor* Interactor) override;
-    virtual void Deselect_Implementation(AActor* Interactor) override;
-
 public:
     FORCEINLINE UInteractableComponent* GetInteractableComponent() const { return InteractableComponent; }
 };
