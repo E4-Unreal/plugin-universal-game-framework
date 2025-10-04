@@ -5,10 +5,12 @@
 
 #include "Data/DataInstanceBase.h"
 #include "Interfaces/ItemActorInterface.h"
+#include "Settings/InventorySystemSettings.h"
 
-AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                        UDataInstanceBase* ItemInstance, const FVector& Offset)
+AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, UDataInstanceBase* ItemInstance, TSubclassOf<AActor> ItemActorClass, const FVector& Offset)
 {
+    if (ItemActorClass == nullptr) ItemActorClass = UInventorySystemSettings::Get()->GetDefaultItemActorClass();
+
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && ItemInstance; !bCanSpawn) return nullptr;
 
     UWorld* World = Owner->GetWorld();
@@ -24,15 +26,14 @@ AActor* UInventorySystemFunctionLibrary::SpawnItemActor(AActor* Owner, TSubclass
     return SpawnedItemActor;
 }
 
-TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-                                                         const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
+TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, const TArray<UDataInstanceBase*>& ItemInstances, TSubclassOf<AActor> ItemActorClass, const FVector& Offset)
 {
     TArray<AActor*> SpawnedItemActors;
     SpawnedItemActors.Reserve(ItemInstances.Num());
 
     for (const auto& ItemInstance : ItemInstances)
     {
-        if (AActor* SpawnedItemActor = SpawnItemActor(Owner, ItemActorClass, ItemInstance, Offset))
+        if (AActor* SpawnedItemActor = SpawnItemActor(Owner, ItemInstance, ItemActorClass, Offset))
         {
             SpawnedItemActors.Emplace(SpawnedItemActor);
         }
@@ -41,9 +42,10 @@ TArray<AActor*> UInventorySystemFunctionLibrary::SpawnItemActors(AActor* Owner, 
     return SpawnedItemActors;
 }
 
-AActor* UInventorySystemFunctionLibrary::SpawnItemPackageActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass,
-    const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset)
+AActor* UInventorySystemFunctionLibrary::SpawnItemPackageActor(AActor* Owner, const TArray<UDataInstanceBase*>& ItemInstances, TSubclassOf<AActor> ItemActorClass, const FVector& Offset)
 {
+    if (ItemActorClass ==  nullptr) ItemActorClass = UInventorySystemSettings::Get()->GetDefaultItemActorClass();
+
     if (bool bCanSpawn = Owner && ItemActorClass && ItemActorClass->ImplementsInterface(UItemActorInterface::StaticClass()) && !ItemInstances.IsEmpty(); !bCanSpawn) return nullptr;
 
     UWorld* World = Owner->GetWorld();

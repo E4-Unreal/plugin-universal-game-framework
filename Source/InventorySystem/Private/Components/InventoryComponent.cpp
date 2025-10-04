@@ -176,7 +176,7 @@ void UInventoryComponent::DropItemFromSlot(int32 SlotIndex, int32 Quantity)
 
     TArray<UDataInstanceBase*> InventoryItemsToDrop = { NewItemInstance };
 
-    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemPackageActor(GetOwner(), GetItemActorClass(), InventoryItemsToDrop, DropItemOffset);
+    AActor* SpawnedItemActor = UInventorySystemFunctionLibrary::SpawnItemPackageActor(GetOwner(), InventoryItemsToDrop, GetItemActorClass(), DropItemOffset);
     if (!SpawnedItemActor) return;
 
     SetSlotQuantity(SlotIndex, SlotQuantity - Quantity);

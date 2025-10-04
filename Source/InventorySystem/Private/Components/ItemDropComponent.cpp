@@ -46,7 +46,7 @@ bool UItemDropComponent::DropItems()
         const auto& Items = GetItems();
         if (!Items.IsEmpty())
         {
-            const auto& SpawnedItemActors = UInventorySystemFunctionLibrary::SpawnItemActors(GetOwner(), LocalItemActorClass, Items, SpawnOffset);
+            const auto& SpawnedItemActors = UInventorySystemFunctionLibrary::SpawnItemActors(GetOwner(), Items, LocalItemActorClass, SpawnOffset);
             for (const auto& SpawnedItemActor : SpawnedItemActors)
             {
                 UInventorySystemFunctionLibrary::ImpulseActor(SpawnedItemActor, ImpulseAngle, ImpulseStrength);
