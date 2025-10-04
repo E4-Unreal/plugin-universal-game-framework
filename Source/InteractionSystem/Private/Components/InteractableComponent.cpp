@@ -259,9 +259,17 @@ UUserWidget* UInteractableComponent::ShowMenuWidget(AActor* PlayerActor)
     if (PlayerActor && MenuWidgetClass)
     {
         UUserWidget* MenuWidget = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>()->ShowWidget(PlayerActor, MenuWidgetClass);
-        if (MenuWidget && MenuWidget->Implements<UTargetWidgetInterface>())
+        if (MenuWidget)
         {
-            ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, GetOwner());
+            if (MenuWidget->Implements<UTargetWidgetInterface>())
+            {
+                ITargetWidgetInterface::Execute_SetTargetActor(MenuWidget, GetOwner());
+            }
+
+            if (!MenuWidget->OnNativeDestruct.IsBoundToObject(this))
+            {
+                MenuWidget->OnNativeDestruct.AddUObject(this, &ThisClass::OnMenuWidgetDestruct);
+            }
         }
 
         return MenuWidget;
@@ -423,5 +431,13 @@ void UInteractableComponent::OnClicked(AActor* TouchedActor, FKey ButtonPressed)
         {
             PlayerInteractionSystem->TryInteract();
         }
+    }
+}
+
+void UInteractableComponent::OnMenuWidgetDestruct(UUserWidget* Widget)
+{
+    if (CurrentInteractor.IsValid())
+    {
+        UInteractionSystemFunctionLibrary::CancelInteract(GetOwner(), CurrentInteractor.Get());
     }
 }

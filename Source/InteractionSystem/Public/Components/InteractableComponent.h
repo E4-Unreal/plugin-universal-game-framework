@@ -177,4 +177,7 @@ protected:
 
     UFUNCTION()
     virtual void OnClicked(AActor* TouchedActor, FKey ButtonPressed);
+
+    UFUNCTION()
+    virtual void OnMenuWidgetDestruct(UUserWidget* Widget);
 };
