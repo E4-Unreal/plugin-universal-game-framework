@@ -335,8 +335,8 @@ void UInteractableComponent::InitWidgetComponent() const
 
     if (auto InteractionWidget = WidgetComponent->GetWidget())
     {
-        UInteractionSystemFunctionLibrary::SetInteractionType(InteractionWidget, GetInteractionType());
-        UInteractionSystemFunctionLibrary::SetInteractionMessage(InteractionWidget, GetInteractionMessage());
+        UInteractionSystemFunctionLibrary::SetInteractionType(InteractionWidget, UInteractionSystemFunctionLibrary::GetInteractionType(GetOwner()));
+        UInteractionSystemFunctionLibrary::SetInteractionMessage(InteractionWidget, UInteractionSystemFunctionLibrary::GetInteractionMessage(GetOwner()));
     }
 }
 
