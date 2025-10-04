@@ -41,6 +41,9 @@ public:
 protected:
     /* API */
 
+    template <typename TActorComponent = UActorComponent>
+    TActorComponent* GetTargetComponent() const { return TargetComponent.IsValid() ? Cast<TActorComponent>(TargetComponent) : nullptr; }
+
     virtual void FindComponent();
 
     UFUNCTION(BlueprintNativeEvent)
