@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widgets/CraftingRecipeListViewEntryWidget.h"
+#include "CraftingSystem/Public/UserWidgets/CraftingRecipeListViewEntryWidget.h"
 
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
