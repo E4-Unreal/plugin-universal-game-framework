@@ -12,6 +12,9 @@ public class CraftingSystem : ModuleRules
                 "Core",
                 "GameplayTags",
 
+                // UniversalGameFramework
+                "ItemSystem",
+                "DataManager",
                 "UniversalUtilities",
                 "InteractionSystem",
                 "InventorySystem",
