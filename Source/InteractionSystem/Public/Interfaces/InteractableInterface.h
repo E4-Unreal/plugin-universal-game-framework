@@ -28,6 +28,9 @@ public:
     FText GetInteractionMessage() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    AActor* GetInteractor() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanInteract(AActor* Interactor);
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)

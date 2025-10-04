@@ -52,6 +52,9 @@ protected:
     UPROPERTY(VisibleAnywhere, Category = "State", Transient)
     TArray<TWeakObjectPtr<AActor>> OverlappingActors;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TWeakObjectPtr<AActor> CurrentInteractor;
+
 public:
     UInteractableComponent();
 
@@ -68,6 +71,9 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FText GetInteractionMessage() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    AActor* GetInteractor() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     bool CanInteract(AActor* Interactor);

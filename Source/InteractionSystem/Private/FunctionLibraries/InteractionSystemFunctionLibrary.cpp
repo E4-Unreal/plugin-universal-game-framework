@@ -51,6 +51,21 @@ FText UInteractionSystemFunctionLibrary::GetInteractionMessage(AActor* TargetAct
     return FText::GetEmpty();
 }
 
+bool UInteractionSystemFunctionLibrary::IsInteracting(AActor* TargetActor)
+{
+    return GetInteractor(TargetActor) != nullptr;
+}
+
+AActor* UInteractionSystemFunctionLibrary::GetInteractor(AActor* TargetActor)
+{
+    if (auto InteractableObject = GetInteractableObject(TargetActor))
+    {
+        return IInteractableInterface::Execute_GetInteractor(InteractableObject);
+    }
+
+    return nullptr;
+}
+
 bool UInteractionSystemFunctionLibrary::CanInteract(AActor* TargetActor, AActor* Interactor)
 {
     if (auto InteractableObject = GetInteractableObject(TargetActor))

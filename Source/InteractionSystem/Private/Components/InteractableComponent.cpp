@@ -50,6 +50,11 @@ void UInteractableComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
     Super::OnComponentDestroyed(bDestroyingHierarchy);
 }
 
+AActor* UInteractableComponent::GetInteractor_Implementation() const
+{
+    return IInteractableInterface::GetInteractor_Implementation();
+}
+
 FGameplayTag UInteractableComponent::GetInteractionType_Implementation() const
 {
     return InteractionType;
@@ -175,12 +180,14 @@ UInteractionSystemComponent* UInteractableComponent::GetPlayerInteractionSystem(
 
 void UInteractableComponent::OnInteract_Implementation(AActor* Interactor)
 {
+    CurrentInteractor = Interactor;
     ShowMenuWidget(Interactor);
 }
 
 void UInteractableComponent::OnCancelInteract_Implementation(AActor* Interactor)
 {
-
+    HideMenuWidget(Interactor);
+    CurrentInteractor = nullptr;
 }
 
 void UInteractableComponent::OnSelect_Implementation(AActor* Interactor)
