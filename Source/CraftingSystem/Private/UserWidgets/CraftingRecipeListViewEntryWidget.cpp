@@ -29,9 +29,9 @@ void UCraftingRecipeListViewEntryWidget::NativeOnListItemObjectSet(UObject* List
             }
         }
 
-        if (GetDisplayNameTextBock())
+        if (GetDisplayNameTextBlock())
         {
-            GetDisplayNameTextBock()->SetText(DisplayName);
+            GetDisplayNameTextBlock()->SetText(DisplayName);
         }
     }
 }

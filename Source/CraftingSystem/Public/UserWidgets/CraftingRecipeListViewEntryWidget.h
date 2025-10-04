@@ -20,7 +20,7 @@ class CRAFTINGSYSTEM_API UCraftingRecipeListViewEntryWidget : public UUserWidget
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidget))
-    TObjectPtr<UTextBlock> DisplayNameTextBock;
+    TObjectPtr<UTextBlock> DisplayNameTextBlock;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidget))
     TObjectPtr<UImage> ThumbnailImage;
@@ -28,7 +28,7 @@ private:
 public:
     /* Components */
 
-    FORCEINLINE UTextBlock* GetDisplayNameTextBock() const { return DisplayNameTextBock; }
+    FORCEINLINE UTextBlock* GetDisplayNameTextBlock() const { return DisplayNameTextBlock; }
     FORCEINLINE UImage* GetThumbnailImage() const { return ThumbnailImage; }
 
 protected:
