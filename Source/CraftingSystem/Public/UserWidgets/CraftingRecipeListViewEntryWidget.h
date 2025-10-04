@@ -19,10 +19,10 @@ class CRAFTINGSYSTEM_API UCraftingRecipeListViewEntryWidget : public UUserWidget
     GENERATED_BODY()
 
 private:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidget))
     TObjectPtr<UTextBlock> DisplayNameTextBock;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true", BindWidget))
     TObjectPtr<UImage> ThumbnailImage;
 
 public:
