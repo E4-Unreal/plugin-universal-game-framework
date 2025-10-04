@@ -40,6 +40,9 @@ public:
     /* API */
 
     UFUNCTION(BlueprintPure)
+    const TArray<UDataDefinitionBase*>& GetRecipes() const { return Recipes; }
+
+    UFUNCTION(BlueprintPure)
     virtual bool HasRecipe(UDataDefinitionBase* InRecipe) const;
 
     UFUNCTION(BlueprintPure)
