@@ -10,6 +10,9 @@ public class ItemSystem : ModuleRules
             new string[]
             {
                 "Core",
+
+                // UniversalGameFramework
+                "DataManager"
             }
         );
 
