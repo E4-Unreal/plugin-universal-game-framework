@@ -23,6 +23,11 @@ void UIngredientSlotWidget::SynchronizeProperties()
 #endif
 }
 
+void UIngredientSlotWidget::SetItem_Implementation(UObject* NewItem)
+{
+    // TODO FItem
+}
+
 void UIngredientSlotWidget::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewThumbnailTexture)
 {
     if (GetThumbnailImage())

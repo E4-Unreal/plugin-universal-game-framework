@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/EntryWidgetInterface.h"
 #include "Types/Item.h"
 #include "IngredientSlotWidget.generated.h"
 
@@ -14,7 +15,7 @@ class UTextBlock;
  *
  */
 UCLASS(Abstract)
-class CRAFTINGSYSTEM_API UIngredientSlotWidget : public UUserWidget
+class CRAFTINGSYSTEM_API UIngredientSlotWidget : public UUserWidget, public IEntryWidgetInterface
 {
     GENERATED_BODY()
 
@@ -38,6 +39,10 @@ public:
     /* Widget */
 
     virtual void SynchronizeProperties() override;
+
+    /* EntryWidgetInterface */
+
+    virtual void SetItem_Implementation(UObject* NewItem) override;
 
     /* API */
 
