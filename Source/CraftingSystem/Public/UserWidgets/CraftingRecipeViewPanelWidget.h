@@ -78,6 +78,9 @@ public:
     virtual void SetQuantity(int32 NewQuantity);
 
     UFUNCTION(BlueprintCallable)
+    virtual void SetDisplayName(const FText& NewDisplayName);
+
+    UFUNCTION(BlueprintCallable)
     virtual void SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewThumbnailTexture);
 
     UFUNCTION(BlueprintCallable)

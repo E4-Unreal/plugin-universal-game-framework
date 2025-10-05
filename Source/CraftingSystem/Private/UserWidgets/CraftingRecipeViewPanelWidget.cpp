@@ -7,6 +7,7 @@
 #include "Components/CraftingComponent.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "Data/DataDefinitionBase.h"
 #include "Data/DataInstanceBase.h"
 #include "FunctionLibraries/CraftingRecipeDataFunctionLibrary.h"
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
@@ -70,15 +71,19 @@ void UCraftingRecipeViewPanelWidget::Refresh_Implementation()
         if (!Results.IsEmpty())
         {
             const auto& Result = Results[0];
-            auto ResultDefinition = Result.Definition;
-            int32 ResultQuantity = Result.Quantity;
+            if (auto ResultDefinition = Result.Definition)
+            {
+                int32 ResultQuantity = Result.Quantity;
+                ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(ResultDefinition);
+                TotalResultQuantity = ResultQuantity * Quantity;
 
-            ThumbnailTexture = USlotDataFunctionLibrary::GetThumbnailTexture(ResultDefinition);
-            TotalResultQuantity = ResultQuantity * Quantity;
+                SetDisplayName(ResultDefinition->DisplayName);
+            }
         }
 
         if (GetUniformGridView())
         {
+            GetUniformGridView()->SetEntriesNum(Ingredients.Num());
             for (int32 Index = 0; Index < Ingredients.Num(); ++Index)
             {
                 const auto& Ingredient = Ingredients[Index];
@@ -109,6 +114,14 @@ void UCraftingRecipeViewPanelWidget::SetQuantity(int32 NewQuantity)
     Refresh();
 }
 
+void UCraftingRecipeViewPanelWidget::SetDisplayName(const FText& NewDisplayName)
+{
+    if (GetDisplayNameTextBlock())
+    {
+        GetDisplayNameTextBlock()->SetText(NewDisplayName);
+    }
+}
+
 void UCraftingRecipeViewPanelWidget::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewThumbnailTexture)
 {
     if (GetThumbnailImage())
@@ -127,7 +140,7 @@ void UCraftingRecipeViewPanelWidget::SetThumbnailTexture(TSoftObjectPtr<UTexture
 
 void UCraftingRecipeViewPanelWidget::SetQuantityText(int32 NewQuantity)
 {
-    NewQuantity = FMath::Min(0, NewQuantity);
+    NewQuantity = FMath::Max(0, NewQuantity);
 
     if (GetQuantityTextBlock())
     {
