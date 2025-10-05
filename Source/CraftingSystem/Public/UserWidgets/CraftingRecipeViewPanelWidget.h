@@ -57,6 +57,8 @@ protected:
     int32 Quantity;
 
 public:
+    UCraftingRecipeViewPanelWidget(const FObjectInitializer& ObjectInitializer);
+
     /* Widget */
 
     virtual void SynchronizeProperties() override;

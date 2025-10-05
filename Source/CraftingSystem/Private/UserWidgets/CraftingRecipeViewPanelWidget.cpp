@@ -17,6 +17,12 @@
 #include "Widgets/EditableNumericText.h"
 #include "Widgets/UniformGridView.h"
 
+UCraftingRecipeViewPanelWidget::UCraftingRecipeViewPanelWidget(const FObjectInitializer& ObjectInitializer)
+    : Super(ObjectInitializer)
+{
+    TargetComponentClass = UCraftingComponent::StaticClass();
+}
+
 void UCraftingRecipeViewPanelWidget::SynchronizeProperties()
 {
     Super::SynchronizeProperties();
