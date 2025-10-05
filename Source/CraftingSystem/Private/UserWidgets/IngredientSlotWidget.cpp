@@ -55,7 +55,7 @@ void UIngredientSlotWidget::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewTh
 
 void UIngredientSlotWidget::SetOwnedQuantity(int32 NewOwnedQuantity)
 {
-    NewOwnedQuantity = FMath::Min(0, NewOwnedQuantity);
+    NewOwnedQuantity = FMath::Max(0, NewOwnedQuantity);
 
     if (GetOwnedQuantityTextBlock())
     {
