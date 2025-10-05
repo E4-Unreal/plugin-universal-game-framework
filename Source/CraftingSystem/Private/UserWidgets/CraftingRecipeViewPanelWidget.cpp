@@ -12,6 +12,8 @@
 #include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 #include "Types/Item.h"
+#include "UserWidgets/CommonNumericStepperWidget.h"
+#include "Widgets/EditableNumericText.h"
 #include "Widgets/UniformGridView.h"
 
 void UCraftingRecipeViewPanelWidget::SynchronizeProperties()
@@ -37,6 +39,14 @@ void UCraftingRecipeViewPanelWidget::NativeOnInitialized()
     if (GetCraftButton())
     {
         GetCraftButton()->OnClicked().AddUObject(this, &ThisClass::OnCraftButtonClicked);
+    }
+
+    if (GetNumericStepper())
+    {
+        if (GetNumericStepper()->GetEditableNumericText())
+        {
+            GetNumericStepper()->GetEditableNumericText()->OnValueChanged.AddDynamic(this, &ThisClass::OnNumericStepperValueChanged);
+        }
     }
 }
 
@@ -131,4 +141,9 @@ void UCraftingRecipeViewPanelWidget::OnCraftButtonClicked()
     {
         CraftingComponent->StartCrafting(GetOwningPlayerPawn(), Recipe);
     }
+}
+
+void UCraftingRecipeViewPanelWidget::OnNumericStepperValueChanged(int32 InValue)
+{
+    SetQuantity(InValue);
 }

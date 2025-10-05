@@ -52,6 +52,7 @@ void UEditableNumericText::SetValue(int32 NewValue)
 {
     NewValue = FMath::Clamp(NewValue, MinValue, MaxValue);
     SetText(FText::FromString(FString::FromInt(NewValue)));
+    OnValueChanged.Broadcast(NewValue);
 }
 
 void UEditableNumericText::NativeOnTextChanged(const FText& NewText)

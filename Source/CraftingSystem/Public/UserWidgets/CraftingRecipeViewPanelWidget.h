@@ -88,6 +88,9 @@ public:
     UFUNCTION()
     virtual void OnCraftButtonClicked();
 
+    UFUNCTION()
+    virtual void OnNumericStepperValueChanged(int32 InValue);
+
     /* Components */
 
     FORCEINLINE UTextBlock* GetDisplayNameTextBlock() const { return DisplayNameTextBlock; }

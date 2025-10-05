@@ -6,6 +6,8 @@
 #include "Components/EditableText.h"
 #include "EditableNumericText.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnValueChanged, int32, InValue);
+
 /**
  *
  */
@@ -15,6 +17,9 @@ class WIDGETMANAGER_API UEditableNumericText : public UEditableText
     GENERATED_BODY()
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FOnValueChanged OnValueChanged;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     bool bNumeric;
 
