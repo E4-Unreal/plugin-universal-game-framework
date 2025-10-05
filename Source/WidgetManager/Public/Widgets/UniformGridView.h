@@ -47,10 +47,10 @@ public:
     virtual void ClearEntries();
 
     UFUNCTION(BlueprintCallable)
-    virtual void AddItem(UObject* Item);
+    virtual void AddDataObject(UObject* DataObject);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetItem(int32 Index, UObject* Item);
+    virtual void SetDataObject(int32 Index, UObject* DataObject);
 
     UFUNCTION(BlueprintCallable)
     virtual void RemoveEntries(int32 Num);

@@ -21,5 +21,5 @@ class WIDGETMANAGER_API IEntryWidgetInterface
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    void SetItem(UObject* NewItem);
+    void SetDataObject(UObject* NewDataObject);
 };

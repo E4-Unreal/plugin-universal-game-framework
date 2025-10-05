@@ -6,6 +6,8 @@
 #include "Components/Image.h"
 #include "Components/InventoryComponent.h"
 #include "Components/TextBlock.h"
+#include "Data/DataInstanceBase.h"
+#include "FunctionLibraries/ItemDataFunctionLibrary.h"
 #include "FunctionLibraries/SlotDataFunctionLibrary.h"
 
 void UIngredientSlotWidget::SynchronizeProperties()
@@ -23,9 +25,16 @@ void UIngredientSlotWidget::SynchronizeProperties()
 #endif
 }
 
-void UIngredientSlotWidget::SetItem_Implementation(UObject* NewItem)
+void UIngredientSlotWidget::SetDataObject_Implementation(UObject* NewDataObject)
 {
-    // TODO FItem
+    if (auto NewItemInstance = Cast<UDataInstanceBase>(NewDataObject))
+    {
+        FItem NewItem;
+        NewItem.Definition = NewItemInstance->GetDefinition();
+        NewItem.Quantity = UItemDataFunctionLibrary::GetQuantity(NewItemInstance);
+
+        SetItem(NewItem);
+    }
 }
 
 void UIngredientSlotWidget::SetThumbnailTexture(TSoftObjectPtr<UTexture2D> NewThumbnailTexture)

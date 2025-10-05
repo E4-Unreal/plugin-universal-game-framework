@@ -24,7 +24,7 @@ void UUniformGridView::SetEntriesNum(int32 NewEntriesNum)
     {
         for (int32 Index = 0; Index < NewEntriesNum - OldEntriesNum; ++Index)
         {
-            AddItem(nullptr);
+            AddDataObject(nullptr);
         }
     }
     else if (OldEntriesNum > NewEntriesNum)
@@ -43,12 +43,12 @@ void UUniformGridView::ClearEntries()
     WidgetMap.Reset();
 }
 
-void UUniformGridView::AddItem(UObject* Item)
+void UUniformGridView::AddDataObject(UObject* DataObject)
 {
     if (EntryWidgetClass)
     {
         auto NewEntryWidget = CreateWidget<UUserWidget>(this, EntryWidgetClass);
-        UWidgetManagerFunctionLibrary::SetItem(NewEntryWidget, Item);
+        UWidgetManagerFunctionLibrary::SetDataObject(NewEntryWidget, DataObject);
 
         const int32 Index = WidgetMap.Num();
         WidgetMap.Emplace(Index, NewEntryWidget);
@@ -59,11 +59,11 @@ void UUniformGridView::AddItem(UObject* Item)
     }
 }
 
-void UUniformGridView::SetItem(int32 Index, UObject* Item)
+void UUniformGridView::SetDataObject(int32 Index, UObject* DataObject)
 {
     if (WidgetMap.Contains(Index))
     {
-        UWidgetManagerFunctionLibrary::SetItem(WidgetMap[Index], Item);
+        UWidgetManagerFunctionLibrary::SetDataObject(WidgetMap[Index], DataObject);
     }
 }
 

@@ -42,7 +42,7 @@ public:
 
     /* EntryWidgetInterface */
 
-    virtual void SetItem_Implementation(UObject* NewItem) override;
+    virtual void SetDataObject_Implementation(UObject* NewDataObject) override;
 
     /* API */
 

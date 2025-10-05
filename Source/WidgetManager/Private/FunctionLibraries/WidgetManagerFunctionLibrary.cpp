@@ -202,10 +202,10 @@ void UWidgetManagerFunctionLibrary::Clear(UUserWidget* Widget)
     }
 }
 
-void UWidgetManagerFunctionLibrary::SetItem(UUserWidget* Widget, UObject* NewItem)
+void UWidgetManagerFunctionLibrary::SetDataObject(UUserWidget* Widget, UObject* NewDataObject)
 {
     if (Widget && Widget->Implements<UEntryWidgetInterface>())
     {
-        IEntryWidgetInterface::Execute_SetItem(Widget, NewItem);
+        IEntryWidgetInterface::Execute_SetDataObject(Widget, NewDataObject);
     }
 }

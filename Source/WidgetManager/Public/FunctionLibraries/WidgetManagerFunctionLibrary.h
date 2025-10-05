@@ -71,5 +71,5 @@ public:
     /* EntryWidgetInterface */
 
     UFUNCTION(BlueprintCallable, Category = "EntryWidgetInterface")
-    static void SetItem(UUserWidget* Widget, UObject* NewItem);
+    static void SetDataObject(UUserWidget* Widget, UObject* NewDataObject);
 };
