@@ -5,13 +5,16 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Interfaces/TargetWidgetInterface.h"
+#include "Interfaces/WidgetUtilityInterface.h"
 #include "TargetWidgetBase.generated.h"
 
 /**
  * 플레이어가 아닌 다른 액터의 정보를 표시하기 위한 위젯 클래스
  */
 UCLASS(Abstract)
-class WIDGETMANAGER_API UTargetWidgetBase : public UUserWidget, public ITargetWidgetInterface
+class WIDGETMANAGER_API UTargetWidgetBase : public UUserWidget,
+    public ITargetWidgetInterface,
+    public IWidgetUtilityInterface
 {
     GENERATED_BODY()
 
@@ -38,8 +41,17 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     void SetTargetComponent(UActorComponent* NewTargetComponent);
 
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Refresh();
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    void Clear();
+
 protected:
     /* API */
+
+    template <typename TActorComponent = UActorComponent>
+    TActorComponent* GetTargetComponent() const { return TargetComponent.IsValid() ? Cast<TActorComponent>(TargetComponent) : nullptr; }
 
     virtual void FindComponent();
 

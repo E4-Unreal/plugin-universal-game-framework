@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class ItemManager : ModuleRules
+public class ItemSystem : ModuleRules
 {
-    public ItemManager(ReadOnlyTargetRules Target) : base(Target)
+    public ItemSystem(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
@@ -10,6 +10,9 @@ public class ItemManager : ModuleRules
             new string[]
             {
                 "Core",
+
+                // UniversalGameFramework
+                "DataManager"
             }
         );
 

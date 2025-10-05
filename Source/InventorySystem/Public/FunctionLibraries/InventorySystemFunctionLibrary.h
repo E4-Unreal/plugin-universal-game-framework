@@ -15,13 +15,13 @@ class INVENTORYSYSTEM_API UInventorySystemFunctionLibrary : public UBlueprintFun
 
 public:
     UFUNCTION(BlueprintCallable)
-    static AActor* SpawnItemActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, UDataInstanceBase* ItemInstance, const FVector& Offset = FVector::ZeroVector);
+    static AActor* SpawnItemActor(AActor* Owner, UDataInstanceBase* ItemInstance, TSubclassOf<AActor> ItemActorClass = nullptr, const FVector& Offset = FVector::ZeroVector);
 
     UFUNCTION(BlueprintCallable)
-    static TArray<AActor*> SpawnItemActors(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset = FVector::ZeroVector);
+    static TArray<AActor*> SpawnItemActors(AActor* Owner, const TArray<UDataInstanceBase*>& ItemInstances, TSubclassOf<AActor> ItemActorClass = nullptr, const FVector& Offset = FVector::ZeroVector);
 
     UFUNCTION(BlueprintCallable)
-    static AActor* SpawnItemPackageActor(AActor* Owner, TSubclassOf<AActor> ItemActorClass, const TArray<UDataInstanceBase*>& ItemInstances, const FVector& Offset = FVector::ZeroVector);
+    static AActor* SpawnItemPackageActor(AActor* Owner, const TArray<UDataInstanceBase*>& ItemInstances, TSubclassOf<AActor> ItemActorClass = nullptr, const FVector& Offset = FVector::ZeroVector);
 
     UFUNCTION(BlueprintCallable)
     static void ImpulseActor(AActor* Actor, float ImpulseAngle, float ImpulseStrength);

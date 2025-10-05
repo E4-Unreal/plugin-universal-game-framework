@@ -10,6 +10,16 @@ void UTargetWidgetBase::NativeOnInitialized()
     FindComponent();
 }
 
+void UTargetWidgetBase::Refresh_Implementation()
+{
+
+}
+
+void UTargetWidgetBase::Clear_Implementation()
+{
+
+}
+
 void UTargetWidgetBase::SetTargetActor_Implementation(AActor* NewTargetActor)
 {
     if (TargetActor == NewTargetActor) return;
@@ -59,6 +69,15 @@ void UTargetWidgetBase::UnbindTargetComponentEvents_Implementation(UActorCompone
 
 void UTargetWidgetBase::OnTargetComponentChanged_Implementation(UActorComponent* OldTargetComponent)
 {
-    if (OldTargetComponent) UnbindTargetComponentEvents(OldTargetComponent);
-    if (TargetComponent.IsValid()) BindTargetComponentEvents(TargetComponent.Get());
+    if (OldTargetComponent)
+    {
+        UnbindTargetComponentEvents(OldTargetComponent);
+        Clear();
+    }
+
+    if (TargetComponent.IsValid())
+    {
+        BindTargetComponentEvents(TargetComponent.Get());
+        Refresh();
+    }
 }
