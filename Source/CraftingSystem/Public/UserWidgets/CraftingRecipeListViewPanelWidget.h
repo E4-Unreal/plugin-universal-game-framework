@@ -6,7 +6,11 @@
 #include "Widgets/TargetWidgetBase.h"
 #include "CraftingRecipeListViewPanelWidget.generated.h"
 
+class UDataDefinitionBase;
 class UListView;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRecipeSelected, UDataDefinitionBase*, SelectedRecipe);
+
 /**
  *
  */
@@ -20,7 +24,15 @@ private:
     TObjectPtr<UListView> ListView;
 
 public:
+    UPROPERTY(BlueprintAssignable)
+    FOnRecipeSelected OnRecipeSelected;
+
+public:
     UCraftingRecipeListViewPanelWidget(const FObjectInitializer& ObjectInitializer);
+
+    /* UserWidget */
+
+    virtual void NativeOnInitialized() override;
 
     /* TargetWidgetBase */
 
@@ -29,4 +41,9 @@ public:
 
 protected:
     FORCEINLINE UListView* GetListView() const { return ListView; }
+
+    /* Events */
+
+    UFUNCTION()
+    virtual void OnItemClicked(UObject* Item);
 };

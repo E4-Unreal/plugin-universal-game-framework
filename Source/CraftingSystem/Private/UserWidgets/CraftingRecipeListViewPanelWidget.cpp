@@ -13,6 +13,16 @@ UCraftingRecipeListViewPanelWidget::UCraftingRecipeListViewPanelWidget(const FOb
     TargetComponentClass = UCraftingComponent::StaticClass();
 }
 
+void UCraftingRecipeListViewPanelWidget::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    if (GetListView())
+    {
+        GetListView()->OnItemClicked().AddUObject(this, &ThisClass::OnItemClicked);
+    }
+}
+
 void UCraftingRecipeListViewPanelWidget::Refresh_Implementation()
 {
     Super::Refresh_Implementation();
@@ -37,5 +47,13 @@ void UCraftingRecipeListViewPanelWidget::Clear_Implementation()
     if (GetListView())
     {
         GetListView()->ClearListItems();
+    }
+}
+
+void UCraftingRecipeListViewPanelWidget::OnItemClicked(UObject* Item)
+{
+    if (auto Recipe = Cast<UDataDefinitionBase>(Item))
+    {
+        OnRecipeSelected.Broadcast(Recipe);
     }
 }
