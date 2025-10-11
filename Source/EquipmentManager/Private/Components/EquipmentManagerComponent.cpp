@@ -67,7 +67,7 @@ bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FGamep
     {
         Slot.Equipment = NewEquipment;
         IEquipmentActorInterface::Execute_Equip(Slot.Equipment, GetOwner());
-        SocketManager->AttachActorToSocket(Slot.Socket, NewEquipment);
+        //SocketManager->AttachActorToSocket(Slot.Socket, NewEquipment);
 
         return true;
     }
@@ -82,11 +82,11 @@ AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FGameplayTag Equipme
     FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
     if (Slot.IsValid() && !Slot.IsEmpty())
     {
-        AActor* OldEquipmentActor = SocketManager->DetachActorFromSocket(Slot.Socket);
+        //AActor* OldEquipmentActor = SocketManager->DetachActorFromSocket(Slot.Socket);
         IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment);
         Slot.Equipment = nullptr;
 
-        return OldEquipmentActor;
+        //return OldEquipmentActor;
     }
 
     return nullptr;

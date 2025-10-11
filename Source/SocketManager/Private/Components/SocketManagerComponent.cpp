@@ -3,278 +3,261 @@
 
 #include "Components/SocketManagerComponent.h"
 
-#include "Actors/SocketMeshActor.h"
-#include "Actors/SocketSkeletalMeshActor.h"
-#include "Actors/SocketStaticMeshActor.h"
 #include "GameFramework/Character.h"
-#include "GameplayTags/SocketGameplayTags.h"
-#include "Net/UnrealNetwork.h"
+
 
 USocketManagerComponent::USocketManagerComponent()
 {
-    bWantsInitializeComponent = true;
 
-    SetIsReplicatedByDefault(true);
-    OverrideBodyInstance.SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-    SocketNameMap.Emplace(Socket::Character::RightHand, FName("hand_r"));
 }
 
-void USocketManagerComponent::InitializeComponent()
+void USocketManagerComponent::OnRegister()
 {
-    Super::InitializeComponent();
+    Super::OnRegister();
 
-    FindTargetMesh();
+    FindRootMesh();
+    InitializeSlots();
 }
 
-void USocketManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
 {
-    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-    DOREPLIFETIME(ThisClass, Slots);
+    RootMesh = NewRootMesh;
 }
 
-void USocketManagerComponent::SetTargetMesh(UMeshComponent* InTargetMesh)
+void USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName)
 {
-    TargetMesh = InTargetMesh;
-}
-
-bool USocketManagerComponent::AttachActorToSocket(const FGameplayTag& SocketTag, AActor* Actor)
-{
-    if (!Actor || !SocketTag.IsValid()) return false;
-
-    // 액터 부착
-    Actor->AttachToComponent(TargetMesh.Get(), FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, true), GetSocketName(SocketTag));
-
-    // 소켓 존재 여부에 따라 액터 표시 혹은 숨기기
-    if (DoesSocketExist(SocketTag))
+    if (NewStaticMesh && HasSlot(SocketTag))
     {
-        Actor->SetActorHiddenInGame(false);
-    }
-    else
-    {
-        Actor->SetActorHiddenInGame(true);
-    }
+        ClearSlot(SocketTag);
 
-    // 액터 등록
-    RegisterSocketActor(SocketTag, Actor);
+        auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
 
-    return true;
-}
-
-AActor* USocketManagerComponent::DetachActorFromSocket(const FGameplayTag& SocketTag)
-{
-    // 실행 가능 여부 확인
-    auto SocketActor = GetActorBySocketTag(SocketTag);
-    if (SocketActor == nullptr) return nullptr;
-
-    // 액터 탈착
-    SocketActor->DetachFromActor(FDetachmentTransformRules(EDetachmentRule::KeepRelative, true));
-
-    // 액터 등록 해제
-    UnRegisterSocketActor(SocketTag);
-
-    return SocketActor;
-}
-
-void USocketManagerComponent::DestroyActorFromSocket(FGameplayTag SocketTag)
-{
-    if (AActor* DetachedActor = DetachActorFromSocket(SocketTag))
-    {
-        DetachedActor->Destroy();
-    }
-}
-
-AActor* USocketManagerComponent::SpawnActorToSocket(const FGameplayTag& SocketTag, TSubclassOf<AActor> ActorClass)
-{
-    AActor* SpawnedActor = SpawnActor(ActorClass);
-    if (SpawnedActor && !AttachActorToSocket(SocketTag, SpawnedActor))
-    {
-        SpawnedActor->Destroy();
-        SpawnedActor = nullptr;
-    }
-
-    return SpawnedActor;
-}
-
-bool USocketManagerComponent::SpawnSkeletalMeshToSocket(const FGameplayTag& SocketTag, USkeletalMesh* SkeletalMesh)
-{
-    return SpawnMeshToSocket(SocketTag, SkeletalMesh);
-}
-
-bool USocketManagerComponent::SpawnStaticMeshToSocket(const FGameplayTag& SocketTag, UStaticMesh* StaticMesh)
-{
-    return SpawnMeshToSocket(SocketTag, StaticMesh);
-}
-
-bool USocketManagerComponent::SpawnMeshToSocket(const FGameplayTag& SocketTag, UStreamableRenderAsset* Mesh)
-{
-    if (!Mesh || !SocketTag.IsValid()) return false;
-
-    // 액터 스폰
-    TSubclassOf<ASocketMeshActor> SocketMeshActorClass;
-    if (Mesh->GetClass() == USkeletalMesh::StaticClass())
-    {
-        SocketMeshActorClass = ASocketSkeletalMeshActor::StaticClass();
-    }
-    else if (Mesh->GetClass() == UStaticMesh::StaticClass())
-    {
-        SocketMeshActorClass = ASocketStaticMeshActor::StaticClass();
-    }
-    else
-    {
-        return false;
-    }
-
-    auto SpawnedActor = SpawnActor<ASocketMeshActor>(SocketMeshActorClass);
-    SpawnedActor->SetBodyInstance(OverrideBodyInstance);
-    SpawnedActor->SetMesh(Mesh);
-
-    // 액터 부착
-    bool bSucceed = AttachActorToSocket(SocketTag, SpawnedActor);
-    if (!bSucceed) SpawnedActor->Destroy();
-
-    return bSucceed;
-}
-
-void USocketManagerComponent::SwapSockets(const FGameplayTag& SourceTag, const FGameplayTag& DestinationTag)
-{
-    AActor* SourceActor = DetachActorFromSocket(SourceTag);
-    AActor* DestinationActor = DetachActorFromSocket(DestinationTag);
-
-    AttachActorToSocket(DestinationTag, SourceActor);
-    AttachActorToSocket(SourceTag, DestinationActor);
-}
-
-void USocketManagerComponent::ClearSocket(const FGameplayTag& SourceTag)
-{
-    AActor* SocketActor = DetachActorFromSocket(SourceTag);
-    if (SocketActor) SocketActor->Destroy();
-}
-
-const FSocketSlot& USocketManagerComponent::GetSlotBySocketTag(FGameplayTag SocketTag) const
-{
-    if (!SocketTag.IsValid()) return FSocketSlot::EmptySlot;
-
-    for (const FSocketSlot& Slot : Slots)
-    {
-        if (Slot.SocketTag == SocketTag)
+        if (RootMesh.IsValid())
         {
-            return Slot;
+            // StaticMeshComponent 생성
+            if (Slot.StaticMesh == nullptr) Slot.StaticMesh = CreateStaticMesh();
+
+            // StaticMesh 설정
+            Slot.StaticMesh->SetStaticMesh(NewStaticMesh);
+
+            // StaticMeshComponent를 소켓에 부착
+            if (DoesSocketExist(SocketName))
+            {
+                if (!Slot.StaticMesh->IsVisible()) Slot.StaticMesh->SetVisibility(true);
+                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+                Slot.StaticMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+            }
+            else
+            {
+                if (Slot.StaticMesh->IsVisible()) Slot.StaticMesh->SetVisibility(false);
+            }
+        }
+    }
+}
+
+void USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, bool bModular,
+    FName SocketName)
+{
+    if (NewSkeletalMesh && HasSlot(SocketTag))
+    {
+        ClearSlot(SocketTag);
+
+        auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
+
+        if (RootMesh.IsValid())
+        {
+            // SkeletalMeshComponent 생성
+            if (Slot.SkeletalMesh == nullptr) Slot.SkeletalMesh = CreateSkeletalMesh();
+
+            // SkeletalMesh 설정
+            Slot.SkeletalMesh->SetSkeletalMesh(NewSkeletalMesh);
+
+            if (bModular)
+            {
+                if (!Slot.SkeletalMesh->IsVisible()) Slot.SkeletalMesh->SetVisibility(true);
+                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+                Slot.SkeletalMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules);
+            }
+            else if (DoesSocketExist(SocketName))
+            {
+                if (!Slot.SkeletalMesh->IsVisible()) Slot.SkeletalMesh->SetVisibility(true);
+                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+                Slot.SkeletalMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+            }
+            else
+            {
+                if (Slot.SkeletalMesh->IsVisible()) Slot.SkeletalMesh->SetVisibility(false);
+            }
+        }
+    }
+}
+
+AActor* USocketManagerComponent::SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName)
+{
+    AActor* Actor = nullptr;
+
+    if (NewActorClass && HasSlot(SocketTag))
+    {
+        ClearSlot(SocketTag);
+
+        auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
+
+        if (RootMesh.IsValid())
+        {
+            Slot.Actor = SpawnActor(NewActorClass);
+            Actor = Slot.Actor;
+
+            if (DoesSocketExist(SocketName))
+            {
+                if (Slot.Actor->IsHidden()) Slot.Actor->SetHidden(false);
+                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+                Slot.Actor->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+            }
+            else
+            {
+                if (!Slot.Actor->IsHidden()) Slot.Actor->SetHidden(true);
+            }
         }
     }
 
-    return FSocketSlot::EmptySlot;
+    return Actor;
 }
 
-const FSocketSlot& USocketManagerComponent::GetSlotByActor(AActor* Actor) const
+void USocketManagerComponent::FindRootMesh()
 {
-    if (!Actor) return FSocketSlot::EmptySlot;
+    if (RootMesh.IsValid()) return;
 
-    for (const FSocketSlot& Slot : Slots)
+    UMeshComponent* FoundRootMesh = GetOwner()->IsA<ACharacter>()
+        ? Cast<ACharacter>(GetOwner())->GetMesh()
+        : GetOwner()->GetComponentByClass<UMeshComponent>();
+
+    SetRootMesh(FoundRootMesh);
+}
+
+void USocketManagerComponent::InitializeSlots()
+{
+    // 슬롯 생성
+    for (const auto& SlotConfig : SlotConfigs)
     {
-        if (Slot.Actor == Actor)
+        if (!SlotConfig.IsValid()) continue;
+
+        FSocketSlot NewSlot;
+        NewSlot.SocketTag = SlotConfig.SocketTag;
+
+        Slots.Emplace(NewSlot);
+    }
+
+    // 슬롯 기본값 설정
+    for (const auto& SlotConfig : SlotConfigs)
+    {
+        if (!SlotConfig.IsValid()) continue;
+
+        if (SlotConfig.DefaultActorClass)
         {
-            return Slot;
+            SetActor(SlotConfig.DefaultActorClass, SlotConfig.SocketTag, SlotConfig.SocketName);
+        }
+        else if (SlotConfig.DefaultSkeletalMesh)
+        {
+            SetSkeletalMesh(SlotConfig.DefaultSkeletalMesh, SlotConfig.SocketTag, SlotConfig.bModular, SlotConfig.SocketName);
+        }
+        else if (SlotConfig.DefaultStaticMesh)
+        {
+            SetStaticMesh(SlotConfig.DefaultStaticMesh, SlotConfig.SocketTag, SlotConfig.SocketName);
         }
     }
-
-    return FSocketSlot::EmptySlot;
 }
 
-AActor* USocketManagerComponent::GetActorBySocketTag(const FGameplayTag& SocketTag) const
+bool USocketManagerComponent::HasSlot(FGameplayTag InSocketTag) const
 {
-    const FSocketSlot& Slot = GetSlotBySocketTag(SocketTag);
+    bool bResult = false;
 
-    return Slot.Actor;
-}
-
-FGameplayTag USocketManagerComponent::GetSocketTagByActor(AActor* Actor) const
-{
-    const FSocketSlot& Slot = GetSlotByActor(Actor);
-
-    return Slot.SocketTag;
-}
-
-void USocketManagerComponent::FindTargetMesh()
-{
-    if (TargetMesh.IsValid()) return;
-
-    if (ACharacter* OwningCharacter = Cast<ACharacter>(GetOwner()))
+    for (const auto& Slot : Slots)
     {
-        SetTargetMesh(OwningCharacter->GetMesh());
-    }
-    else
-    {
-        SetTargetMesh(GetOwner()->GetComponentByClass<UMeshComponent>());
-    }
-}
-
-void USocketManagerComponent::RegisterSocketActor(const FGameplayTag& SocketTag, AActor* Actor)
-{
-    if (Actor && DoesSocketExist(SocketTag))
-    {
-        Slots.Emplace(FSocketSlot(SocketTag, Actor));
-    }
-}
-
-void USocketManagerComponent::UnRegisterSocketActor(const FGameplayTag& SocketTag)
-{
-    if (!SocketTag.IsValid()) return;
-
-    // 배열로부터 등록 해제
-    for (int32 Index = Slots.Num() - 1; Index >= 0; --Index)
-    {
-        if (Slots[Index].SocketTag == SocketTag)
+        if (Slot.SocketTag == InSocketTag)
         {
-            Slots.RemoveAt(Index);
+            bResult = true;
             break;
         }
     }
+
+    return bResult;
 }
 
-AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> ActorClass)
+const FSocketSlot& USocketManagerComponent::GetSlot(FGameplayTag InSocketTag)
 {
-    // 입력 유효성 검사
-    if (ActorClass == nullptr) return nullptr;
+    for (const auto& Slot : Slots)
+    {
+        if (Slot.SocketTag == InSocketTag)
+        {
+            return Slot;
+        }
+    }
 
-    // 유효성 검사
-    UWorld* World = GetWorld();
-    AActor* Owner = GetOwner();
-    if (World == nullptr || Owner == nullptr) return nullptr;
-
-    // ActorSpawnParameters 설정
-    FActorSpawnParameters ActorSpawnParameters;
-    ActorSpawnParameters.Owner = Owner;
-    ActorSpawnParameters.Instigator = Owner->GetInstigator();
-    ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-
-    // 액터 스폰
-    const FVector SpawnLocation = Owner->GetActorLocation();
-    AActor* SpawnedActor = World->SpawnActor<AActor>(ActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
-    SpawnedActor->SetReplicates(ShouldReplicate());
-
-    return SpawnedActor;
+    return FSocketSlot::EmptySlot;
 }
 
-AActor* USocketManagerComponent::SpawnActorDeferred(TSubclassOf<AActor> ActorClass)
+void USocketManagerComponent::ClearSlot(FGameplayTag InSocketTag)
 {
-    // 입력 유효성 검사
-    if (ActorClass == nullptr) return nullptr;
-
-    // 유효성 검사
-    UWorld* World = GetWorld();
-    AActor* Owner = GetOwner();
-    if (World == nullptr || Owner == nullptr) return nullptr;
-
-    // 액터 스폰
-    FTransform SpawnTransform = FTransform(Owner->GetActorLocation());
-    AActor* SpawnedActor = World->SpawnActorDeferred<AActor>(ActorClass, SpawnTransform, Owner, Owner->GetInstigator(), ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn);
-    SpawnedActor->SetReplicates(ShouldReplicate());
-
-    return SpawnedActor;
+    if (HasSlot(InSocketTag))
+    {
+        auto& Slot = const_cast<FSocketSlot&>(GetSlot(InSocketTag));
+        if (Slot.StaticMesh) Slot.StaticMesh->SetStaticMesh(nullptr);
+        if (Slot.SkeletalMesh) Slot.SkeletalMesh->SetSkeletalMesh(nullptr);
+        if (Slot.Actor) Slot.Actor->Destroy(); Slot.Actor = nullptr;
+    }
 }
 
-void USocketManagerComponent::OnRep_Slots(const TArray<FSocketSlot>& OldSlots)
+bool USocketManagerComponent::DoesSocketExist(FName InSocketName) const
 {
+    return RootMesh.IsValid() && RootMesh->DoesSocketExist(InSocketName);
+}
 
+UStaticMeshComponent* USocketManagerComponent::CreateStaticMesh()
+{
+    if (RootMesh.IsValid())
+    {
+        auto NewStaticMesh = Cast<UStaticMeshComponent>(GetOwner()->AddComponentByClass(UStaticMeshComponent::StaticClass(), true, FTransform::Identity, false));
+        NewStaticMesh->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
+        return NewStaticMesh;
+    }
+
+    return nullptr;
+}
+
+USkeletalMeshComponent* USocketManagerComponent::CreateSkeletalMesh()
+{
+    if (RootMesh.IsValid())
+    {
+        auto NewSkeletalMesh = Cast<USkeletalMeshComponent>(GetOwner()->AddComponentByClass(USkeletalMeshComponent::StaticClass(), true, FTransform::Identity, false));
+        NewSkeletalMesh->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
+        NewSkeletalMesh->SetLeaderPoseComponent(Cast<USkinnedMeshComponent>(RootMesh.Get()));
+
+        return NewSkeletalMesh;
+    }
+
+    return nullptr;
+}
+
+AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> InActorClass)
+{
+    if (GetOwner()->HasAuthority() && InActorClass)
+    {
+        UWorld* World = GetWorld();
+        AActor* Owner = GetOwner();
+
+        // ActorSpawnParameters 설정
+        FActorSpawnParameters ActorSpawnParameters;
+        ActorSpawnParameters.Owner = Owner;
+        ActorSpawnParameters.Instigator = Owner->GetInstigator();
+        ActorSpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+        // 액터 스폰
+        const FVector SpawnLocation = Owner->GetActorLocation();
+        AActor* SpawnedActor = World->SpawnActor<AActor>(InActorClass, SpawnLocation, FRotator::ZeroRotator, ActorSpawnParameters);
+        SpawnedActor->SetReplicates(true);
+
+        return SpawnedActor;
+    }
+
+    return nullptr;
 }
