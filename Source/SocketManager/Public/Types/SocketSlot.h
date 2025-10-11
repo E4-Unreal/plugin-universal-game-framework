@@ -17,6 +17,12 @@ struct FSocketSlot
     FGameplayTag SocketTag;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<UStaticMeshComponent> StaticMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;
 
     bool operator==(const FSocketSlot& Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
