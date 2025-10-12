@@ -150,20 +150,7 @@ void USocketManagerComponent::InitializeSlots()
     // 슬롯 기본값 설정
     for (const auto& SlotConfig : SlotConfigs)
     {
-        if (!SlotConfig.IsValid()) continue;
-
-        if (SlotConfig.DefaultActorClass)
-        {
-            SetActor(SlotConfig.DefaultActorClass, SlotConfig.SocketTag, SlotConfig.SocketName);
-        }
-        else if (SlotConfig.DefaultSkeletalMesh)
-        {
-            SetSkeletalMesh(SlotConfig.DefaultSkeletalMesh, SlotConfig.SocketTag, SlotConfig.bModular, SlotConfig.SocketName);
-        }
-        else if (SlotConfig.DefaultStaticMesh)
-        {
-            SetStaticMesh(SlotConfig.DefaultStaticMesh, SlotConfig.SocketTag, SlotConfig.SocketName);
-        }
+        ApplySlotConfig(SlotConfig);
     }
 }
 
@@ -200,10 +187,21 @@ void USocketManagerComponent::ClearSlot(FGameplayTag InSocketTag)
 {
     if (HasSlot(InSocketTag))
     {
+        // 슬롯 비우기
         auto& Slot = const_cast<FSocketSlot&>(GetSlot(InSocketTag));
         if (Slot.StaticMesh) Slot.StaticMesh->SetStaticMesh(nullptr);
         if (Slot.SkeletalMesh) Slot.SkeletalMesh->SetSkeletalMesh(nullptr);
         if (Slot.Actor) Slot.Actor->Destroy(); Slot.Actor = nullptr;
+
+        // 기본값 적용
+        for (const auto& SlotConfig : SlotConfigs)
+        {
+            if (SlotConfig.SocketTag == InSocketTag)
+            {
+                ApplySlotConfig(SlotConfig);
+                break;
+            }
+        }
     }
 }
 
@@ -260,4 +258,30 @@ AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> InActorClass)
     }
 
     return nullptr;
+}
+
+void USocketManagerComponent::ApplySlotConfig(const FSocketSlotConfig& InSlotConfig)
+{
+    if (InSlotConfig.IsValid())
+    {
+        auto SocketTag = InSlotConfig.SocketTag;
+        auto SocketName = InSlotConfig.SocketName;
+        auto DefaultStaticMesh = InSlotConfig.DefaultStaticMesh;
+        auto DefaultSkeletalMesh = InSlotConfig.DefaultSkeletalMesh;
+        auto bModular = InSlotConfig.bModular;
+        auto DefaultActorClass = InSlotConfig.DefaultActorClass;
+
+        if (DefaultActorClass)
+        {
+            SetActor(DefaultActorClass, SocketTag, SocketName);
+        }
+        else if (DefaultSkeletalMesh)
+        {
+            SetSkeletalMesh(DefaultSkeletalMesh, SocketTag, bModular, SocketName);
+        }
+        else if (DefaultStaticMesh)
+        {
+            SetStaticMesh(DefaultStaticMesh, SocketTag, SocketName);
+        }
+    }
 }

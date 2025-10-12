@@ -66,4 +66,6 @@ protected:
     virtual UStaticMeshComponent* CreateStaticMesh();
     virtual USkeletalMeshComponent* CreateSkeletalMesh();
     virtual AActor* SpawnActor(TSubclassOf<AActor> InActorClass);
+
+    virtual void ApplySlotConfig(const FSocketSlotConfig& InSlotConfig);
 };
