@@ -12,7 +12,10 @@ public class EquipmentManager : ModuleRules
                 "Core",
                 "UniversalUtilities",
                 "GameplayTags",
-                "SocketManager"
+
+                // UniversalGameFramework
+                "SocketManager",
+                "DataManager"
             }
         );
 

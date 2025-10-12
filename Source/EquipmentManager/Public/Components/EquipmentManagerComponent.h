@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Types/EquipmentSlot.h"
+#include "Types/EquipmentSlotIndex.h"
 #include "Types/EquipmentSlotConfig.h"
+#include "Types/EquipmentSlot.h"
 #include "EquipmentManagerComponent.generated.h"
 
 
 class USocketManagerComponent;
+class UDataInstanceBase;
 
 UCLASS(meta = (BlueprintSpawnableComponent))
 class EQUIPMENTMANAGER_API UEquipmentManagerComponent : public UActorComponent
@@ -21,51 +23,61 @@ public:
     TArray<FEquipmentSlotConfig> SlotConfigs;
 
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
     TWeakObjectPtr<USocketManagerComponent> SocketManager;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TMap<FGameplayTag, int32> SlotNumMap;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<FEquipmentSlot> Slots;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
-    TObjectPtr<AActor> SelectedWeapon;
+    TMap<FEquipmentSlotIndex, int32> SlotIndexMap;
 
 public:
-    UEquipmentManagerComponent();
-
     /* ActorComponent */
 
-    virtual void InitializeComponent() override;
+    virtual void OnRegister() override;
+
+    /* Initialize */
+
+    UFUNCTION(BlueprintCallable, Category = "Initialize")
+    virtual void SetSocketManager(USocketManagerComponent* NewSocketManager);
+
+    /* Query */
+
+    UFUNCTION(BlueprintPure)
+    virtual bool HasSlot(FEquipmentSlotIndex InSlotIndex) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual const FEquipmentSlot& GetSlot(FEquipmentSlotIndex InSlotIndex) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual bool IsSlotEmpty(FEquipmentSlotIndex InSlotIndex) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual FEquipmentSlotIndex GetEmptySlotIndex(FGameplayTag Type) const;
+
+    UFUNCTION(BlueprintPure)
+    virtual UDataInstanceBase* GetEquipment(FEquipmentSlotIndex InSlotIndex) const;
 
     /* API */
 
     UFUNCTION(BlueprintPure)
-    FORCEINLINE int32 GetSlotNum(FGameplayTag EquipmentType) { return SlotNumMap.Contains(EquipmentType) ? SlotNumMap[EquipmentType] : 0; }
-
-    UFUNCTION(BlueprintPure)
-    FORCEINLINE AActor* GetSelectedWeapon() const { return SelectedWeapon; }
+    virtual bool CanEquip(UDataInstanceBase* NewEquipment, FEquipmentSlotIndex InSlotIndex = FEquipmentSlotIndex()) const;
 
     UFUNCTION(BlueprintCallable)
-    virtual void SelectWeapon(int32 Index = 0);
-
-    UFUNCTION(BlueprintPure)
-    bool HasSlot(FGameplayTag EquipmentType, int32 Index = 0) const;
-
-    UFUNCTION(BlueprintPure)
-    const FEquipmentSlot& GetSlot(FGameplayTag EquipmentType, int32 Index = 0) const;
+    virtual void Equip(UDataInstanceBase* NewEquipment, FEquipmentSlotIndex InSlotIndex = FEquipmentSlotIndex());
 
     UFUNCTION(BlueprintCallable)
-    virtual bool AddEquipmentToSlot(AActor* NewEquipment, FGameplayTag EquipmentType, int32 Index = 0);
-
-    UFUNCTION(BlueprintCallable)
-    virtual AActor* RemoveEquipmentFromSlot(FGameplayTag EquipmentType, int32 Index = 0);
+    virtual UDataInstanceBase* UnEquip(FEquipmentSlotIndex InSlotIndex);
 
 protected:
-    void CreateSlots();
-    void FindSocketManager();
+    /* Initialize */
 
-    FEquipmentSlot& GetSlotRef(FGameplayTag EquipmentType, int32 Index = 0) const { return *const_cast<FEquipmentSlot*>(&GetSlot(EquipmentType, Index)); }
+    virtual void FindSocketManager();
+    virtual void CreateSlots();
+
+    /* API */
+
+    virtual void OnEquip(const FEquipmentSlot& Slot);
+    virtual void OnUnEquip(const FEquipmentSlot& Slot);
 };

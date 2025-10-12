@@ -25,14 +25,14 @@ public:
     FGameplayTag GetEquipmentType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FGameplayTag GetSocketTag() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    TSubclassOf<AActor> GetActorClass() const;
+    FName GetSocketName() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    bool IsModular() const;
 };
