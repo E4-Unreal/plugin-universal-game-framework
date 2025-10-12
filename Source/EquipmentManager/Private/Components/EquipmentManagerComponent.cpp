@@ -98,6 +98,12 @@ void UEquipmentManagerComponent::Equip(UDataInstanceBase* NewEquipment, FEquipme
 {
     if (!CanEquip(NewEquipment, InSlotIndex)) return;
 
+    if (!InSlotIndex.IsValid())
+    {
+        FGameplayTag Type = IEquipmentDataInterface::Execute_GetEquipmentType(NewEquipment->GetDefinition());
+        InSlotIndex = GetEmptySlotIndex(Type);
+    }
+
     auto& Slot = const_cast<FEquipmentSlot&>(GetSlot(InSlotIndex));
 
     Slot.Equipment = NewEquipment;
@@ -138,8 +144,8 @@ void UEquipmentManagerComponent::CreateSlots()
             NewSlot.Index = NewSlotIndex;
             NewSlot.SocketTag = SlotConfig.SocketTags[Index];
 
-            Slots.Emplace(NewSlot);
             SlotIndexMap.Emplace(NewSlotIndex, Slots.Num());
+            Slots.Emplace(NewSlot);
         }
     }
 }
