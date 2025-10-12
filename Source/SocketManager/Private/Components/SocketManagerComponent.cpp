@@ -24,6 +24,20 @@ void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
     RootMesh = NewRootMesh;
 }
 
+void USocketManagerComponent::ResetSlot(FGameplayTag InSocketTag)
+{
+    ClearSlot(InSocketTag);
+
+    for (const auto& SlotConfig : SlotConfigs)
+    {
+        if (SlotConfig.SocketTag == InSocketTag)
+        {
+            ApplySlotConfig(SlotConfig);
+            break;
+        }
+    }
+}
+
 void USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName)
 {
     if (NewStaticMesh && HasSlot(SocketTag))
@@ -192,16 +206,6 @@ void USocketManagerComponent::ClearSlot(FGameplayTag InSocketTag)
         if (Slot.StaticMesh) Slot.StaticMesh->SetStaticMesh(nullptr);
         if (Slot.SkeletalMesh) Slot.SkeletalMesh->SetSkeletalMesh(nullptr);
         if (Slot.Actor) Slot.Actor->Destroy(); Slot.Actor = nullptr;
-
-        // 기본값 적용
-        for (const auto& SlotConfig : SlotConfigs)
-        {
-            if (SlotConfig.SocketTag == InSocketTag)
-            {
-                ApplySlotConfig(SlotConfig);
-                break;
-            }
-        }
     }
 }
 

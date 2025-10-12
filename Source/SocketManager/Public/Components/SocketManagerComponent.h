@@ -39,7 +39,7 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void ClearSlot(FGameplayTag InSocketTag);
+    virtual void ResetSlot(FGameplayTag InSocketTag);
 
     UFUNCTION(BlueprintCallable)
     virtual void SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName);
@@ -60,6 +60,7 @@ protected:
 
     virtual bool HasSlot(FGameplayTag InSocketTag) const;
     virtual const FSocketSlot& GetSlot(FGameplayTag InSocketTag);
+    virtual void ClearSlot(FGameplayTag InSocketTag);
 
     virtual bool DoesSocketExist(FName InSocketName) const;
 
