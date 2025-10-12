@@ -218,8 +218,13 @@ UStaticMeshComponent* USocketManagerComponent::CreateStaticMesh()
 {
     if (RootMesh.IsValid())
     {
-        auto NewStaticMesh = Cast<UStaticMeshComponent>(GetOwner()->AddComponentByClass(UStaticMeshComponent::StaticClass(), true, FTransform::Identity, false));
+        auto NewStaticMesh = NewObject<UStaticMeshComponent>(GetOwner());
+        NewStaticMesh->SetupAttachment(RootMesh.Get());
+        NewStaticMesh->CreationMethod = EComponentCreationMethod::Instance;
+        NewStaticMesh->RegisterComponent();
+
         NewStaticMesh->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
+        
         return NewStaticMesh;
     }
 
@@ -230,7 +235,11 @@ USkeletalMeshComponent* USocketManagerComponent::CreateSkeletalMesh()
 {
     if (RootMesh.IsValid())
     {
-        auto NewSkeletalMesh = Cast<USkeletalMeshComponent>(GetOwner()->AddComponentByClass(USkeletalMeshComponent::StaticClass(), true, FTransform::Identity, false));
+        auto NewSkeletalMesh = NewObject<USkeletalMeshComponent>(GetOwner());
+        NewSkeletalMesh->SetupAttachment(RootMesh.Get());
+        NewSkeletalMesh->CreationMethod = EComponentCreationMethod::Instance;
+        NewSkeletalMesh->RegisterComponent();
+
         NewSkeletalMesh->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
         NewSkeletalMesh->SetLeaderPoseComponent(Cast<USkinnedMeshComponent>(RootMesh.Get()));
 
