@@ -48,10 +48,10 @@ public:
     virtual void ResetSlot(FGameplayTag InSocketTag);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual void SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
+    virtual UStaticMeshComponent* SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual void SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
+    virtual USkeletalMeshComponent* SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
     virtual AActor* SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());

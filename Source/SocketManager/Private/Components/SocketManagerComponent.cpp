@@ -62,9 +62,9 @@ void USocketManagerComponent::ResetSlot(FGameplayTag InSocketTag)
     }
 }
 
-void USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
+UStaticMeshComponent* USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
 {
-    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return;
+    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return nullptr;
 
     // 초기화
     ClearSlot(SocketTag);
@@ -92,11 +92,13 @@ void USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGamepla
         Slot.StaticMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
         Slot.StaticMeshComponent->SetStaticMesh(NewStaticMesh);
     }
+
+    return Slot.StaticMeshComponent;
 }
 
-void USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
+USkeletalMeshComponent* USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
 {
-    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return;
+    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return nullptr;
 
     // 초기화
     ClearSlot(SocketTag);
@@ -128,6 +130,8 @@ void USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FG
         Slot.SkeletalMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
         Slot.SkeletalMeshComponent->SetSkeletalMesh(NewSkeletalMesh);
     }
+
+    return Slot.SkeletalMeshComponent;
 }
 
 AActor* USocketManagerComponent::SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
