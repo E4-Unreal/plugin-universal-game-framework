@@ -18,16 +18,5 @@ namespace SocketGameplayTags
             UE_DEFINE_GAMEPLAY_TAG(Hand, "Socket.Character.Hand")
             UE_DEFINE_GAMEPLAY_TAG(Foot, "Socket.Character.Foot")
         }
-
-        namespace Equipment
-        {
-            UE_DEFINE_GAMEPLAY_TAG(Root, "Socket.Equipment")
-
-            UE_DEFINE_GAMEPLAY_TAG(Head, "Socket.Equipment.Head")
-            UE_DEFINE_GAMEPLAY_TAG(UpperBody, "Socket.Equipment.UpperBody")
-            UE_DEFINE_GAMEPLAY_TAG(LowerBody, "Socket.Equipment.LowerBody")
-            UE_DEFINE_GAMEPLAY_TAG(Hand, "Socket.Equipment.Hand")
-            UE_DEFINE_GAMEPLAY_TAG(Foot, "Socket.Equipment.Foot")
-        }
     }
 }
