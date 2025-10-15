@@ -40,69 +40,51 @@ void USocketManagerComponent::ResetSlot(FGameplayTag InSocketTag)
 
 void USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName)
 {
-    if (NewStaticMesh && HasSlot(SocketTag))
+    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return;
+
+    if (NewStaticMesh && DoesSocketExist(SocketName))
     {
         ClearSlot(SocketTag);
 
         auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
-
-        if (RootMesh.IsValid())
-        {
-            // StaticMeshComponent 생성
-            if (Slot.StaticMesh == nullptr) Slot.StaticMesh = CreateStaticMesh();
-
-            // StaticMesh 설정
-            Slot.StaticMesh->SetStaticMesh(NewStaticMesh);
-
-            // StaticMeshComponent를 소켓에 부착
-            if (DoesSocketExist(SocketName))
-            {
-                if (!Slot.StaticMesh->IsVisible()) Slot.StaticMesh->SetVisibility(true);
-                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-                Slot.StaticMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
-            }
-            else
-            {
-                if (Slot.StaticMesh->IsVisible()) Slot.StaticMesh->SetVisibility(false);
-            }
-        }
+        Slot.StaticMesh = GetOrCreateStaticMeshComponent();
+        FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+        Slot.StaticMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+        Slot.StaticMesh->SetStaticMesh(NewStaticMesh);
+    }
+    else
+    {
+        ResetSlot(SocketTag);
     }
 }
 
-void USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, bool bModular,
-    FName SocketName)
+void USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName)
 {
-    if (NewSkeletalMesh && HasSlot(SocketTag))
+    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return;
+
+    if (NewSkeletalMesh)
     {
-        ClearSlot(SocketTag);
+        bool bModular = IsModular(NewSkeletalMesh);
+        SocketName = bModular ? NAME_None: SocketName;
 
-        auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
-
-        if (RootMesh.IsValid())
+        if (!bModular && !DoesSocketExist(SocketName))
         {
-            // SkeletalMeshComponent 생성
-            if (Slot.SkeletalMesh == nullptr) Slot.SkeletalMesh = CreateSkeletalMesh();
-
-            // SkeletalMesh 설정
-            Slot.SkeletalMesh->SetSkeletalMesh(NewSkeletalMesh);
-
-            if (bModular)
-            {
-                if (!Slot.SkeletalMesh->IsVisible()) Slot.SkeletalMesh->SetVisibility(true);
-                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-                Slot.SkeletalMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules);
-            }
-            else if (DoesSocketExist(SocketName))
-            {
-                if (!Slot.SkeletalMesh->IsVisible()) Slot.SkeletalMesh->SetVisibility(true);
-                FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-                Slot.SkeletalMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
-            }
-            else
-            {
-                if (Slot.SkeletalMesh->IsVisible()) Slot.SkeletalMesh->SetVisibility(false);
-            }
+            ResetSlot(SocketTag);
         }
+        else
+        {
+            ClearSlot(SocketTag);
+
+            auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
+            Slot.SkeletalMesh = GetOrCreateSkeletalMeshComponent();
+            FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+            Slot.SkeletalMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+            Slot.SkeletalMesh->SetSkeletalMesh(NewSkeletalMesh);
+        }
+    }
+    else
+    {
+        ResetSlot(SocketTag);
     }
 }
 
@@ -201,11 +183,22 @@ void USocketManagerComponent::ClearSlot(FGameplayTag InSocketTag)
 {
     if (HasSlot(InSocketTag))
     {
-        // 슬롯 비우기
         auto& Slot = const_cast<FSocketSlot&>(GetSlot(InSocketTag));
-        if (Slot.StaticMesh) Slot.StaticMesh->SetStaticMesh(nullptr);
-        if (Slot.SkeletalMesh) Slot.SkeletalMesh->SetSkeletalMesh(nullptr);
-        if (Slot.Actor) Slot.Actor->Destroy(); Slot.Actor = nullptr;
+        if (Slot.StaticMesh)
+        {
+            ReleaseStaticMeshComponent(Slot.StaticMesh);
+            Slot.StaticMesh = nullptr;
+        }
+        else if (Slot.SkeletalMesh)
+        {
+            ReleaseSkeletalMeshComponent(Slot.SkeletalMesh);
+            Slot.SkeletalMesh = nullptr;
+        }
+        else if (Slot.Actor)
+        {
+            Slot.Actor->Destroy();
+            Slot.Actor = nullptr;
+        }
     }
 }
 
@@ -214,39 +207,90 @@ bool USocketManagerComponent::DoesSocketExist(FName InSocketName) const
     return RootMesh.IsValid() && RootMesh->DoesSocketExist(InSocketName);
 }
 
-UStaticMeshComponent* USocketManagerComponent::CreateStaticMesh()
+bool USocketManagerComponent::IsModular(USkeletalMesh* InSkeletalMesh) const
 {
-    if (RootMesh.IsValid())
+    if (InSkeletalMesh)
     {
-        auto NewStaticMesh = NewObject<UStaticMeshComponent>(GetOwner());
-        NewStaticMesh->SetupAttachment(RootMesh.Get());
-        NewStaticMesh->CreationMethod = EComponentCreationMethod::Instance;
-        NewStaticMesh->RegisterComponent();
-
-        NewStaticMesh->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
-        
-        return NewStaticMesh;
+        if (auto RootSkeletalMeshComponent = Cast<USkeletalMeshComponent>(RootMesh.Get()))
+        {
+            if (auto RootSkeletalMesh = RootSkeletalMeshComponent->GetSkeletalMeshAsset())
+            {
+                if (RootSkeletalMesh->GetSkeleton()->IsCompatibleMesh(InSkeletalMesh))
+                {
+                    return true;
+                }
+            }
+        }
     }
 
-    return nullptr;
+    return false;
 }
 
-USkeletalMeshComponent* USocketManagerComponent::CreateSkeletalMesh()
+UStaticMeshComponent* USocketManagerComponent::GetOrCreateStaticMeshComponent()
 {
-    if (RootMesh.IsValid())
+    UStaticMeshComponent* StaticMeshComponent = nullptr;
+
+    if (StaticMeshComponentPool.IsEmpty())
     {
-        auto NewSkeletalMesh = NewObject<USkeletalMeshComponent>(GetOwner());
-        NewSkeletalMesh->SetupAttachment(RootMesh.Get());
-        NewSkeletalMesh->CreationMethod = EComponentCreationMethod::Instance;
-        NewSkeletalMesh->RegisterComponent();
-
-        NewSkeletalMesh->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
-        NewSkeletalMesh->SetLeaderPoseComponent(Cast<USkinnedMeshComponent>(RootMesh.Get()));
-
-        return NewSkeletalMesh;
+        if (RootMesh.IsValid())
+        {
+            StaticMeshComponent = NewObject<UStaticMeshComponent>(GetOwner());
+            StaticMeshComponent->CreationMethod = EComponentCreationMethod::Instance;
+            StaticMeshComponent->SetupAttachment(RootMesh.Get());
+            StaticMeshComponent->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
+            StaticMeshComponent->RegisterComponent();
+        }
+    }
+    else
+    {
+        StaticMeshComponent = StaticMeshComponentPool.Pop(EAllowShrinking::No);
+        StaticMeshComponent->SetVisibility(true);
     }
 
-    return nullptr;
+    return StaticMeshComponent;
+}
+
+void USocketManagerComponent::ReleaseStaticMeshComponent(UStaticMeshComponent* StaticMeshComponent)
+{
+    if (StaticMeshComponent)
+    {
+        StaticMeshComponent->SetStaticMesh(nullptr);
+        StaticMeshComponent->SetVisibility(false);
+    }
+}
+
+USkeletalMeshComponent* USocketManagerComponent::GetOrCreateSkeletalMeshComponent()
+{
+    USkeletalMeshComponent* SkeletalMeshComponent = nullptr;
+
+    if (StaticMeshComponentPool.IsEmpty())
+    {
+        if (RootMesh.IsValid())
+        {
+            SkeletalMeshComponent = NewObject<USkeletalMeshComponent>(GetOwner());
+            SkeletalMeshComponent->CreationMethod = EComponentCreationMethod::Instance;
+            SkeletalMeshComponent->SetupAttachment(RootMesh.Get());
+            SkeletalMeshComponent->SetCollisionProfileName(RootMesh->GetCollisionProfileName());
+            SkeletalMeshComponent->SetLeaderPoseComponent(Cast<USkeletalMeshComponent>(RootMesh));
+            SkeletalMeshComponent->RegisterComponent();
+        }
+    }
+    else
+    {
+        SkeletalMeshComponent = SkeletalMeshComponentPool.Pop(EAllowShrinking::No);
+        SkeletalMeshComponent->SetVisibility(true);
+    }
+
+    return SkeletalMeshComponent;
+}
+
+void USocketManagerComponent::ReleaseSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent)
+{
+    if (SkeletalMeshComponent)
+    {
+        SkeletalMeshComponent->SetSkeletalMesh(nullptr);
+        SkeletalMeshComponent->SetVisibility(false);
+    }
 }
 
 AActor* USocketManagerComponent::SpawnActor(TSubclassOf<AActor> InActorClass)
@@ -281,7 +325,6 @@ void USocketManagerComponent::ApplySlotConfig(const FSocketSlotConfig& InSlotCon
         auto SocketName = InSlotConfig.SocketName;
         auto DefaultStaticMesh = InSlotConfig.DefaultStaticMesh;
         auto DefaultSkeletalMesh = InSlotConfig.DefaultSkeletalMesh;
-        auto bModular = InSlotConfig.bModular;
         auto DefaultActorClass = InSlotConfig.DefaultActorClass;
 
         if (DefaultActorClass)
@@ -290,7 +333,7 @@ void USocketManagerComponent::ApplySlotConfig(const FSocketSlotConfig& InSlotCon
         }
         else if (DefaultSkeletalMesh)
         {
-            SetSkeletalMesh(DefaultSkeletalMesh, SocketTag, bModular, SocketName);
+            SetSkeletalMesh(DefaultSkeletalMesh, SocketTag, SocketName);
         }
         else if (DefaultStaticMesh)
         {

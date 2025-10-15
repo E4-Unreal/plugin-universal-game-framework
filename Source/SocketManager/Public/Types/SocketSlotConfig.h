@@ -18,9 +18,6 @@ struct SOCKETMANAGER_API FSocketSlotConfig
     FName SocketName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool bModular;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UStaticMesh> DefaultStaticMesh;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -28,11 +25,6 @@ struct SOCKETMANAGER_API FSocketSlotConfig
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSubclassOf<AActor> DefaultActorClass;
-
-    FSocketSlotConfig()
-    {
-        bModular = true;
-    }
 
     bool IsValid() const { return SocketTag.IsValid(); }
 };

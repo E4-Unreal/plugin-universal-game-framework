@@ -32,7 +32,4 @@ public:
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
-
-    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    bool IsModular() const;
 };

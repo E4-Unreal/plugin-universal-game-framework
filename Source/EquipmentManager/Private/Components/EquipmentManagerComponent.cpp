@@ -160,11 +160,10 @@ void UEquipmentManagerComponent::OnEquip(const FEquipmentSlot& Slot)
         auto SocketName = IEquipmentDataInterface::Execute_GetSocketName(Data);
         auto StaticMesh = IEquipmentDataInterface::Execute_GetStaticMesh(Data);
         auto SkeletalMesh = IEquipmentDataInterface::Execute_GetSkeletalMesh(Data);
-        bool bModular = IEquipmentDataInterface::Execute_IsModular(Data);
 
         if (!SkeletalMesh.IsNull())
         {
-            SocketManager->SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, bModular, SocketName);
+            SocketManager->SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, SocketName);
         }
         else if (!StaticMesh.IsNull())
         {

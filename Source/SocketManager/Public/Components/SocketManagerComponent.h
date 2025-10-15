@@ -26,6 +26,12 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
     TArray<FSocketSlot> Slots;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TArray<TObjectPtr<UStaticMeshComponent>> StaticMeshComponentPool;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TArray<TObjectPtr<USkeletalMeshComponent>> SkeletalMeshComponentPool;
+
 public:
     USocketManagerComponent();
 
@@ -45,7 +51,7 @@ public:
     virtual void SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName);
 
     UFUNCTION(BlueprintCallable)
-    virtual void SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, bool bModular = true, FName SocketName = NAME_None);
+    virtual void SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName);
 
     UFUNCTION(BlueprintCallable)
     virtual AActor* SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName);
@@ -63,9 +69,12 @@ protected:
     virtual void ClearSlot(FGameplayTag InSocketTag);
 
     virtual bool DoesSocketExist(FName InSocketName) const;
+    virtual bool IsModular(USkeletalMesh* InSkeletalMesh) const;
 
-    virtual UStaticMeshComponent* CreateStaticMesh();
-    virtual USkeletalMeshComponent* CreateSkeletalMesh();
+    virtual UStaticMeshComponent* GetOrCreateStaticMeshComponent();
+    virtual void ReleaseStaticMeshComponent(UStaticMeshComponent* StaticMeshComponent);
+    virtual USkeletalMeshComponent* GetOrCreateSkeletalMeshComponent();
+    virtual void ReleaseSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent);
     virtual AActor* SpawnActor(TSubclassOf<AActor> InActorClass);
 
     virtual void ApplySlotConfig(const FSocketSlotConfig& InSlotConfig);
