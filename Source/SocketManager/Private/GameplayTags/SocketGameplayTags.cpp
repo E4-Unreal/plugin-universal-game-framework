@@ -13,9 +13,15 @@ namespace SocketGameplayTags
             UE_DEFINE_GAMEPLAY_TAG(Face, "Socket.Character.Face")
             UE_DEFINE_GAMEPLAY_TAG(Ear, "Socket.Character.Ear")
             UE_DEFINE_GAMEPLAY_TAG(Beard, "Socket.Character.Beard")
+
             UE_DEFINE_GAMEPLAY_TAG(UpperBody, "Socket.Character.UpperBody")
+
             UE_DEFINE_GAMEPLAY_TAG(LowerBody, "Socket.Character.LowerBody")
+
             UE_DEFINE_GAMEPLAY_TAG(Hand, "Socket.Character.Hand")
+            UE_DEFINE_GAMEPLAY_TAG(RightHand, "Socket.Character.Hand.Right")
+            UE_DEFINE_GAMEPLAY_TAG(LeftHand, "Socket.Character.Hand.Left")
+
             UE_DEFINE_GAMEPLAY_TAG(Foot, "Socket.Character.Foot")
         }
     }
