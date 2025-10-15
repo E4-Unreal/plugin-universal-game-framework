@@ -314,6 +314,7 @@ void USocketManagerComponent::ReleaseStaticMeshComponent(UStaticMeshComponent* S
     {
         StaticMeshComponent->SetStaticMesh(nullptr);
         StaticMeshComponent->SetVisibility(false);
+        StaticMeshComponentPool.Push(StaticMeshComponent);
     }
 }
 
@@ -321,7 +322,7 @@ USkeletalMeshComponent* USocketManagerComponent::GetOrCreateSkeletalMeshComponen
 {
     USkeletalMeshComponent* SkeletalMeshComponent = nullptr;
 
-    if (StaticMeshComponentPool.IsEmpty())
+    if (SkeletalMeshComponentPool.IsEmpty())
     {
         if (RootMesh.IsValid())
         {
@@ -348,6 +349,7 @@ void USocketManagerComponent::ReleaseSkeletalMeshComponent(USkeletalMeshComponen
     {
         SkeletalMeshComponent->SetSkeletalMesh(nullptr);
         SkeletalMeshComponent->SetVisibility(false);
+        SkeletalMeshComponentPool.Push(SkeletalMeshComponent);
     }
 }
 
