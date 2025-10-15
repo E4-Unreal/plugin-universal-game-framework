@@ -78,8 +78,9 @@ protected:
     virtual void ReleaseSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent);
     virtual AActor* SpawnActor(TSubclassOf<AActor> InActorClass);
 
+    virtual const FSocketSlotConfig& GetSlotConfig(FGameplayTag InSocketTag) const;
     virtual void ApplySlotConfig(const FSocketSlotConfig& InSlotConfig);
 
-    virtual void ShowSocket(FGameplayTag SocketTagToHide);
-    virtual void HideSocket(FGameplayTag SocketTagToHide);
+    virtual void ShowSockets(const FGameplayTagContainer& SocketTagsToHide);
+    virtual void HideSockets(const FGameplayTagContainer& SocketTagsToHide);
 };

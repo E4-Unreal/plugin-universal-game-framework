@@ -2,3 +2,5 @@
 
 
 #include "Types/SocketSlotConfig.h"
+
+const FSocketSlotConfig FSocketSlotConfig::EmptySlotConfig;

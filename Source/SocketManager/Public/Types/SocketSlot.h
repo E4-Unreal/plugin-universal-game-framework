@@ -17,6 +17,9 @@ struct FSocketSlot
     FGameplayTag SocketTag;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FName SocketName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FGameplayTagContainer SocketTagsToHide;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
