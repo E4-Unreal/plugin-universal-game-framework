@@ -45,7 +45,8 @@ void USocketManagerComponent::OnRegister()
     Super::OnRegister();
 
     FindRootMesh();
-    InitializeSlots();
+    CreateSlots();
+    ApplySlotConfigs();
 }
 
 void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
@@ -210,9 +211,10 @@ void USocketManagerComponent::FindRootMesh()
     SetRootMesh(FoundRootMesh);
 }
 
-void USocketManagerComponent::InitializeSlots()
+void USocketManagerComponent::CreateSlots()
 {
-    // 슬롯 생성
+    if (!Slots.IsEmpty()) return;
+
     for (const auto& SlotConfig : SlotConfigs)
     {
         if (!SlotConfig.IsValid()) continue;
@@ -222,8 +224,10 @@ void USocketManagerComponent::InitializeSlots()
 
         Slots.Emplace(NewSlot);
     }
+}
 
-    // 슬롯 기본값 설정
+void USocketManagerComponent::ApplySlotConfigs()
+{
     for (const auto& SlotConfig : SlotConfigs)
     {
         ApplySlotConfig(SlotConfig);

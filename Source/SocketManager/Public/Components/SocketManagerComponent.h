@@ -66,7 +66,8 @@ protected:
     /* Initialize */
 
     virtual void FindRootMesh();
-    virtual void InitializeSlots();
+    virtual void CreateSlots();
+    virtual void ApplySlotConfigs();
 
     /* API */
 
