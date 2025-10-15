@@ -17,10 +17,10 @@ struct FSocketSlot
     FGameplayTag SocketTag;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UStaticMeshComponent> StaticMesh;
+    TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
+    TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;

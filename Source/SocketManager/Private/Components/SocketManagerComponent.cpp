@@ -47,10 +47,10 @@ void USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGamepla
         ClearSlot(SocketTag);
 
         auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
-        Slot.StaticMesh = GetOrCreateStaticMeshComponent();
+        Slot.StaticMeshComponent = GetOrCreateStaticMeshComponent();
         FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-        Slot.StaticMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
-        Slot.StaticMesh->SetStaticMesh(NewStaticMesh);
+        Slot.StaticMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+        Slot.StaticMeshComponent->SetStaticMesh(NewStaticMesh);
     }
     else
     {
@@ -76,10 +76,10 @@ void USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FG
             ClearSlot(SocketTag);
 
             auto& Slot = const_cast<FSocketSlot&>(GetSlot(SocketTag));
-            Slot.SkeletalMesh = GetOrCreateSkeletalMeshComponent();
+            Slot.SkeletalMeshComponent = GetOrCreateSkeletalMeshComponent();
             FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-            Slot.SkeletalMesh->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
-            Slot.SkeletalMesh->SetSkeletalMesh(NewSkeletalMesh);
+            Slot.SkeletalMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+            Slot.SkeletalMeshComponent->SetSkeletalMesh(NewSkeletalMesh);
         }
     }
     else
@@ -184,15 +184,15 @@ void USocketManagerComponent::ClearSlot(FGameplayTag InSocketTag)
     if (HasSlot(InSocketTag))
     {
         auto& Slot = const_cast<FSocketSlot&>(GetSlot(InSocketTag));
-        if (Slot.StaticMesh)
+        if (Slot.StaticMeshComponent)
         {
-            ReleaseStaticMeshComponent(Slot.StaticMesh);
-            Slot.StaticMesh = nullptr;
+            ReleaseStaticMeshComponent(Slot.StaticMeshComponent);
+            Slot.StaticMeshComponent = nullptr;
         }
-        else if (Slot.SkeletalMesh)
+        else if (Slot.SkeletalMeshComponent)
         {
-            ReleaseSkeletalMeshComponent(Slot.SkeletalMesh);
-            Slot.SkeletalMesh = nullptr;
+            ReleaseSkeletalMeshComponent(Slot.SkeletalMeshComponent);
+            Slot.SkeletalMeshComponent = nullptr;
         }
         else if (Slot.Actor)
         {
