@@ -158,16 +158,22 @@ void UEquipmentManagerComponent::OnEquip(const FEquipmentSlot& Slot)
 
         auto Data = Slot.Equipment->GetDefinition();
         auto SocketName = IEquipmentDataInterface::Execute_GetSocketName(Data);
+        auto SocketTagsToHide = IEquipmentDataInterface::Execute_GetSocketTagsToHide(Data);
         auto StaticMesh = IEquipmentDataInterface::Execute_GetStaticMesh(Data);
         auto SkeletalMesh = IEquipmentDataInterface::Execute_GetSkeletalMesh(Data);
+        auto ActorClass = IEquipmentDataInterface::Execute_GetActorClass(Data);
 
-        if (!SkeletalMesh.IsNull())
+        if (!ActorClass.IsNull())
         {
-            SocketManager->SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, SocketName);
+            SocketManager->SetActor(ActorClass.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+        }
+        else if (!SkeletalMesh.IsNull())
+        {
+            SocketManager->SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
         }
         else if (!StaticMesh.IsNull())
         {
-            SocketManager->SetStaticMesh(StaticMesh.LoadSynchronous(), SocketTag, SocketName);
+            SocketManager->SetStaticMesh(StaticMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
         }
     }
 }

@@ -14,6 +14,6 @@ struct EQUIPMENTMANAGER_API FEquipmentSlotConfig
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FGameplayTag Type;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Socket"))
     TArray<FGameplayTag> SocketTags;
 };

@@ -28,8 +28,14 @@ public:
     FName GetSocketName() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FGameplayTagContainer GetSocketTagsToHide() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    TSoftClassPtr<AActor> GetActorClass() const;
 };
