@@ -8,5 +8,5 @@
 UQuickSlotData::UQuickSlotData(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    SocketTag = Socket::Character::RightHand;
+    SocketTag = Socket::Character::Hand;
 }

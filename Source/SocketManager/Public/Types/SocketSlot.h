@@ -17,6 +17,12 @@ struct FSocketSlot
     FGameplayTag SocketTag;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTagContainer SocketTagsToHide;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTagContainer HiddenBySocketTags;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
