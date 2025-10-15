@@ -56,6 +56,12 @@ public:
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
     virtual AActor* SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
 
+    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
+    virtual void SetMaterial(FGameplayTag SocketTag, UMaterialInterface* Material, int32 Index = 0);
+
+    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
+    virtual void SetMaterialByName(FGameplayTag SocketTag, UMaterialInterface* Material, FName SlotName);
+
 protected:
     /* Initialize */
 

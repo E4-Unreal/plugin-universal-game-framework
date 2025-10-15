@@ -169,6 +169,36 @@ AActor* USocketManagerComponent::SetActor(TSubclassOf<AActor> NewActorClass, FGa
     return nullptr;
 }
 
+void USocketManagerComponent::SetMaterial(FGameplayTag SocketTag, UMaterialInterface* Material, int32 Index)
+{
+    if (!HasSlot(SocketTag)) return;
+
+    const auto& Slot = GetSlot(SocketTag);
+    if (Slot.StaticMeshComponent)
+    {
+        Slot.StaticMeshComponent->SetMaterial(Index, Material);
+    }
+    else if (Slot.SkeletalMeshComponent)
+    {
+        Slot.SkeletalMeshComponent->SetMaterial(Index, Material);
+    }
+}
+
+void USocketManagerComponent::SetMaterialByName(FGameplayTag SocketTag, UMaterialInterface* Material, FName SlotName)
+{
+    if (!HasSlot(SocketTag)) return;
+
+    const auto& Slot = GetSlot(SocketTag);
+    if (Slot.StaticMeshComponent)
+    {
+        Slot.StaticMeshComponent->SetMaterialByName(SlotName, Material);
+    }
+    else if (Slot.SkeletalMeshComponent)
+    {
+        Slot.SkeletalMeshComponent->SetMaterialByName(SlotName, Material);
+    }
+}
+
 void USocketManagerComponent::FindRootMesh()
 {
     if (RootMesh.IsValid()) return;
@@ -318,6 +348,11 @@ void USocketManagerComponent::ReleaseStaticMeshComponent(UStaticMeshComponent* S
     {
         StaticMeshComponent->SetStaticMesh(nullptr);
         StaticMeshComponent->SetVisibility(false);
+        for (int32 Index = 0; Index < StaticMeshComponent->GetMaterialSlotNames().Num(); ++Index)
+        {
+            StaticMeshComponent->SetMaterial(Index, nullptr);
+        }
+
         StaticMeshComponentPool.Push(StaticMeshComponent);
     }
 }
@@ -353,6 +388,11 @@ void USocketManagerComponent::ReleaseSkeletalMeshComponent(USkeletalMeshComponen
     {
         SkeletalMeshComponent->SetSkeletalMesh(nullptr);
         SkeletalMeshComponent->SetVisibility(false);
+        for (int32 Index = 0; Index < SkeletalMeshComponent->GetMaterialSlotNames().Num(); ++Index)
+        {
+            SkeletalMeshComponent->SetMaterial(Index, nullptr);
+        }
+
         SkeletalMeshComponentPool.Push(SkeletalMeshComponent);
     }
 }
