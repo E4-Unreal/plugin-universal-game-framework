@@ -50,22 +50,22 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void ResetSlot(FGameplayTag InSocketTag);
+    virtual void ResetSlot(FGameplayTag InSocketType);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual UStaticMeshComponent* SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
+    virtual UStaticMeshComponent* SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual USkeletalMeshComponent* SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
+    virtual USkeletalMeshComponent* SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual AActor* SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide = FGameplayTagContainer());
+    virtual AActor* SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual void SetMaterial(FGameplayTag SocketTag, UMaterialInterface* Material, int32 Index = 0);
+    virtual void SetMaterial(FGameplayTag SocketType, UMaterialInterface* Material, int32 Index = 0);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual void SetMaterialByName(FGameplayTag SocketTag, UMaterialInterface* Material, FName SlotName);
+    virtual void SetMaterialByName(FGameplayTag SocketType, UMaterialInterface* Material, FName SlotName);
 
     UFUNCTION(BlueprintCallable)
     virtual void SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData);
@@ -84,10 +84,10 @@ protected:
 
     virtual bool CheckData(const TScriptInterface<ISocketDataInterface>& InData) const;
 
-    virtual bool HasSlot(FGameplayTag InSocketTag) const;
-    virtual const FSocketSlot& GetSlot(FGameplayTag InSocketTag) const;
-    virtual FSocketSlot& GetSlotRef(FGameplayTag InSocketTag);
-    virtual void ClearSlot(FGameplayTag InSocketTag);
+    virtual bool HasSlot(FGameplayTag InSocketType) const;
+    virtual const FSocketSlot& GetSlot(FGameplayTag InSocketType) const;
+    virtual FSocketSlot& GetSlotRef(FGameplayTag InSocketType);
+    virtual void ClearSlot(FGameplayTag InSocketType);
 
     virtual bool DoesSocketExist(FName InSocketName) const;
     virtual bool IsModular(USkeletalMesh* InSkeletalMesh) const;
@@ -98,11 +98,11 @@ protected:
     virtual void ReleaseSkeletalMeshComponent(USkeletalMeshComponent* SkeletalMeshComponent);
     virtual AActor* SpawnActor(TSubclassOf<AActor> InActorClass);
 
-    virtual const FSocketSlotConfig& GetSlotConfig(FGameplayTag InSocketTag) const;
+    virtual const FSocketSlotConfig& GetSlotConfig(FGameplayTag InSocketType) const;
     virtual FName GetDefaultSocketName(FGameplayTag SocketType) const;
     virtual UDataAsset* GetDefaultData(FGameplayTag SocketType) const;
     virtual UDataAsset* GetDataByID(int32 ID) const;
 
-    virtual void ShowSockets(const FGameplayTagContainer& SocketTagsToHide);
-    virtual void HideSockets(const FGameplayTagContainer& SocketTagsToHide);
+    virtual void ShowSockets(const FGameplayTagContainer& SocketTypesToHide);
+    virtual void HideSockets(const FGameplayTagContainer& SocketTypesToHide);
 };
