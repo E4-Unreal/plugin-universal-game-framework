@@ -8,6 +8,8 @@ namespace SocketGameplayTags
         {
             UE_DEFINE_GAMEPLAY_TAG(Root, "Socket.Character")
 
+            UE_DEFINE_GAMEPLAY_TAG(FullBody, "Socket.Character.FullBody")
+
             UE_DEFINE_GAMEPLAY_TAG(Head, "Socket.Character.Head")
             UE_DEFINE_GAMEPLAY_TAG(Hair, "Socket.Character.Hair")
             UE_DEFINE_GAMEPLAY_TAG(Face, "Socket.Character.Face")

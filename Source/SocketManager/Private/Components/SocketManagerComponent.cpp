@@ -13,6 +13,7 @@ USocketManagerComponent::USocketManagerComponent()
 {
     DataAssetType = "SocketDefinition";
 
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::FullBody));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Head, 1000));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Hair, 2000));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Face, 3000));
@@ -22,7 +23,7 @@ USocketManagerComponent::USocketManagerComponent()
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LowerBody, 7000));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Hand, 8000));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Foot, 9000));
-    
+
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::RightHand, "hand_r"));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LeftHand, "hand_l"));
 }
