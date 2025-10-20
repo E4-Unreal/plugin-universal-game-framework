@@ -27,15 +27,17 @@ struct SOCKETMANAGER_API FSocketSlotConfig
 
     FSocketSlotConfig() { }
 
-    FSocketSlotConfig(FGameplayTag InSocketType)
+    FSocketSlotConfig(FGameplayTag InSocketType, int32 InID = 0)
     {
         SocketType = InSocketType;
+        ID = InID;
     }
 
-    FSocketSlotConfig(FGameplayTag InSocketType, FName InSocketName)
+    FSocketSlotConfig(FGameplayTag InSocketType, FName InSocketName, int32 InID = 0)
     {
         SocketType = InSocketType;
         SocketName = InSocketName;
+        ID = InID;
     }
 
     bool IsValid() const { return SocketType.IsValid(); }

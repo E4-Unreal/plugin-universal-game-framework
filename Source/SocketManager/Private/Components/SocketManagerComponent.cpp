@@ -13,11 +13,16 @@ USocketManagerComponent::USocketManagerComponent()
 {
     DataAssetType = "SocketDefinition";
 
-    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Head));
-    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::UpperBody));
-    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LowerBody));
-    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Hand));
-    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Foot));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Head, 1000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Hair, 2000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Face, 3000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Ear, 4000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Beard, 5000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::UpperBody, 6000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LowerBody, 7000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Hand, 8000));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Foot, 9000));
+    
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::RightHand, "hand_r"));
     SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LeftHand, "hand_l"));
 }
