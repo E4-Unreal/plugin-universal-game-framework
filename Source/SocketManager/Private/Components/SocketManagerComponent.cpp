@@ -460,8 +460,7 @@ FName USocketManagerComponent::GetDefaultSocketName(FGameplayTag SocketType) con
 UDataAsset* USocketManagerComponent::GetDefaultData(FGameplayTag SocketType) const
 {
     const auto& SlotConfig = GetSlotConfig(SocketType);
-    auto SocketDefinition = SlotConfig.SocketDefinitionInstance ? SlotConfig.SocketDefinitionInstance : SlotConfig.SocketDefinition;
-    if (SocketDefinition == nullptr) SocketDefinition = GetDataByID(SlotConfig.ID);
+    auto SocketDefinition = !SlotConfig.SocketDefinition.IsNull() ? SlotConfig.SocketDefinition.LoadSynchronous() : GetDataByID(SlotConfig.ID);
 
     return SocketDefinition;
 }
