@@ -2,3 +2,8 @@
 
 
 #include "Data/UGFCharacterSocketDefinition.h"
+
+UUGFCharacterSocketDefinition::UUGFCharacterSocketDefinition()
+{
+    DataType = "CharacterSocket";
+}

@@ -35,6 +35,8 @@ public:
     TSoftClassPtr<AActor> ActorClass;
 
 public:
+    UUGFCharacterSocketDefinition();
+
     /* SocketDataInterface */
 
     virtual FGameplayTag GetSocketType_Implementation() const override { return SocketType; }
