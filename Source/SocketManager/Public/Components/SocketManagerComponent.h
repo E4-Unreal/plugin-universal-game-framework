@@ -100,6 +100,7 @@ protected:
 
     virtual const FSocketSlotConfig& GetSlotConfig(FGameplayTag InSocketTag) const;
     virtual void ApplySlotConfig(const FSocketSlotConfig& InSlotConfig);
+    virtual FName GetDefaultSocketName(FGameplayTag SocketType) const;
 
     virtual void ShowSockets(const FGameplayTagContainer& SocketTagsToHide);
     virtual void HideSockets(const FGameplayTagContainer& SocketTagsToHide);

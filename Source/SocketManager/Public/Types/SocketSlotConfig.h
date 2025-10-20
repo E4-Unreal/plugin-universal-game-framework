@@ -14,21 +14,29 @@ struct SOCKETMANAGER_API FSocketSlotConfig
     static const FSocketSlotConfig EmptySlotConfig;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Socket"))
-    FGameplayTag SocketTag;
+    FGameplayTag SocketType;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FName DefaultSocketName;
+    FName SocketName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<UStaticMesh> DefaultStaticMesh;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "SocketDataInterface"))
+    TObjectPtr<UDataAsset> SocketDefinition;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TObjectPtr<USkeletalMesh> DefaultSkeletalMesh;
-
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TSubclassOf<AActor> DefaultActorClass;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "SocketDataInterface"), Instanced)
+    TObjectPtr<UDataAsset> SocketDefinitionInstance;
 
     FSocketSlotConfig() { }
 
-    bool IsValid() const { return SocketTag.IsValid(); }
+    FSocketSlotConfig(FGameplayTag InSocketType)
+    {
+        SocketType = InSocketType;
+    }
+
+    FSocketSlotConfig(FGameplayTag InSocketType, FName InSocketName)
+    {
+        SocketType = InSocketType;
+        SocketName = InSocketName;
+    }
+
+    bool IsValid() const { return SocketType.IsValid(); }
 };

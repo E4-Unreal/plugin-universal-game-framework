@@ -13,35 +13,13 @@ USocketManagerComponent::USocketManagerComponent()
 {
     DataAssetType = "SocketDefinition";
 
-    FSocketSlotConfig HeadSocketSlotConfig;
-    HeadSocketSlotConfig.SocketTag = Socket::Character::Head;
-    SlotConfigs.Emplace(HeadSocketSlotConfig);
-
-    FSocketSlotConfig UpperBodySocketSlotConfig;
-    UpperBodySocketSlotConfig.SocketTag = Socket::Character::UpperBody;
-    SlotConfigs.Emplace(UpperBodySocketSlotConfig);
-
-    FSocketSlotConfig LowerBodySocketSlotConfig;
-    LowerBodySocketSlotConfig.SocketTag = Socket::Character::LowerBody;
-    SlotConfigs.Emplace(LowerBodySocketSlotConfig);
-
-    FSocketSlotConfig HandSocketSlotConfig;
-    HandSocketSlotConfig.SocketTag = Socket::Character::Hand;
-    SlotConfigs.Emplace(HandSocketSlotConfig);
-
-    FSocketSlotConfig FootSocketSlotConfig;
-    FootSocketSlotConfig.SocketTag = Socket::Character::Foot;
-    SlotConfigs.Emplace(FootSocketSlotConfig);
-
-    FSocketSlotConfig RightHandSocketSlotConfig;
-    RightHandSocketSlotConfig.SocketTag = Socket::Character::RightHand;
-    RightHandSocketSlotConfig.DefaultSocketName = "hand_r";
-    SlotConfigs.Emplace(RightHandSocketSlotConfig);
-
-    FSocketSlotConfig LeftHandSocketSlotConfig;
-    LeftHandSocketSlotConfig.SocketTag = Socket::Character::LeftHand;
-    LeftHandSocketSlotConfig.DefaultSocketName = "hand_l";
-    SlotConfigs.Emplace(LeftHandSocketSlotConfig);
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Head));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::UpperBody));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LowerBody));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Hand));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::Foot));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::RightHand, "hand_r"));
+    SlotConfigs.Emplace(FSocketSlotConfig(Socket::Character::LeftHand, "hand_l"));
 }
 
 void USocketManagerComponent::OnRegister()
@@ -69,15 +47,14 @@ void USocketManagerComponent::ResetSlot(FGameplayTag InSocketTag)
 
 UStaticMeshComponent* USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
 {
-    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return nullptr;
+    // 유효성 검사
+    if (!RootMesh.IsValid() || !NewStaticMesh || !HasSlot(SocketTag)) return nullptr;
+
+    // SocketName 설정
+    if (SocketName.IsNone()) SocketName = GetDefaultSocketName(SocketTag);
 
     // 초기화
     ClearSlot(SocketTag);
-
-    // SlotConfig 가져오기
-    const auto& SlotConfig = GetSlotConfig(SocketTag);
-    if (!NewStaticMesh) NewStaticMesh = SlotConfig.DefaultStaticMesh;
-    if (SocketName.IsNone()) SocketName = SlotConfig.DefaultSocketName;
 
     // Slot 설정
     auto& Slot = GetSlotRef(SocketTag);
@@ -103,15 +80,14 @@ UStaticMeshComponent* USocketManagerComponent::SetStaticMesh(UStaticMesh* NewSta
 
 USkeletalMeshComponent* USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
 {
-    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return nullptr;
+    // 유효성 검사
+    if (!RootMesh.IsValid() || !NewSkeletalMesh || !HasSlot(SocketTag)) return nullptr;
+
+    // SocketName 설정
+    if (SocketName.IsNone()) SocketName = GetDefaultSocketName(SocketTag);
 
     // 초기화
     ClearSlot(SocketTag);
-
-    // SlotConfig 가져오기
-    const auto& SlotConfig = GetSlotConfig(SocketTag);
-    if (!NewSkeletalMesh) NewSkeletalMesh = SlotConfig.DefaultSkeletalMesh;
-    if (SocketName.IsNone()) SocketName = SlotConfig.DefaultSocketName;
 
     // 모듈러 여부 확인
     bool bModular = IsModular(NewSkeletalMesh);
@@ -141,15 +117,14 @@ USkeletalMeshComponent* USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* 
 
 AActor* USocketManagerComponent::SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
 {
-    if (!RootMesh.IsValid() || !HasSlot(SocketTag)) return nullptr;
+    // 유효성 검사
+    if (!RootMesh.IsValid() || !NewActorClass || !HasSlot(SocketTag)) return nullptr;
+
+    // SocketName 설정
+    if (SocketName.IsNone()) SocketName = GetDefaultSocketName(SocketTag);
 
     // 초기화
     ClearSlot(SocketTag);
-
-    // SlotConfig 가져오기
-    const auto& SlotConfig = GetSlotConfig(SocketTag);
-    if (!NewActorClass) NewActorClass = SlotConfig.DefaultActorClass;
-    if (SocketName.IsNone()) SocketName = SlotConfig.DefaultSocketName;
 
     // Slot 설정
     auto& Slot = GetSlotRef(SocketTag);
@@ -262,7 +237,7 @@ void USocketManagerComponent::CreateSlots()
         if (!SlotConfig.IsValid()) continue;
 
         FSocketSlot NewSlot;
-        NewSlot.SocketTag = SlotConfig.SocketTag;
+        NewSlot.SocketTag = SlotConfig.SocketType;
 
         Slots.Emplace(NewSlot);
     }
@@ -476,7 +451,7 @@ const FSocketSlotConfig& USocketManagerComponent::GetSlotConfig(FGameplayTag InS
 {
     for (const auto& SlotConfig : SlotConfigs)
     {
-        if (SlotConfig.SocketTag == InSocketTag)
+        if (SlotConfig.SocketType == InSocketTag)
         {
             return SlotConfig;
         }
@@ -489,25 +464,17 @@ void USocketManagerComponent::ApplySlotConfig(const FSocketSlotConfig& InSlotCon
 {
     if (InSlotConfig.IsValid())
     {
-        auto SocketTag = InSlotConfig.SocketTag;
-        auto SocketName = InSlotConfig.DefaultSocketName;
-        auto DefaultStaticMesh = InSlotConfig.DefaultStaticMesh;
-        auto DefaultSkeletalMesh = InSlotConfig.DefaultSkeletalMesh;
-        auto DefaultActorClass = InSlotConfig.DefaultActorClass;
+        auto SocketDefinition = InSlotConfig.SocketDefinitionInstance ? InSlotConfig.SocketDefinitionInstance : InSlotConfig.SocketDefinition;
 
-        if (DefaultActorClass)
-        {
-            SetActor(DefaultActorClass, SocketTag, SocketName);
-        }
-        else if (DefaultSkeletalMesh)
-        {
-            SetSkeletalMesh(DefaultSkeletalMesh, SocketTag, SocketName);
-        }
-        else if (DefaultStaticMesh)
-        {
-            SetStaticMesh(DefaultStaticMesh, SocketTag, SocketName);
-        }
+        SetSocketByData(SocketDefinition);
     }
+}
+
+FName USocketManagerComponent::GetDefaultSocketName(FGameplayTag SocketType) const
+{
+    const auto& SlotConfig = GetSlotConfig(SocketType);
+
+    return SlotConfig.SocketName;
 }
 
 void USocketManagerComponent::ShowSockets(const FGameplayTagContainer& SocketTagsToHide)
