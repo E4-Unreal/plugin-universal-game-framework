@@ -53,25 +53,25 @@ public:
     virtual void ResetSlot(FGameplayTag InSocketType);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual UStaticMeshComponent* SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
+    virtual UStaticMeshComponent* SetSocketByStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual USkeletalMeshComponent* SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
+    virtual USkeletalMeshComponent* SetSocketBySkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual AActor* SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
-
-    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual void SetMaterial(FGameplayTag SocketType, UMaterialInterface* Material, int32 Index = 0);
-
-    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
-    virtual void SetMaterialByName(FGameplayTag SocketType, UMaterialInterface* Material, FName SlotName);
+    virtual AActor* SetSocketByActorClass(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
 
     UFUNCTION(BlueprintCallable)
     virtual void SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
     virtual void SetSocketByID(int32 NewID);
+
+    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
+    virtual void SetMaterial(FGameplayTag SocketType, UMaterialInterface* Material, int32 Index = 0);
+
+    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
+    virtual void SetMaterialByName(FGameplayTag SocketType, UMaterialInterface* Material, FName SlotName);
 
 protected:
     /* Initialize */

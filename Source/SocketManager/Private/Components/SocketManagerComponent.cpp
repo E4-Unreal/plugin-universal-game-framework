@@ -42,7 +42,7 @@ void USocketManagerComponent::ResetSlot(FGameplayTag InSocketType)
     SetSocketByData(GetDefaultData(InSocketType));
 }
 
-UStaticMeshComponent* USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide)
+UStaticMeshComponent* USocketManagerComponent::SetSocketByStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide)
 {
     // 유효성 검사
     if (!RootMesh.IsValid() || !NewStaticMesh || !HasSlot(SocketType)) return nullptr;
@@ -75,7 +75,7 @@ UStaticMeshComponent* USocketManagerComponent::SetStaticMesh(UStaticMesh* NewSta
     return Slot.StaticMeshComponent;
 }
 
-USkeletalMeshComponent* USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide)
+USkeletalMeshComponent* USocketManagerComponent::SetSocketBySkeletalMesh(USkeletalMesh* NewSkeletalMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide)
 {
     // 유효성 검사
     if (!RootMesh.IsValid() || !NewSkeletalMesh || !HasSlot(SocketType)) return nullptr;
@@ -112,7 +112,7 @@ USkeletalMeshComponent* USocketManagerComponent::SetSkeletalMesh(USkeletalMesh* 
     return Slot.SkeletalMeshComponent;
 }
 
-AActor* USocketManagerComponent::SetActor(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide)
+AActor* USocketManagerComponent::SetSocketByActorClass(TSubclassOf<AActor> NewActorClass, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide)
 {
     // 유효성 검사
     if (!RootMesh.IsValid() || !NewActorClass || !HasSlot(SocketType)) return nullptr;
@@ -146,6 +146,37 @@ AActor* USocketManagerComponent::SetActor(TSubclassOf<AActor> NewActorClass, FGa
     return nullptr;
 }
 
+void USocketManagerComponent::SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData)
+{
+    if (!CheckData(NewData)) return;
+
+    auto DataObject = NewData.GetObject();
+    auto SocketType = ISocketDataInterface::Execute_GetSocketType(DataObject);
+    auto SocketName = ISocketDataInterface::Execute_GetSocketName(DataObject);
+    auto SocketTypesToHide = ISocketDataInterface::Execute_GetSocketTypesToHide(DataObject);
+    auto StaticMesh = ISocketDataInterface::Execute_GetStaticMesh(DataObject);
+    auto SkeletalMesh = ISocketDataInterface::Execute_GetSkeletalMesh(DataObject);
+    auto ActorClass = ISocketDataInterface::Execute_GetActorClass(DataObject);
+
+    if (!ActorClass.IsNull())
+    {
+        SetSocketByActorClass(ActorClass.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
+    }
+    else if (!SkeletalMesh.IsNull())
+    {
+        SetSocketBySkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
+    }
+    else if (!StaticMesh.IsNull())
+    {
+        SetSocketByStaticMesh(StaticMesh.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
+    }
+}
+
+void USocketManagerComponent::SetSocketByID(int32 NewID)
+{
+    SetSocketByData(GetDataByID(NewID));
+}
+
 void USocketManagerComponent::SetMaterial(FGameplayTag SocketType, UMaterialInterface* Material, int32 Index)
 {
     if (!HasSlot(SocketType)) return;
@@ -174,37 +205,6 @@ void USocketManagerComponent::SetMaterialByName(FGameplayTag SocketType, UMateri
     {
         Slot.SkeletalMeshComponent->SetMaterialByName(SlotName, Material);
     }
-}
-
-void USocketManagerComponent::SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData)
-{
-    if (!CheckData(NewData)) return;
-
-    auto DataObject = NewData.GetObject();
-    auto SocketType = ISocketDataInterface::Execute_GetSocketType(DataObject);
-    auto SocketName = ISocketDataInterface::Execute_GetSocketName(DataObject);
-    auto SocketTypesToHide = ISocketDataInterface::Execute_GetSocketTypesToHide(DataObject);
-    auto StaticMesh = ISocketDataInterface::Execute_GetStaticMesh(DataObject);
-    auto SkeletalMesh = ISocketDataInterface::Execute_GetSkeletalMesh(DataObject);
-    auto ActorClass = ISocketDataInterface::Execute_GetActorClass(DataObject);
-
-    if (!ActorClass.IsNull())
-    {
-        SetActor(ActorClass.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
-    }
-    else if (!SkeletalMesh.IsNull())
-    {
-        SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
-    }
-    else if (!StaticMesh.IsNull())
-    {
-        SetStaticMesh(StaticMesh.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
-    }
-}
-
-void USocketManagerComponent::SetSocketByID(int32 NewID)
-{
-    SetSocketByData(GetDataByID(NewID));
 }
 
 void USocketManagerComponent::FindRootMesh()

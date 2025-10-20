@@ -165,15 +165,15 @@ void UEquipmentManagerComponent::OnEquip(const FEquipmentSlot& Slot)
 
         if (!ActorClass.IsNull())
         {
-            SocketManager->SetActor(ActorClass.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+            SocketManager->SetSocketByActorClass(ActorClass.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
         }
         else if (!SkeletalMesh.IsNull())
         {
-            SocketManager->SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+            SocketManager->SetSocketBySkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
         }
         else if (!StaticMesh.IsNull())
         {
-            SocketManager->SetStaticMesh(StaticMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+            SocketManager->SetSocketByStaticMesh(StaticMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
         }
     }
 }
