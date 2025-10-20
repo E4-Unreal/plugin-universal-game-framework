@@ -28,6 +28,9 @@ public:
     FName GetSocketName() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+    FGameplayTagContainer GetSocketTypesToHide() const;
+
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)

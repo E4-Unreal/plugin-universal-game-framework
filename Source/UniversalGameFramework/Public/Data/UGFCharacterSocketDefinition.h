@@ -22,6 +22,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     FName SocketName;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Socket"))
+    FGameplayTagContainer SocketTypesToHide;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<UStaticMesh> StaticMesh;
 
@@ -36,6 +39,7 @@ public:
 
     virtual FGameplayTag GetSocketType_Implementation() const override { return SocketType; }
     virtual FName GetSocketName_Implementation() const override { return SocketName; }
+    virtual FGameplayTagContainer GetSocketTypesToHide_Implementation() const override { return SocketTypesToHide; }
     virtual TSoftObjectPtr<UStaticMesh> GetStaticMesh_Implementation() const override { return StaticMesh; }
     virtual TSoftObjectPtr<USkeletalMesh> GetSkeletalMesh_Implementation() const override { return SkeletalMesh; }
     virtual TSoftClassPtr<AActor> GetActorClass_Implementation() const override { return ActorClass; }

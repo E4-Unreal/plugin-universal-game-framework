@@ -211,21 +211,22 @@ void USocketManagerComponent::SetSocketByData(const TScriptInterface<ISocketData
     auto DataObject = NewData.GetObject();
     auto SocketType = ISocketDataInterface::Execute_GetSocketType(DataObject);
     auto SocketName = ISocketDataInterface::Execute_GetSocketName(DataObject);
+    auto SocketTypesToHide = ISocketDataInterface::Execute_GetSocketTypesToHide(DataObject);
     auto StaticMesh = ISocketDataInterface::Execute_GetStaticMesh(DataObject);
     auto SkeletalMesh = ISocketDataInterface::Execute_GetSkeletalMesh(DataObject);
     auto ActorClass = ISocketDataInterface::Execute_GetActorClass(DataObject);
 
     if (!ActorClass.IsNull())
     {
-        SetActor(ActorClass.LoadSynchronous(), SocketType, SocketName);
+        SetActor(ActorClass.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
     }
     else if (!SkeletalMesh.IsNull())
     {
-        SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketType, SocketName);
+        SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
     }
     else if (!StaticMesh.IsNull())
     {
-        SetStaticMesh(StaticMesh.LoadSynchronous(), SocketType, SocketName);
+        SetStaticMesh(StaticMesh.LoadSynchronous(), SocketType, SocketName, SocketTypesToHide);
     }
 }
 
