@@ -66,7 +66,7 @@ UStaticMeshComponent* USocketManagerComponent::SetSocketByStaticMesh(UStaticMesh
     if (!SocketTypesToHide.IsEmpty())
     {
         Slot.SocketTypesToHide = SocketTypesToHide;
-        HideSockets(SocketTypesToHide);
+        HideSockets(SocketType, SocketTypesToHide);
     }
 
     // StaticMeshComponent 부착
@@ -103,7 +103,7 @@ USkeletalMeshComponent* USocketManagerComponent::SetSocketBySkeletalMesh(USkelet
     if (!SocketTypesToHide.IsEmpty())
     {
         Slot.SocketTypesToHide = SocketTypesToHide;
-        HideSockets(SocketTypesToHide);
+        HideSockets(SocketType, SocketTypesToHide);
     }
 
     // SkeletalMeshComponent 부착
@@ -136,7 +136,7 @@ AActor* USocketManagerComponent::SetSocketByActorClass(TSubclassOf<AActor> NewAc
     if (!SocketTypesToHide.IsEmpty())
     {
         Slot.SocketTypesToHide = SocketTypesToHide;
-        HideSockets(SocketTypesToHide);
+        HideSockets(SocketType, SocketTypesToHide);
     }
 
     // Actor 부착
@@ -309,7 +309,7 @@ void USocketManagerComponent::ClearSlot(FGameplayTag InSocketType)
 
         if (!Slot.SocketTypesToHide.IsEmpty())
         {
-            ShowSockets(Slot.SocketTypesToHide);
+            ShowSockets(InSocketType, Slot.SocketTypesToHide);
 
             Slot.SocketTypesToHide.Reset();
         }
@@ -485,12 +485,12 @@ UDataAsset* USocketManagerComponent::GetDataByID(int32 ID) const
     return nullptr;
 }
 
-void USocketManagerComponent::ShowSockets(const FGameplayTagContainer& SocketTypesToHide)
+void USocketManagerComponent::ShowSockets(FGameplayTag HiddenBySocketType, const FGameplayTagContainer& SocketTypesToHide)
 {
     for (const auto& SocketTypeToHide : SocketTypesToHide)
     {
         auto& Slot = GetSlotRef(SocketTypeToHide);
-        Slot.HiddenBySocketTypes.RemoveTag(SocketTypeToHide);
+        Slot.HiddenBySocketTypes.RemoveTag(HiddenBySocketType);
         if (Slot.HiddenBySocketTypes.IsEmpty())
         {
             if (Slot.StaticMeshComponent)
@@ -509,12 +509,12 @@ void USocketManagerComponent::ShowSockets(const FGameplayTagContainer& SocketTyp
     }
 }
 
-void USocketManagerComponent::HideSockets(const FGameplayTagContainer& SocketTypesToHide)
+void USocketManagerComponent::HideSockets(FGameplayTag HiddenBySocketType, const FGameplayTagContainer& SocketTypesToHide)
 {
     for (const auto& SocketTypeToHide : SocketTypesToHide)
     {
         auto& Slot = GetSlotRef(SocketTypeToHide);
-        Slot.HiddenBySocketTypes.AddTag(SocketTypeToHide);
+        Slot.HiddenBySocketTypes.AddTag(HiddenBySocketType);
         if (Slot.StaticMeshComponent)
         {
             Slot.StaticMeshComponent->SetVisibility(false);

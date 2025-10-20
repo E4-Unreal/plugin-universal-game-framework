@@ -103,6 +103,6 @@ protected:
     virtual UDataAsset* GetDefaultData(FGameplayTag SocketType) const;
     virtual UDataAsset* GetDataByID(int32 ID) const;
 
-    virtual void ShowSockets(const FGameplayTagContainer& SocketTypesToHide);
-    virtual void HideSockets(const FGameplayTagContainer& SocketTypesToHide);
+    virtual void ShowSockets(FGameplayTag HiddenBySocketType, const FGameplayTagContainer& SocketTypesToHide);
+    virtual void HideSockets(FGameplayTag HiddenBySocketType, const FGameplayTagContainer& SocketTypesToHide);
 };
