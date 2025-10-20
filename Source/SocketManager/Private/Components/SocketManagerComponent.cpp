@@ -63,12 +63,6 @@ UStaticMeshComponent* USocketManagerComponent::SetSocketByStaticMesh(UStaticMesh
     auto& Slot = GetSlotRef(SocketType);
     Slot.SocketName = SocketName;
 
-    if (!SocketTypesToHide.IsEmpty())
-    {
-        Slot.SocketTypesToHide = SocketTypesToHide;
-        HideSockets(SocketType, SocketTypesToHide);
-    }
-
     // StaticMeshComponent 부착
     if (DoesSocketExist(SocketName))
     {
@@ -76,6 +70,13 @@ UStaticMeshComponent* USocketManagerComponent::SetSocketByStaticMesh(UStaticMesh
         FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
         Slot.StaticMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
         Slot.StaticMeshComponent->SetStaticMesh(NewStaticMesh);
+    }
+
+    // 호환 여부 설정
+    if (!SocketTypesToHide.IsEmpty())
+    {
+        Slot.SocketTypesToHide = SocketTypesToHide;
+        HideSockets(SocketType, SocketTypesToHide);
     }
 
     return Slot.StaticMeshComponent;
@@ -100,12 +101,6 @@ USkeletalMeshComponent* USocketManagerComponent::SetSocketBySkeletalMesh(USkelet
     auto& Slot = GetSlotRef(SocketType);
     Slot.SocketName = SocketName;
 
-    if (!SocketTypesToHide.IsEmpty())
-    {
-        Slot.SocketTypesToHide = SocketTypesToHide;
-        HideSockets(SocketType, SocketTypesToHide);
-    }
-
     // SkeletalMeshComponent 부착
     if (bModular || DoesSocketExist(SocketName))
     {
@@ -113,6 +108,13 @@ USkeletalMeshComponent* USocketManagerComponent::SetSocketBySkeletalMesh(USkelet
         FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
         Slot.SkeletalMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
         Slot.SkeletalMeshComponent->SetSkeletalMesh(NewSkeletalMesh);
+    }
+
+    // 호환 여부 설정
+    if (!SocketTypesToHide.IsEmpty())
+    {
+        Slot.SocketTypesToHide = SocketTypesToHide;
+        HideSockets(SocketType, SocketTypesToHide);
     }
 
     return Slot.SkeletalMeshComponent;
@@ -133,12 +135,6 @@ AActor* USocketManagerComponent::SetSocketByActorClass(TSubclassOf<AActor> NewAc
     auto& Slot = GetSlotRef(SocketType);
     Slot.SocketName = SocketName;
 
-    if (!SocketTypesToHide.IsEmpty())
-    {
-        Slot.SocketTypesToHide = SocketTypesToHide;
-        HideSockets(SocketType, SocketTypesToHide);
-    }
-
     // Actor 부착
     if (DoesSocketExist(SocketName))
     {
@@ -147,6 +143,13 @@ AActor* USocketManagerComponent::SetSocketByActorClass(TSubclassOf<AActor> NewAc
         Slot.Actor->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
 
         return Slot.Actor;
+    }
+
+    // 호환 여부 설정
+    if (!SocketTypesToHide.IsEmpty())
+    {
+        Slot.SocketTypesToHide = SocketTypesToHide;
+        HideSockets(SocketType, SocketTypesToHide);
     }
 
     return nullptr;
