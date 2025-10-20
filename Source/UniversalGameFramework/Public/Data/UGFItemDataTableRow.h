@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "Data/DataDefinitionTableRowBase.h"
+#include "Types/DataDefinitionTableRowBase.h"
 #include "UGFItemDataTableRow.generated.h"
 
 USTRUCT(BlueprintType)

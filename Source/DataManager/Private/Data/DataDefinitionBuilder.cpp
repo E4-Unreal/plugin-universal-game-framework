@@ -4,7 +4,7 @@
 #include "Data/DataDefinitionBuilder.h"
 
 #include "Data/DataDefinitionBase.h"
-#include "Data/DataDefinitionTableRowBase.h"
+#include "Types/DataDefinitionTableRowBase.h"
 
 TSet<int32> UDataDefinitionBuilder::GetIDSet() const
 {
