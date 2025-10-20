@@ -463,7 +463,7 @@ UDataAsset* USocketManagerComponent::GetDefaultData(FGameplayTag SocketType) con
     auto SocketDefinition = SlotConfig.SocketDefinitionInstance ? SlotConfig.SocketDefinitionInstance : SlotConfig.SocketDefinition;
     if (SocketDefinition == nullptr) SocketDefinition = GetDataByID(SlotConfig.ID);
 
-    return SlotConfig.SocketDefinitionInstance ? SlotConfig.SocketDefinitionInstance : SlotConfig.SocketDefinition;
+    return SocketDefinition;
 }
 
 UDataAsset* USocketManagerComponent::GetDataByID(int32 ID) const
