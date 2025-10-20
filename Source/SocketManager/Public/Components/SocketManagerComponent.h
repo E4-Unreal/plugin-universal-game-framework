@@ -78,7 +78,7 @@ protected:
 
     virtual void FindRootMesh();
     virtual void CreateSlots();
-    virtual void ApplySlotConfigs();
+    virtual void ResetSlots();
 
     /* API */
 
@@ -99,8 +99,9 @@ protected:
     virtual AActor* SpawnActor(TSubclassOf<AActor> InActorClass);
 
     virtual const FSocketSlotConfig& GetSlotConfig(FGameplayTag InSocketTag) const;
-    virtual void ApplySlotConfig(const FSocketSlotConfig& InSlotConfig);
     virtual FName GetDefaultSocketName(FGameplayTag SocketType) const;
+    virtual UDataAsset* GetDefaultData(FGameplayTag SocketType) const;
+    virtual UDataAsset* GetDataByID(int32 ID) const;
 
     virtual void ShowSockets(const FGameplayTagContainer& SocketTagsToHide);
     virtual void HideSockets(const FGameplayTagContainer& SocketTagsToHide);

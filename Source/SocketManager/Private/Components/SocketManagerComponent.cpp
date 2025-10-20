@@ -28,7 +28,7 @@ void USocketManagerComponent::OnRegister()
 
     FindRootMesh();
     CreateSlots();
-    ApplySlotConfigs();
+    ResetSlots();
 }
 
 void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
@@ -38,11 +38,8 @@ void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
 
 void USocketManagerComponent::ResetSlot(FGameplayTag InSocketTag)
 {
-    if (HasSlot(InSocketTag))
-    {
-        ClearSlot(InSocketTag);
-        ApplySlotConfig(GetSlotConfig(InSocketTag));
-    }
+    ClearSlot(InSocketTag);
+    SetSocketByData(GetDefaultData(InSocketTag));
 }
 
 UStaticMeshComponent* USocketManagerComponent::SetStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketTag, FName SocketName, FGameplayTagContainer SocketTagsToHide)
@@ -207,14 +204,7 @@ void USocketManagerComponent::SetSocketByData(const TScriptInterface<ISocketData
 
 void USocketManagerComponent::SetSocketByID(int32 NewID)
 {
-    if (auto Subsystem = GEngine->GetEngineSubsystem<UDataManagerSubsystem>())
-    {
-        auto SocketDefinition = Subsystem->GetDataAsset(DataAssetType, NewID);
-        if (!SocketDefinition.IsNull())
-        {
-            SetSocketByData(SocketDefinition.LoadSynchronous());
-        }
-    }
+    SetSocketByData(GetDataByID(NewID));
 }
 
 void USocketManagerComponent::FindRootMesh()
@@ -243,11 +233,11 @@ void USocketManagerComponent::CreateSlots()
     }
 }
 
-void USocketManagerComponent::ApplySlotConfigs()
+void USocketManagerComponent::ResetSlots()
 {
-    for (const auto& SlotConfig : SlotConfigs)
+    for (const auto& Slot : Slots)
     {
-        ApplySlotConfig(SlotConfig);
+        ResetSlot(Slot.SocketTag);
     }
 }
 
@@ -460,21 +450,34 @@ const FSocketSlotConfig& USocketManagerComponent::GetSlotConfig(FGameplayTag InS
     return FSocketSlotConfig::EmptySlotConfig;
 }
 
-void USocketManagerComponent::ApplySlotConfig(const FSocketSlotConfig& InSlotConfig)
-{
-    if (InSlotConfig.IsValid())
-    {
-        auto SocketDefinition = InSlotConfig.SocketDefinitionInstance ? InSlotConfig.SocketDefinitionInstance : InSlotConfig.SocketDefinition;
-
-        SetSocketByData(SocketDefinition);
-    }
-}
-
 FName USocketManagerComponent::GetDefaultSocketName(FGameplayTag SocketType) const
 {
     const auto& SlotConfig = GetSlotConfig(SocketType);
 
     return SlotConfig.SocketName;
+}
+
+UDataAsset* USocketManagerComponent::GetDefaultData(FGameplayTag SocketType) const
+{
+    const auto& SlotConfig = GetSlotConfig(SocketType);
+    auto SocketDefinition = SlotConfig.SocketDefinitionInstance ? SlotConfig.SocketDefinitionInstance : SlotConfig.SocketDefinition;
+    if (SocketDefinition == nullptr) SocketDefinition = GetDataByID(SlotConfig.ID);
+
+    return SlotConfig.SocketDefinitionInstance ? SlotConfig.SocketDefinitionInstance : SlotConfig.SocketDefinition;
+}
+
+UDataAsset* USocketManagerComponent::GetDataByID(int32 ID) const
+{
+    if (auto Subsystem = GEngine->GetEngineSubsystem<UDataManagerSubsystem>())
+    {
+        auto SocketDefinition = Subsystem->GetDataAsset(DataAssetType, ID);
+        if (!SocketDefinition.IsNull())
+        {
+            return SocketDefinition.LoadSynchronous();
+        }
+    }
+
+    return nullptr;
 }
 
 void USocketManagerComponent::ShowSockets(const FGameplayTagContainer& SocketTagsToHide)
