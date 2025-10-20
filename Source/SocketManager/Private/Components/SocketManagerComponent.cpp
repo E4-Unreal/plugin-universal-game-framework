@@ -6,10 +6,13 @@
 #include "GameFramework/Character.h"
 #include "GameplayTags/SocketGameplayTags.h"
 #include "Interfaces/SocketDataInterface.h"
+#include "Subsystems/DataManagerSubsystem.h"
 
 
 USocketManagerComponent::USocketManagerComponent()
 {
+    DataAssetType = "SocketDefinition";
+
     FSocketSlotConfig HeadSocketSlotConfig;
     HeadSocketSlotConfig.SocketTag = Socket::Character::Head;
     SlotConfigs.Emplace(HeadSocketSlotConfig);
@@ -223,6 +226,18 @@ void USocketManagerComponent::SetSocketByData(const TScriptInterface<ISocketData
     else if (!StaticMesh.IsNull())
     {
         SetStaticMesh(StaticMesh.LoadSynchronous(), SocketType, SocketName);
+    }
+}
+
+void USocketManagerComponent::SetSocketByID(int32 NewID)
+{
+    if (auto Subsystem = GEngine->GetEngineSubsystem<UDataManagerSubsystem>())
+    {
+        auto SocketDefinition = Subsystem->GetDataAsset(DataAssetType, NewID);
+        if (!SocketDefinition.IsNull())
+        {
+            SetSocketByData(SocketDefinition.LoadSynchronous());
+        }
     }
 }
 

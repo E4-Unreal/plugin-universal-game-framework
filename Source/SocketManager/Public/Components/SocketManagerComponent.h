@@ -21,6 +21,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TArray<FSocketSlotConfig> SlotConfigs;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
+    FName DataAssetType;
+
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Reference", Transient)
     TWeakObjectPtr<UMeshComponent> RootMesh;
@@ -66,6 +69,9 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData);
+
+    UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
+    virtual void SetSocketByID(int32 NewID);
 
 protected:
     /* Initialize */
