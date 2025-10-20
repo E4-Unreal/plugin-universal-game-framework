@@ -20,7 +20,7 @@ struct SOCKETMANAGER_API FSocketSlotConfig
     FName SocketName;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
-    int32 ID;
+    int32 ID = 0;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "SocketDataInterface"))
     TObjectPtr<UDataAsset> SocketDefinition;
