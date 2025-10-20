@@ -70,6 +70,8 @@ UStaticMeshComponent* USocketManagerComponent::SetSocketByStaticMesh(UStaticMesh
         FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
         Slot.StaticMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
         Slot.StaticMeshComponent->SetStaticMesh(NewStaticMesh);
+
+        if (!Slot.HiddenBySocketTypes.IsEmpty()) Slot.StaticMeshComponent->SetVisibility(false);
     }
 
     // 호환 여부 설정
@@ -108,6 +110,8 @@ USkeletalMeshComponent* USocketManagerComponent::SetSocketBySkeletalMesh(USkelet
         FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
         Slot.SkeletalMeshComponent->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
         Slot.SkeletalMeshComponent->SetSkeletalMesh(NewSkeletalMesh);
+
+        if (!Slot.HiddenBySocketTypes.IsEmpty()) Slot.SkeletalMeshComponent->SetVisibility(false);
     }
 
     // 호환 여부 설정
@@ -141,6 +145,8 @@ AActor* USocketManagerComponent::SetSocketByActorClass(TSubclassOf<AActor> NewAc
         Slot.Actor = SpawnActor(NewActorClass);
         FAttachmentTransformRules AttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
         Slot.Actor->AttachToComponent(RootMesh.Get(), AttachmentTransformRules, SocketName);
+
+        if (!Slot.HiddenBySocketTypes.IsEmpty()) Slot.Actor->SetHidden(true);
 
         return Slot.Actor;
     }
