@@ -5,6 +5,7 @@
 
 #include "GameFramework/Character.h"
 #include "GameplayTags/SocketGameplayTags.h"
+#include "Interfaces/SocketDataInterface.h"
 
 
 USocketManagerComponent::USocketManagerComponent()
@@ -200,6 +201,31 @@ void USocketManagerComponent::SetMaterialByName(FGameplayTag SocketTag, UMateria
     }
 }
 
+void USocketManagerComponent::SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData)
+{
+    if (!CheckData(NewData)) return;
+
+    auto DataObject = NewData.GetObject();
+    auto SocketType = ISocketDataInterface::Execute_GetSocketType(DataObject);
+    auto SocketName = ISocketDataInterface::Execute_GetSocketName(DataObject);
+    auto StaticMesh = ISocketDataInterface::Execute_GetStaticMesh(DataObject);
+    auto SkeletalMesh = ISocketDataInterface::Execute_GetSkeletalMesh(DataObject);
+    auto ActorClass = ISocketDataInterface::Execute_GetActorClass(DataObject);
+
+    if (!ActorClass.IsNull())
+    {
+        SetActor(ActorClass.LoadSynchronous(), SocketType, SocketName);
+    }
+    else if (!SkeletalMesh.IsNull())
+    {
+        SetSkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketType, SocketName);
+    }
+    else if (!StaticMesh.IsNull())
+    {
+        SetStaticMesh(StaticMesh.LoadSynchronous(), SocketType, SocketName);
+    }
+}
+
 void USocketManagerComponent::FindRootMesh()
 {
     if (RootMesh.IsValid()) return;
@@ -232,6 +258,11 @@ void USocketManagerComponent::ApplySlotConfigs()
     {
         ApplySlotConfig(SlotConfig);
     }
+}
+
+bool USocketManagerComponent::CheckData(const TScriptInterface<ISocketDataInterface>& InData) const
+{
+    return InData.GetObject() && InData.GetObject()->Implements<USocketDataInterface>();
 }
 
 bool USocketManagerComponent::HasSlot(FGameplayTag InSocketTag) const

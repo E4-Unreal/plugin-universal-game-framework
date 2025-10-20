@@ -10,6 +10,8 @@
 #include "SocketManagerComponent.generated.h"
 
 
+class ISocketDataInterface;
+
 UCLASS(meta = (BlueprintSpawnableComponent))
 class SOCKETMANAGER_API USocketManagerComponent : public UActorComponent
 {
@@ -62,6 +64,9 @@ public:
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
     virtual void SetMaterialByName(FGameplayTag SocketTag, UMaterialInterface* Material, FName SlotName);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void SetSocketByData(const TScriptInterface<ISocketDataInterface>& NewData);
+
 protected:
     /* Initialize */
 
@@ -70,6 +75,8 @@ protected:
     virtual void ApplySlotConfigs();
 
     /* API */
+
+    virtual bool CheckData(const TScriptInterface<ISocketDataInterface>& InData) const;
 
     virtual bool HasSlot(FGameplayTag InSocketTag) const;
     virtual const FSocketSlot& GetSlot(FGameplayTag InSocketTag) const;
