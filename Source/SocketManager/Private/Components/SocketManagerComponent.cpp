@@ -34,6 +34,7 @@ void USocketManagerComponent::OnRegister()
 
     FindRootMesh();
     CreateSlots();
+    CheckPools();
     ResetSlots();
 }
 
@@ -254,6 +255,12 @@ void USocketManagerComponent::ResetSlots()
     {
         ResetSlot(Slot.SocketType);
     }
+}
+
+void USocketManagerComponent::CheckPools()
+{
+    StaticMeshComponentPool.RemoveSwap(nullptr);
+    SkeletalMeshComponentPool.RemoveSwap(nullptr);
 }
 
 bool USocketManagerComponent::CheckData(const TScriptInterface<ISocketDataInterface>& InData) const

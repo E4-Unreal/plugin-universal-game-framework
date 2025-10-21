@@ -79,6 +79,7 @@ protected:
     virtual void FindRootMesh();
     virtual void CreateSlots();
     virtual void ResetSlots();
+    virtual void CheckPools();
 
     /* API */
 
