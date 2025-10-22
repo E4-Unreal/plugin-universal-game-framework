@@ -10,6 +10,8 @@ public class FootstepManager : ModuleRules
             new string[]
             {
                 "Core",
+                "DeveloperSettings",
+                "PhysicsCore"
             }
         );
 
