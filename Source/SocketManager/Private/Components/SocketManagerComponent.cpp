@@ -35,7 +35,7 @@ void USocketManagerComponent::OnRegister()
     FindRootMesh();
     CreateSlots();
     CheckPools();
-    ResetSlots();
+    ResetSockets();
 }
 
 void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
@@ -43,7 +43,7 @@ void USocketManagerComponent::SetRootMesh(UMeshComponent* NewRootMesh)
     RootMesh = NewRootMesh;
 }
 
-void USocketManagerComponent::ResetSlot(FGameplayTag InSocketType)
+void USocketManagerComponent::ResetSocket(FGameplayTag InSocketType)
 {
     ClearSlot(InSocketType);
     SetSocketByData(GetDefaultData(InSocketType));
@@ -249,11 +249,11 @@ void USocketManagerComponent::CreateSlots()
     }
 }
 
-void USocketManagerComponent::ResetSlots()
+void USocketManagerComponent::ResetSockets()
 {
     for (const auto& Slot : Slots)
     {
-        ResetSlot(Slot.SocketType);
+        ResetSocket(Slot.SocketType);
     }
 }
 

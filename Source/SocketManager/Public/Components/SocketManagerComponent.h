@@ -50,7 +50,7 @@ public:
     /* API */
 
     UFUNCTION(BlueprintCallable)
-    virtual void ResetSlot(FGameplayTag InSocketType);
+    virtual void ResetSocket(FGameplayTag InSocketType);
 
     UFUNCTION(BlueprintCallable, meta = (Categories = "Socket"))
     virtual UStaticMeshComponent* SetSocketByStaticMesh(UStaticMesh* NewStaticMesh, FGameplayTag SocketType, FName SocketName, FGameplayTagContainer SocketTypesToHide = FGameplayTagContainer());
@@ -78,7 +78,7 @@ protected:
 
     virtual void FindRootMesh();
     virtual void CreateSlots();
-    virtual void ResetSlots();
+    virtual void ResetSockets();
     virtual void CheckPools();
 
     /* API */

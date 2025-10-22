@@ -182,6 +182,6 @@ void UEquipmentManagerComponent::OnUnEquip(const FEquipmentSlot& Slot)
 {
     if (SocketManager.IsValid())
     {
-        SocketManager->ResetSlot(Slot.SocketTag);
+        SocketManager->ResetSocket(Slot.SocketTag);
     }
 }
