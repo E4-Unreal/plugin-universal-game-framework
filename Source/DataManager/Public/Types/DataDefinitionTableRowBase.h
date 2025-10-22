@@ -10,9 +10,9 @@ struct DATAMANAGER_API FDataDefinitionTableRowBase : public FTableRowBase
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 0))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 0))
     FText DisplayName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 1))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 1))
     FText Description;
 };

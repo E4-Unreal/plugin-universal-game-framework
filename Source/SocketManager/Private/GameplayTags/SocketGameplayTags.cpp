@@ -7,7 +7,24 @@ namespace SocketGameplayTags
         namespace Character
         {
             UE_DEFINE_GAMEPLAY_TAG(Root, "Socket.Character")
-            UE_DEFINE_GAMEPLAY_TAG_COMMENT(RightHand, "Socket.Character.Hand.Right", "오른손")
+
+            UE_DEFINE_GAMEPLAY_TAG(FullBody, "Socket.Character.FullBody")
+
+            UE_DEFINE_GAMEPLAY_TAG(Head, "Socket.Character.Head")
+            UE_DEFINE_GAMEPLAY_TAG(Hair, "Socket.Character.Hair")
+            UE_DEFINE_GAMEPLAY_TAG(Face, "Socket.Character.Face")
+            UE_DEFINE_GAMEPLAY_TAG(Ear, "Socket.Character.Ear")
+            UE_DEFINE_GAMEPLAY_TAG(Beard, "Socket.Character.Beard")
+
+            UE_DEFINE_GAMEPLAY_TAG(UpperBody, "Socket.Character.UpperBody")
+
+            UE_DEFINE_GAMEPLAY_TAG(LowerBody, "Socket.Character.LowerBody")
+
+            UE_DEFINE_GAMEPLAY_TAG(Hand, "Socket.Character.Hand")
+            UE_DEFINE_GAMEPLAY_TAG(RightHand, "Socket.Character.Hand.Right")
+            UE_DEFINE_GAMEPLAY_TAG(LeftHand, "Socket.Character.Hand.Left")
+
+            UE_DEFINE_GAMEPLAY_TAG(Foot, "Socket.Character.Foot")
         }
     }
 }

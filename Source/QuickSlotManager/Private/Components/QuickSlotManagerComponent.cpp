@@ -55,7 +55,7 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
 
     if (!Slot.IsEmpty())
     {
-        SocketManager->DestroyActorFromSocket(Slot.GetSocketTag());
+        //SocketManager->DestroyActorFromSocket(Slot.GetSocketTag());
         Slot = FQuickSlot::EmptySlot;
     }
 
@@ -63,7 +63,7 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
 
     if (!Slot.IsEmpty())
     {
-        if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
+        /*if (AActor* SpawnedActor = SocketManager->SpawnActorToSocket(Slot.GetSocketTag(), Slot.GetActorClass()))
         {
             Slot.Actor = SpawnedActor;
             if (Slot.Actor->Implements<UQuickSlotActorInterface>())
@@ -76,7 +76,7 @@ void UQuickSlotManagerComponent::SetSlotByData(int32 InSlotIndex,
                 SpawnedActor->SetActorHiddenInGame(false);
                 SpawnedActor->SetActorEnableCollision(true);
             }
-        }
+        }*/
     }
 
     /*SlotUpdatedDelegate.Broadcast(InSlotIndex);*/

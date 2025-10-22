@@ -10,25 +10,25 @@ class UDataInstanceBase;
 /**
  *
  */
-UCLASS(Abstract)
+UCLASS(Abstract, EditInlineNew, CollapseCategories)
 class DATAMANAGER_API UDataDefinitionBase : public UPrimaryDataAsset
 {
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 0))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 0))
     FName DataType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 1))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 1))
     int32 ID;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 2))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 2))
     FText DisplayName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 3))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 3))
     FText Description;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DisplayPriority = 4))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayPriority = 4))
     TSubclassOf<UDataInstanceBase> DataInstanceClass;
 
 public:

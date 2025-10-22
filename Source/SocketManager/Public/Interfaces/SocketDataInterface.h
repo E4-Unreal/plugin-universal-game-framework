@@ -4,31 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "GameplayTags.h"
-#include "EquipmentDataInterface.generated.h"
+#include "GameplayTagContainer.h"
+#include "SocketDataInterface.generated.h"
 
 UINTERFACE(MinimalAPI, Blueprintable, BlueprintType)
-class UEquipmentDataInterface : public UInterface
+class USocketDataInterface : public UInterface
 {
     GENERATED_BODY()
 };
 
 /**
- * 장비와 관련된 정적 데이터 전용 인터페이스로 DataAsset에서 구현되어야 합니다.
+ *
  */
-class EQUIPMENTMANAGER_API IEquipmentDataInterface
+class SOCKETMANAGER_API ISocketDataInterface
 {
     GENERATED_BODY()
 
 public:
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FGameplayTag GetEquipmentType() const;
+    FGameplayTag GetSocketType() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     FName GetSocketName() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-    FGameplayTagContainer GetSocketTagsToHide() const;
+    FGameplayTagContainer GetSocketTypesToHide() const;
 
     UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
     TSoftObjectPtr<UStaticMesh> GetStaticMesh() const;

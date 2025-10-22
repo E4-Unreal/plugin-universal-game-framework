@@ -11,7 +11,8 @@ public class SocketManager : ModuleRules
             {
                 "Core",
                 "GameplayTags",
-                "UniversalUtilities"
+                "UniversalUtilities",
+                "DataManager"
             }
         );
 

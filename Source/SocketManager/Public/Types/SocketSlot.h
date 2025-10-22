@@ -14,13 +14,28 @@ struct FSocketSlot
     static const FSocketSlot EmptySlot;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FGameplayTag SocketTag;
+    FGameplayTag SocketType;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FName SocketName;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTagContainer SocketTypesToHide;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FGameplayTagContainer HiddenBySocketTypes;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TObjectPtr<AActor> Actor;
 
-    bool operator==(const FSocketSlot& Other) const { return SocketTag == Other.SocketTag && Actor == Other.Actor; }
+    bool operator==(const FSocketSlot& Other) const { return SocketType == Other.SocketType && Actor == Other.Actor; }
     bool operator!=(const FSocketSlot& Other) const { return !(*this == Other); }
 
-    bool IsValid() const { return SocketTag.IsValid() && Actor; }
+    bool IsValid() const { return SocketType.IsValid() && Actor; }
 };

@@ -38,6 +38,7 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     /* SocketManager */
 
     SocketManager = CreateDefaultSubobject<USocketManagerComponent>(SocketManagerName);
+    GetSocketManager()->DataAssetType = "CharacterSocket";
 
     /* MontageManager */
 

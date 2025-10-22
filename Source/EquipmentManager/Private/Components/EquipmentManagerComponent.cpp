@@ -4,118 +4,184 @@
 #include "Components/EquipmentManagerComponent.h"
 
 #include "Components/SocketManagerComponent.h"
-#include "Interfaces/EquipmentActorInterface.h"
+#include "DataManager/Public/Data/DataDefinitionBase.h"
+#include "DataManager/Public/Data/DataInstanceBase.h"
 #include "Interfaces/EquipmentDataInterface.h"
-#include "GameplayTags/EquipmentTypeTags.h"
+#include "Interfaces/EquipmentInstanceInterface.h"
 
-
-UEquipmentManagerComponent::UEquipmentManagerComponent()
+void UEquipmentManagerComponent::OnRegister()
 {
-    bWantsInitializeComponent = true;
-}
+    Super::OnRegister();
 
-void UEquipmentManagerComponent::InitializeComponent()
-{
-    Super::InitializeComponent();
-
-    CreateSlots();
     FindSocketManager();
+    CreateSlots();
 }
 
-void UEquipmentManagerComponent::SelectWeapon(int32 Index)
+void UEquipmentManagerComponent::SetSocketManager(USocketManagerComponent* NewSocketManager)
 {
-    FGameplayTag WeaponTypeTag = Equipment::Weapon::Root;
-    int32 WeaponSlotNum = GetSlotNum(WeaponTypeTag);
-    if (Index < 0 || Index > WeaponSlotNum - 1) return;
-
-    SelectedWeapon = GetSlot(WeaponTypeTag, Index).Equipment;
+    SocketManager = NewSocketManager;
 }
 
-bool UEquipmentManagerComponent::HasSlot(FGameplayTag EquipmentType, int32 Index) const
+bool UEquipmentManagerComponent::HasSlot(FEquipmentSlotIndex InSlotIndex) const
 {
+    return SlotIndexMap.Contains(InSlotIndex);
+}
+
+const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FEquipmentSlotIndex InSlotIndex) const
+{
+    return HasSlot(InSlotIndex) ? Slots[SlotIndexMap[InSlotIndex]] : FEquipmentSlot::EmptySlot;
+}
+
+bool UEquipmentManagerComponent::IsSlotEmpty(FEquipmentSlotIndex InSlotIndex) const
+{
+    if (HasSlot(InSlotIndex))
+    {
+        const auto& Slot = GetSlot(InSlotIndex);
+        return Slot.IsEmpty();
+    }
+
+    return false;
+}
+
+FEquipmentSlotIndex UEquipmentManagerComponent::GetEmptySlotIndex(FGameplayTag Type) const
+{
+    FEquipmentSlotIndex SlotIndex;
     for (const auto& Slot : Slots)
     {
-        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
+        if (Slot.Index.Type == Type && Slot.IsEmpty())
+        {
+            SlotIndex = Slot.Index;
+            break;
+        }
+    }
+
+    return SlotIndex;
+}
+
+UDataInstanceBase* UEquipmentManagerComponent::GetEquipment(FEquipmentSlotIndex InSlotIndex) const
+{
+    UDataInstanceBase* Equipment = nullptr;
+
+    if (HasSlot(InSlotIndex))
+    {
+        const auto& Slot = GetSlot(InSlotIndex);
+        Equipment = Slot.Equipment;
+    }
+
+    return Equipment;
+}
+
+bool UEquipmentManagerComponent::CanEquip(UDataInstanceBase* NewEquipment, FEquipmentSlotIndex InSlotIndex) const
+{
+    if (NewEquipment
+        && NewEquipment->Implements<UEquipmentInstanceInterface>()
+        && NewEquipment->GetDefinition()
+        && NewEquipment->GetDefinition()->Implements<UEquipmentDataInterface>())
+    {
+        if (InSlotIndex.IsValid() && IsSlotEmpty(InSlotIndex))
         {
             return true;
         }
+        else
+        {
+            FGameplayTag Type = IEquipmentDataInterface::Execute_GetEquipmentType(NewEquipment->GetDefinition());
+            FEquipmentSlotIndex EmptySlotIndex = GetEmptySlotIndex(Type);
+
+            return EmptySlotIndex.IsValid();
+        }
     }
 
     return false;
 }
 
-const FEquipmentSlot& UEquipmentManagerComponent::GetSlot(FGameplayTag EquipmentType, int32 Index) const
+void UEquipmentManagerComponent::Equip(UDataInstanceBase* NewEquipment, FEquipmentSlotIndex InSlotIndex)
 {
-    for (const FEquipmentSlot& Slot : Slots)
+    if (!CanEquip(NewEquipment, InSlotIndex)) return;
+
+    if (!InSlotIndex.IsValid())
     {
-        if (Slot.EquipmentType == EquipmentType && Slot.Index == Index)
-        {
-            return Slot;
-        }
+        FGameplayTag Type = IEquipmentDataInterface::Execute_GetEquipmentType(NewEquipment->GetDefinition());
+        InSlotIndex = GetEmptySlotIndex(Type);
     }
 
-    return FEquipmentSlot::EmptySlot;
+    auto& Slot = const_cast<FEquipmentSlot&>(GetSlot(InSlotIndex));
+
+    Slot.Equipment = NewEquipment;
+    OnEquip(Slot);
 }
 
-bool UEquipmentManagerComponent::AddEquipmentToSlot(AActor* NewEquipment, FGameplayTag EquipmentType, int32 Index)
+UDataInstanceBase* UEquipmentManagerComponent::UnEquip(FEquipmentSlotIndex InSlotIndex)
 {
-    if (!NewEquipment) return false;
-    if (!HasSlot(EquipmentType, Index)) return false;
+    if (IsSlotEmpty(InSlotIndex)) return nullptr;
 
-    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
-    if (Slot.IsValid() && Slot.IsEmpty())
-    {
-        Slot.Equipment = NewEquipment;
-        IEquipmentActorInterface::Execute_Equip(Slot.Equipment, GetOwner());
-        SocketManager->AttachActorToSocket(Slot.Socket, NewEquipment);
+    auto& Slot = const_cast<FEquipmentSlot&>(GetSlot(InSlotIndex));
+    auto OldEquipment = Slot.Equipment;
 
-        return true;
-    }
+    OnUnEquip(Slot);
+    Slot.Equipment = nullptr;
 
-    return false;
-}
-
-AActor* UEquipmentManagerComponent::RemoveEquipmentFromSlot(FGameplayTag EquipmentType, int32 Index)
-{
-    if (!HasSlot(EquipmentType, Index)) return nullptr;
-
-    FEquipmentSlot& Slot = GetSlotRef(EquipmentType, Index);
-    if (Slot.IsValid() && !Slot.IsEmpty())
-    {
-        AActor* OldEquipmentActor = SocketManager->DetachActorFromSocket(Slot.Socket);
-        IEquipmentActorInterface::Execute_UnEquip(Slot.Equipment);
-        Slot.Equipment = nullptr;
-
-        return OldEquipmentActor;
-    }
-
-    return nullptr;
-}
-
-void UEquipmentManagerComponent::CreateSlots()
-{
-    Slots.Reset(SlotConfigs.Num());
-
-    for (const auto& [EquipmentType, Sockets] : SlotConfigs)
-    {
-        if (SlotNumMap.Contains(EquipmentType)) continue;
-        SlotNumMap.Emplace(EquipmentType, Sockets.Num());
-
-        for (int32 Index = 0; Index < Sockets.Num(); ++Index)
-        {
-            FEquipmentSlot NewEquipmentSlot;
-            NewEquipmentSlot.EquipmentType = EquipmentType;
-            NewEquipmentSlot.Index = Index;
-            NewEquipmentSlot.Socket = Sockets[Index];
-
-            Slots.Emplace(NewEquipmentSlot);
-        }
-    }
+    return OldEquipment;
 }
 
 void UEquipmentManagerComponent::FindSocketManager()
 {
     if (SocketManager.IsValid()) return;
 
-    SocketManager = GetOwner()->FindComponentByClass<USocketManagerComponent>();
+    SocketManager = Cast<USocketManagerComponent>(GetOwner()->GetComponentByClass<USocketManagerComponent>());
+}
+
+void UEquipmentManagerComponent::CreateSlots()
+{
+    for (const auto& SlotConfig : SlotConfigs)
+    {
+        for (int32 Index = 0; Index < SlotConfig.SocketTags.Num(); ++Index)
+        {
+            FEquipmentSlotIndex NewSlotIndex;
+            NewSlotIndex.Type = SlotConfig.Type;
+            NewSlotIndex.Index = Index;
+
+            FEquipmentSlot NewSlot;
+            NewSlot.Index = NewSlotIndex;
+            NewSlot.SocketTag = SlotConfig.SocketTags[Index];
+
+            SlotIndexMap.Emplace(NewSlotIndex, Slots.Num());
+            Slots.Emplace(NewSlot);
+        }
+    }
+}
+
+void UEquipmentManagerComponent::OnEquip(const FEquipmentSlot& Slot)
+{
+    if (SocketManager.IsValid())
+    {
+        auto SocketTag = Slot.SocketTag;
+
+        auto Data = Slot.Equipment->GetDefinition();
+        auto SocketName = IEquipmentDataInterface::Execute_GetSocketName(Data);
+        auto SocketTagsToHide = IEquipmentDataInterface::Execute_GetSocketTagsToHide(Data);
+        auto StaticMesh = IEquipmentDataInterface::Execute_GetStaticMesh(Data);
+        auto SkeletalMesh = IEquipmentDataInterface::Execute_GetSkeletalMesh(Data);
+        auto ActorClass = IEquipmentDataInterface::Execute_GetActorClass(Data);
+
+        if (!ActorClass.IsNull())
+        {
+            SocketManager->SetSocketByActorClass(ActorClass.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+        }
+        else if (!SkeletalMesh.IsNull())
+        {
+            SocketManager->SetSocketBySkeletalMesh(SkeletalMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+        }
+        else if (!StaticMesh.IsNull())
+        {
+            SocketManager->SetSocketByStaticMesh(StaticMesh.LoadSynchronous(), SocketTag, SocketName, SocketTagsToHide);
+        }
+    }
+}
+
+void UEquipmentManagerComponent::OnUnEquip(const FEquipmentSlot& Slot)
+{
+    if (SocketManager.IsValid())
+    {
+        SocketManager->ResetSocket(Slot.SocketTag);
+    }
 }

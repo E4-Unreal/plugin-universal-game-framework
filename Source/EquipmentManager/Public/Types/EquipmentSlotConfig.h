@@ -11,9 +11,9 @@ struct EQUIPMENTMANAGER_API FEquipmentSlotConfig
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Equipment"))
-    FGameplayTag EquipmentType;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    TArray<FGameplayTag> Sockets;
+    FGameplayTag Type;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (Categories = "Socket"))
+    TArray<FGameplayTag> SocketTags;
 };
