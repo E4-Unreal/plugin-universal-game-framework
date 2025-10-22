@@ -126,7 +126,7 @@
 			"LoadingPhase": "Default"
 		},
 		{
-			"Name": "FootstepManager",
+			"Name": "EffectManager",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}

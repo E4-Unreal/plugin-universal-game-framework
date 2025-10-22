@@ -1,8 +1,8 @@
 ﻿using UnrealBuildTool;
 
-public class FootstepManager : ModuleRules
+public class EffectManager : ModuleRules
 {
-    public FootstepManager(ReadOnlyTargetRules Target) : base(Target)
+    public EffectManager(ReadOnlyTargetRules Target) : base(Target)
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 

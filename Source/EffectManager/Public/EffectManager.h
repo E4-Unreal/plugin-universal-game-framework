@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Modules/ModuleManager.h"
 
-class FFootstepManagerModule : public IModuleInterface
+class FEffectManagerModule : public IModuleInterface
 {
 public:
     virtual void StartupModule() override;

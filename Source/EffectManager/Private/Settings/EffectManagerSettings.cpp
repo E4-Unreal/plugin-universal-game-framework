@@ -1,15 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Settings/FootstepManagerSettings.h"
+#include "Settings/EffectManagerSettings.h"
 
-UFootstepManagerSettings::UFootstepManagerSettings()
+UEffectManagerSettings::UEffectManagerSettings()
 {
     CategoryName = "Plugins";
     SectionName = "FootstepManager";
 }
 
-USoundBase* UFootstepManagerSettings::GetSoundByPhysicalMaterial(UPhysicalMaterial* InPhysicalMaterial) const
+USoundBase* UEffectManagerSettings::GetSoundByPhysicalMaterial(UPhysicalMaterial* InPhysicalMaterial) const
 {
     if (InPhysicalMaterial)
     {
@@ -26,7 +26,7 @@ USoundBase* UFootstepManagerSettings::GetSoundByPhysicalMaterial(UPhysicalMateri
     return nullptr;
 }
 
-USoundBase* UFootstepManagerSettings::GetSoundByPhysicalSurface(EPhysicalSurface InPhysicalSurface) const
+USoundBase* UEffectManagerSettings::GetSoundByPhysicalSurface(EPhysicalSurface InPhysicalSurface) const
 {
     return PhysicalSurfaceSoundMap.Contains(InPhysicalSurface) ? PhysicalSurfaceSoundMap[InPhysicalSurface].LoadSynchronous() : nullptr;
 }

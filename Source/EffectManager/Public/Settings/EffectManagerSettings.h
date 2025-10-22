@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DeveloperSettings.h"
-#include "FootstepManagerSettings.generated.h"
+#include "EffectManagerSettings.generated.h"
 
 /**
  *
  */
-UCLASS(config = UniversalGameFramework, meta = (DisplayName = "FootstepManager", ToolTip = "Settings for FootstepManager"))
-class FOOTSTEPMANAGER_API UFootstepManagerSettings : public UDeveloperSettings
+UCLASS(config = UniversalGameFramework, meta = (DisplayName = "EffectManager", ToolTip = "Settings for EffectManager"))
+class EFFECTMANAGER_API UEffectManagerSettings : public UDeveloperSettings
 {
     GENERATED_BODY()
 
@@ -22,12 +22,12 @@ protected:
     TMap<TEnumAsByte<EPhysicalSurface>, TSoftObjectPtr<USoundBase>> PhysicalSurfaceSoundMap;
 
 public:
-    UFootstepManagerSettings();
+    UEffectManagerSettings();
 
     /* API */
 
-    UFUNCTION(BlueprintPure, meta = (DisplayName = "GetFootstepManagerSettings"))
-    static UFootstepManagerSettings* Get() { return GetMutableDefault<UFootstepManagerSettings>(); }
+    UFUNCTION(BlueprintPure, meta = (DisplayName = "GetEffectManagerSettings"))
+    static UEffectManagerSettings* Get() { return GetMutableDefault<UEffectManagerSettings>(); }
 
     UFUNCTION(BlueprintPure)
     USoundBase* GetSoundByPhysicalMaterial(UPhysicalMaterial* InPhysicalMaterial) const;
