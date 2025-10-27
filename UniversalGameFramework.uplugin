@@ -151,6 +151,10 @@
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "GameplayAbilities",
+            "Enabled": true
+        }
 	]
 }

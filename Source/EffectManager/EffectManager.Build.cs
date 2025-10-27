@@ -11,7 +11,9 @@ public class EffectManager : ModuleRules
             {
                 "Core",
                 "DeveloperSettings",
-                "PhysicsCore"
+                "PhysicsCore",
+                "GameplayTags",
+                "GameplayAbilities"
             }
         );
 
