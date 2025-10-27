@@ -59,8 +59,10 @@ void UFootstepManagerComponent::SpawnEffect(FName SocketName)
     if (!GameplayCueTag.IsValid()) return;
 
     FGameplayCueParameters GameplayCueParameters;
-    GameplayCueParameters.EffectContext.AddHitResult(HitResult);
-    GameplayCueParameters.EffectContext.AddInstigator(GetOwner(), GetOwner());
+    FGameplayEffectContextHandle GameplayEffectContextHandle = FGameplayEffectContextHandle(UAbilitySystemGlobals::Get().AllocGameplayEffectContext());
+    GameplayEffectContextHandle.AddHitResult(HitResult);
+    GameplayEffectContextHandle.AddInstigator(GetOwner(), GetOwner());
+    GameplayCueParameters.EffectContext = GameplayEffectContextHandle;
 
     UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(HitResult.GetActor(), GameplayCueTag, EGameplayCueEvent::Executed, GameplayCueParameters);
 }
