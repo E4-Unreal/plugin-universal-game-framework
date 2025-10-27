@@ -15,8 +15,8 @@ class EFFECTMANAGER_API UAnimNotify_Footstep : public UAnimNotify
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FName SocketName;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
+    int32 SocketIndex;
 
 public:
     UAnimNotify_Footstep();

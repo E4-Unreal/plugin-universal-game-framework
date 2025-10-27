@@ -21,6 +21,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     float TraceDistance;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (ClampMin = 0))
+    TMap<int32, FName> SocketNameMap;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TObjectPtr<UHitEffectDefinition> HitEffectDefinition;
 
@@ -39,8 +42,12 @@ public:
     UFUNCTION(BlueprintCallable)
     virtual void SpawnEffect(FName SocketName);
 
+    UFUNCTION(BlueprintCallable)
+    virtual void SpawnEffectByIndex(int32 Index);
+
 protected:
     virtual void FindRootMesh();
 
+    virtual FName GetSocketNameByIndex(int32 Index) const;
     virtual UHitEffectDefinition* GetHitEffectDefinition() const;
 };

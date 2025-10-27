@@ -7,7 +7,7 @@
 
 UAnimNotify_Footstep::UAnimNotify_Footstep()
 {
-    SocketName = "root";
+    SocketIndex = 0;
 }
 
 void UAnimNotify_Footstep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation,
@@ -19,7 +19,7 @@ void UAnimNotify_Footstep::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenc
     {
         if (auto FootstepManager = Owner->GetComponentByClass<UFootstepManagerComponent>())
         {
-            FootstepManager->SpawnEffect(SocketName);
+            FootstepManager->SpawnEffectByIndex(SocketIndex);
         }
     }
 }

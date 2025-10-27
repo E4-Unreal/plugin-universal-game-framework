@@ -15,6 +15,9 @@ UFootstepManagerComponent::UFootstepManagerComponent()
 {
     TraceChannel = ECC_Visibility;
     TraceDistance = 100.0f;
+    SocketNameMap.Emplace(0, "root");
+    SocketNameMap.Emplace(1, "foot_r");
+    SocketNameMap.Emplace(2, "foot_l");
 }
 
 void UFootstepManagerComponent::OnRegister()
@@ -67,6 +70,14 @@ void UFootstepManagerComponent::SpawnEffect(FName SocketName)
     UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(HitResult.GetActor(), GameplayCueTag, EGameplayCueEvent::Executed, GameplayCueParameters);
 }
 
+void UFootstepManagerComponent::SpawnEffectByIndex(int32 Index)
+{
+    const FName SocketName = GetSocketNameByIndex(Index);
+    if (SocketName.IsNone()) return;
+
+    SpawnEffect(SocketName);
+}
+
 void UFootstepManagerComponent::FindRootMesh()
 {
     if (RootMesh.IsValid()) return;
@@ -83,6 +94,11 @@ void UFootstepManagerComponent::FindRootMesh()
     }
 
     SetRootMesh(FoundRootMesh);
+}
+
+FName UFootstepManagerComponent::GetSocketNameByIndex(int32 Index) const
+{
+    return SocketNameMap.FindRef(Index);
 }
 
 UHitEffectDefinition* UFootstepManagerComponent::GetHitEffectDefinition() const
