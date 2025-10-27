@@ -3,24 +3,26 @@
 
 #include "Data/HitEffectDefinition.h"
 
-FGameplayCueTag UHitEffectDefinition::GetGameplayCueTagByPhysicalSurface(EPhysicalSurface PhysicalSurface) const
+FGameplayTag UHitEffectDefinition::GetGameplayCueTagByPhysicalSurface(EPhysicalSurface PhysicalSurface) const
 {
-    return PhysicalSurfaceMap.FindRef(PhysicalSurface);
+    return PhysicalSurfaceMap.FindRef(PhysicalSurface).GameplayCueTag;
 }
 
-FGameplayCueTag UHitEffectDefinition::GetGameplayCueTagByPhysicalMaterial(UPhysicalMaterial* PhysicalMaterial) const
+FGameplayTag UHitEffectDefinition::GetGameplayCueTagByPhysicalMaterial(UPhysicalMaterial* PhysicalMaterial) const
 {
+    FGameplayTag GameplayCueTag;
+
     if (PhysicalMaterial)
     {
         if (PhysicalMaterialMap.Contains(PhysicalMaterial))
         {
-            return PhysicalMaterialMap[PhysicalMaterial];
+            GameplayCueTag = PhysicalMaterialMap[PhysicalMaterial].GameplayCueTag;
         }
         else
         {
-            return GetGameplayCueTagByPhysicalSurface(PhysicalMaterial->SurfaceType);
+            GameplayCueTag = GetGameplayCueTagByPhysicalSurface(PhysicalMaterial->SurfaceType);
         }
     }
 
-    return FGameplayCueTag(FGameplayTag::EmptyTag);
+    return GameplayCueTag;
 }

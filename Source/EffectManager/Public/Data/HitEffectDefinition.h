@@ -24,8 +24,8 @@ protected:
 
 public:
     UFUNCTION(BlueprintPure)
-    FGameplayCueTag GetGameplayCueTagByPhysicalSurface(EPhysicalSurface PhysicalSurface) const;
+    FGameplayTag GetGameplayCueTagByPhysicalSurface(EPhysicalSurface PhysicalSurface) const;
 
     UFUNCTION(BlueprintPure)
-    FGameplayCueTag GetGameplayCueTagByPhysicalMaterial(UPhysicalMaterial* PhysicalMaterial) const;
+    FGameplayTag GetGameplayCueTagByPhysicalMaterial(UPhysicalMaterial* PhysicalMaterial) const;
 };
