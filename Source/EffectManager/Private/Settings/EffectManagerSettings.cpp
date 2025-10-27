@@ -9,24 +9,7 @@ UEffectManagerSettings::UEffectManagerSettings()
     SectionName = "FootstepManager";
 }
 
-USoundBase* UEffectManagerSettings::GetSoundByPhysicalMaterial(UPhysicalMaterial* InPhysicalMaterial) const
+UHitEffectDefinition* UEffectManagerSettings::GetFootstepEffectDefinition() const
 {
-    if (InPhysicalMaterial)
-    {
-        if (PhysicalMaterialSoundMap.Contains(InPhysicalMaterial))
-        {
-            return PhysicalMaterialSoundMap[InPhysicalMaterial].LoadSynchronous();
-        }
-        else
-        {
-            return GetSoundByPhysicalSurface(InPhysicalMaterial->SurfaceType);
-        }
-    }
-
-    return nullptr;
-}
-
-USoundBase* UEffectManagerSettings::GetSoundByPhysicalSurface(EPhysicalSurface InPhysicalSurface) const
-{
-    return PhysicalSurfaceSoundMap.Contains(InPhysicalSurface) ? PhysicalSurfaceSoundMap[InPhysicalSurface].LoadSynchronous() : nullptr;
+    return !FootstepEffectDefinition.IsNull() ? FootstepEffectDefinition.LoadSynchronous() : nullptr;
 }

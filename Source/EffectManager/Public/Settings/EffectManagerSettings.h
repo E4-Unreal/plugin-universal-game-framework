@@ -6,6 +6,8 @@
 #include "Engine/DeveloperSettings.h"
 #include "EffectManagerSettings.generated.h"
 
+class UHitEffectDefinition;
+
 /**
  *
  */
@@ -16,10 +18,7 @@ class EFFECTMANAGER_API UEffectManagerSettings : public UDeveloperSettings
 
 protected:
     UPROPERTY(Config, EditDefaultsOnly)
-    TMap<TSoftObjectPtr<UPhysicalMaterial>, TSoftObjectPtr<USoundBase>> PhysicalMaterialSoundMap;
-
-    UPROPERTY(Config, EditDefaultsOnly)
-    TMap<TEnumAsByte<EPhysicalSurface>, TSoftObjectPtr<USoundBase>> PhysicalSurfaceSoundMap;
+    TSoftObjectPtr<UHitEffectDefinition> FootstepEffectDefinition;
 
 public:
     UEffectManagerSettings();
@@ -30,8 +29,5 @@ public:
     static UEffectManagerSettings* Get() { return GetMutableDefault<UEffectManagerSettings>(); }
 
     UFUNCTION(BlueprintPure)
-    USoundBase* GetSoundByPhysicalMaterial(UPhysicalMaterial* InPhysicalMaterial) const;
-
-    UFUNCTION(BlueprintPure)
-    USoundBase* GetSoundByPhysicalSurface(EPhysicalSurface InPhysicalSurface) const;
+    UHitEffectDefinition* GetFootstepEffectDefinition() const;
 };
