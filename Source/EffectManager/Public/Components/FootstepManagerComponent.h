@@ -31,6 +31,8 @@ protected:
 public:
     UFootstepManagerComponent();
 
+    virtual void OnRegister() override;
+
     UFUNCTION(BlueprintCallable)
     virtual void SetRootMesh(USkeletalMeshComponent* NewRootMesh);
 

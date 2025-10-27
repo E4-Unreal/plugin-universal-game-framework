@@ -17,6 +17,13 @@ UFootstepManagerComponent::UFootstepManagerComponent()
     TraceDistance = 100.0f;
 }
 
+void UFootstepManagerComponent::OnRegister()
+{
+    Super::OnRegister();
+
+    FindRootMesh();
+}
+
 void UFootstepManagerComponent::SetRootMesh(USkeletalMeshComponent* NewRootMesh)
 {
     if (NewRootMesh == nullptr || RootMesh == NewRootMesh) return;
