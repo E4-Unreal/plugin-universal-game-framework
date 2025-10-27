@@ -31,6 +31,7 @@ public class UniversalGameFramework : ModuleRules
                 "AnimationSystem",
                 "WidgetManager",
                 "MeshManager",
+                "EffectManager"
             }
         );
 
