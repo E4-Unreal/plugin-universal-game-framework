@@ -124,6 +124,11 @@
 			"Name": "ItemSystem",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "EffectManager",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -146,6 +151,10 @@
 		{
 			"Name": "UniversalUtilities",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "GameplayAbilities",
+            "Enabled": true
+        }
 	]
 }

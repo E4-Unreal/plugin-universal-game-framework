@@ -4,12 +4,14 @@
 #include "Characters/UGFCharacter.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Components/FootstepManagerComponent.h"
 #include "Components/MontageManagerComponent.h"
 #include "Components/SocketManagerComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 const FName AUGFCharacter::SocketManagerName(TEXT("SocketManager"));
 const FName AUGFCharacter::MontageManagerName(TEXT("MontageManager"));
+const FName AUGFCharacter::FootstepManagerName(TEXT("FootstepManager"));
 
 AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
@@ -43,4 +45,8 @@ AUGFCharacter::AUGFCharacter(const FObjectInitializer& ObjectInitializer)
     /* MontageManager */
 
     MontageManager = CreateDefaultSubobject<UMontageManagerComponent>(MontageManagerName);
+
+    /* FootstepManager */
+
+    FootstepManager = CreateDefaultSubobject<UFootstepManagerComponent>(FootstepManagerName);
 }

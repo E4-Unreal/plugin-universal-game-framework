@@ -6,8 +6,9 @@
 #include "GameFramework/Character.h"
 #include "UGFCharacter.generated.h"
 
-class UMontageManagerComponent;
 class USocketManagerComponent;
+class UMontageManagerComponent;
+class UFootstepManagerComponent;
 
 UCLASS()
 class UNIVERSALGAMEFRAMEWORK_API AUGFCharacter : public ACharacter
@@ -17,6 +18,7 @@ class UNIVERSALGAMEFRAMEWORK_API AUGFCharacter : public ACharacter
 protected:
     const static FName SocketManagerName;
     const static FName MontageManagerName;
+    const static FName FootstepManagerName;
 
 private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
@@ -25,10 +27,14 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UMontageManagerComponent> MontageManager;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component", meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UFootstepManagerComponent> FootstepManager;
+
 public:
     AUGFCharacter(const FObjectInitializer& ObjectInitializer);
 
 public:
     FORCEINLINE USocketManagerComponent* GetSocketManager() const { return SocketManager; }
     FORCEINLINE UMontageManagerComponent* GetMontageManager() const { return MontageManager; }
+    FORCEINLINE UFootstepManagerComponent* GetFootstepManager() const { return FootstepManager; }
 };
