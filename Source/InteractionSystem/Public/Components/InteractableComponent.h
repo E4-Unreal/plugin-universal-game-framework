@@ -18,10 +18,10 @@ class INTERACTIONSYSTEM_API UInteractableComponent : public UActorComponent, pub
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "InteractionWidgetInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/InteractionSystem.InteractionWidgetInterface"))
     TSubclassOf<UUserWidget> InteractionWidgetClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "TargetWidgetInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/WidgetManager.TargetWidgetInterface"))
     TSubclassOf<UUserWidget> MenuWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (Categories = "Interaction"))

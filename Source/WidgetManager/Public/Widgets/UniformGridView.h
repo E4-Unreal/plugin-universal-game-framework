@@ -15,7 +15,7 @@ class WIDGETMANAGER_API UUniformGridView : public UUniformGridPanel
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DesignerRebuild, MustImplement = "EntryWidgetInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DesignerRebuild, MustImplement = "/Script/WidgetManager.EntryWidgetInterface"))
     TSubclassOf<UUserWidget> EntryWidgetClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (DesignerRebuild, ClampMin = 1))

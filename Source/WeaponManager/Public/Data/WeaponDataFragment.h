@@ -20,7 +20,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FGameplayTag SlotType;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "WeaponActorInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/WeaponManager.WeaponActorInterface"))
     TSubclassOf<AActor> ActorClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")

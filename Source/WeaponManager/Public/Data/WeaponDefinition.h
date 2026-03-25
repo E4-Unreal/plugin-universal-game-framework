@@ -28,7 +28,7 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     TSoftObjectPtr<USkeletalMesh> SkeletalMesh;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "WeaponActorInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "/Script/WeaponManager.WeaponActorInterface"))
     TSubclassOf<AActor> ActorClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
