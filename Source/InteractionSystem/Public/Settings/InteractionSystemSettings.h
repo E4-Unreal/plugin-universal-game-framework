@@ -15,7 +15,7 @@ class INTERACTIONSYSTEM_API UInteractionSystemSettings : public UDeveloperSettin
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "InteractionWidgetInterface"))
+    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/InteractionSystem.InteractionWidgetInterface"))
     TSoftClassPtr<UUserWidget> DefaultInteractionWidgetClass;
 
 public:

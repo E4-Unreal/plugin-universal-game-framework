@@ -24,7 +24,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", Instanced)
     TObjectPtr<UItemDropConfig> DropConfigInstance;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "ItemActorInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/InventorySystem.ItemActorInterface"))
     TSubclassOf<AActor> ItemActorClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")

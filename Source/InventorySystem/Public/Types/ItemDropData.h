@@ -10,7 +10,7 @@ struct INVENTORYSYSTEM_API FItemDropData
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "ItemDataInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MustImplement = "/Script/InventorySystem.ItemDataInterface"))
     TObjectPtr<UDataAsset> ItemData;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0, ClampMax = 1))

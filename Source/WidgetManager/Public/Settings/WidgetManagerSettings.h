@@ -15,13 +15,13 @@ class WIDGETMANAGER_API UWidgetManagerSettings : public UDeveloperSettings
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "AlertWidgetInterface"))
+    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/WidgetManager.AlertWidgetInterface"))
     TSoftClassPtr<UUserWidget> DefaultAlertWidgetClass;
 
-    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "ConfirmWidgetInterface"))
+    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/WidgetManager.ConfirmWidgetInterface"))
     TSoftClassPtr<UUserWidget> DefaultConfirmWidgetClass;
 
-    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "PromptWidgetInterface"))
+    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/WidgetManager.PromptWidgetInterface"))
     TSoftClassPtr<UUserWidget> DefaultPromptWidgetClass;
 
 public:

@@ -22,7 +22,7 @@ struct SOCKETMANAGER_API FSocketSlotConfig
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ClampMin = 0))
     int32 ID = 0;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "SocketDataInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowedClasses = "/Script/SocketManager.SocketDataInterface"))
     TSoftObjectPtr<UDataAsset> SocketDefinition;
 
     FSocketSlotConfig() { }

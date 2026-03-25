@@ -31,10 +31,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     FText PanelName;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "SlotManagerInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/SlotManager.SlotManagerInterface"))
     TSubclassOf<UActorComponent> SlotManagerClass;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "SlotWidgetInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/SlotManager.SlotWidgetInterface"))
     TSubclassOf<UUserWidget> SlotWidgetClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Config", meta = (ClampMin = 1))

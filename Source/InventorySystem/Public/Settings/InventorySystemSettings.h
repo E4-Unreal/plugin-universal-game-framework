@@ -21,7 +21,7 @@ protected:
     UPROPERTY(Config, EditDefaultsOnly)
     TSoftObjectPtr<UStaticMesh> DefaultItemPackageMesh;
 
-    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "ItemActorInterface"))
+    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/InventorySystem.ItemActorInterface"))
     TSoftClassPtr<AActor> DefaultItemActorClass;
 
 public:

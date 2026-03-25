@@ -21,7 +21,7 @@ class DATAMANAGER_API UDataDefinitionBuilder : public UObject
     GENERATED_BODY()
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "DataInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/DataManager.DataInterface"))
     TSoftClassPtr<UDataDefinitionBase> DefinitionClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")

@@ -22,7 +22,7 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
     TSoftObjectPtr<UTexture2D> DefaultThumbnailTexture;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (AllowedClasses = "SlotDataInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (AllowedClasses = "/Script/SlotManager.SlotDataInterface"))
     TSoftObjectPtr<UDataDefinitionBase> PreviewData;
 
 protected:

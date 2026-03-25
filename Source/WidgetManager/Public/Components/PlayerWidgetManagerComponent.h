@@ -13,7 +13,7 @@ class WIDGETMANAGER_API UPlayerWidgetManagerComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "LayoutWidgetInterface"))
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (MustImplement = "/Script/WidgetManager.LayoutWidgetInterface"))
     TSubclassOf<UUserWidget> LayoutWidgetClass;
 
 protected:
