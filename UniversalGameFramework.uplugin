@@ -155,6 +155,10 @@
         {
             "Name": "GameplayAbilities",
             "Enabled": true
+        },
+        {
+            "Name": "ModelViewViewModel",
+            "Enabled": true
         }
 	]
 }

@@ -13,6 +13,7 @@ public class UniversalGameFramework : ModuleRules
                 "GameplayTags",
                 "UMG",
                 "CommonUI",
+                "ModelViewViewModel",
 
                 "UniversalUtilities",
                 "EnhancedInputBinder",
