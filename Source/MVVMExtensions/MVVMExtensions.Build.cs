@@ -10,6 +10,7 @@ public class MVVMExtensions : ModuleRules
             new string[]
             {
                 "Core",
+                "ModelViewViewModel"
             }
         );
 
