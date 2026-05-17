@@ -10,6 +10,9 @@ public class OutGameSystem : ModuleRules
             new string[]
             {
                 "Core",
+                "UMG",
+                "ModelViewViewModel",
+                "MVVMExtensions"
             }
         );
 
