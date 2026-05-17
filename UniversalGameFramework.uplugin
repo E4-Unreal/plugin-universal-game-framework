@@ -129,6 +129,11 @@
 			"Name": "EffectManager",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "MVVMExtensions",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
@@ -152,13 +157,13 @@
 			"Name": "UniversalUtilities",
 			"Enabled": true
 		},
-        {
-            "Name": "GameplayAbilities",
-            "Enabled": true
-        },
-        {
-            "Name": "ModelViewViewModel",
-            "Enabled": true
-        }
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelViewViewModel",
+			"Enabled": true
+		}
 	]
 }
