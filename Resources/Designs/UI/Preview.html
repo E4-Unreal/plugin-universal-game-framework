@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="theme.css">
+  <title>UI 스타일 가이드 (v0.1.0)</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 60px 40px;
+      background-color: var(--bg-canvas);
+      color: var(--gray-50);
+      font-family: 'Roboto', 'Inter', 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .header-section {
+      width: 100%;
+      text-align: left;
+      border-bottom: 1px solid var(--bg-card-border);
+      padding-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--gray-50);
+      margin: 0 0 12px 0;
+    }
+
+    .version-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: color-mix(in srgb, var(--primary-600) 15%, transparent);
+      border: 1px solid color-mix(in srgb, var(--primary-600) 30%, transparent);
+      color: var(--primary-400);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .dashboard-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--gray-50);
+      margin-top: 0;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--bg-card-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 1. 색상 팔레트 섹션 */
+    .color-section-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .color-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .color-group-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px;
+    }
+
+    .swatch-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .swatch-color {
+      height: 64px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .swatch-color:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.4);
+    }
+
+    .swatch-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray-200);
+    }
+
+    .swatch-hex {
+      font-size: 11px;
+      color: var(--gray-400);
+    }
+
+    /* 2. 배경 스타일 섹션 */
+    .bg-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .bg-showcase-item {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bg-box {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+      box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+    }
+
+    .bg-box:hover {
+      transform: scale(1.02);
+    }
+
+    .bg-box-canvas {
+      background-color: var(--bg-canvas);
+      border: none;
+    }
+
+    .bg-box-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 6px;
+    }
+
+    .bg-box-overlay {
+      background-color: var(--bg-overlay);
+      border: 1px solid var(--bg-overlay-border);
+      border-radius: 4px;
+    }
+
+    .bg-box-inset {
+      background-color: var(--bg-inset);
+      border: 1px solid var(--bg-inset-border);
+      border-radius: 4px;
+    }
+
+    .bg-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bg-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-50);
+    }
+
+    .bg-specs {
+      font-size: 11px;
+      color: var(--gray-400);
+      line-height: 1.4;
+    }
+
+    /* 3. 텍스트 스타일 섹션 */
+    .text-showcase-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .text-showcase-item {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      align-items: center;
+      gap: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--bg-card-border);
+    }
+
+    .text-showcase-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .text-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .text-meta-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-50);
+    }
+
+    .text-meta-specs {
+      font-size: 11px;
+      color: var(--gray-400);
+      line-height: 1.4;
+    }
+
+    .text-preview-container {
+      display: flex;
+      align-items: center;
+      min-height: 50px;
+    }
+
+    /* 4. 버튼 쇼케이스 섹션 */
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 316px);
+      gap: 24px;
+      justify-content: center;
+    }
+
+    @media (max-width: 720px) {
+      .showcase-grid {
+        grid-template-columns: repeat(auto-fit, minmax(316px, 1fr));
+      }
+    }
+
+    .showcase-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      max-width: 316px;
+      width: 100%;
+    }
+
+    .showcase-column h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-200);
+      margin: 0;
+      text-align: center;
+    }
+
+    .preview-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background-color: var(--bg-overlay);
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid var(--bg-overlay-border);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+      max-width: 316px;
+    }
+
+    .state-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--bg-overlay-border);
+      width: 100%;
+    }
+
+    .state-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .state-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <!-- 헤더 섹션 -->
+    <div class="header-section">
+      <h1>UI 스타일 가이드</h1>
+      <span class="version-badge">버전 v0.1.0</span>
+    </div>
+
+    <!-- 1. 색상 팔레트 카드 -->
+    <div class="dashboard-card">
+      <div class="card-title">색상 팔레트</div>
+      <div class="color-section-grid">
+        <!-- Primary Color Group -->
+        <div class="color-group">
+          <div class="color-group-title">주조 색상 (Primary Color)</div>
+          <div class="swatch-grid">
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-50);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 50</span>
+                <span class="swatch-hex">#F0F9FF</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-100);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 100</span>
+                <span class="swatch-hex">#E0F2FE</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-200);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 200</span>
+                <span class="swatch-hex">#BAE6FD</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-300);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 300</span>
+                <span class="swatch-hex">#7DD3FC</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-400);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 400</span>
+                <span class="swatch-hex">#38BDF8</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-500);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 500</span>
+                <span class="swatch-hex">#0EA5E9</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-600);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 600</span>
+                <span class="swatch-hex">#0284C7</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-700);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 700</span>
+                <span class="swatch-hex">#0369A1</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-800);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 800</span>
+                <span class="swatch-hex">#075985</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-900);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 900</span>
+                <span class="swatch-hex">#0C4A6E</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--primary-950);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Primary 950</span>
+                <span class="swatch-hex">#082F49</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Color Group -->
+        <div class="color-group">
+          <div class="color-group-title">보조 색상 (Secondary Color)</div>
+          <div class="swatch-grid">
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-50);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 50</span>
+                <span class="swatch-hex">#F8FAFC</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-100);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 100</span>
+                <span class="swatch-hex">#F1F5F9</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-200);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 200</span>
+                <span class="swatch-hex">#E2E8F0</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-300);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 300</span>
+                <span class="swatch-hex">#CBD5E1</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-400);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 400</span>
+                <span class="swatch-hex">#94A3B8</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-500);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 500</span>
+                <span class="swatch-hex">#64748B</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-600);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 600</span>
+                <span class="swatch-hex">#475569</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-700);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 700</span>
+                <span class="swatch-hex">#334155</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-800);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 800</span>
+                <span class="swatch-hex">#1E293B</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-900);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 900</span>
+                <span class="swatch-hex">#0F172A</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--secondary-950);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Secondary 950</span>
+                <span class="swatch-hex">#050811</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gray Color Group -->
+        <div class="color-group">
+          <div class="color-group-title">그레이 색상 (Gray Color)</div>
+          <div class="swatch-grid">
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--white);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">White</span>
+                <span class="swatch-hex">#FFFFFF</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--gray-50);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Gray 50</span>
+                <span class="swatch-hex">#F9FAFB</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--gray-200);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Gray 200</span>
+                <span class="swatch-hex">#E5E7EB</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--gray-400);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Gray 400</span>
+                <span class="swatch-hex">#9CA3AF</span>
+              </div>
+            </div>
+            <div class="swatch-item">
+              <div class="swatch-color" style="background-color: var(--gray-600);"></div>
+              <div class="swatch-info">
+                <span class="swatch-name">Gray 600</span>
+                <span class="swatch-hex">#4B5563</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 배경 스타일 카드 -->
+    <div class="dashboard-card">
+      <div class="card-title">배경 스타일</div>
+      <div class="bg-showcase-grid">
+        <!-- Canvas -->
+        <div class="bg-showcase-item">
+          <div class="bg-box bg-box-canvas">
+            <span class="bg-name">Canvas</span>
+          </div>
+          <div class="bg-info">
+            <span class="bg-name">Canvas</span>
+            <span class="bg-specs">배경색: Secondary 900 (100%)<br>코너 반경: 0.0<br>윤곽선: 없음</span>
+          </div>
+        </div>
+
+        <!-- Card -->
+        <div class="bg-showcase-item">
+          <div class="bg-box bg-box-card">
+            <span class="bg-name">Card</span>
+          </div>
+          <div class="bg-info">
+            <span class="bg-name">Card</span>
+            <span class="bg-specs">배경색: Secondary 800 (95%)<br>코너 반경: 6.0<br>윤곽선: Secondary 700 (50%)</span>
+          </div>
+        </div>
+
+        <!-- Overlay -->
+        <div class="bg-showcase-item">
+          <div class="bg-box bg-box-overlay">
+            <span class="bg-name">Overlay</span>
+          </div>
+          <div class="bg-info">
+            <span class="bg-name">Overlay</span>
+            <span class="bg-specs">배경색: Secondary 700 (90%)<br>코너 반경: 4.0<br>윤곽선: Secondary 600 (80%)</span>
+          </div>
+        </div>
+
+        <!-- Inset -->
+        <div class="bg-showcase-item">
+          <div class="bg-box bg-box-inset">
+            <span class="bg-name">Inset</span>
+          </div>
+          <div class="bg-info">
+            <span class="bg-name">Inset</span>
+            <span class="bg-specs">배경색: Secondary 950 (100%)<br>코너 반경: 4.0<br>윤곽선: Secondary 700 (80%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 텍스트 스타일 카드 -->
+    <div class="dashboard-card">
+      <div class="card-title">텍스트 스타일</div>
+      <div class="text-showcase-list">
+        <!-- Title -->
+        <div class="text-showcase-item">
+          <div class="text-meta">
+            <span class="text-meta-name">Title</span>
+            <span class="text-meta-specs">크기: 42px<br>두께: Bold<br>색상: Gray 50</span>
+          </div>
+          <div class="text-preview-container">
+            <span class="text-title">신비로운 세계를 탐험하며 당신만의 이야기를 완성하세요.</span>
+          </div>
+        </div>
+
+        <!-- Head -->
+        <div class="text-showcase-item">
+          <div class="text-meta">
+            <span class="text-meta-name">Head</span>
+            <span class="text-meta-specs">크기: 24px<br>두께: Bold<br>색상: Gray 50</span>
+          </div>
+          <div class="text-preview-container">
+            <span class="text-head">신비로운 세계를 탐험하며 당신만의 이야기를 완성하세요.</span>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="text-showcase-item">
+          <div class="text-meta">
+            <span class="text-meta-name">Body</span>
+            <span class="text-meta-specs">크기: 16px<br>두께: Medium<br>색상: Gray 200</span>
+          </div>
+          <div class="text-preview-container">
+            <span class="text-body">신비로운 세계를 탐험하며 당신만의 이야기를 완성하세요.</span>
+          </div>
+        </div>
+
+        <!-- Caption -->
+        <div class="text-showcase-item">
+          <div class="text-meta">
+            <span class="text-meta-name">Caption</span>
+            <span class="text-meta-specs">크기: 13px<br>두께: Medium<br>색상: Gray 400</span>
+          </div>
+          <div class="text-preview-container">
+            <span class="text-caption">신비로운 세계를 탐험하며 당신만의 이야기를 완성하세요.</span>
+          </div>
+        </div>
+
+        <!-- Muted -->
+        <div class="text-showcase-item">
+          <div class="text-meta">
+            <span class="text-meta-name">Muted</span>
+            <span class="text-meta-specs">크기: 13px<br>두께: Regular<br>색상: White (30%)</span>
+          </div>
+          <div class="text-preview-container">
+            <span class="text-muted">신비로운 세계를 탐험하며 당신만의 이야기를 완성하세요.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 버튼 쇼케이스 카드 -->
+    <div class="dashboard-card">
+      <div class="card-title" style="justify-content: center;">버튼 스타일</div>
+      <h3 style="text-align: center; font-size: 16px; font-weight: 600; color: var(--primary-400); margin: 0 0 16px 0; text-transform: uppercase; letter-spacing: 0.5px;">Primary</h3>
+      <div class="showcase-grid" style="margin-bottom: 32px;">
+        <!-- Primary Column -->
+        <div class="showcase-column">
+          <h3>Solid</h3>
+          <div class="preview-container">
+            <!-- 기본 상태 -->
+            <div class="state-row">
+              <div class="state-label">기본 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-primary">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-primary-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-primary-text">Primary Solid</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 선택된 상태 -->
+            <div class="state-row">
+              <div class="state-label">선택된 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-primary selected">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-primary-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-primary-text">Primary Solid</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 비활성화 상태 -->
+            <div class="state-row">
+              <div class="state-label">비활성화 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-primary disabled">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-primary-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-primary-text">Primary Solid</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Primary Outline Column -->
+        <div class="showcase-column">
+          <h3>Outline</h3>
+          <div class="preview-container">
+            <!-- 기본 상태 -->
+            <div class="state-row">
+              <div class="state-label">기본 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-primary-outline">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-primary-outline-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-primary-outline-text">Primary Outline</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 선택된 상태 -->
+            <div class="state-row">
+              <div class="state-label">선택된 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-primary-outline selected">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-primary-outline-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-primary-outline-text">Primary Outline</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 비활성화 상태 -->
+            <div class="state-row">
+              <div class="state-label">비활성화 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-primary-outline disabled">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-primary-outline-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-primary-outline-text">Primary Outline</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="text-align: center; font-size: 16px; font-weight: 600; color: var(--secondary-400); margin: 32px 0 16px 0; text-transform: uppercase; letter-spacing: 0.5px;">Secondary</h3>
+      <div class="showcase-grid">
+        <!-- Secondary Column -->
+        <div class="showcase-column">
+          <h3>Solid</h3>
+          <div class="preview-container">
+            <!-- 기본 상태 -->
+            <div class="state-row">
+              <div class="state-label">기본 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-secondary">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-secondary-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-secondary-text">Secondary Solid</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 선택된 상태 -->
+            <div class="state-row">
+              <div class="state-label">선택된 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-secondary selected">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-secondary-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-secondary-text">Secondary Solid</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 비활성화 상태 -->
+            <div class="state-row">
+              <div class="state-label">비활성화 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-secondary disabled">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-secondary-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-secondary-text">Secondary Solid</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secondary Outline Column -->
+        <div class="showcase-column">
+          <h3>Outline</h3>
+          <div class="preview-container">
+            <!-- 기본 상태 -->
+            <div class="state-row">
+              <div class="state-label">기본 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-secondary-outline">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-secondary-outline-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-secondary-outline-text">Secondary Outline</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 선택된 상태 -->
+            <div class="state-row">
+              <div class="state-label">선택된 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-secondary-outline selected">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-secondary-outline-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-secondary-outline-text">Secondary Outline</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- 비활성화 상태 -->
+            <div class="state-row">
+              <div class="state-label">비활성화 상태</div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="260" height="46" viewBox="0 0 260 46">
+                <g class="btn-secondary-outline disabled">
+                  <rect width="258.5" height="44.5" x="0.75" y="0.75" rx="6" class="btn-secondary-outline-bg"
+                    stroke-width="1.5" />
+                  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+                    class="btn-secondary-outline-text">Secondary Outline</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>
