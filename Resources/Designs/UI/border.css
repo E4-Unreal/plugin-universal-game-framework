@@ -1,0 +1,149 @@
+:root {
+    /* 경계 스타일 (Border Styles) */
+    --bg-canvas: var(--secondary-900);
+    
+    --bg-panel: var(--secondary-800-op095);
+    --bg-panel-border: var(--secondary-700-op050);
+    
+    --bg-floating: var(--secondary-700-op090);
+    --bg-floating-border: var(--secondary-600-op080);
+    
+    --bg-inset: var(--secondary-950);
+    --bg-inset-border: var(--secondary-700-op080);
+
+    /* 배경 오버레이 (Overlay) */
+    --bg-overlay: rgba(0, 0, 0, 0.3);
+}
+
+/* 미리보기용 테두리 정의 */
+.header-section {
+    border-bottom: 1px solid var(--bg-panel-border);
+}
+
+.version-badge {
+    border: 1px solid color-mix(in srgb, var(--primary-600) 30%, transparent);
+}
+
+.dashboard-card {
+    border: 1px solid var(--bg-panel-border);
+}
+
+.card-title {
+    border-bottom: 1px solid var(--bg-panel-border);
+}
+
+.swatch-color {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.preview-container {
+    border: 1px solid var(--bg-floating-border);
+}
+
+.text-showcase-item {
+    border-bottom: 1px solid var(--bg-panel-border);
+}
+
+.text-showcase-item:last-child {
+    border-bottom: none;
+}
+
+.state-row {
+    border-bottom: 1px solid var(--bg-floating-border);
+}
+
+.state-row:last-child {
+    border-bottom: none;
+}
+
+/* 경계 상자 테두리 */
+.bg-box-canvas {
+    border: none;
+}
+
+.bg-box-panel {
+    border: 1px solid var(--bg-panel-border);
+}
+
+.bg-box-floating {
+    border: 1px solid var(--bg-floating-border);
+}
+
+.bg-box-overlay {
+    border: none;
+}
+
+.bg-box-inset {
+    border: 1px solid var(--bg-inset-border);
+}
+
+/* 미리보기용 배경색 정의 */
+body {
+    background-color: var(--bg-canvas);
+}
+
+.version-badge {
+    background: color-mix(in srgb, var(--primary-600) 15%, transparent);
+}
+
+.dashboard-card {
+    background-color: var(--bg-panel);
+}
+
+.preview-container {
+    background-color: var(--bg-floating);
+}
+
+/* 색상 스와치 배경 */
+.swatch-color.primary-50 { background-color: var(--primary-50); }
+.swatch-color.primary-100 { background-color: var(--primary-100); }
+.swatch-color.primary-200 { background-color: var(--primary-200); }
+.swatch-color.primary-300 { background-color: var(--primary-300); }
+.swatch-color.primary-400 { background-color: var(--primary-400); }
+.swatch-color.primary-500 { background-color: var(--primary-500); }
+.swatch-color.primary-600 { background-color: var(--primary-600); }
+.swatch-color.primary-700 { background-color: var(--primary-700); }
+.swatch-color.primary-800 { background-color: var(--primary-800); }
+.swatch-color.primary-900 { background-color: var(--primary-900); }
+.swatch-color.primary-950 { background-color: var(--primary-950); }
+
+.swatch-color.secondary-50 { background-color: var(--secondary-50); }
+.swatch-color.secondary-100 { background-color: var(--secondary-100); }
+.swatch-color.secondary-200 { background-color: var(--secondary-200); }
+.swatch-color.secondary-300 { background-color: var(--secondary-300); }
+.swatch-color.secondary-400 { background-color: var(--secondary-400); }
+.swatch-color.secondary-500 { background-color: var(--secondary-500); }
+.swatch-color.secondary-600 { background-color: var(--secondary-600); }
+.swatch-color.secondary-700 { background-color: var(--secondary-700); }
+.swatch-color.secondary-800 { background-color: var(--secondary-800); }
+.swatch-color.secondary-900 { background-color: var(--secondary-900); }
+.swatch-color.secondary-950 { background-color: var(--secondary-950); }
+
+.swatch-color.white { background-color: var(--white); }
+.swatch-color.gray-50 { background-color: var(--gray-50); }
+.swatch-color.gray-200 { background-color: var(--gray-200); }
+.swatch-color.gray-400 { background-color: var(--gray-400); }
+.swatch-color.gray-600 { background-color: var(--gray-600); }
+
+/* 경계 상자 배경색 */
+.bg-box-canvas {
+    background-color: var(--bg-canvas);
+}
+
+.bg-box-panel {
+    background-color: var(--bg-panel);
+}
+
+.bg-box-floating {
+    background-color: var(--bg-floating);
+}
+
+.bg-box-overlay {
+    background-color: var(--bg-overlay);
+}
+
+.bg-box-inset {
+    background-color: var(--bg-inset);
+}
+
+

@@ -1,0 +1,303 @@
+/* 텍스트 스타일 */
+.text-game-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: 1.0px;
+    color: var(--gray-50);
+    fill: var(--gray-50);
+}
+
+.text-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: 1.0px;
+    color: var(--gray-50);
+    fill: var(--gray-50);
+}
+
+/* 서브 타이틀 (Head) */
+.text-head {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 0.5px;
+    color: var(--gray-50);
+    fill: var(--gray-50);
+}
+
+/* 본문 (Body) */
+.text-body,
+.settings-label {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: var(--gray-200);
+    fill: var(--gray-200);
+}
+
+/* 캡션 (Caption) */
+.text-caption,
+.option-select,
+.option-btn,
+.slider-value {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    color: var(--gray-400);
+    fill: var(--gray-400);
+}
+
+/* 버튼 전용 텍스트 스타일 (항상 16px, 500, Roboto) */
+.btn-primary-text,
+.btn-secondary-text,
+.btn-primary-outline-text,
+.btn-secondary-outline-text,
+.btn-tab-text,
+button.btn-primary,
+button.btn-secondary,
+button.btn-primary-outline,
+button.btn-secondary-outline,
+button.tab-btn {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+/* 버튼별 세부 상태 색상 정의 */
+
+/* Solid Button (Primary/Secondary) */
+.btn-primary-text,
+button.btn-primary,
+.btn-secondary-text,
+button.btn-secondary {
+    color: var(--gray-200);
+    fill: var(--gray-200);
+}
+.btn-primary:hover .btn-primary-text,
+button.btn-primary:hover,
+.btn-secondary:hover .btn-secondary-text,
+button.btn-secondary:hover {
+    color: var(--white);
+    fill: var(--white);
+}
+.btn-primary:active .btn-primary-text,
+button.btn-primary:active,
+.btn-secondary:active .btn-secondary-text,
+button.btn-secondary:active {
+    color: var(--gray-200);
+    fill: var(--gray-200);
+}
+.btn-primary.disabled .btn-primary-text,
+button.btn-primary.disabled,
+button.btn-primary:disabled,
+.btn-secondary.disabled .btn-secondary-text,
+button.btn-secondary.disabled,
+button.btn-secondary:disabled {
+    color: var(--white-op030);
+    fill: var(--white-op030);
+}
+
+/* Primary Outline */
+.btn-primary-outline-text,
+button.btn-primary-outline {
+    color: var(--primary-400);
+    fill: var(--primary-400);
+}
+.btn-primary-outline:hover .btn-primary-outline-text,
+.btn-primary-outline:active .btn-primary-outline-text,
+button.btn-primary-outline:hover,
+button.btn-primary-outline:active {
+    color: var(--white);
+    fill: var(--white);
+}
+.btn-primary-outline.disabled .btn-primary-outline-text,
+button.btn-primary-outline.disabled,
+button.btn-primary-outline:disabled {
+    color: var(--primary-500-op030);
+    fill: var(--primary-500-op030);
+}
+
+/* Secondary Outline */
+.btn-secondary-outline-text,
+button.btn-secondary-outline {
+    color: var(--secondary-400);
+    fill: var(--secondary-400);
+}
+.btn-secondary-outline:hover .btn-secondary-outline-text,
+.btn-secondary-outline:active .btn-secondary-outline-text,
+button.btn-secondary-outline:hover,
+button.btn-secondary-outline:active {
+    color: var(--white);
+    fill: var(--white);
+}
+.btn-secondary-outline.disabled .btn-secondary-outline-text,
+button.btn-secondary-outline.disabled,
+button.btn-secondary-outline:disabled {
+    color: var(--secondary-500-op030);
+    fill: var(--secondary-500-op030);
+}
+
+/* Tab Button */
+.btn-tab-text,
+button.tab-btn {
+    color: var(--gray-200);
+    fill: var(--gray-200);
+}
+.btn-tab:hover .btn-tab-text,
+.btn-tab:active .btn-tab-text,
+button.tab-btn:not(.active):hover,
+button.tab-btn:not(.active):active {
+    color: var(--white);
+    fill: var(--white);
+}
+.btn-tab.selected .btn-tab-text,
+.btn-tab.selected:hover .btn-tab-text,
+.btn-tab.selected:active .btn-tab-text,
+button.tab-btn.active,
+button.tab-btn.active:hover,
+button.tab-btn.active:active {
+    color: var(--white);
+    fill: var(--white);
+}
+.btn-tab.disabled .btn-tab-text,
+button.tab-btn.disabled,
+button.tab-btn:disabled {
+    color: var(--white-op030);
+    fill: var(--white-op030);
+}
+
+/* Text / Icon Button */
+.btn-text-content,
+button.btn-text {
+    color: var(--text-btn-color-base);
+    fill: var(--text-btn-color-base);
+    transition: color 0.15s ease, fill 0.15s ease;
+}
+.btn-text:hover .btn-text-content,
+button.btn-text:hover {
+    color: var(--text-btn-color-hover);
+    fill: var(--text-btn-color-hover);
+}
+.btn-text:active .btn-text-content,
+button.btn-text:active {
+    color: var(--text-btn-color-active);
+    fill: var(--text-btn-color-active);
+}
+.btn-text.disabled .btn-text-content,
+button.btn-text.disabled,
+button.btn-text:disabled {
+    color: var(--text-btn-color-disabled);
+    fill: var(--text-btn-color-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* 미리보기용 텍스트 정의 */
+body {
+    font-family: 'Roboto', 'Inter', 'Noto Sans KR', sans-serif;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--gray-50);
+}
+
+.version-badge {
+    color: var(--primary-400);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--gray-50);
+}
+
+.color-group-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.swatch-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-200);
+}
+
+.swatch-hex {
+    font-size: 11px;
+    color: var(--gray-400);
+}
+
+.bg-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-50);
+}
+
+.bg-specs {
+    font-size: 11px;
+    color: var(--gray-400);
+    line-height: 1.4;
+}
+
+.text-meta-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-50);
+}
+
+.text-meta-specs {
+    font-size: 11px;
+    color: var(--gray-400);
+    line-height: 1.4;
+}
+
+.showcase-column h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-200);
+    text-align: center;
+}
+
+.showcase-group-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.showcase-group-title.primary {
+    color: var(--primary-400);
+}
+.showcase-group-title.secondary {
+    color: var(--secondary-400);
+}
+.showcase-group-title.gray {
+    color: var(--gray-400);
+}
+
+.state-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+
+
+

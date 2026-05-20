@@ -1,0 +1,398 @@
+/* 버튼 스타일 */
+
+.btn-primary,
+.btn-secondary,
+.btn-primary-outline,
+.btn-secondary-outline {
+    cursor: pointer;
+    user-select: none;
+}
+
+.btn-primary-bg,
+.btn-secondary-bg,
+.btn-primary-outline-bg,
+.btn-secondary-outline-bg {
+    transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.btn-primary-text,
+.btn-secondary-text,
+.btn-primary-outline-text,
+.btn-secondary-outline-text {
+    transition: fill 0.15s ease, font-size 0.15s ease, font-weight 0.15s ease, letter-spacing 0.15s ease;
+}
+
+
+/* 1. Primary Solid Button */
+.btn-primary {
+    --primary-bg-base: var(--primary-600);
+    --primary-bg-hover: var(--primary-500);
+    --primary-bg-active: var(--primary-700);
+
+    --primary-border-base: transparent;
+    --primary-border-hover: transparent;
+    --primary-border-active: transparent;
+
+    --primary-disabled: var(--primary-600-op030);
+    --primary-disabled-border: transparent;
+}
+
+.btn-primary-bg {
+    fill: var(--primary-bg-base);
+    stroke: var(--primary-border-base);
+}
+
+.btn-primary:hover .btn-primary-bg {
+    fill: var(--primary-bg-hover);
+    stroke: var(--primary-border-hover);
+}
+
+.btn-primary:active .btn-primary-bg {
+    fill: var(--primary-bg-active);
+    stroke: var(--primary-border-active);
+}
+
+.btn-primary.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-primary.disabled .btn-primary-bg {
+    fill: var(--primary-disabled);
+    stroke: var(--primary-disabled-border);
+}
+
+/* HTML Button Style */
+button.btn-primary {
+    background-color: var(--primary-bg-base);
+    border-color: var(--primary-border-base);
+}
+
+button.btn-primary:hover {
+    background-color: var(--primary-bg-hover);
+    border-color: var(--primary-border-hover);
+}
+
+button.btn-primary:active {
+    background-color: var(--primary-bg-active);
+    border-color: var(--primary-border-active);
+}
+
+button.btn-primary.disabled,
+button.btn-primary:disabled {
+    background-color: var(--primary-disabled);
+    border-color: var(--primary-disabled-border);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* 2. Secondary Solid Button */
+.btn-secondary {
+    --secondary-bg-base: var(--secondary-600);
+    --secondary-bg-hover: var(--secondary-500);
+    --secondary-bg-active: var(--secondary-700);
+
+    --secondary-border-base: transparent;
+    --secondary-border-hover: transparent;
+    --secondary-border-active: transparent;
+
+    --secondary-disabled: var(--secondary-600-op030);
+    --secondary-disabled-border: transparent;
+}
+
+.btn-secondary-bg {
+    fill: var(--secondary-bg-base);
+    stroke: var(--secondary-border-base);
+}
+
+.btn-secondary:hover .btn-secondary-bg {
+    fill: var(--secondary-bg-hover);
+    stroke: var(--secondary-border-hover);
+}
+
+.btn-secondary:active .btn-secondary-bg {
+    fill: var(--secondary-bg-active);
+    stroke: var(--secondary-border-active);
+}
+
+.btn-secondary.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-secondary.disabled .btn-secondary-bg {
+    fill: var(--secondary-disabled);
+    stroke: var(--secondary-disabled-border);
+}
+
+/* HTML Button Style */
+button.btn-secondary {
+    background-color: var(--secondary-bg-base);
+    border-color: var(--secondary-border-base);
+}
+
+button.btn-secondary:hover {
+    background-color: var(--secondary-bg-hover);
+    border-color: var(--secondary-border-hover);
+}
+
+button.btn-secondary:active {
+    background-color: var(--secondary-bg-active);
+    border-color: var(--secondary-border-active);
+}
+
+button.btn-secondary.disabled,
+button.btn-secondary:disabled {
+    background-color: var(--secondary-disabled);
+    border-color: var(--secondary-disabled-border);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* 3. Primary Outline Button */
+.btn-primary-outline {
+    --primary-outline-bg-base: transparent;
+    --primary-outline-bg-hover: var(--primary-500);
+    --primary-outline-bg-active: var(--primary-700);
+
+    --primary-outline-border-base: var(--primary-500);
+    --primary-outline-border-hover: var(--primary-400);
+    --primary-outline-border-active: var(--primary-600);
+
+    --primary-outline-disabled-border: var(--primary-500-op030);
+}
+
+.btn-primary-outline-bg {
+    fill: var(--primary-outline-bg-base);
+    stroke: var(--primary-outline-border-base);
+}
+
+.btn-primary-outline:hover .btn-primary-outline-bg {
+    fill: var(--primary-outline-bg-hover);
+    stroke: var(--primary-outline-border-hover);
+}
+
+.btn-primary-outline:active .btn-primary-outline-bg {
+    fill: var(--primary-outline-bg-active);
+    stroke: var(--primary-outline-border-active);
+}
+
+.btn-primary-outline.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-primary-outline.disabled .btn-primary-outline-bg {
+    fill: transparent;
+    stroke: var(--primary-outline-disabled-border);
+}
+
+/* HTML Button Style */
+button.btn-primary-outline {
+    background-color: var(--primary-outline-bg-base);
+    border-color: var(--primary-outline-border-base);
+}
+
+button.btn-primary-outline:hover {
+    background-color: var(--primary-outline-bg-hover);
+    border-color: var(--primary-outline-border-hover);
+}
+
+button.btn-primary-outline:active {
+    background-color: var(--primary-outline-bg-active);
+    border-color: var(--primary-outline-border-active);
+}
+
+button.btn-primary-outline.disabled,
+button.btn-primary-outline:disabled {
+    background-color: transparent;
+    border-color: var(--primary-outline-disabled-border);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* 4. Secondary Outline Button */
+.btn-secondary-outline {
+    --secondary-outline-bg-base: transparent;
+    --secondary-outline-bg-hover: var(--secondary-500);
+    --secondary-outline-bg-active: var(--secondary-700);
+
+    --secondary-outline-border-base: var(--secondary-500);
+    --secondary-outline-border-hover: var(--secondary-400);
+    --secondary-outline-border-active: var(--secondary-600);
+
+    --secondary-outline-disabled-border: var(--secondary-500-op030);
+}
+
+.btn-secondary-outline-bg {
+    fill: var(--secondary-outline-bg-base);
+    stroke: var(--secondary-outline-border-base);
+}
+
+.btn-secondary-outline:hover .btn-secondary-outline-bg {
+    fill: var(--secondary-outline-bg-hover);
+    stroke: var(--secondary-outline-border-hover);
+}
+
+.btn-secondary-outline:active .btn-secondary-outline-bg {
+    fill: var(--secondary-outline-bg-active);
+    stroke: var(--secondary-outline-border-active);
+}
+
+.btn-secondary-outline.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-secondary-outline.disabled .btn-secondary-outline-bg {
+    fill: transparent;
+    stroke: var(--secondary-outline-disabled-border);
+}
+
+/* HTML Button Style */
+button.btn-secondary-outline {
+    background-color: var(--secondary-outline-bg-base);
+    border-color: var(--secondary-outline-border-base);
+}
+
+button.btn-secondary-outline:hover {
+    background-color: var(--secondary-outline-bg-hover);
+    border-color: var(--secondary-outline-border-hover);
+}
+
+button.btn-secondary-outline:active {
+    background-color: var(--secondary-outline-bg-active);
+    border-color: var(--secondary-outline-border-active);
+}
+
+button.btn-secondary-outline.disabled,
+button.btn-secondary-outline:disabled {
+    background-color: transparent;
+    border-color: var(--secondary-outline-disabled-border);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* 5. Tab Button */
+.btn-tab,
+button.tab-btn {
+    --tab-bg-base: transparent;
+    --tab-bg-hover: transparent;
+    --tab-bg-active: transparent;
+    --tab-bg-selected: var(--primary-500);
+    --tab-bg-selected-hover: var(--primary-500);
+    --tab-bg-selected-active: var(--primary-700);
+
+    --tab-border-base: transparent;
+    --tab-border-hover: transparent;
+    --tab-border-active: transparent;
+
+    --tab-disabled: transparent;
+
+    cursor: pointer;
+    user-select: none;
+}
+
+.btn-tab-bg {
+    fill: var(--tab-bg-base);
+    stroke: var(--tab-border-base);
+    transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.btn-tab:hover .btn-tab-bg {
+    fill: var(--tab-bg-hover);
+    stroke: var(--tab-border-hover);
+}
+
+.btn-tab:active .btn-tab-bg {
+    fill: var(--tab-bg-active);
+    stroke: var(--tab-border-active);
+}
+
+.btn-tab.selected .btn-tab-bg {
+    fill: var(--tab-bg-selected);
+    stroke: var(--tab-border-base);
+}
+
+.btn-tab.selected:hover .btn-tab-bg {
+    fill: var(--tab-bg-selected-hover);
+    stroke: var(--tab-border-hover);
+}
+
+.btn-tab.selected:active .btn-tab-bg {
+    fill: var(--tab-bg-selected-active);
+    stroke: var(--tab-border-active);
+}
+
+.btn-tab.disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.btn-tab.disabled .btn-tab-bg {
+    fill: var(--tab-disabled);
+    stroke: var(--tab-border-base);
+}
+
+/* HTML Tab Button Style */
+button.tab-btn {
+    background-color: var(--tab-bg-base);
+    border-color: var(--tab-border-base);
+}
+
+button.tab-btn:not(.active):hover {
+    background-color: var(--tab-bg-hover);
+    border-color: var(--tab-border-hover);
+}
+
+button.tab-btn:not(.active):active {
+    background-color: var(--tab-bg-active);
+    border-color: var(--tab-border-active);
+}
+
+button.tab-btn.active {
+    background-color: var(--tab-bg-selected);
+    border-color: var(--tab-border-base);
+}
+
+button.tab-btn.active:hover {
+    background-color: var(--tab-bg-selected-hover);
+}
+
+button.tab-btn.active:active {
+    background-color: var(--tab-bg-selected-active);
+}
+
+button.tab-btn.disabled,
+button.tab-btn:disabled {
+    background-color: var(--tab-disabled);
+    border-color: var(--tab-border-base);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+
+/* 6. Text/Icon Button */
+.btn-text {
+    --text-btn-color-base: var(--gray-200);
+    --text-btn-color-hover: var(--white);
+    --text-btn-color-active: var(--gray-300);
+    --text-btn-color-disabled: var(--white-op030);
+
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    transition: background-color 0.15s;
+}
+
+.btn-text:hover {
+    background-color: var(--gray-500-op030);
+}

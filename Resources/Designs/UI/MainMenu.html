@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="components.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-canvas);
+            /* 전체 화면 배경 채우기 */
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 16:9 비율 또는 전체 화면을 꽉 채우는 유연한 화면 컨테이너 */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-canvas);
+            left: 0;
+            top: 0;
+            overflow: hidden;
+        }
+
+        /* Main Menu Layer */
+        .main-menu-layer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Game Title */
+        .menu-title {
+            position: absolute;
+            left: 10%;
+            top: 22%;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* Buttons Group */
+        .menu-buttons {
+            position: absolute;
+            left: 10%;
+            top: 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 260px;
+        }
+
+        /* Version Text */
+        .version-text {
+            position: absolute;
+            right: 7.5%;
+            bottom: 6.6%;
+            margin: 0;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 16:9 가상 화면 컨테이너 -->
+    <div class="screen">
+        <!-- Main Menu Layer -->
+        <div class="main-menu-layer">
+            <!-- Game Title -->
+            <h1 class="menu-title text-game-title">게임제목</h1>
+
+            <!-- Buttons -->
+            <div class="menu-buttons">
+                <button class="btn btn-primary btn-left" onclick="startGame()">
+                    <span class="btn-primary-text">시작</span>
+                </button>
+                <button class="btn btn-secondary btn-left" onclick="showOptions()">
+                    <span class="btn-secondary-text">설정</span>
+                </button>
+                <button class="btn btn-secondary btn-left" onclick="showModal()">
+                    <span class="btn-secondary-text">종료</span>
+                </button>
+            </div>
+
+            <!-- Game Version -->
+            <div class="version-text text-caption">Version 0.1.0</div>
+        </div>
+    </div>
+
+    <!-- Interactive Modal Layer (브라우저 전체를 덮도록 screen 바깥으로 이동) -->
+    <div id="exit-modal" class="modal-overlay">
+        <!-- Centered Compact Exit Confirm Window Panel -->
+        <div class="modal-panel">
+            <div class="modal-title text-body">게임을 종료하시겠습니까?</div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn btn-primary" onclick="quitGame()">
+                    <span class="btn-primary-text">확인</span>
+                </button>
+                <button class="modal-btn btn-secondary-outline" onclick="hideModal()">
+                    <span class="btn-secondary-outline-text">취소</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Options Modal Layer -->
+    <div id="options-modal" class="modal-overlay">
+        <div class="options-panel">
+            <div class="options-header">
+                <span class="text-title">설정</span>
+                <button class="options-close-btn btn-text" onclick="handleCancelOptions()">&times;</button>
+            </div>
+
+            <div class="options-tabs">
+                <button class="tab-btn active" data-tab="graphics" onclick="switchTab('graphics')">그래픽</button>
+                <button class="tab-btn" data-tab="audio" onclick="switchTab('audio')">오디오</button>
+                <button class="tab-btn" data-tab="language" onclick="switchTab('language')">언어</button>
+            </div>
+
+            <!-- GRAPHICS Tab Content -->
+            <div class="options-content active" id="tab-graphics">
+                <div class="settings-column full-width">
+                    <div class="settings-row">
+                        <span class="settings-label">디스플레이 모드</span>
+                        <select class="option-select">
+                            <option>전체 화면</option>
+                            <option>전체 창 모드</option>
+                            <option>창 모드</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">해상도</span>
+                        <select class="option-select">
+                            <option selected>2560 x 1440</option>
+                            <option>1920 x 1080</option>
+                            <option>1600 x 900</option>
+                            <option>1280 x 720</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">텍스처 품질</span>
+                        <select class="option-select">
+                            <option selected>울트라</option>
+                            <option>매우 높음</option>
+                            <option>높음</option>
+                            <option>중간</option>
+                            <option>낮음</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">그림자 품질</span>
+                        <select class="option-select">
+                            <option selected>울트라</option>
+                            <option>매우 높음</option>
+                            <option>높음</option>
+                            <option>중간</option>
+                            <option>낮음</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">셰이더 품질</span>
+                        <select class="option-select">
+                            <option selected>울트라</option>
+                            <option>매우 높음</option>
+                            <option>높음</option>
+                            <option>중간</option>
+                            <option>낮음</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">안티앨리어싱 품질</span>
+                        <select class="option-select">
+                            <option selected>울트라</option>
+                            <option>매우 높음</option>
+                            <option>높음</option>
+                            <option>중간</option>
+                            <option>낮음</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">수직 동기화</span>
+                        <label class="option-switch">
+                            <input type="checkbox" checked>
+                            <span class="option-slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">최대 프레임 제한</span>
+                        <select class="option-select">
+                            <option selected>무제한</option>
+                            <option>144 FPS</option>
+                            <option>60 FPS</option>
+                            <option>30 FPS</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AUDIO Tab Content -->
+            <div class="options-content" id="tab-audio">
+                <div class="settings-column full-width">
+                    <div class="settings-row">
+                        <span class="settings-label">배경음악 볼륨</span>
+                        <div class="settings-control-slider">
+                            <input type="range" class="option-range" min="0" max="100" value="100"
+                                oninput="updateVolumeLabel(this)">
+                            <span class="slider-value">100%</span>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">환경음 볼륨</span>
+                        <div class="settings-control-slider">
+                            <input type="range" class="option-range" min="0" max="100" value="100"
+                                oninput="updateVolumeLabel(this)">
+                            <span class="slider-value">100%</span>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">UI 볼륨</span>
+                        <div class="settings-control-slider">
+                            <input type="range" class="option-range" min="0" max="100" value="100"
+                                oninput="updateVolumeLabel(this)">
+                            <span class="slider-value">100%</span>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <span class="settings-label">효과음 볼륨</span>
+                        <div class="settings-control-slider">
+                            <input type="range" class="option-range" min="0" max="100" value="100"
+                                oninput="updateVolumeLabel(this)">
+                            <span class="slider-value">100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LANGUAGE Tab Content -->
+            <div class="options-content" id="tab-language">
+                <div class="settings-column full-width">
+                    <div class="settings-row">
+                        <span class="settings-label">언어 (Language)</span>
+                        <select class="option-select">
+                            <option>한국어</option>
+                            <option>English</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Action Buttons -->
+            <div class="options-footer">
+                <button class="options-action-btn btn-primary" onclick="handleApplyOptions()">적용</button>
+                <button class="options-action-btn btn-secondary-outline" onclick="handleCancelOptions()">취소</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Settings Confirm Modal Layer -->
+    <div id="settings-confirm-modal" class="modal-overlay">
+        <!-- Centered Compact Settings Confirm Window Panel -->
+        <div class="modal-panel">
+            <div class="modal-title text-body">설정이 변경되었습니다.<br>적용하시겠습니까?</div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn btn-primary" onclick="confirmApplySettings()">
+                    <span class="btn-primary-text">적용</span>
+                </button>
+                <button class="modal-btn btn-secondary-outline" onclick="confirmDiscardSettings()">
+                    <span class="btn-secondary-outline-text">취소</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple JavaScript Logic -->
+    <script>
+        let originalSettings = null;
+        let confirmTrigger = null;
+
+        function getSettingsSnapshot() {
+            const modal = document.getElementById('options-modal');
+            if (!modal) return [];
+            const selects = modal.querySelectorAll('select');
+            const inputs = modal.querySelectorAll('input');
+            const snapshot = [];
+            selects.forEach(select => {
+                snapshot.push({ element: select, value: select.selectedIndex });
+            });
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    snapshot.push({ element: input, value: input.checked });
+                } else {
+                    snapshot.push({ element: input, value: input.value });
+                }
+            });
+            return snapshot;
+        }
+
+        function isSettingsChanged() {
+            if (!originalSettings) return false;
+            const current = getSettingsSnapshot();
+            for (let i = 0; i < originalSettings.length; i++) {
+                if (originalSettings[i].value !== current[i].value) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function revertSettings() {
+            if (!originalSettings) return;
+            originalSettings.forEach(item => {
+                if (item.element.tagName.toLowerCase() === 'select') {
+                    item.element.selectedIndex = item.value;
+                } else if (item.element.type === 'checkbox') {
+                    item.element.checked = item.value;
+                } else {
+                    item.element.value = item.value;
+                    if (item.element.type === 'range') {
+                        updateVolumeLabel(item.element);
+                    }
+                }
+            });
+        }
+
+        function startGame() {
+            console.log('로비 레벨 로드 및 이동');
+            alert('게임 시작: 로비 레벨로 이동합니다.');
+        }
+
+        function showModal() {
+            var modal = document.getElementById('exit-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+        function hideModal() {
+            var modal = document.getElementById('exit-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        function quitGame() {
+            window.close();
+        }
+
+        // 옵션 관련 자바스크립트 로직
+        function showOptions() {
+            var modal = document.getElementById('options-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                switchTab('graphics');
+                originalSettings = getSettingsSnapshot();
+            }
+        }
+        function hideOptions() {
+            var modal = document.getElementById('options-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        function handleApplyOptions() {
+            if (isSettingsChanged()) {
+                showConfirmModal('apply');
+            } else {
+                hideOptions();
+            }
+        }
+        function handleCancelOptions() {
+            if (isSettingsChanged()) {
+                showConfirmModal('cancel');
+            } else {
+                hideOptions();
+            }
+        }
+        function showConfirmModal(trigger) {
+            confirmTrigger = trigger;
+            var modal = document.getElementById('settings-confirm-modal');
+            var title = modal ? modal.querySelector('.modal-title') : null;
+            var leftBtn = modal ? modal.querySelector('.modal-buttons .modal-btn:first-child') : null;
+            var rightBtn = modal ? modal.querySelector('.modal-buttons .modal-btn:last-child') : null;
+            
+            if (title && leftBtn && rightBtn) {
+                var leftText = leftBtn.querySelector('span');
+                var rightText = rightBtn.querySelector('span');
+                
+                // Left button is always primary, right button is always secondary-outline
+                leftBtn.className = 'modal-btn btn-primary';
+                leftText.className = 'btn-primary-text';
+                rightBtn.className = 'modal-btn btn-secondary-outline';
+                rightText.className = 'btn-secondary-outline-text';
+                
+                if (trigger === 'apply') {
+                    title.innerHTML = '변경된 설정을 적용하시겠습니까?';
+                    leftText.textContent = '적용';
+                    rightText.textContent = '취소';
+                } else {
+                    title.innerHTML = '저장되지 않은 변경 사항이 있습니다.<br>이대로 나가시겠습니까?';
+                    leftText.textContent = '예';
+                    rightText.textContent = '아니요';
+                }
+            }
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+        function hideConfirmModal() {
+            var modal = document.getElementById('settings-confirm-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        function confirmApplySettings() {
+            if (confirmTrigger === 'apply') {
+                // Apply changes and close options
+                originalSettings = getSettingsSnapshot();
+                hideConfirmModal();
+                hideOptions();
+            } else {
+                // '예' clicked: discard changes (revert) and close options
+                revertSettings();
+                hideConfirmModal();
+                hideOptions();
+            }
+        }
+        function confirmDiscardSettings() {
+            if (confirmTrigger === 'apply') {
+                // '취소' clicked: go back to editing
+                hideConfirmModal();
+            } else {
+                // '아니요' clicked: go back to editing
+                hideConfirmModal();
+            }
+        }
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.options-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            const activeContent = document.getElementById('tab-' + tabId);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
+
+            const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('data-tab') === tabId);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
+        }
+        function selectSegment(button) {
+            const buttons = button.parentNode.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        }
+        function updateVolumeLabel(input) {
+            const valueSpan = input.nextElementSibling;
+            if (valueSpan) {
+                valueSpan.innerText = input.value + '%';
+            }
+        }
+
+        // ESC 키 입력 이벤트 리스너 추가
+        window.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                var exitModal = document.getElementById('exit-modal');
+                var optionsModal = document.getElementById('options-modal');
+                var confirmModal = document.getElementById('settings-confirm-modal');
+
+                if (confirmModal && confirmModal.style.display === 'flex') {
+                    confirmDiscardSettings();
+                } else if (optionsModal && optionsModal.style.display === 'flex') {
+                    if (isSettingsChanged()) {
+                        showConfirmModal('esc');
+                    } else {
+                        hideOptions();
+                    }
+                } else if (exitModal && exitModal.style.display === 'flex') {
+                    hideModal();
+                } else {
+                    showModal();
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,643 @@
+/* 공통 버튼 스타일 */
+.btn {
+    min-width: 260px;
+    width: auto;
+    padding: 0 24px;
+    white-space: nowrap;
+    height: 46px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    outline: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-left {
+    justify-content: flex-start;
+    padding-left: 24px;
+}
+
+
+
+/* 모달 레이어 및 패널 스타일 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-overlay);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+#settings-confirm-modal {
+    z-index: 200;
+}
+
+.modal-panel {
+    position: relative;
+    width: 320px;
+    max-width: 90%;
+    height: 150px;
+    background-color: var(--bg-panel);
+    border: 1.5px solid var(--bg-panel-border);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.modal-title {
+    margin: 0;
+    text-align: center;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.modal-btn {
+    min-width: 110px;
+    width: auto;
+    padding: 0 16px;
+    white-space: nowrap;
+    height: 34px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+
+/* ==========================================================================
+   옵션 화면 컴포넌트 스타일 (Settings Modal Components)
+   ========================================================================== */
+
+/* 옵션 패널 전체 레이아웃 */
+.options-panel {
+    position: relative;
+    width: 520px;
+    max-width: 90%;
+    height: 560px;
+    max-height: 90vh;
+    background-color: var(--bg-panel);
+    border: 1.5px solid var(--bg-panel-border);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 28px 36px 20px;
+    box-sizing: border-box;
+}
+
+/* 옵션 헤더 */
+.options-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.options-close-btn {
+    font-size: 22px;
+    line-height: 1;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.15s;
+}
+
+/* 탭 버튼 그룹 */
+.options-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 1.5px solid var(--secondary-700-op050);
+    padding-bottom: 0;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+    margin-bottom: -1.5px;
+}
+
+.tab-btn:hover {
+    background-color: var(--secondary-700-op030);
+}
+
+.tab-btn.active {
+    border-bottom-color: var(--primary-500);
+}
+
+
+/* 옵션 컨텐츠 영역 */
+.options-content {
+    display: none;
+    flex: 1;
+    gap: 0;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.options-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.options-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.options-content::-webkit-scrollbar-thumb {
+    background-color: var(--secondary-700-op050);
+    border-radius: 2px;
+}
+
+.options-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--secondary-600);
+}
+
+.options-content.active {
+    display: flex;
+}
+
+.settings-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.settings-column.full-width {
+    max-width: 100%;
+}
+
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 4px;
+    transition: background-color 0.12s;
+}
+
+.settings-row:hover {
+    background-color: var(--secondary-700-op030);
+}
+
+.settings-label {
+    user-select: none;
+}
+
+
+/* 선택 상자 (Dropdown) */
+.option-select {
+    background-color: var(--bg-inset);
+    border: 1px solid var(--bg-inset-border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    outline: none;
+    cursor: pointer;
+    width: 160px;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+.option-select:hover {
+    border-color: var(--secondary-500);
+    color: var(--white);
+}
+
+.option-select:focus {
+    border-color: var(--primary-500);
+}
+
+/* 세그먼트 버튼 그룹 */
+.option-btn-group {
+    display: flex;
+    border: 1.5px solid var(--bg-inset-border);
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: var(--bg-inset);
+}
+
+.option-btn {
+    background: transparent;
+    border: none;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.option-btn:hover {
+    color: var(--white);
+    background-color: var(--secondary-700-op030);
+}
+
+.option-btn.active {
+    background-color: var(--primary-600);
+    color: var(--white);
+}
+
+/* 수직동기화 토글 스위치 */
+.option-switch {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 20px;
+}
+
+.option-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.option-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--bg-inset);
+    border: 1.5px solid var(--bg-inset-border);
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.option-slider:before {
+    position: absolute;
+    content: "";
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    bottom: 2.5px;
+    background-color: var(--gray-400);
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.option-switch input:checked+.option-slider {
+    background-color: var(--primary-600);
+    border-color: var(--primary-500);
+}
+
+.option-switch input:checked+.option-slider:before {
+    transform: translateX(17px);
+    background-color: var(--white);
+}
+
+/* 볼륨 슬라이더 및 수치 표시 */
+.settings-control-slider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.slider-value {
+    width: 40px;
+    text-align: right;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+}
+
+.option-range {
+    -webkit-appearance: none;
+    width: 160px;
+    height: 6px;
+    background: var(--bg-inset);
+    border: 1px solid var(--bg-inset-border);
+    border-radius: 3px;
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.option-range:hover {
+    border-color: var(--secondary-500);
+}
+
+.option-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--primary-600);
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.1s;
+}
+
+.option-range::-webkit-slider-thumb:hover {
+    background: var(--primary-500);
+    transform: scale(1.15);
+}
+
+/* 푸터 액션 영역 */
+.options-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1.5px solid var(--secondary-700-op050);
+}
+
+.options-action-btn {
+    min-width: 84px;
+    width: auto;
+    padding: 0 16px;
+    white-space: nowrap;
+    height: 32px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+}
+
+/* 미리보기용 레이아웃 및 크기 정의 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 60px 40px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.header-section {
+    width: 100%;
+    text-align: left;
+    padding-bottom: 24px;
+}
+
+.version-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.dashboard-card {
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+}
+
+.card-title {
+    margin-top: 0;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-title-center {
+    justify-content: center;
+}
+
+/* 1. 색상 팔레트 섹션 */
+.color-section-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+.color-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 16px;
+}
+
+.swatch-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.swatch-color {
+    height: 64px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.swatch-color:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.4);
+}
+
+.swatch-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* 2. 경계 스타일 섹션 */
+.bg-showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+}
+
+.bg-showcase-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.bg-box {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+}
+
+.bg-box:hover {
+    transform: scale(1.02);
+}
+
+.bg-box-panel {
+    border-radius: 6px;
+}
+
+.bg-box-floating {
+    border-radius: 4px;
+}
+
+.bg-box-overlay {
+    border-radius: 0px;
+}
+
+.bg-box-inset {
+    border-radius: 4px;
+}
+
+.bg-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* 3. 텍스트 스타일 섹션 */
+.text-showcase-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.text-showcase-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    align-items: center;
+    gap: 32px;
+    padding-bottom: 20px;
+}
+
+.text-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.text-preview-container {
+    display: flex;
+    align-items: center;
+    min-height: 50px;
+}
+
+/* 4. 버튼 쇼케이스 섹션 */
+.showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 316px);
+    gap: 24px;
+    justify-content: center;
+}
+
+.showcase-grid.margin-bottom-32 {
+    margin-bottom: 32px;
+}
+
+.showcase-grid.showcase-grid-single {
+    grid-template-columns: 316px;
+}
+
+@media (max-width: 720px) {
+    .showcase-grid {
+        grid-template-columns: repeat(auto-fit, minmax(316px, 1fr));
+    }
+}
+
+.showcase-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    min-width: 316px;
+    width: fit-content;
+}
+
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+    min-width: 316px;
+    width: fit-content;
+}
+
+.showcase-group-title.first {
+    margin: 0 0 16px 0;
+}
+
+.state-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 20px;
+    width: 100%;
+}
+
+svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.preview-container button.tab-btn {
+    min-width: 82px;
+    width: auto;
+    padding: 0 16px;
+    white-space: nowrap;
+    height: 46px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-container button.btn-text {
+    min-width: 0;
+    width: auto;
+    height: auto;
+    padding: 6px 12px;
+    white-space: nowrap;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-container {
+    display: flex;
+    gap: 6px;
+    min-width: 260px;
+    width: auto;
+}
+
+
