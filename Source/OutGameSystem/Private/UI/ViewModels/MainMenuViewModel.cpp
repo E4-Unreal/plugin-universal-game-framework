@@ -3,17 +3,39 @@
 
 #include "UI/ViewModels/MainMenuViewModel.h"
 
+#include "UI/Interfaces/MainMenuModelInterface.h"
+
+void UMainMenuViewModel::SetModel_Implementation(UObject* NewModel)
+{
+    Super::SetModel_Implementation(NewModel);
+
+    if (Model && Model->Implements<UMainMenuModelInterface>())
+    {
+        GameTitleText = IMainMenuModelInterface::Execute_GetGameTitleText(Model);
+        VersionText = IMainMenuModelInterface::Execute_GetVersionText(Model);
+    }
+}
+
 void UMainMenuViewModel::HandleOnStartButtonClicked()
 {
-    // TODO
+    if (Model && Model->Implements<UMainMenuModelInterface>())
+    {
+        IMainMenuModelInterface::Execute_RequestStartGame(Model);
+    }
 }
 
 void UMainMenuViewModel::HandleOnOptionsButtonClicked()
 {
-    // TODO
+    if (Model && Model->Implements<UMainMenuModelInterface>())
+    {
+        IMainMenuModelInterface::Execute_OpenOptionsPanel(Model);
+    }
 }
 
 void UMainMenuViewModel::HandleOnExitButtonClicked()
 {
-    // TODO
+    if (Model && Model->Implements<UMainMenuModelInterface>())
+    {
+        IMainMenuModelInterface::Execute_RequestExitGame(Model);
+    }
 }

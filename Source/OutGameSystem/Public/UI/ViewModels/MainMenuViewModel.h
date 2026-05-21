@@ -22,6 +22,10 @@ private:
     FText VersionText;
 
 public:
+    //~ Begin IModelInjectableInterface Interface
+    virtual void SetModel_Implementation(UObject* NewModel) override;
+    //~ End IModelInjectableInterface Interface
+
     /* API */
 
     UFUNCTION(BlueprintCallable)

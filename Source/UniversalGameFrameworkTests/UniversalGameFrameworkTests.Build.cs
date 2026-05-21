@@ -10,6 +10,8 @@ public class UniversalGameFrameworkTests : ModuleRules
             new string[]
             {
                 "Core",
+                "MVVMExtensions",
+                "OutGameSystem"
             }
         );
 

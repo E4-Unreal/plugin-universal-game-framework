@@ -15,8 +15,12 @@ class MVVMEXTENSIONS_API UModelInjectableViewModelBase : public UMVVMViewModelBa
 {
     GENERATED_BODY()
 
+protected:
+    UPROPERTY(BlueprintReadOnly, Category = "State")
+    TObjectPtr<UObject> Model;
+
 public:
     //~ Begin IModelInjectableInterface Interface
-    virtual void SetModel_Implementation(UObject* NewModel) override { }
+    virtual void SetModel_Implementation(UObject* NewModel) override { Model = NewModel; }
     //~ End IModelInjectableInterface Interface
 };
