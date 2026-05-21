@@ -1,4 +1,4 @@
-﻿#include "Misc/AutomationTest.h"
+#include "Misc/AutomationTest.h"
 
 IMPLEMENT_SIMPLE_AUTOMATION_TEST(MainMenuViewModelTest, "UniversalGameFramework.OutGameSystem.UI.ViewModels.MainMenu",
                                  EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
