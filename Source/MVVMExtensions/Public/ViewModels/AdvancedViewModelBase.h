@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
 #include "Interfaces/ModelInjectableInterface.h"
-#include "ModelInjectableViewModelBase.generated.h"
+#include "AdvancedViewModelBase.generated.h"
 
 /**
  *
  */
 UCLASS()
-class MVVMEXTENSIONS_API UModelInjectableViewModelBase : public UMVVMViewModelBase, public IModelInjectableInterface
+class MVVMEXTENSIONS_API UAdvancedViewModelBase : public UMVVMViewModelBase, public IModelInjectableInterface
 {
     GENERATED_BODY()
 
