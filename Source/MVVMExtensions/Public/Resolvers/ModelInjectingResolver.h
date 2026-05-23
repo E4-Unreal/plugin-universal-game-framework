@@ -76,6 +76,25 @@ public:
     virtual UObject* GetModel(const UUserWidget* UserWidget) override;
 };
 
+UCLASS(DisplayName = "ActorComponent")
+class MVVMEXTENSIONS_API UActorComponentModelProvider : public UModelProviderBase
+{
+    GENERATED_BODY()
+
+protected:
+    UPROPERTY(EditAnywhere, Category = "Config")
+    bool bPlayerController;
+
+    UPROPERTY(EditAnywhere, Category = "Config", meta = (AllowAbstract = true))
+    TSubclassOf<UInterface> InterfaceClass;
+
+    UPROPERTY(EditAnywhere, Category = "Config")
+    TSubclassOf<UActorComponent> ComponentClass;
+
+public:
+    virtual UObject* GetModel(const UUserWidget* UserWidget) override;
+};
+
 /**
  *
  */

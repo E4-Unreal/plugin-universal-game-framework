@@ -70,6 +70,51 @@ UObject* ULocalPlayerSubsystemModelProvider::GetModel(const UUserWidget* UserWid
     return nullptr;
 }
 
+UObject* UActorComponentModelProvider::GetModel(const UUserWidget* UserWidget)
+{
+    if (UserWidget)
+    {
+        if (InterfaceClass)
+        {
+            if (bPlayerController)
+            {
+                if (APlayerController* PlayerController = UserWidget->GetOwningPlayer())
+                {
+                    TArray<UActorComponent*> Components = PlayerController->GetComponentsByInterface(InterfaceClass.Get());
+                    return Components.Num() > 0 ? Components[0] : nullptr;
+                }
+            }
+            else
+            {
+                if (APawn* Pawn = UserWidget->GetOwningPlayerPawn())
+                {
+                    TArray<UActorComponent*> Components = Pawn->GetComponentsByInterface(InterfaceClass.Get());
+                    return Components.Num() > 0 ? Components[0] : nullptr;
+                }
+            }
+        }
+        else if (ComponentClass)
+        {
+            if (bPlayerController)
+            {
+                if (APlayerController* PlayerController = UserWidget->GetOwningPlayer())
+                {
+                    return PlayerController->GetComponentByClass(ComponentClass);
+                }
+            }
+            else
+            {
+                if (APawn* Pawn = UserWidget->GetOwningPlayerPawn())
+                {
+                    return Pawn->GetComponentByClass(ComponentClass);
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 UObject* UModelInjectingResolver::CreateInstance(const UClass* ExpectedType, const UUserWidget* UserWidget, const UMVVMView* View) const
 {
     // 블루프린트에서 구현된 함수 우선 호출
