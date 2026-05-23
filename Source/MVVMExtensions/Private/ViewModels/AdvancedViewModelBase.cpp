@@ -5,30 +5,60 @@
 
 void UAdvancedViewModelBase::SetModel(UObject* NewModel)
 {
-    if (Model == NewModel) return;
+    TArray<UObject*> NewModels = { NewModel };
+    SetModels(NewModels);
+}
 
-    UObject* OldModel = Model;
-    Model = NewModel;
+void UAdvancedViewModelBase::SetModels(const TArray<UObject*>& NewModels)
+{
+    // Unbind Old Models
+    for (const auto& OldModel : Models)
+    {
+        if (OldModel.IsValid())
+        {
+            UnbindModel(OldModel.Get());
+        }
+    }
 
-    UnbindModel(OldModel);
-    BindModel(NewModel);
+    // Change Models
+    Models.Empty(NewModels.Num());
+    Models.Append(NewModels);
 
+    // Bind New Models
+    for (const auto& NewModel : NewModels)
+    {
+        if (NewModel)
+        {
+            BindModel(NewModel);
+        }
+    }
+
+    // Initialize
     Refresh();
 }
 
 void UAdvancedViewModelBase::Refresh()
 {
-    if (Model) OnRefresh();
+    if (!Models.IsEmpty())
+    {
+        OnRefresh();
+    }
 }
 
 void UAdvancedViewModelBase::BindModel(UObject* NewModel)
 {
-    if (NewModel) OnBindModel(NewModel);
+    if (NewModel)
+    {
+        OnBindModel(NewModel);
+    }
 }
 
 void UAdvancedViewModelBase::UnbindModel(UObject* OldModel)
 {
-    if (OldModel) OnUnbindModel(OldModel);
+    if (OldModel)
+    {
+        OnUnbindModel(OldModel);
+    }
 }
 
 void UAdvancedViewModelBase::OnRefresh_Implementation()

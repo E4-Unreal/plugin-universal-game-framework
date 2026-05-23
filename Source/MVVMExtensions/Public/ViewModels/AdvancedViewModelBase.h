@@ -14,13 +14,15 @@ class MVVMEXTENSIONS_API UAdvancedViewModelBase : public UMVVMViewModelBase
 {
     GENERATED_BODY()
 
-protected:
-    UPROPERTY(BlueprintReadOnly, Category = "State")
-    TObjectPtr<UObject> Model;
+private:
+    TArray<TWeakObjectPtr<UObject>> Models;
 
 public:
     UFUNCTION(BlueprintCallable)
     void SetModel(UObject* NewModel);
+
+    UFUNCTION(BlueprintCallable)
+    void SetModels(const TArray<UObject*>& NewModels);
 
     UFUNCTION(BlueprintCallable)
     void Refresh();
@@ -30,6 +32,28 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void UnbindModel(UObject* OldModel);
+
+    /* Query */
+
+    template<class T UE_REQUIRES(TPointerIsConvertibleFromTo<T, UInterface>::Value)>
+    UObject* GetModelByInterface() const
+    {
+        return GetModelByInterface(T::StaticClass());
+    }
+
+    UFUNCTION(BlueprintPure)
+    UObject* GetModelByInterface(TSubclassOf<UInterface> InterfaceClass) const
+    {
+        for (const auto& Model : Models)
+        {
+            if (Model.IsValid() && Model.Get()->GetClass()->ImplementsInterface(InterfaceClass))
+            {
+                return Model.Get();
+            }
+        }
+
+        return nullptr;
+    }
 
 protected:
     UFUNCTION(BlueprintNativeEvent)
