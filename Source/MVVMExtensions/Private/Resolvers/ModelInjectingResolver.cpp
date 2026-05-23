@@ -5,7 +5,7 @@
 
 #include "Engine/Engine.h"
 #include "Blueprint/UserWidget.h"
-#include "Interfaces/ModelInjectableInterface.h"
+#include "ViewModels/AdvancedViewModelBase.h"
 
 UObject* UGameInstanceModelProvider::GetModel(const UUserWidget* UserWidget)
 {
@@ -122,13 +122,13 @@ UObject* UModelInjectingResolver::CreateInstance(const UClass* ExpectedType, con
     if (OverrideInstance != nullptr) return OverrideInstance;
 
     // ViewModel 생성 후 Model 주입
-    if (ExpectedType && ExpectedType->ImplementsInterface(UModelInjectableInterface::StaticClass()) && ModelProvider)
+    if (ExpectedType && ModelProvider)
     {
         if (UObject* ModelToInject = ModelProvider->GetModel(UserWidget))
         {
-            if (UObject* NewViewModel = NewObject<UObject>(GetTransientPackage(), ExpectedType))
+            if (auto NewViewModel = NewObject<UAdvancedViewModelBase>(GetTransientPackage(), ExpectedType))
             {
-                IModelInjectableInterface::Execute_SetModel(NewViewModel, ModelToInject);
+                NewViewModel->SetModel(ModelToInject);
 
                 return NewViewModel;
             }
@@ -143,7 +143,7 @@ bool UModelInjectingResolver::DoesSupportViewModelClass(const UClass* Class) con
 {
     if (Super::DoesSupportViewModelClass(Class))
     {
-        return Class->ImplementsInterface(UModelInjectableInterface::StaticClass());
+        return Class->IsChildOf(UAdvancedViewModelBase::StaticClass());
     }
 
     return false;

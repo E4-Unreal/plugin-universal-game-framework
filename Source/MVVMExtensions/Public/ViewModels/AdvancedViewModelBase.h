@@ -4,14 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
-#include "Interfaces/ModelInjectableInterface.h"
 #include "AdvancedViewModelBase.generated.h"
 
 /**
  *
  */
 UCLASS()
-class MVVMEXTENSIONS_API UAdvancedViewModelBase : public UMVVMViewModelBase, public IModelInjectableInterface
+class MVVMEXTENSIONS_API UAdvancedViewModelBase : public UMVVMViewModelBase
 {
     GENERATED_BODY()
 
@@ -20,7 +19,25 @@ protected:
     TObjectPtr<UObject> Model;
 
 public:
-    //~ Begin IModelInjectableInterface Interface
-    virtual void SetModel_Implementation(UObject* NewModel) override { Model = NewModel; }
-    //~ End IModelInjectableInterface Interface
+    UFUNCTION(BlueprintCallable)
+    void SetModel(UObject* NewModel);
+
+    UFUNCTION(BlueprintCallable)
+    void Refresh();
+
+    UFUNCTION(BlueprintCallable)
+    void BindModel(UObject* NewModel);
+
+    UFUNCTION(BlueprintCallable)
+    void UnbindModel(UObject* OldModel);
+
+protected:
+    UFUNCTION(BlueprintNativeEvent)
+    void OnRefresh();
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnBindModel(UObject* NewModel);
+
+    UFUNCTION(BlueprintNativeEvent)
+    void OnUnbindModel(UObject* OldModel);
 };

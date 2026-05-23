@@ -22,10 +22,6 @@ private:
     FText VersionText;
 
 public:
-    //~ Begin IModelInjectableInterface Interface
-    virtual void SetModel_Implementation(UObject* NewModel) override;
-    //~ End IModelInjectableInterface Interface
-
     /* API */
 
     UFUNCTION(BlueprintCallable)
@@ -62,4 +58,9 @@ public:
             UE_MVVM_BROADCAST_FIELD_VALUE_CHANGED(VersionText);
         }
     }
+
+protected:
+    /* AdvancedViewModelBase */
+
+    virtual void OnRefresh_Implementation() override;
 };

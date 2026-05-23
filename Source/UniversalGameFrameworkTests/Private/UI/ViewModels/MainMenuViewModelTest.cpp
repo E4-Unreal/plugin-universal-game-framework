@@ -20,10 +20,7 @@ void FMainMenuViewModelSpec::Define()
         TestTrue(TEXT("Model->Implements<UMainMenuModelInterface>()"), Model->Implements<UMainMenuModelInterface>());
 
         // Inject Model into ViewModel
-        if (TestTrue(TEXT("ViewModel->Implements<UModelInjectableInterface>()"), ViewModel->Implements<UModelInjectableInterface>()))
-        {
-            IModelInjectableInterface::Execute_SetModel(ViewModel, Model);
-        }
+        ViewModel->SetModel(Model);
     });
 
     Describe("Initialization", [this]()

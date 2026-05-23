@@ -5,17 +5,6 @@
 
 #include "UI/Interfaces/MainMenuModelInterface.h"
 
-void UMainMenuViewModel::SetModel_Implementation(UObject* NewModel)
-{
-    Super::SetModel_Implementation(NewModel);
-
-    if (Model && Model->Implements<UMainMenuModelInterface>())
-    {
-        GameTitleText = IMainMenuModelInterface::Execute_GetGameTitleText(Model);
-        VersionText = IMainMenuModelInterface::Execute_GetVersionText(Model);
-    }
-}
-
 void UMainMenuViewModel::HandleOnStartButtonClicked()
 {
     if (Model && Model->Implements<UMainMenuModelInterface>())
@@ -37,5 +26,16 @@ void UMainMenuViewModel::HandleOnExitButtonClicked()
     if (Model && Model->Implements<UMainMenuModelInterface>())
     {
         IMainMenuModelInterface::Execute_RequestExitGame(Model);
+    }
+}
+
+void UMainMenuViewModel::OnRefresh_Implementation()
+{
+    Super::OnRefresh_Implementation();
+
+    if (Model->Implements<UMainMenuModelInterface>())
+    {
+        GameTitleText = IMainMenuModelInterface::Execute_GetGameTitleText(Model);
+        VersionText = IMainMenuModelInterface::Execute_GetVersionText(Model);
     }
 }
