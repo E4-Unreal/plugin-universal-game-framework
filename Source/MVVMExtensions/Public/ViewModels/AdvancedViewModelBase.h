@@ -58,10 +58,13 @@ public:
 protected:
     UFUNCTION(BlueprintNativeEvent)
     void OnRefresh();
+    virtual void OnRefresh_Implementation();
 
     UFUNCTION(BlueprintNativeEvent)
     void OnBindModel(UObject* NewModel);
+    virtual void OnBindModel_Implementation(UObject* NewModel);
 
     UFUNCTION(BlueprintNativeEvent)
     void OnUnbindModel(UObject* OldModel);
+    virtual void OnUnbindModel_Implementation(UObject* OldModel);
 };
