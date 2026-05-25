@@ -1,4 +1,4 @@
-﻿using UnrealBuildTool;
+using UnrealBuildTool;
 
 public class UniversalGameFrameworkEditor : ModuleRules
 {
@@ -11,7 +11,8 @@ public class UniversalGameFrameworkEditor : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "Blutility"
+                "Blutility",
+                "UMG"
             }
         );
 

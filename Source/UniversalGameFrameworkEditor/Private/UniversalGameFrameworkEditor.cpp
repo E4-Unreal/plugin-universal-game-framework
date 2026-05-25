@@ -1,4 +1,4 @@
-﻿#include "UniversalGameFrameworkEditor.h"
+#include "UniversalGameFrameworkEditor.h"
 
 #define LOCTEXT_NAMESPACE "FUniversalGameFrameworkEditorModule"
 
