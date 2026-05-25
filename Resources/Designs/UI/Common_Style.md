@@ -47,9 +47,17 @@
 | :--- | :--- | :--- |
 | **`White`** | `#FFFFFF` ![](https://placehold.co/12x12/FFFFFF/FFFFFF.png) | 가장 밝은 텍스트 및 액션 유도 라벨 |
 | **`Gray 50`** | `#F9FAFB` ![](https://placehold.co/12x12/F9FAFB/F9FAFB.png) | 화면 타이틀 및 주요 헤더 텍스트 |
+| **`Gray 100`** | `#F3F4F6` ![](https://placehold.co/12x12/F3F4F6/F3F4F6.png) | 매우 밝은 배경 오버레이 및 옅은 경계선 |
 | **`Gray 200`** | `#E5E7EB` ![](https://placehold.co/12x12/E5E7EB/E5E7EB.png) | 일반 정보 텍스트, 보조 버튼 라벨 |
+| **`Gray 300`** | `#D1D5DB` ![](https://placehold.co/12x12/D1D5DB/D1D5DB.png) | 비활성화된 텍스트, 옅은 아이콘 및 경계선 |
 | **`Gray 400`** | `#9CA3AF` ![](https://placehold.co/12x12/9CA3AF/9CA3AF.png) | 외곽선 버튼 라벨, 보조 설명 텍스트 |
+| **`Gray 500`** | `#6B7280` ![](https://placehold.co/12x12/6B7280/6B7280.png) | 중간 톤의 텍스트, 비활성화된 아이콘 |
 | **`Gray 600`** | `#4B5563` ![](https://placehold.co/12x12/4B5563/4B5563.png) | 상세 주석 정보, 서브 외곽선 윤곽선 |
+| **`Gray 700`** | `#374151` ![](https://placehold.co/12x12/374151/374151.png) | 어두운 요소 테두리, 카드 윤곽선 |
+| **`Gray 800`** | `#1F2937` ![](https://placehold.co/12x12/1F2937/1F2937.png) | 어두운 모달 패널 배경, 2차 배경색 |
+| **`Gray 900`** | `#111827` ![](https://placehold.co/12x12/111827/111827.png) | 어두운 테마 기본 배경색 |
+| **`Gray 950`** | `#030712` ![](https://placehold.co/12x12/030712/030712.png) | 칠흑같이 어두운 입력창 기저 배경색 |
+| **`Black`** | `#000000` ![](https://placehold.co/12x12/000000/000000.png) | 가장 어두운 화면 암전 오버레이 및 배경 마스크 색상 |
 
 ## 2. 경계 스타일
 
