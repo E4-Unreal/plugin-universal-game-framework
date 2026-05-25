@@ -122,16 +122,19 @@ UObject* UModelInjectingResolver::CreateInstance(const UClass* ExpectedType, con
     if (OverrideInstance != nullptr) return OverrideInstance;
 
     // ViewModel 생성 후 Model 주입
-    if (ExpectedType && ModelProvider)
+    if (ExpectedType)
     {
-        if (UObject* ModelToInject = ModelProvider->GetModel(UserWidget))
+        if (auto ViewModel = NewObject<UAdvancedViewModelBase>(GetTransientPackage(), ExpectedType))
         {
-            if (auto NewViewModel = NewObject<UAdvancedViewModelBase>(GetTransientPackage(), ExpectedType))
+            if (ModelProvider)
             {
-                NewViewModel->SetModel(ModelToInject);
-
-                return NewViewModel;
+                if (UObject* ModelToInject = ModelProvider->GetModel(UserWidget))
+                {
+                    ViewModel->SetModel(ModelToInject);
+                }
             }
+
+            return ViewModel;
         }
     }
 
