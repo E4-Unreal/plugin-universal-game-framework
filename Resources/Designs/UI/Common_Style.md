@@ -59,6 +59,87 @@
 | **`Gray 950`** | `#030712` ![](https://placehold.co/12x12/030712/030712.png) | 칠흑같이 어두운 입력창 기저 배경색 |
 | **`Black`** | `#000000` ![](https://placehold.co/12x12/000000/000000.png) | 가장 어두운 화면 암전 오버레이 및 배경 마스크 색상 |
 
+### 언리얼 엔진 에디터 컬러 테마
+
+```ini
+# [ProjectName]/Saved/Config/EditorPerProjectUserSettings.ini
+
+[ColorThemes]
+Theme0=UGF_Primary
+Theme0Color0=(R=204.578415,G=0.128633,B=1.000000,A=1.000000)
+Theme0Label0=Primary 50
+Theme0Color1=(R=205.196579,G=0.247904,B=0.991102,A=1.000000)
+Theme0Label1=Primary 100
+Theme0Color2=(R=203.323425,G=0.500106,B=0.982251,A=1.000000)
+Theme0Label2=Primary 200
+Theme0Color3=(R=205.147339,G=0.789327,B=0.973446,A=1.000000)
+Theme0Label3=Primary 300
+Theme0Color4=(R=208.681046,G=0.957871,B=0.938686,A=1.000000)
+Theme0Label4=Primary 400
+Theme0Color5=(R=212.469498,G=0.994611,B=0.814847,A=1.000000)
+Theme0Label5=Primary 500
+Theme0Color6=(R=215.797470,G=0.998937,B=0.571125,A=1.000000)
+Theme0Label6=Primary 600
+Theme0Color7=(R=216.311096,G=0.997445,B=0.356400,A=1.000000)
+Theme0Label7=Primary 700
+Theme0Color8=(R=214.759949,G=0.990941,B=0.234551,A=1.000000)
+Theme0Label8=Primary 800
+Theme0Color9=(R=214.462402,G=0.976422,B=0.155926,A=1.000000)
+Theme0Label9=Primary 900
+Theme0Color10=(R=215.702103,G=0.963554,B=0.066626,A=1.000000)
+Theme0Label10=Primary 950
+Theme1=UGF_Secondary
+Theme1Color0=(R=210.159012,G=0.035708,B=0.973446,A=1.000000)
+Theme1Label0=Secondary 50
+Theme1Color1=(R=210.324219,G=0.071449,B=0.947307,A=1.000000)
+Theme1Label1=Secondary 100
+Theme1Color2=(R=214.868286,G=0.127205,B=0.871367,A=1.000000)
+Theme1Label2=Secondary 200
+Theme1Color3=(R=213.731125,G=0.206842,B=0.752942,A=1.000000)
+Theme1Label3=Secondary 300
+Theme1Color4=(R=217.034515,G=0.382170,B=0.479320,A=1.000000)
+Theme1Label4=Secondary 400
+Theme1Color5=(R=218.335083,G=0.506405,B=0.258183,A=1.000000)
+Theme1Label5=Secondary 500
+Theme1Color6=(R=218.660309,G=0.553953,B=0.141263,A=1.000000)
+Theme1Label6=Secondary 600
+Theme1Color7=(R=219.469757,G=0.635577,B=0.090842,A=1.000000)
+Theme1Label7=Secondary 700
+Theme1Color8=(R=222.067795,G=0.703143,B=0.043735,A=1.000000)
+Theme1Label8=Secondary 800
+Theme1Color9=(R=227.621613,G=0.793682,B=0.023153,A=1.000000)
+Theme1Label9=Secondary 900
+Theme1Color10=(R=226.634521,G=0.729254,B=0.005605,A=1.000000)
+Theme1Label10=Secondary 950
+Theme2=UGF_Gray
+Theme2Color0=(R=0.000000,G=0.000000,B=1.000000,A=1.000000)
+Theme2Label0=White
+Theme2Color1=(R=210.079529,G=0.018016,B=0.964687,A=1.000000)
+Theme2Label1=Gray 50
+Theme2Color2=(R=220.108322,G=0.027466,B=0.921582,A=1.000000)
+Theme2Label2=Gray 100
+Theme2Color3=(R=220.227509,G=0.056853,B=0.830770,A=1.000000)
+Theme2Label3=Gray 200
+Theme2Color4=(R=216.441803,G=0.099917,B=0.708376,A=1.000000)
+Theme2Label4=Gray 300
+Theme2Color5=(R=218.926758,G=0.224495,B=0.428691,A=1.000000)
+Theme2Label5=Gray 400
+Theme2Color6=(R=221.483826,G=0.318878,B=0.215861,A=1.000000)
+Theme2Label6=Gray 500
+Theme2Color7=(R=217.414856,G=0.436090,B=0.124772,A=1.000000)
+Theme2Label7=Gray 600
+Theme2Color8=(R=220.049683,G=0.535694,B=0.082283,A=1.000000)
+Theme2Label8=Gray 700
+Theme2Color9=(R=219.254669,G=0.641348,B=0.038204,A=1.000000)
+Theme2Label9=Gray 800
+Theme2Color10=(R=225.580765,G=0.723717,B=0.020289,A=1.000000)
+Theme2Label10=Gray 900
+Theme2Color11=(R=225.822708,G=0.849462,B=0.006049,A=1.000000)
+Theme2Label11=Gray 950
+Theme2Color12=(R=0.000000,G=0.000000,B=0.000000,A=1.000000)
+Theme2Label12=Black
+```
+
 ## 2. 경계 스타일
 
 | 경계 스타일 | 역할 | 적용 대상 | 이미지 | 배경 (색조) | 배경 (불투명도) | 배경 (16진 선형) | 그리기 방식 | 코너 반경 | 윤곽선 (색조) | 윤곽선 (불투명도) | 윤곽선 (16진 선형) |
