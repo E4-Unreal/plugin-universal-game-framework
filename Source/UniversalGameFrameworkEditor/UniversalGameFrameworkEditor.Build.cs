@@ -11,8 +11,7 @@ public class UniversalGameFrameworkEditor : ModuleRules
             {
                 "Core",
                 "UniversalUtilities",
-                "Blutility",
-                "UMG"
+                "Blutility"
             }
         );
 
@@ -24,8 +23,9 @@ public class UniversalGameFrameworkEditor : ModuleRules
                 "Slate",
                 "SlateCore",
                 "UniversalGameFramework",
-                "InventorySystem",
-                "GameplayTags",
+                "UMG",
+                "UnrealEd",
+                "EditorScriptingUtilities"
             }
         );
     }

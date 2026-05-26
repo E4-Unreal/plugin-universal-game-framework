@@ -16,4 +16,10 @@ class UNIVERSALGAMEFRAMEWORKEDITOR_API UWidgetPaletteCategoryUtility : public UA
 
 public:
     UWidgetPaletteCategoryUtility();
+
+	UFUNCTION(CallInEditor)
+	void SetPaletteCategory(FString NewCategory);
+
+protected:
+    static UUserWidget* GetUserWidget(const FAssetData& AssetData);
 };

@@ -38,7 +38,7 @@
 		{
 			"Name": "UniversalGameFrameworkEditor",
 			"Type": "Editor",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "PreDefault"
 		},
 		{
 			"Name": "ShopSystem",
