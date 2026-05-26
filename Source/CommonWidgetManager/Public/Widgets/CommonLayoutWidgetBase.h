@@ -24,7 +24,7 @@ class COMMONWIDGETMANAGER_API UCommonLayoutWidgetBase : public UCommonActivatabl
     GENERATED_BODY()
 
 private:
-    UPROPERTY(meta = (BindWidget))
+    UPROPERTY()
     TObjectPtr<UOverlay> RootOverlay;
 
 protected:

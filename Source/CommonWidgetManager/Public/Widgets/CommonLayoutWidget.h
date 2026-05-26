@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS(Abstract)
+UCLASS()
 class COMMONWIDGETMANAGER_API UCommonLayoutWidget : public UCommonLayoutWidgetBase
 {
     GENERATED_BODY()

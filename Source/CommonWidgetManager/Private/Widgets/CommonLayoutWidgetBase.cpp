@@ -21,6 +21,8 @@ UCommonLayoutWidgetBase::UCommonLayoutWidgetBase(const FObjectInitializer& Objec
     UIInputConfig = FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
     UIInputConfig.bIgnoreLookInput = false;
     UIInputConfig.bIgnoreMoveInput = false;
+
+    RootOverlay = CreateDefaultSubobject<UOverlay>(TEXT("RootOverlay"));
 }
 
 void UCommonLayoutWidgetBase::NativeOnInitialized()
@@ -122,6 +124,8 @@ void UCommonLayoutWidgetBase::ExecuteBackAction_Implementation()
 void UCommonLayoutWidgetBase::CreateLayerMap()
 {
     if (!LayerMap.IsEmpty()) return;
+
+    WidgetTree->RootWidget = RootOverlay;
 
     for (const auto& [LayerTag, LayerConfig] : LayerConfigs)
     {
