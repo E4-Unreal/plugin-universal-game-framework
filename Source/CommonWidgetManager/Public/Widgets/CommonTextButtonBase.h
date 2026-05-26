@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
 
@@ -26,55 +26,64 @@ private:
     TObjectPtr<UCommonTextBlock> TextBlock;
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config")
-    FText Text;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Text", Category = "Config|TextBlock")
+	FText TextOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_WidthOverride"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Horizontal Alignment", Category = "Config|TextBlock")
+	TEnumAsByte<EHorizontalAlignment> HorizontalAlignmentOverride;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Vertical Alignment", Category = "Config|TextBlock")
+	TEnumAsByte<EVerticalAlignment> VerticalAlignmentOverride;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Padding", Category = "Config|TextBlock")
+	FMargin PaddingOverride;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Width", Category = "Config|SizeBox", meta = (editcondition = "bOverride_Width"))
 	float WidthOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_HeightOverride"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Height", Category = "Config|SizeBox", meta = (editcondition = "bOverride_Height"))
 	float HeightOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MinDesiredWidth"))
-	float MinDesiredWidth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Min Desired Width", Category = "Config|SizeBox", meta = (editcondition = "bOverride_MinDesiredWidth"))
+	float MinDesiredWidthOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MinDesiredHeight"))
-	float MinDesiredHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Min Desired Height", Category = "Config|SizeBox", meta = (editcondition = "bOverride_MinDesiredHeight"))
+	float MinDesiredHeightOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MaxDesiredWidth"))
-	float MaxDesiredWidth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Max Desired Width", Category = "Config|SizeBox", meta = (editcondition = "bOverride_MaxDesiredWidth"))
+	float MaxDesiredWidthOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MaxDesiredHeight"))
-	float MaxDesiredHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Max Desired Height", Category = "Config|SizeBox", meta = (editcondition = "bOverride_MaxDesiredHeight"))
+	float MaxDesiredHeightOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MinAspectRatio"))
-	float MinAspectRatio;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Min Aspect Ratio", Category = "Config|SizeBox", meta = (editcondition = "bOverride_MinAspectRatio"))
+	float MinAspectRatioOverride;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Config", meta = (editcondition = "bOverride_MaxAspectRatio" ))
-	float MaxAspectRatio;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "Max Aspect Ratio", Category = "Config|SizeBox", meta = (editcondition = "bOverride_MaxAspectRatio"))
+	float MaxAspectRatioOverride;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
-	uint8 bOverride_WidthOverride : 1;
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
+	uint8 bOverride_Width : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
-	uint8 bOverride_HeightOverride : 1;
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
+	uint8 bOverride_Height : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
 	uint8 bOverride_MinDesiredWidth : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
 	uint8 bOverride_MinDesiredHeight : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
 	uint8 bOverride_MaxDesiredWidth : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
 	uint8 bOverride_MaxDesiredHeight : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
 	uint8 bOverride_MinAspectRatio : 1;
 
-	UPROPERTY(EditAnywhere, Category = "Config", meta = (InlineEditConditionToggle))
+	UPROPERTY(EditAnywhere, Category = "Config|SizeBox", meta = (InlineEditConditionToggle))
 	uint8 bOverride_MaxAspectRatio : 1;
 
 public:

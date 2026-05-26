@@ -1,4 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Widgets/CommonTextButtonBase.h"
@@ -6,24 +6,42 @@
 #include "CommonTextBlock.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/SizeBox.h"
+#include "Components/SizeBoxSlot.h"
 
 UCommonTextButtonBase::UCommonTextButtonBase(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    Text = NSLOCTEXT("WidgetManager", "Button", "Button");
+    /* TextBlock */
+
+    TextOverride = NSLOCTEXT("WidgetManager", "Button", "Button");
+    HorizontalAlignmentOverride = HAlign_Center;
+    VerticalAlignmentOverride = VAlign_Center;
+    PaddingOverride = FMargin(12.0f, 6.f);
+
+    /* SizeBox */
 
     // Width: 120, 160, 200, 240, 280, 320
     // Height: 40, 48, 56, 60
 
-    bOverride_MinDesiredWidth = true;
-    bOverride_MinDesiredHeight = true;
-    MinDesiredWidth = 120;
-    MinDesiredHeight = 40;
+    bOverride_Width = true;
+    bOverride_Height = true;
+    WidthOverride = 120.0f;
+    HeightOverride = 40.0f;
 
-    bOverride_MaxDesiredWidth = true;
-    bOverride_MaxDesiredHeight = true;
-    MaxDesiredWidth = 320;
-    MaxDesiredHeight = 60;
+    bOverride_MinDesiredWidth = false;
+    bOverride_MinDesiredHeight = false;
+    MinDesiredWidthOverride = 0.0f;
+    MinDesiredHeightOverride = 0.0f;
+
+    bOverride_MaxDesiredWidth = false;
+    bOverride_MaxDesiredHeight = false;
+    MaxDesiredWidthOverride = 0.0f;
+    MaxDesiredHeightOverride = 0.0f;
+
+    bOverride_MinAspectRatio = false;
+    bOverride_MaxAspectRatio = false;
+    MinAspectRatioOverride = 0.0f;
+    MaxAspectRatioOverride = 0.0f;
 }
 
 TSubclassOf<UCommonTextStyle> UCommonTextButtonBase::GetDefaultTextStyleClass() const
@@ -47,20 +65,27 @@ void UCommonTextButtonBase::NativePreConstruct()
 
     if (GetSizeBox())
     {
-        if (bOverride_WidthOverride) GetSizeBox()->SetWidthOverride(WidthOverride);
-        if (bOverride_HeightOverride) GetSizeBox()->SetHeightOverride(HeightOverride);
-        if (bOverride_MinDesiredWidth) GetSizeBox()->SetMinDesiredWidth(MinDesiredWidth);
-        if (bOverride_MinDesiredHeight) GetSizeBox()->SetMinDesiredHeight(MinDesiredHeight);
-        if (bOverride_MaxDesiredWidth) GetSizeBox()->SetMaxDesiredWidth(MaxDesiredWidth);
-        if (bOverride_MaxDesiredHeight) GetSizeBox()->SetMaxDesiredHeight(MaxDesiredHeight);
-        if (bOverride_MinAspectRatio) GetSizeBox()->SetMinAspectRatio(MinAspectRatio);
-        if (bOverride_MaxAspectRatio) GetSizeBox()->SetMaxAspectRatio(MaxAspectRatio);
+        if (bOverride_Width) GetSizeBox()->SetWidthOverride(WidthOverride);
+        if (bOverride_Height) GetSizeBox()->SetHeightOverride(HeightOverride);
+        if (bOverride_MinDesiredWidth) GetSizeBox()->SetMinDesiredWidth(MinDesiredWidthOverride);
+        if (bOverride_MinDesiredHeight) GetSizeBox()->SetMinDesiredHeight(MinDesiredHeightOverride);
+        if (bOverride_MaxDesiredWidth) GetSizeBox()->SetMaxDesiredWidth(MaxDesiredWidthOverride);
+        if (bOverride_MaxDesiredHeight) GetSizeBox()->SetMaxDesiredHeight(MaxDesiredHeightOverride);
+        if (bOverride_MinAspectRatio) GetSizeBox()->SetMinAspectRatio(MinAspectRatioOverride);
+        if (bOverride_MaxAspectRatio) GetSizeBox()->SetMaxAspectRatio(MaxAspectRatioOverride);
     }
 
     if (GetTextBlock())
     {
-        GetTextBlock()->SetText(Text);
+        GetTextBlock()->SetText(TextOverride);
         GetTextBlock()->SetStyle(GetDefaultTextStyleClass());
+
+        if (auto TextSlot = Cast<USizeBoxSlot>(GetTextBlock()->Slot))
+        {
+            TextSlot->SetHorizontalAlignment(HorizontalAlignmentOverride);
+            TextSlot->SetVerticalAlignment(VerticalAlignmentOverride);
+            TextSlot->SetPadding(PaddingOverride);
+        }
     }
 }
 
