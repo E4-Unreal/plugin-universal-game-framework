@@ -3,10 +3,12 @@
 
 #include "Components/InputManagerComponent.h"
 
+#include "EnhancedInputComponent.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameFramework/GameStateBase.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
+#include "Types/InputActionConfigData.h"
 
 UInputManagerComponent::UInputManagerComponent()
 {
@@ -17,10 +19,12 @@ void UInputManagerComponent::BeginPlay()
     Super::BeginPlay();
 
     AddMappingContexts(DefaultMappingContexts);
+    BindInputActions();
 }
 
 void UInputManagerComponent::OnComponentDestroyed(bool bDestroyingHierarchy)
 {
+    UnbindInputActions();
     RemoveMappingContexts(DefaultMappingContexts);
 
     Super::OnComponentDestroyed(bDestroyingHierarchy);
@@ -68,7 +72,63 @@ void UInputManagerComponent::RemoveMappingContexts(const TArray<UInputMappingCon
     }
 }
 
-UEnhancedInputLocalPlayerSubsystem* UInputManagerComponent::GetEnhancedInputLocalPlayerSubsystem() const
+void UInputManagerComponent::BindInputAction(const FInputActionConfigData& Config)
+{
+    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    {
+        if (Config.InputAction && !Config.TriggerEvents.IsEmpty())
+        {
+            for (ETriggerEvent TriggerEvent : Config.TriggerEvents)
+            {
+                uint32 InputActionBindingHandle;
+                switch (TriggerEvent)
+                {
+                case ETriggerEvent::None:
+                    continue;
+                    break;
+                case ETriggerEvent::Triggered:
+                    InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                        Config.InputAction,
+                        TriggerEvent,
+                        [&](const FInputActionInstance& ActionInstance){ OnInputActionTriggered(ActionInstance); }).GetHandle();
+                    break;
+                case ETriggerEvent::Started:
+                    InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                        Config.InputAction,
+                        TriggerEvent,
+                        [&](const FInputActionInstance& ActionInstance){ OnInputActionStarted(ActionInstance); }).GetHandle();
+                    break;
+                case ETriggerEvent::Ongoing:
+                    InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                        Config.InputAction,
+                        TriggerEvent,
+                        [&](const FInputActionInstance& ActionInstance){ OnInputActionOngoing(ActionInstance); }).GetHandle();
+                    break;
+                case ETriggerEvent::Canceled:
+                    InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                        Config.InputAction,
+                        TriggerEvent,
+                        [&](const FInputActionInstance& ActionInstance){ OnInputActionCanceled(ActionInstance); }).GetHandle();
+                    break;
+                case ETriggerEvent::Completed:
+                    InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                        Config.InputAction,
+                        TriggerEvent,
+                        [&](const FInputActionInstance& ActionInstance){ OnInputActionCompleted(ActionInstance); }).GetHandle();
+                    break;
+                }
+
+                InputActionBindingHandles.Emplace(InputActionBindingHandle);
+            }
+        }
+    }
+}
+
+void UInputManagerComponent::UnbindInputAction(const FInputActionConfigData& Config)
+{
+}
+
+APlayerController* UInputManagerComponent::GetPlayerController() const
 {
     APlayerController* PlayerController = nullptr;
 
@@ -85,5 +145,114 @@ UEnhancedInputLocalPlayerSubsystem* UInputManagerComponent::GetEnhancedInputLoca
         PlayerController = GetWorld()->GetFirstPlayerController();
     }
 
-    return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+    return PlayerController;
+}
+
+UEnhancedInputLocalPlayerSubsystem* UInputManagerComponent::GetEnhancedInputLocalPlayerSubsystem() const
+{
+    if (APlayerController* PlayerController = GetPlayerController())
+    {
+        return ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+    }
+
+    return nullptr;
+}
+
+UEnhancedInputComponent* UInputManagerComponent::GetEnhancedInputComponent() const
+{
+    if (APlayerController* PlayerController = GetPlayerController())
+    {
+        return Cast<UEnhancedInputComponent>(PlayerController->InputComponent);
+    }
+
+    return nullptr;
+}
+
+void UInputManagerComponent::BindInputActions()
+{
+    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    {
+        const auto& InputActionConfigs = GetInputActionConfigs();
+        InputActionBindingHandles.Reserve(InputActionConfigs.Num());
+        for (const auto& [InputAction, TriggerEvents] : InputActionConfigs)
+        {
+            if (InputAction && !TriggerEvents.IsEmpty())
+            {
+                for (ETriggerEvent TriggerEvent : TriggerEvents)
+                {
+                    uint32 InputActionBindingHandle;
+                    switch (TriggerEvent)
+                    {
+                    case ETriggerEvent::None:
+                        continue;
+                        break;
+                    case ETriggerEvent::Triggered:
+                        InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                            InputAction,
+                            TriggerEvent,
+                            [&](const FInputActionInstance& ActionInstance){ OnInputActionTriggered(ActionInstance); }).GetHandle();
+                        break;
+                    case ETriggerEvent::Started:
+                        InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                            InputAction,
+                            TriggerEvent,
+                            [&](const FInputActionInstance& ActionInstance){ OnInputActionStarted(ActionInstance); }).GetHandle();
+                        break;
+                    case ETriggerEvent::Ongoing:
+                        InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                            InputAction,
+                            TriggerEvent,
+                            [&](const FInputActionInstance& ActionInstance){ OnInputActionOngoing(ActionInstance); }).GetHandle();
+                        break;
+                    case ETriggerEvent::Canceled:
+                        InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                            InputAction,
+                            TriggerEvent,
+                            [&](const FInputActionInstance& ActionInstance){ OnInputActionCanceled(ActionInstance); }).GetHandle();
+                        break;
+                    case ETriggerEvent::Completed:
+                        InputActionBindingHandle = EnhancedInputComponent->BindActionInstanceLambda(
+                            InputAction,
+                            TriggerEvent,
+                            [&](const FInputActionInstance& ActionInstance){ OnInputActionCompleted(ActionInstance); }).GetHandle();
+                        break;
+                    }
+
+                    InputActionBindingHandles.Emplace(InputActionBindingHandle);
+                }
+            }
+        }
+    }
+}
+
+void UInputManagerComponent::UnbindInputActions()
+{
+    if (UEnhancedInputComponent* EnhancedInputComponent = GetEnhancedInputComponent())
+    {
+        for (uint32 InputBindingHandle : InputActionBindingHandles)
+        {
+            EnhancedInputComponent->RemoveActionBindingForHandle(InputBindingHandle);
+        }
+        InputActionBindingHandles.Reset();
+    }
+}
+
+void UInputManagerComponent::OnInputActionTriggered_Implementation(const FInputActionInstance& InputActionInstance)
+{
+}
+
+void UInputManagerComponent::OnInputActionStarted_Implementation(const FInputActionInstance& InputActionInstance)
+{
+}
+
+void UInputManagerComponent::OnInputActionOngoing_Implementation(const FInputActionInstance& InputActionInstance)
+{
+}
+
+void UInputManagerComponent::OnInputActionCanceled_Implementation(const FInputActionInstance& InputActionInstance)
+{
+}
+
+void UInputManagerComponent::OnInputActionCompleted_Implementation(const FInputActionInstance& InputActionInstance)
+{
 }
