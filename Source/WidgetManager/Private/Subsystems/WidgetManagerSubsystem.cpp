@@ -4,18 +4,53 @@
 #include "Subsystems/WidgetManagerSubsystem.h"
 
 #include "Blueprint/UserWidget.h"
-#include "Components/PlayerWidgetManagerComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/AlertWidgetInterface.h"
 #include "Interfaces/ConfirmWidgetInterface.h"
 #include "Interfaces/LayoutWidgetInterface.h"
 #include "Interfaces/PromptWidgetInterface.h"
 #include "Settings/WidgetManagerSettings.h"
-#include "Subsystems/SubsystemBlueprintLibrary.h"
 
 UWidgetManagerSubsystem* UWidgetManagerSubsystem::Get(UObject* ContextObject)
 {
-    return Cast<ThisClass>(USubsystemBlueprintLibrary::GetLocalPlayerSubsystem(ContextObject, ThisClass::StaticClass()));
+    if (ContextObject == nullptr) return nullptr;
+
+    const ULocalPlayer* LocalPlayer = nullptr;
+
+    if (ContextObject->IsA<UUserWidget>())
+    {
+        LocalPlayer = Cast<UUserWidget>(ContextObject)->GetOwningLocalPlayer();
+    }
+    else if (ContextObject->IsA<ULocalPlayer>())
+    {
+        LocalPlayer = Cast<ULocalPlayer>(ContextObject);
+    }
+    else if (ContextObject->IsA<UActorComponent>())
+    {
+        const AActor* Actor = Cast<UActorComponent>(ContextObject)->GetOwner();
+        const APlayerController* PlayerController = nullptr;
+
+        if (Actor->IsA<APlayerController>())
+        {
+            PlayerController = Cast<APlayerController>(Actor);
+        }
+        else if (Actor->IsA<APlayerState>())
+        {
+            PlayerController = Cast<APlayerState>(Actor)->GetPlayerController();
+        }
+        else if (Actor->IsA<APawn>())
+        {
+            PlayerController = Cast<APlayerController>(Cast<APawn>(Actor)->GetController());
+        }
+        else
+        {
+            PlayerController = Cast<APlayerController>(Actor->GetInstigatorController());
+        }
+
+        LocalPlayer = PlayerController ? PlayerController->GetLocalPlayer() : nullptr;
+    }
+
+    return LocalPlayer ? LocalPlayer->GetSubsystem<ThisClass>() : nullptr;
 }
 
 bool UWidgetManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
