@@ -5,6 +5,6 @@
 
 UWidgetManagerSettings::UWidgetManagerSettings()
 {
-    CategoryName = "Plugins";
+    CategoryName = "UniversalGameFramework";
     SectionName = "WidgetManager";
 }
