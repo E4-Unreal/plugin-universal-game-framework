@@ -258,7 +258,7 @@ UUserWidget* UInteractableComponent::ShowMenuWidget(AActor* PlayerActor)
 {
     if (PlayerActor && MenuWidgetClass)
     {
-        UUserWidget* MenuWidget = UWidgetManagerSubsystem::Get(PlayerActor)->ShowWidget(PlayerActor, MenuWidgetClass);
+        UUserWidget* MenuWidget = UWidgetManagerSubsystem::Get(PlayerActor)->ShowWidget(MenuWidgetClass);
         if (MenuWidget)
         {
             if (MenuWidget->Implements<UTargetWidgetInterface>())
@@ -282,7 +282,7 @@ bool UInteractableComponent::HideMenuWidget(AActor* PlayerActor)
 {
     if (PlayerActor && MenuWidgetClass)
     {
-        return UWidgetManagerSubsystem::Get(PlayerActor)->HideWidget(PlayerActor, MenuWidgetClass);
+        return UWidgetManagerSubsystem::Get(PlayerActor)->HideWidget(MenuWidgetClass);
     }
 
     return false;

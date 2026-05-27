@@ -53,7 +53,7 @@ UUserWidget* UPawnWidgetManagerComponent::ShowHUDWidget(AActor* PlayerActor)
 {
     if (auto Subsystem = UWidgetManagerSubsystem::Get(PlayerActor))
     {
-        return Subsystem->ShowWidget(PlayerActor, HUDWidgetClass);
+        return Subsystem->ShowWidget(HUDWidgetClass);
     }
 
     return nullptr;
@@ -63,7 +63,7 @@ bool UPawnWidgetManagerComponent::HideHUDWidget(AActor* PlayerActor)
 {
     if (auto Subsystem = UWidgetManagerSubsystem::Get(PlayerActor))
     {
-        return Subsystem->HideWidget(PlayerActor, HUDWidgetClass);
+        return Subsystem->HideWidget(HUDWidgetClass);
     }
 
     return false;
@@ -73,7 +73,7 @@ void UPawnWidgetManagerComponent::ToggleWidget(TSubclassOf<UUserWidget> WidgetCl
 {
     if (auto Subsystem = UWidgetManagerSubsystem::Get(GetOwner()))
     {
-        return Subsystem->ToggleWidget(GetOwner(), WidgetClass);
+        return Subsystem->ToggleWidget(WidgetClass);
     }
 }
 

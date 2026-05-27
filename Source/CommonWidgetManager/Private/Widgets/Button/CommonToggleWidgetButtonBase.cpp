@@ -11,6 +11,6 @@ void UCommonToggleWidgetButtonBase::NativeOnClicked()
 
     if (auto Subsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetManagerSubsystem>())
     {
-        Subsystem->ToggleWidget(GetOwningPlayer(), WidgetClass);
+        Subsystem->ToggleWidget(WidgetClass);
     }
 }

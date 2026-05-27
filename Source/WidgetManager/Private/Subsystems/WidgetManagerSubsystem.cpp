@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerState.h"
 #include "Interfaces/AlertWidgetInterface.h"
 #include "Interfaces/ConfirmWidgetInterface.h"
+#include "Interfaces/LayoutWidgetInterface.h"
 #include "Interfaces/PromptWidgetInterface.h"
 #include "Settings/WidgetManagerSettings.h"
 #include "Subsystems/SubsystemBlueprintLibrary.h"
@@ -33,45 +34,50 @@ void UWidgetManagerSubsystem::PlayerControllerChanged(APlayerController* NewPlay
     CreateLayoutWidget(NewPlayerController);
 }
 
-APlayerController* UWidgetManagerSubsystem::GetLocalPlayerController(AActor* PlayerActor) const
+UUserWidget* UWidgetManagerSubsystem::ShowWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    APlayerController* PlayerController = nullptr;
-
-    if (PlayerActor)
+    if (WidgetClass && LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
     {
-        if (PlayerActor->IsA(APlayerController::StaticClass()))
-        {
-            PlayerController = Cast<APlayerController>(PlayerActor);
-        }
-        else if (PlayerActor->IsA(APawn::StaticClass()))
-        {
-            PlayerController = Cast<APlayerController>(Cast<APawn>(PlayerActor)->GetController());
-        }
-        else if (PlayerActor->IsA(APlayerState::StaticClass()))
-        {
-            PlayerController = Cast<APlayerState>(PlayerActor)->GetPlayerController();
-        }
+        return ILayoutWidgetInterface::Execute_ShowWidget(LayoutWidget, WidgetClass);
     }
 
-    return PlayerController && PlayerController->IsLocalController() ? PlayerController : nullptr;
+    return nullptr;
 }
 
-UPlayerWidgetManagerComponent* UWidgetManagerSubsystem::GetPlayerWidgetManager(AActor* PlayerActor) const
+bool UWidgetManagerSubsystem::HideWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    APlayerController* LocalPlayerController = GetLocalPlayerController(PlayerActor);
+    if (WidgetClass && LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
+    {
+        return ILayoutWidgetInterface::Execute_HideWidget(LayoutWidget, WidgetClass);
+    }
 
-    return LocalPlayerController ? LocalPlayerController->GetComponentByClass<UPlayerWidgetManagerComponent>() : nullptr;
+    return false;
+}
+
+void UWidgetManagerSubsystem::ToggleWidget(TSubclassOf<UUserWidget> WidgetClass)
+{
+    if (WidgetClass && LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
+    {
+        ILayoutWidgetInterface::Execute_ToggleWidget(LayoutWidget, WidgetClass);
+    }
+}
+
+void UWidgetManagerSubsystem::ExecuteBackAction()
+{
+    if (LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
+    {
+        ILayoutWidgetInterface::Execute_ExecuteBackAction(LayoutWidget);
+    }
 }
 
 UUserWidget* UWidgetManagerSubsystem::ShowAlertWidget(AActor* PlayerActor, const FText& TitleText,
     const FText& MessageText, const FOnWidgetHidden& WidgetHiddenDelegate, TSubclassOf<UUserWidget> WidgetClass)
 {
     WidgetClass = WidgetClass && WidgetClass->ImplementsInterface(UAlertWidgetInterface::StaticClass()) ? WidgetClass : UWidgetManagerSettings::Get()->GetDefaultAlertWidgetClass();
-    auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor);
 
-    if (WidgetClass && PlayerWidgetManager)
+    if (WidgetClass)
     {
-        if (UUserWidget* Widget = PlayerWidgetManager->ShowWidget(WidgetClass))
+        if (UUserWidget* Widget = ShowWidget(WidgetClass))
         {
             IPopupWidgetInterface::Execute_SetTitleText(Widget, TitleText);
             IPopupWidgetInterface::Execute_SetMessageText(Widget, MessageText);
@@ -89,11 +95,10 @@ UUserWidget* UWidgetManagerSubsystem::ShowConfirmWidget(AActor* PlayerActor, con
     const FOnButtonClicked& ConfirmButtonClickedDelegate, TSubclassOf<UUserWidget> WidgetClass)
 {
     WidgetClass = WidgetClass && WidgetClass->ImplementsInterface(UConfirmWidgetInterface::StaticClass()) ? WidgetClass : UWidgetManagerSettings::Get()->GetDefaultConfirmWidgetClass();
-    auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor);
 
-    if (WidgetClass && PlayerWidgetManager)
+    if (WidgetClass)
     {
-        if (UUserWidget* Widget = PlayerWidgetManager->ShowWidget(WidgetClass))
+        if (UUserWidget* Widget = ShowWidget(WidgetClass))
         {
             IPopupWidgetInterface::Execute_SetTitleText(Widget, TitleText);
             IPopupWidgetInterface::Execute_SetMessageText(Widget, MessageText);
@@ -114,11 +119,10 @@ UUserWidget* UWidgetManagerSubsystem::ShowPromptWidget(AActor* PlayerActor, cons
     TSubclassOf<UUserWidget> WidgetClass)
 {
     WidgetClass = WidgetClass && WidgetClass->ImplementsInterface(UPromptWidgetInterface::StaticClass()) ? WidgetClass : UWidgetManagerSettings::Get()->GetDefaultPromptWidgetClass();
-    auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor);
 
-    if (WidgetClass && PlayerWidgetManager)
+    if (WidgetClass)
     {
-        if (UUserWidget* Widget = PlayerWidgetManager->ShowWidget(WidgetClass))
+        if (UUserWidget* Widget = ShowWidget(WidgetClass))
         {
             IPopupWidgetInterface::Execute_SetTitleText(Widget, TitleText);
             IPopupWidgetInterface::Execute_SetMessageText(Widget, MessageText);
@@ -134,34 +138,6 @@ UUserWidget* UWidgetManagerSubsystem::ShowPromptWidget(AActor* PlayerActor, cons
     }
 
     return nullptr;
-}
-
-UUserWidget* UWidgetManagerSubsystem::ShowWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass)
-{
-    if (auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor))
-    {
-        return PlayerWidgetManager->ShowWidget(WidgetClass);
-    }
-
-    return nullptr;
-}
-
-bool UWidgetManagerSubsystem::HideWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass)
-{
-    if (auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor))
-    {
-        return PlayerWidgetManager->HideWidget(WidgetClass);
-    }
-
-    return false;
-}
-
-void UWidgetManagerSubsystem::ToggleWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass)
-{
-    if (auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor))
-    {
-        PlayerWidgetManager->ToggleWidget(WidgetClass);
-    }
 }
 
 void UWidgetManagerSubsystem::CreateLayoutWidget(APlayerController* PlayerController)

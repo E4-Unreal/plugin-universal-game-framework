@@ -37,11 +37,17 @@ public:
 
     /* ThisClass */
 
-    UFUNCTION(BlueprintPure)
-    virtual APlayerController* GetLocalPlayerController(AActor* PlayerActor) const;
+    UFUNCTION(BlueprintCallable)
+    UUserWidget* ShowWidget(TSubclassOf<UUserWidget> WidgetClass);
 
-    UFUNCTION(BlueprintPure)
-    virtual UPlayerWidgetManagerComponent* GetPlayerWidgetManager(AActor* PlayerActor) const;
+    UFUNCTION(BlueprintCallable)
+    bool HideWidget(TSubclassOf<UUserWidget> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    void ToggleWidget(TSubclassOf<UUserWidget> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    void ExecuteBackAction();
 
     UFUNCTION(BlueprintCallable)
     virtual UUserWidget* ShowAlertWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FOnWidgetHidden& WidgetHiddenDelegate, TSubclassOf<UUserWidget> WidgetClass = nullptr);
@@ -51,15 +57,6 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual UUserWidget* ShowPromptWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FOnWidgetHidden& WidgetHiddenDelegate, const FOnPromptSubmitted& PromptSubmittedDelegate, bool bNumeric = false, float MinValue = 0.0f, float MaxValue = 10000.0f, TSubclassOf<UUserWidget> WidgetClass = nullptr);
-
-    UFUNCTION(BlueprintCallable)
-    virtual UUserWidget* ShowWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass);
-
-    UFUNCTION(BlueprintCallable)
-    virtual bool HideWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass);
-
-    UFUNCTION(BlueprintCallable)
-    virtual void ToggleWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass);
 
     /* Getter & Setter */
 
