@@ -4,6 +4,7 @@
 #include "Players/UGFPlayerController.h"
 
 #include "Components/PlayerWidgetManagerComponent.h"
+#include "Widgets/CommonLayoutWidget.h"
 
 const FName AUGFPlayerController::PlayerWidgetManagerName(TEXT("PlayerWidgetManager"));
 
@@ -19,4 +20,5 @@ AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectIniti
     /* PlayerWidgetManager */
 
     PlayerWidgetManager = CreateDefaultSubobject<UPlayerWidgetManagerComponent>(PlayerWidgetManagerName);
+    PlayerWidgetManager->LayoutWidgetClass = UCommonLayoutWidget::StaticClass();
 }
