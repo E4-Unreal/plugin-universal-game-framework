@@ -15,6 +15,9 @@ class WIDGETMANAGER_API UWidgetManagerSettings : public UDeveloperSettings
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/WidgetManager.LayoutWidgetInterface"))
+    TSoftClassPtr<UUserWidget> LayoutWidgetClass;
+
     UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/WidgetManager.AlertWidgetInterface"))
     TSoftClassPtr<UUserWidget> DefaultAlertWidgetClass;
 
@@ -29,6 +32,9 @@ public:
 
     UFUNCTION(BlueprintPure, meta = (DisplayName = "GetWidgetManagerSettings"))
     static UWidgetManagerSettings* Get() { return GetMutableDefault<UWidgetManagerSettings>(); }
+
+    UFUNCTION(BlueprintPure)
+    TSubclassOf<UUserWidget> GetLayoutWidgetClass() const { return LayoutWidgetClass.LoadSynchronous(); }
 
     UFUNCTION(BlueprintPure)
     TSubclassOf<UUserWidget> GetDefaultAlertWidgetClass() const { return DefaultAlertWidgetClass.LoadSynchronous(); }
