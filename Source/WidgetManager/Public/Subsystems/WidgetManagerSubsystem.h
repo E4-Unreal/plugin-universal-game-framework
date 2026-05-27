@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interfaces/PopupWidgetInterface.h"
-#include "Subsystems/GameInstanceSubsystem.h"
+#include "Subsystems/LocalPlayerSubsystem.h"
 #include "WidgetManagerSubsystem.generated.h"
 
 class UPlayerWidgetManagerComponent;
@@ -16,11 +16,13 @@ class FOnPromptSubmitted;
  *
  */
 UCLASS()
-class WIDGETMANAGER_API UWidgetManagerSubsystem : public UGameInstanceSubsystem
+class WIDGETMANAGER_API UWidgetManagerSubsystem : public ULocalPlayerSubsystem
 {
     GENERATED_BODY()
 
 public:
+    static UWidgetManagerSubsystem* Get(UObject* ContextObject);
+
     virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
     UFUNCTION(BlueprintPure)

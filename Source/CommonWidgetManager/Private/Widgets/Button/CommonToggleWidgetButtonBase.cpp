@@ -9,7 +9,7 @@ void UCommonToggleWidgetButtonBase::NativeOnClicked()
 {
     Super::NativeOnClicked();
 
-    if (auto Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+    if (auto Subsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetManagerSubsystem>())
     {
         Subsystem->ToggleWidget(GetOwningPlayer(), WidgetClass);
     }

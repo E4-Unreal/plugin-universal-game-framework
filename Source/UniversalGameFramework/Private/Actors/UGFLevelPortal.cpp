@@ -50,7 +50,7 @@ bool AUGFLevelPortal::CanSelect_Implementation(AActor* Interactor)
 
 void AUGFLevelPortal::RequestConfirmPopup(APlayerController* PlayerController)
 {
-    if (auto* Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+    if (auto* Subsystem = UWidgetManagerSubsystem::Get(PlayerController))
     {
         FOnWidgetHidden WidgetHiddenDelegate;
         FOnButtonClicked ConfirmButtonClickedDelegate;

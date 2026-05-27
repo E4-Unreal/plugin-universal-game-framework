@@ -51,7 +51,7 @@ void UPawnWidgetManagerComponent::OnInputActionTriggered_Implementation(const FI
 
 UUserWidget* UPawnWidgetManagerComponent::ShowHUDWidget(AActor* PlayerActor)
 {
-    if (auto Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+    if (auto Subsystem = UWidgetManagerSubsystem::Get(PlayerActor))
     {
         return Subsystem->ShowWidget(PlayerActor, HUDWidgetClass);
     }
@@ -61,7 +61,7 @@ UUserWidget* UPawnWidgetManagerComponent::ShowHUDWidget(AActor* PlayerActor)
 
 bool UPawnWidgetManagerComponent::HideHUDWidget(AActor* PlayerActor)
 {
-    if (auto Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+    if (auto Subsystem = UWidgetManagerSubsystem::Get(PlayerActor))
     {
         return Subsystem->HideWidget(PlayerActor, HUDWidgetClass);
     }
@@ -71,7 +71,7 @@ bool UPawnWidgetManagerComponent::HideHUDWidget(AActor* PlayerActor)
 
 void UPawnWidgetManagerComponent::ToggleWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (auto Subsystem = GetWorld()->GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+    if (auto Subsystem = UWidgetManagerSubsystem::Get(GetOwner()))
     {
         return Subsystem->ToggleWidget(GetOwner(), WidgetClass);
     }

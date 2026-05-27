@@ -109,7 +109,7 @@ void UShopListViewPanelWidget::OnItemDoubleClicked(UObject* Item)
         }
 
         // 구매 팝업 창 표시
-        if (auto Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+        if (auto Subsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetManagerSubsystem>())
         {
             Subsystem->ShowPromptWidget(GetOwningPlayer(), BuyPromptTitleText, BuyPromptMessageText, WidgetHiddenDelegate, PromptSubmittedDelegate, true, 1, AvailableQuantity);
         }

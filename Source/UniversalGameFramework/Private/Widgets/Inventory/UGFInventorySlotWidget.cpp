@@ -89,7 +89,7 @@ bool UUGFInventorySlotWidget::IsTrading() const
 
 void UUGFInventorySlotWidget::ShowSellPromptPopup() const
 {
-    if (auto Subsystem = GetGameInstance()->GetSubsystem<UWidgetManagerSubsystem>())
+    if (auto Subsystem = GetOwningLocalPlayer()->GetSubsystem<UWidgetManagerSubsystem>())
     {
         if (auto Inventory = Cast<UInventoryComponent>(SlotManager))
         {

@@ -10,6 +10,12 @@
 #include "Interfaces/ConfirmWidgetInterface.h"
 #include "Interfaces/PromptWidgetInterface.h"
 #include "Settings/WidgetManagerSettings.h"
+#include "Subsystems/SubsystemBlueprintLibrary.h"
+
+UWidgetManagerSubsystem* UWidgetManagerSubsystem::Get(UObject* ContextObject)
+{
+    return Cast<ThisClass>(USubsystemBlueprintLibrary::GetLocalPlayerSubsystem(ContextObject, ThisClass::StaticClass()));
+}
 
 bool UWidgetManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 {
