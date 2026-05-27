@@ -4,7 +4,7 @@
 #include "Subsystems/WidgetManagerSubsystem.h"
 
 #include "Blueprint/UserWidget.h"
-#include "GameFramework/PlayerState.h"
+#include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
 #include "Interfaces/AlertWidgetInterface.h"
 #include "Interfaces/ConfirmWidgetInterface.h"
 #include "Interfaces/LayoutWidgetInterface.h"
@@ -21,33 +21,24 @@ UWidgetManagerSubsystem* UWidgetManagerSubsystem::Get(UObject* ContextObject)
     {
         LocalPlayer = Cast<UUserWidget>(ContextObject)->GetOwningLocalPlayer();
     }
-    else if (ContextObject->IsA<ULocalPlayer>())
+    else if (ContextObject->IsA<AActor>())
     {
-        LocalPlayer = Cast<ULocalPlayer>(ContextObject);
+        if (APlayerController* PlayerController = UWidgetManagerFunctionLibrary::GetPlayerControllerFromActor(Cast<AActor>(ContextObject)))
+        {
+            LocalPlayer = PlayerController->GetLocalPlayer();
+        }
     }
     else if (ContextObject->IsA<UActorComponent>())
     {
-        const AActor* Actor = Cast<UActorComponent>(ContextObject)->GetOwner();
-        const APlayerController* PlayerController = nullptr;
-
-        if (Actor->IsA<APlayerController>())
+        AActor* Actor = Cast<UActorComponent>(ContextObject)->GetOwner();
+        if (APlayerController* PlayerController = UWidgetManagerFunctionLibrary::GetPlayerControllerFromActor(Actor))
         {
-            PlayerController = Cast<APlayerController>(Actor);
+            LocalPlayer = PlayerController->GetLocalPlayer();
         }
-        else if (Actor->IsA<APlayerState>())
-        {
-            PlayerController = Cast<APlayerState>(Actor)->GetPlayerController();
-        }
-        else if (Actor->IsA<APawn>())
-        {
-            PlayerController = Cast<APlayerController>(Cast<APawn>(Actor)->GetController());
-        }
-        else
-        {
-            PlayerController = Cast<APlayerController>(Actor->GetInstigatorController());
-        }
-
-        LocalPlayer = PlayerController ? PlayerController->GetLocalPlayer() : nullptr;
+    }
+    else if (ContextObject->IsA<ULocalPlayer>())
+    {
+        LocalPlayer = Cast<ULocalPlayer>(ContextObject);
     }
 
     return LocalPlayer ? LocalPlayer->GetSubsystem<ThisClass>() : nullptr;
