@@ -20,10 +20,22 @@ class WIDGETMANAGER_API UWidgetManagerSubsystem : public ULocalPlayerSubsystem
 {
     GENERATED_BODY()
 
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Getter, Category = "State", Transient)
+    TObjectPtr<UUserWidget> LayoutWidget;
+
 public:
     static UWidgetManagerSubsystem* Get(UObject* ContextObject);
 
+    /* Subsystem */
+
     virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
+
+    /* LocalPlayerSubsystem */
+
+    virtual void PlayerControllerChanged(APlayerController* NewPlayerController) override;
+
+    /* ThisClass */
 
     UFUNCTION(BlueprintPure)
     virtual APlayerController* GetLocalPlayerController(AActor* PlayerActor) const;
@@ -48,4 +60,12 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void ToggleWidget(AActor* PlayerActor, TSubclassOf<UUserWidget> WidgetClass);
+
+    /* Getter & Setter */
+
+    UUserWidget* GetLayoutWidget() const { return LayoutWidget; }
+
+protected:
+    virtual void CreateLayoutWidget(APlayerController* PlayerController);
+    virtual void DestroyLayoutWidget();
 };

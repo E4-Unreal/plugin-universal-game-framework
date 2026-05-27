@@ -25,6 +25,14 @@ bool UWidgetManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
     return ChildClasses.Num() == 0;
 }
 
+void UWidgetManagerSubsystem::PlayerControllerChanged(APlayerController* NewPlayerController)
+{
+    Super::PlayerControllerChanged(NewPlayerController);
+
+    DestroyLayoutWidget();
+    CreateLayoutWidget(NewPlayerController);
+}
+
 APlayerController* UWidgetManagerSubsystem::GetLocalPlayerController(AActor* PlayerActor) const
 {
     APlayerController* PlayerController = nullptr;
@@ -153,5 +161,26 @@ void UWidgetManagerSubsystem::ToggleWidget(AActor* PlayerActor, TSubclassOf<UUse
     if (auto PlayerWidgetManager = GetPlayerWidgetManager(PlayerActor))
     {
         PlayerWidgetManager->ToggleWidget(WidgetClass);
+    }
+}
+
+void UWidgetManagerSubsystem::CreateLayoutWidget(APlayerController* PlayerController)
+{
+    if (auto Settings = UWidgetManagerSettings::Get())
+    {
+        if (TSubclassOf<UUserWidget> LayoutWidgetClass = Settings->GetLayoutWidgetClass())
+        {
+            LayoutWidget = CreateWidget<UUserWidget>(PlayerController, LayoutWidgetClass);
+            LayoutWidget->AddToViewport();
+        }
+    }
+}
+
+void UWidgetManagerSubsystem::DestroyLayoutWidget()
+{
+    if (LayoutWidget)
+    {
+        LayoutWidget->RemoveFromParent();
+        LayoutWidget = nullptr;
     }
 }
