@@ -12,12 +12,7 @@ const FName AUGFPlayerController::PlayerWidgetManagerName(TEXT("PlayerWidgetMana
 AUGFPlayerController::AUGFPlayerController(const FObjectInitializer& ObjectInitializer)
     : Super(ObjectInitializer)
 {
-    /* APlayerController */
-
-    bEnableMouseOverEvents = true;
-    bEnableClickEvents = true;
-
-    /* PlayerWidgetManager */
+    /* PlayerWidgetManagerComponent */
 
     PlayerWidgetManager = CreateDefaultSubobject<UPlayerWidgetManagerComponent>(PlayerWidgetManagerName);
     PlayerWidgetManager->LayoutWidgetClass = UCommonLayoutWidget::StaticClass();
