@@ -15,6 +15,9 @@ class WIDGETMANAGER_API UWidgetManagerFunctionLibrary : public UBlueprintFunctio
     GENERATED_BODY()
 
 public:
+    UFUNCTION(BlueprintPure)
+    static APlayerController* GetPlayerControllerFromActor(AActor* Actor);
+
     UFUNCTION(BlueprintCallable)
     static UUserWidget* CreateWidgetByClass(APlayerController* OwningPlayerController, TSubclassOf<UUserWidget> WidgetClass);
 

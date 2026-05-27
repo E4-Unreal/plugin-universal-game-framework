@@ -4,8 +4,44 @@
 #include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
 
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
 #include "Interfaces/EntryWidgetInterface.h"
 #include "Interfaces/WidgetUtilityInterface.h"
+
+APlayerController* UWidgetManagerFunctionLibrary::GetPlayerControllerFromActor(AActor* Actor)
+{
+    if (Actor == nullptr) return nullptr;
+
+    APlayerController* PlayerController = nullptr;
+
+    if (Actor->IsA<APlayerController>())
+    {
+        PlayerController = Cast<APlayerController>(Actor);
+    }
+    else if (Actor->IsA<APawn>())
+    {
+        PlayerController = Cast<APlayerController>(Cast<APawn>(Actor)->GetController());
+    }
+    else if (Actor->IsA<AGameModeBase>() || Actor->IsA<AGameStateBase>())
+    {
+        if (UWorld* World = Actor->GetWorld())
+        {
+            PlayerController = World->GetFirstPlayerController();
+        }
+    }
+    else if (Actor->IsA<APlayerState>())
+    {
+        PlayerController = Cast<APlayerState>(Actor)->GetPlayerController();
+    }
+    else
+    {
+        PlayerController = Cast<APlayerController>(Actor->GetInstigatorController());
+    }
+
+    return PlayerController;
+}
 
 UUserWidget* UWidgetManagerFunctionLibrary::CreateWidgetByClass(APlayerController* OwningPlayerController,
                                                                 TSubclassOf<UUserWidget> WidgetClass)
