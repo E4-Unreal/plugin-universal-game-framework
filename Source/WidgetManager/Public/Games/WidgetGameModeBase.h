@@ -31,4 +31,9 @@ public:
     /* Getter & Setter */
 
     UWidgetManagerComponent* GetWidgetManager() const { return WidgetManager; }
+
+protected:
+    /* Actor */
+
+    virtual void BeginPlay() override;
 };

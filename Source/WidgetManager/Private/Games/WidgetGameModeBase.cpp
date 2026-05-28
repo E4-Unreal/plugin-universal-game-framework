@@ -19,3 +19,16 @@ AWidgetGameModeBase::AWidgetGameModeBase(const FObjectInitializer& ObjectInitial
 
     WidgetManager = CreateDefaultSubobject<UWidgetManagerComponent>(WidgetManagerName);
 }
+
+void AWidgetGameModeBase::BeginPlay()
+{
+    Super::BeginPlay();
+
+    if (UWorld* World = GetWorld())
+    {
+        if (APlayerController* PlayerController = World->GetFirstPlayerController())
+        {
+            PlayerController->SetShowMouseCursor(true);
+        }
+    }
+}
