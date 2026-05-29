@@ -68,9 +68,14 @@ FGameplayTag UWidgetManagerSubsystem::GetLayerTag(TSubclassOf<UUserWidget> Widge
 {
     if (WidgetClass == nullptr) return FGameplayTag();
 
-    return WidgetClass->IsChildOf<UAdvancedActivatableWidget>()
-        ? WidgetClass->GetDefaultObject<UAdvancedActivatableWidget>()->GetLayerTag()
-        : WidgetManager::UI::Layer::Default;
+    if (WidgetClass->IsChildOf<UAdvancedActivatableWidget>())
+    {
+        FGameplayTag LayerTag = WidgetClass->GetDefaultObject<UAdvancedActivatableWidget>()->GetLayerTag();
+
+        return LayerMap.Contains(LayerTag) ? LayerTag : WidgetManager::UI::Layer::Default;
+    }
+
+    return WidgetManager::UI::Layer::Default;
 }
 
 UWidgetStack* UWidgetManagerSubsystem::GetWidgetStack(FGameplayTag LayerTag) const
