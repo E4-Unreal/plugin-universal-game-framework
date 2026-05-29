@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CommonActivatableWidget.h"
+#include "GameplayTagContainer.h"
 #include "AdvancedActivatableWidget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FBackActionTriggeredEvent);
@@ -20,6 +21,10 @@ public:
     UPROPERTY(BlueprintAssignable)
     FBackActionTriggeredEvent OnBackActionTriggered;
 
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Getter, Category = "Config", meta = (Categories = "UI.Layer"))
+    FGameplayTag LayerTag;
+
 public:
     /* ThisClass */
 
@@ -31,6 +36,10 @@ public:
 
     UFUNCTION(BlueprintCallable)
     virtual void ToggleWidget(TSubclassOf<UUserWidget> WidgetClass);
+
+    /* Getter & Setter */
+
+    FGameplayTag GetLayerTag() const { return LayerTag; }
 
 protected:
     /* CommonActivatableWidget */
