@@ -11,6 +11,7 @@ namespace WidgetManager
         namespace Layer
         {
             WIDGETMANAGER_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Root)
+            WIDGETMANAGER_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(Default)
 
             namespace Game
             {

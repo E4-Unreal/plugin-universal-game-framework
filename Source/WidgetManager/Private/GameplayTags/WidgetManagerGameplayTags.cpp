@@ -9,6 +9,7 @@ namespace WidgetManager
         namespace Layer
         {
             UE_DEFINE_GAMEPLAY_TAG(Root, "UI.Layer")
+            UE_DEFINE_GAMEPLAY_TAG(Default, "UI.Layer.Default")
 
             namespace Game
             {
