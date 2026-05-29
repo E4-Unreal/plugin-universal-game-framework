@@ -38,6 +38,9 @@ public:
     static UWidgetManagerSettings* Get() { return GetMutableDefault<UWidgetManagerSettings>(); }
 
     UFUNCTION(BlueprintPure)
+    const TArray<FGameplayTag>& GetLayerTags() const { return LayerTags; }
+
+    UFUNCTION(BlueprintPure)
     TSubclassOf<UUserWidget> GetLayoutWidgetClass() const { return LayoutWidgetClass.LoadSynchronous(); }
 
     UFUNCTION(BlueprintPure)

@@ -3,10 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Interfaces/PopupWidgetInterface.h"
 #include "Subsystems/LocalPlayerSubsystem.h"
 #include "WidgetManagerSubsystem.generated.h"
 
+class UWidgetStack;
 class UPlayerWidgetManagerComponent;
 class FOnWidgetHidden;
 class FOnButtonClicked;
@@ -24,6 +26,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Getter, Category = "State", Transient)
     TObjectPtr<UUserWidget> LayoutWidget;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "State", Transient)
+    TMap<FGameplayTag, TObjectPtr<UWidgetStack>> LayerMap;
+
 public:
     static UWidgetManagerSubsystem* Get(UObject* ContextObject);
 
@@ -37,6 +42,12 @@ public:
 
     /* ThisClass */
 
+    UFUNCTION(BlueprintPure)
+    FGameplayTag GetLayerTag(TSubclassOf<UUserWidget> WidgetClass) const;
+
+    UFUNCTION(BlueprintPure, meta = (Categories = "UI.Layer"))
+    UWidgetStack* GetWidgetStack(FGameplayTag LayerTag) const;
+
     UFUNCTION(BlueprintCallable)
     UUserWidget* ShowWidget(TSubclassOf<UUserWidget> WidgetClass);
 
@@ -45,9 +56,6 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void ToggleWidget(TSubclassOf<UUserWidget> WidgetClass);
-
-    UFUNCTION(BlueprintCallable)
-    void ExecuteBackAction();
 
     UFUNCTION(BlueprintCallable)
     virtual UUserWidget* ShowAlertWidget(AActor* PlayerActor, const FText& TitleText, const FText& MessageText, const FOnWidgetHidden& WidgetHiddenDelegate, TSubclassOf<UUserWidget> WidgetClass = nullptr);

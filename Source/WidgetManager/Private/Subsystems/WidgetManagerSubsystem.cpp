@@ -4,12 +4,16 @@
 #include "Subsystems/WidgetManagerSubsystem.h"
 
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetTree.h"
+#include "Components/Overlay.h"
 #include "FunctionLibraries/WidgetManagerFunctionLibrary.h"
+#include "GameplayTags/WidgetManagerGameplayTags.h"
 #include "Interfaces/AlertWidgetInterface.h"
 #include "Interfaces/ConfirmWidgetInterface.h"
-#include "Interfaces/LayoutWidgetInterface.h"
 #include "Interfaces/PromptWidgetInterface.h"
+#include "Objects/WidgetStack.h"
 #include "Settings/WidgetManagerSettings.h"
+#include "Widgets/AdvancedActivatableWidget.h"
 
 UWidgetManagerSubsystem* UWidgetManagerSubsystem::Get(UObject* ContextObject)
 {
@@ -60,11 +64,25 @@ void UWidgetManagerSubsystem::PlayerControllerChanged(APlayerController* NewPlay
     CreateLayoutWidget(NewPlayerController);
 }
 
+FGameplayTag UWidgetManagerSubsystem::GetLayerTag(TSubclassOf<UUserWidget> WidgetClass) const
+{
+    if (WidgetClass == nullptr) return FGameplayTag();
+
+    return WidgetClass->IsChildOf<UAdvancedActivatableWidget>()
+        ? WidgetClass->GetDefaultObject<UAdvancedActivatableWidget>()->GetLayerTag()
+        : WidgetManager::UI::Layer::Default;
+}
+
+UWidgetStack* UWidgetManagerSubsystem::GetWidgetStack(FGameplayTag LayerTag) const
+{
+    return LayerMap.FindRef(LayerTag);
+}
+
 UUserWidget* UWidgetManagerSubsystem::ShowWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (WidgetClass && LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
+    if (UWidgetStack* WidgetStack = GetWidgetStack(GetLayerTag(WidgetClass)))
     {
-        return ILayoutWidgetInterface::Execute_ShowWidget(LayoutWidget, WidgetClass);
+        return WidgetStack->ShowWidget(WidgetClass);
     }
 
     return nullptr;
@@ -72,9 +90,9 @@ UUserWidget* UWidgetManagerSubsystem::ShowWidget(TSubclassOf<UUserWidget> Widget
 
 bool UWidgetManagerSubsystem::HideWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (WidgetClass && LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
+    if (UWidgetStack* WidgetStack = GetWidgetStack(GetLayerTag(WidgetClass)))
     {
-        return ILayoutWidgetInterface::Execute_HideWidget(LayoutWidget, WidgetClass);
+        return WidgetStack->HideWidget(WidgetClass);
     }
 
     return false;
@@ -82,17 +100,9 @@ bool UWidgetManagerSubsystem::HideWidget(TSubclassOf<UUserWidget> WidgetClass)
 
 void UWidgetManagerSubsystem::ToggleWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
-    if (WidgetClass && LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
+    if (UWidgetStack* WidgetStack = GetWidgetStack(GetLayerTag(WidgetClass)))
     {
-        ILayoutWidgetInterface::Execute_ToggleWidget(LayoutWidget, WidgetClass);
-    }
-}
-
-void UWidgetManagerSubsystem::ExecuteBackAction()
-{
-    if (LayoutWidget && LayoutWidget->Implements<ULayoutWidgetInterface>())
-    {
-        ILayoutWidgetInterface::Execute_ExecuteBackAction(LayoutWidget);
+        return WidgetStack->ToggleWidget(WidgetClass);
     }
 }
 
@@ -170,11 +180,21 @@ void UWidgetManagerSubsystem::CreateLayoutWidget(APlayerController* PlayerContro
 {
     if (auto Settings = UWidgetManagerSettings::Get())
     {
-        if (TSubclassOf<UUserWidget> LayoutWidgetClass = Settings->GetLayoutWidgetClass())
+        LayoutWidget = CreateWidget<UCommonUserWidget>(PlayerController);
+
+        UOverlay* RootOverlay = LayoutWidget->WidgetTree->ConstructWidget<UOverlay>();
+        LayoutWidget->WidgetTree->RootWidget = RootOverlay;
+
+        TArray<FGameplayTag> LayerTags = { WidgetManager::UI::Layer::Default };
+        LayerTags.Append(Settings->GetLayerTags());
+        LayerMap.Reserve(LayerTags.Num());
+        for (const auto& LayerTag : LayerTags)
         {
-            LayoutWidget = CreateWidget<UUserWidget>(PlayerController, LayoutWidgetClass);
-            LayoutWidget->AddToViewport();
+            UWidgetStack* WidgetStack = NewObject<UWidgetStack>(LayoutWidget);
+            LayerMap.Emplace(LayerTag, WidgetStack);
         }
+
+        LayoutWidget->AddToViewport();
     }
 }
 
@@ -183,6 +203,7 @@ void UWidgetManagerSubsystem::DestroyLayoutWidget()
     if (LayoutWidget)
     {
         LayoutWidget->RemoveFromParent();
+        LayerMap.Reset();
         LayoutWidget = nullptr;
     }
 }
