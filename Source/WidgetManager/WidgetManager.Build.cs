@@ -15,6 +15,7 @@ public class WidgetManager : ModuleRules
                 "EnhancedInput",
                 "GameplayTags",
                 "DeveloperSettings",
+                "CommonUI",
                 "ModelViewViewModel",
 
                 // UniversalGameFramework
