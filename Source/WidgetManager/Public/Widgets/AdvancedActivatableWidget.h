@@ -20,6 +20,18 @@ public:
     UPROPERTY(BlueprintAssignable)
     FBackActionTriggeredEvent OnBackActionTriggered;
 
+public:
+    /* ThisClass */
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ShowWidget(TSubclassOf<UUserWidget> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void HideWidget(TSubclassOf<UUserWidget> WidgetClass);
+
+    UFUNCTION(BlueprintCallable)
+    virtual void ToggleWidget(TSubclassOf<UUserWidget> WidgetClass);
+
 protected:
     /* CommonActivatableWidget */
 
