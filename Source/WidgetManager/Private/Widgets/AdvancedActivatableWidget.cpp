@@ -7,6 +7,10 @@
 
 UAdvancedActivatableWidget::UAdvancedActivatableWidget(const FObjectInitializer& ObjectInitializer)
 {
+    bAutoActivate = true;
+    bIsBackHandler = true;
+    bIsModal = true;
+
     UIInputConfig = FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
     UIInputConfig.bIgnoreLookInput = false;
     UIInputConfig.bIgnoreMoveInput = false;
