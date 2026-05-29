@@ -5,6 +5,23 @@
 
 #include "Subsystems/WidgetManagerSubsystem.h"
 
+UAdvancedActivatableWidget::UAdvancedActivatableWidget(const FObjectInitializer& ObjectInitializer)
+{
+    UIInputConfig = FUIInputConfig(ECommonInputMode::All, EMouseCaptureMode::NoCapture, EMouseLockMode::DoNotLock);
+    UIInputConfig.bIgnoreLookInput = false;
+    UIInputConfig.bIgnoreMoveInput = false;
+}
+
+TOptional<FUIInputConfig> UAdvancedActivatableWidget::GetDesiredInputConfig() const
+{
+    if (GetClass()->IsFunctionImplementedInScript(GET_FUNCTION_NAME_CHECKED(ThisClass, BP_GetDesiredInputConfig)))
+    {
+        return BP_GetDesiredInputConfig();
+    }
+
+    return UIInputConfig;
+}
+
 void UAdvancedActivatableWidget::ShowWidget(TSubclassOf<UUserWidget> WidgetClass)
 {
     if (auto Subsystem = UWidgetManagerSubsystem::Get(this))

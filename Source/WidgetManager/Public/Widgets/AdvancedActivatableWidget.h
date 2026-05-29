@@ -25,7 +25,16 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Getter, Category = "Config", meta = (Categories = "UI.Layer"))
     FGameplayTag LayerTag;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Getter, Category = "Config")
+    FUIInputConfig UIInputConfig;
+
 public:
+    UAdvancedActivatableWidget(const FObjectInitializer& ObjectInitializer);
+
+    /* CommonActivatableWidget */
+
+    virtual TOptional<FUIInputConfig> GetDesiredInputConfig() const override;
+
     /* ThisClass */
 
     UFUNCTION(BlueprintCallable)
@@ -39,7 +48,8 @@ public:
 
     /* Getter & Setter */
 
-    FGameplayTag GetLayerTag() const { return LayerTag; }
+    const FGameplayTag& GetLayerTag() const { return LayerTag; }
+    const FUIInputConfig& GetUIInputConfig() const { return UIInputConfig; }
 
 protected:
     /* CommonActivatableWidget */
