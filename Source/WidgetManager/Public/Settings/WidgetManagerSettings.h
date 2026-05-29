@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Engine/DeveloperSettings.h"
 #include "WidgetManagerSettings.generated.h"
 
@@ -15,6 +16,9 @@ class WIDGETMANAGER_API UWidgetManagerSettings : public UDeveloperSettings
     GENERATED_BODY()
 
 protected:
+    UPROPERTY(Config, EditDefaultsOnly, Category = "Config", meta = (Categories = "UI.Layer"))
+    TArray<FGameplayTag> LayerTags;
+
     UPROPERTY(Config, EditDefaultsOnly, meta = (MustImplement = "/Script/WidgetManager.LayoutWidgetInterface"))
     TSoftClassPtr<UUserWidget> LayoutWidgetClass;
 
