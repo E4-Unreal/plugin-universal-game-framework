@@ -15,8 +15,10 @@ public class WidgetManager : ModuleRules
                 "EnhancedInput",
                 "GameplayTags",
                 "DeveloperSettings",
+                "ModelViewViewModel",
 
-                "InputManager",
+                // UniversalGameFramework
+                "InputManager"
             }
         );
 
