@@ -55,6 +55,26 @@ public:
         return nullptr;
     }
 
+    template<class T UE_REQUIRES(TPointerIsConvertibleFromTo<T, UObject>::Value)>
+    T* GetModelByClass() const
+    {
+        return Cast<T>(GetModelByClass(T::StaticClass()));
+    }
+
+    UFUNCTION(BlueprintPure, meta = (DeterminesOutputType = ObjectClass))
+    UObject* GetModelByClass(TSubclassOf<UObject> ObjectClass) const
+    {
+        for (const auto& Model : Models)
+        {
+            if (Model.IsValid() && Model.Get()->IsA(ObjectClass))
+            {
+                return Model.Get();
+            }
+        }
+
+        return nullptr;
+    }
+
     UFUNCTION(BlueprintCallable)
     virtual void ShowWidget(TSubclassOf<UUserWidget> WidgetClass);
 
