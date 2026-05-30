@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "MVVMViewModelBase.h"
-#include "WidgetManagerViewModel.generated.h"
+#include "AdvancedViewModel.generated.h"
 
 /**
  *
  */
 UCLASS()
-class WIDGETMANAGER_API UWidgetManagerViewModel : public UMVVMViewModelBase
+class WIDGETMANAGER_API UAdvancedViewModel : public UMVVMViewModelBase
 {
     GENERATED_BODY()
 
