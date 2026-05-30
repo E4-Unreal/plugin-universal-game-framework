@@ -12,7 +12,9 @@ public class OutGameSystem : ModuleRules
                 "Core",
                 "UMG",
                 "ModelViewViewModel",
-                "MVVMExtensions"
+
+                // UniversalGameFramework
+                "WidgetManager"
             }
         );
 

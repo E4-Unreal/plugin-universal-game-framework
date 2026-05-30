@@ -1,11 +1,11 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Resolvers/ModelInjectingResolver.h"
+#include "ViewModels/Resolvers/ModelInjectingResolver.h"
 
 #include "Engine/Engine.h"
 #include "Blueprint/UserWidget.h"
-#include "ViewModels/AdvancedViewModelBase.h"
+#include "ViewModels/AdvancedViewModel.h"
 
 UObject* UGameInstanceModelProvider::GetModel(const UUserWidget* UserWidget)
 {
@@ -124,7 +124,7 @@ UObject* UModelInjectingResolver::CreateInstance(const UClass* ExpectedType, con
     // ViewModel 생성 후 Model 주입
     if (ExpectedType)
     {
-        if (auto ViewModel = NewObject<UAdvancedViewModelBase>(GetTransientPackage(), ExpectedType))
+        if (auto ViewModel = NewObject<UAdvancedViewModel>(GetTransientPackage(), ExpectedType))
         {
             if (ModelProvider)
             {
@@ -146,7 +146,7 @@ bool UModelInjectingResolver::DoesSupportViewModelClass(const UClass* Class) con
 {
     if (Super::DoesSupportViewModelClass(Class))
     {
-        return Class->IsChildOf(UAdvancedViewModelBase::StaticClass());
+        return Class->IsChildOf(UAdvancedViewModel::StaticClass());
     }
 
     return false;

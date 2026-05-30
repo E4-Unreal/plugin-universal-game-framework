@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ViewModels/AdvancedViewModelBase.h"
+#include "ViewModels/AdvancedViewModel.h"
 #include "MainMenuViewModel.generated.h"
 
 /**
  *
  */
 UCLASS()
-class OUTGAMESYSTEM_API UMainMenuViewModel : public UAdvancedViewModelBase
+class OUTGAMESYSTEM_API UMainMenuViewModel : public UAdvancedViewModel
 {
     GENERATED_BODY()
 

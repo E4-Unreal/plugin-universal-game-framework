@@ -7,7 +7,7 @@
 #include "ModelInjectingResolver.generated.h"
 
 UCLASS(Abstract, EditInlineNew, DefaultToInstanced, CollapseCategories)
-class MVVMEXTENSIONS_API UModelProviderBase : public UObject
+class WIDGETMANAGER_API UModelProviderBase : public UObject
 {
     GENERATED_BODY()
 
@@ -16,7 +16,7 @@ public:
 };
 
 UCLASS(DisplayName = "GameInstance")
-class MVVMEXTENSIONS_API UGameInstanceModelProvider : public UModelProviderBase
+class WIDGETMANAGER_API UGameInstanceModelProvider : public UModelProviderBase
 {
     GENERATED_BODY()
 
@@ -25,7 +25,7 @@ public:
 };
 
 UCLASS(DisplayName = "EngineSubsystem")
-class MVVMEXTENSIONS_API UEngineSubsystemModelProvider : public UModelProviderBase
+class WIDGETMANAGER_API UEngineSubsystemModelProvider : public UModelProviderBase
 {
     GENERATED_BODY()
 
@@ -38,7 +38,7 @@ public:
 };
 
 UCLASS(DisplayName = "GameInstanceSubsystem")
-class MVVMEXTENSIONS_API UGameInstanceSubsystemModelProvider : public UModelProviderBase
+class WIDGETMANAGER_API UGameInstanceSubsystemModelProvider : public UModelProviderBase
 {
     GENERATED_BODY()
 
@@ -51,7 +51,7 @@ public:
 };
 
 UCLASS(DisplayName = "WorldSubsystem")
-class MVVMEXTENSIONS_API UWorldSubsystemModelProvider : public UModelProviderBase
+class WIDGETMANAGER_API UWorldSubsystemModelProvider : public UModelProviderBase
 {
     GENERATED_BODY()
 
@@ -64,7 +64,7 @@ public:
 };
 
 UCLASS(DisplayName = "LocalPlayerSubsystem")
-class MVVMEXTENSIONS_API ULocalPlayerSubsystemModelProvider : public UModelProviderBase
+class WIDGETMANAGER_API ULocalPlayerSubsystemModelProvider : public UModelProviderBase
 {
     GENERATED_BODY()
 
@@ -77,7 +77,7 @@ public:
 };
 
 UCLASS(DisplayName = "ActorComponent")
-class MVVMEXTENSIONS_API UActorComponentModelProvider : public UModelProviderBase
+class WIDGETMANAGER_API UActorComponentModelProvider : public UModelProviderBase
 {
     GENERATED_BODY()
 
@@ -99,7 +99,7 @@ public:
  *
  */
 UCLASS()
-class MVVMEXTENSIONS_API UModelInjectingResolver : public UMVVMViewModelContextResolver
+class WIDGETMANAGER_API UModelInjectingResolver : public UMVVMViewModelContextResolver
 {
     GENERATED_BODY()
 
